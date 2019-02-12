@@ -6,21 +6,37 @@
 ## dom 构建简单示例
 
 ```java
-ONode data = new ONode().exp((d)->{
-    d.get("platform").val("all");
+//极光推送的数据构建示例
+public static void push(Collection<String> alias_ary, String text)  {
+    ONode data = new ONode().exp((d)->{
+        d.get("platform").val("all");
 
-    d.get("audience").get("alias").addAll(alias_ary);
+        d.get("audience").get("alias").addAll(alias_ary);
 
-    d.get("options")
-            .set("apns_production",false);
+        d.get("options")
+                .set("apns_production",false);
 
-    d.get("notification").exp(n->{
-        n.get("ios")
-                .set("alert",text)
-                .set("badge",0)
-                .set("sound","happy");
+        d.get("notification").exp(n->{
+            n.get("ios")
+                    .set("alert",text)
+                    .set("badge",0)
+                    .set("sound","happy");
+        });
     });
-});
 
-String message = data.toJson();
+
+
+    String message = data.toJson();
+    String author = Base64Util.encode(appKey+":"+masterSecret);
+
+    Map<String,String> headers = new HashMap<>();
+    headers.put("Content-Type","application/json");
+    headers.put("Authorization","Basic "+author);
+
+    try {
+        HttpUtil.postString(apiUrl, message, headers);
+    }catch (Exception ex){
+        ex.printStackTrace();
+    }
+}
 ```
