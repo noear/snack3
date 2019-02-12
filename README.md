@@ -24,8 +24,6 @@ public static void push(Collection<String> alias_ary, String text)  {
         });
     });
 
-
-
     String message = data.toJson();
     String author = Base64Util.encode(appKey+":"+masterSecret);
 
@@ -33,10 +31,6 @@ public static void push(Collection<String> alias_ary, String text)  {
     headers.put("Content-Type","application/json");
     headers.put("Authorization","Basic "+author);
 
-    try {
-        HttpUtil.postString(apiUrl, message, headers);
-    }catch (Exception ex){
-        ex.printStackTrace();
-    }
+    HttpUtil.postString(apiUrl, message, headers);
 }
 ```
