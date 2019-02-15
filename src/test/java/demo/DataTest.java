@@ -10,13 +10,14 @@ import org.noear.snack.to.ObjectToer;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2019.01.30
  *
  * @author cjl
  */
-public class ObjectTest {
+public class DataTest {
 
 
     /**
@@ -38,7 +39,9 @@ public class ObjectTest {
 
         System.out.println(context.node.toJson());
 
-        assert "{\"b\":{}}".equals(context.node.toJson());
+        Object data = context.node.toData();
+
+        assert (data instanceof Map);
     }
 
     @Test
@@ -59,12 +62,9 @@ public class ObjectTest {
 
         System.out.println(context.node.toJson());
 
-        context = new Context(Constants.def,context.node,OrderModel.class);
-        new ObjectToer().handle(context);
+        Object data = context.node.toData();
 
-        OrderModel order2 = (OrderModel)context.object;
-
-        assert 1111 == order2.user.id;
+        assert (data instanceof Map);
 
     }
 
@@ -95,11 +95,9 @@ public class ObjectTest {
 
         System.out.println(context.node.toJson());
 
-        assert 1 == context.node.get("users").get(1).get(1).get("id").getInt();
+        Object data = context.node.toData();
 
-        UserGroupModel g = context.node.toBean(UserGroupModel.class);
-
-        assert g.id == 9999;
+        assert (data instanceof Map);
 
     }
 

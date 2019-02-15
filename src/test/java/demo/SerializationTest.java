@@ -5,13 +5,62 @@ import demo.models.OrderModel;
 import demo.models.UserGroupModel;
 import demo.models.UserModel;
 import org.junit.Test;
-import org.near.snack3.ONode;
+import org.noear.snack.ONode;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class SerializationTest {
+
     @Test
-    public void test1() throws IllegalAccessException {
+    public void test0() throws Exception {
+        String temp = ONode.serialize("aaa");
+        assert "\"aaa\"".equals(temp);
+
+        temp = ONode.serialize(12);
+        assert "12".equals(temp);
+
+        temp = ONode.serialize(true);
+        assert "true".equals(temp);
+
+        temp = ONode.serialize(null);
+        assert "null".equals(temp);
+
+        temp = ONode.serialize(new Date());
+        assert "null".equals(temp)==false;
+
+
+        String tm2 = "{a:'http:\\/\\/raas.dev.zmapi.cn'}";
+
+        ONode tm3 = ONode.map(tm2);
+
+        tm3.toJson().equals("{\"a\":\"http://raas.dev.zmapi.cn\"}");
+    }
+
+    @Test
+    public void test1()throws Exception
+    {
+        try{
+            String val = null;
+            val.equals("");
+        }catch (Exception ex){
+            ex.printStackTrace();
+
+            String json = ONode.serialize(ex);
+
+            System.out.println(json);
+
+            NullPointerException ex2 = ONode.deserialize(json,NullPointerException.class);
+
+            ex2.printStackTrace();
+
+            assert json != null;
+        }
+    }
+
+    @Test
+    public void test2() throws Exception {
 
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -21,6 +70,9 @@ public class SerializationTest {
         group.names = new String[5];
         group.ids = new short[5];
         group.iids = new Integer[5];
+        group.dd = new BigDecimal(12);
+        group.tt1 = new Timestamp(new Date().getTime());
+        group.tt2 = new Date();
 
         for (short i = 0; i < 5 ; i++) {
             UserModel user = new UserModel();
@@ -66,7 +118,7 @@ public class SerializationTest {
 
 
     @Test
-    public void test4(){
+    public void test4() throws Exception{
         UserModel user = new UserModel();
         user.id = 1111;
         user.name = "张三";
@@ -88,7 +140,7 @@ public class SerializationTest {
     }
 
     @Test
-    public void test5(){
+    public void test5() throws Exception{
         CModel obj = new CModel();
 
         String json = ONode.serialize(obj);
@@ -100,7 +152,7 @@ public class SerializationTest {
     }
 
     @Test
-    public void test52(){
+    public void test52() throws Exception{
         CModel obj = new CModel();
         obj.init();
 
@@ -112,7 +164,7 @@ public class SerializationTest {
         assert obj2.list.size()==obj.list.size();
     }
     @Test
-    public void test53(){
+    public void test53() throws Exception{
         CModel obj = new CModel();
         obj.build();
 

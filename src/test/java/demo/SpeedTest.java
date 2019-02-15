@@ -1,17 +1,14 @@
 package demo;
 
-import com.alibaba.fastjson.JSON;
-import demo.models.CModel;
 import demo.models.UserGroupModel;
 import demo.models.UserModel;
 import org.junit.Test;
-import org.near.snack3.ONode;
-import org.near.snack3.core.Constants;
-import org.near.snack3.core.Context;
-import org.near.snack3.core.Handler;
-import org.near.snack3.from.JsonFromer;
+import org.noear.snack.ONode;
+import org.noear.snack.core.Constants;
+import org.noear.snack.core.Context;
+import org.noear.snack.core.Handler;
+import org.noear.snack.from.JsonFromer;
 
-import java.io.IOException;
 import java.util.*;
 
 public class SpeedTest {
@@ -49,7 +46,7 @@ public class SpeedTest {
 
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             c.handle(handler);
             //ONode.tryLoad(c.text);
 
@@ -126,7 +123,7 @@ public class SpeedTest {
 
 
     @Test
-    public void test11() throws IllegalAccessException {
+    public void test11() throws Exception {
 
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;

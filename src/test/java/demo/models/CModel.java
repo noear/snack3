@@ -1,6 +1,6 @@
 package demo.models;
 
-import org.near.snack3.ONodeType;
+import org.noear.snack.ONodeType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

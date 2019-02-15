@@ -1,5 +1,8 @@
 package demo.models;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,5 +20,7 @@ public class UserGroupModel {
     public String[] names;
     public short[] ids;
     public Integer[] iids;
-
+    public BigDecimal dd;
+    public Timestamp tt1;
+    public Date tt2;
 }

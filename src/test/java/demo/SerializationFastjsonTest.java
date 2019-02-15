@@ -7,10 +7,6 @@ import demo.models.OrderModel;
 import demo.models.UserGroupModel;
 import demo.models.UserModel;
 import org.junit.Test;
-import org.near.snack3.ONode;
-import org.near.snack3.core.Constants;
-import org.near.snack3.core.Context;
-import org.near.snack3.from.ObjectFromer;
 
 import java.util.*;
 
@@ -20,7 +16,7 @@ public class SerializationFastjsonTest {
 
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
-        group.users = new LinkedList<>();
+        group.users = new ArrayList<>();
         group.users2 = new LinkedHashMap<>();
         group.users3 = new TreeSet<>();// 如果只有空实例，反序列化时无法解析json
         group.names = new String[5];

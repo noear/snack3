@@ -5,9 +5,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import demo.models.UserGroupModel;
 import demo.models.UserModel;
 import org.junit.Test;
-import org.near.snack3.ONode;
-import org.near.snack3.core.Constants;
-import org.near.snack3.core.Context;
+import org.noear.snack.core.Constants;
+import org.noear.snack.core.Context;
 
 import java.io.IOException;
 import java.util.*;
@@ -44,7 +43,7 @@ public class SpeedFastjsonTest {
 
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             JSON.parseObject(c.text);
 
             //assert "1".equals(c.node.get("data").get("list").get(0).get("id").getString());

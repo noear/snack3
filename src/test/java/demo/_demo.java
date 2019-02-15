@@ -2,7 +2,7 @@ package demo;
 
 import demo.models.UserModel;
 import org.junit.Test;
-import org.near.snack3.ONode;
+import org.noear.snack.ONode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class _demo {
         }).toJson();
 
         //无exp写法，需要给根安排个变量
-        ONode root = ONode.tryLoad("{a:1,b:2}");
+        ONode root = ONode.map("{a:1,b:2}");
         root.get("c").from(user);
         json = root.toJson();
 
@@ -56,6 +56,6 @@ public class _demo {
     }
 
     public void demo3() throws Exception{
-        UserModel tmp = ONode.tryLoad("{id:1,name:'x'}").toObject(UserModel.class);
+        UserModel tmp = ONode.map("{id:1,name:'x'}").toBean(UserModel.class);
     }
 }

@@ -1,11 +1,11 @@
 package demo;
 
 import org.junit.Test;
-import org.near.snack3.core.Constants;
-import org.near.snack3.core.Context;
-import org.near.snack3.core.Feature;
-import org.near.snack3.from.JsonFromer;
-import org.near.snack3.to.JsonToer;
+import org.noear.snack.core.Constants;
+import org.noear.snack.core.Context;
+import org.noear.snack.core.Feature;
+import org.noear.snack.from.JsonFromer;
+import org.noear.snack.to.JsonToer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
