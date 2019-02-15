@@ -1,5 +1,5 @@
 # snack3
-轻量级json框架
+轻量级JSON框架
 
 这是snacks的重构项目，还在性能优化中。。。希望大小能控制在60KB以内
 
@@ -13,8 +13,8 @@ String json = ONode.serialize(user);
 UserModel user = ONode.deserialize(json, UserModel.class);
 
 //demo3::转为ONode
-ONode.map(json); //将json string 转为 ONode
-ONode.map(user); //将bean 转为 ONode
+ONode o = ONode.map(json); //将json string 转为 ONode
+ONode o = ONode.map(user); //将bean 转为 ONode
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
