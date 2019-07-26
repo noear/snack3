@@ -8,7 +8,7 @@
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>snack3_demo</name>
+    <name>${project.groupId}:${project.artifactId}</name>
 
 
     <properties>
