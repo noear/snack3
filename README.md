@@ -45,4 +45,9 @@ public static void push(Collection<String> alias_ary, String text)  {
 
     HttpUtil.postString(apiUrl, message, headers);
 }
+
+//demo5:取值
+o.get("name").getString();
+o.get("num").getInt();
+o.get("list").get(0).get("lev").getInt();
 ```
