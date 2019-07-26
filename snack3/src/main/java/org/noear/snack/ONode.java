@@ -10,6 +10,7 @@ import sun.awt.geom.AreaOp;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -52,6 +53,14 @@ public class ONode {
      */
     public ONodeData getData() {
         return _d;
+    }
+
+    public Map<String,ONode> asMap(){
+        return asObject()._d.object;
+    }
+
+    public List<ONode> asList(){
+        return asArray()._d.array;
     }
 
     public ONodeType nodeType() {
@@ -215,6 +224,7 @@ public class ONode {
     /**
      * 返回对象子节点
      */
+
     public ONode get(String key) {
         _d.tryInitObject(_c);
 

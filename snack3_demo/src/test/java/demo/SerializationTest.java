@@ -95,6 +95,8 @@ public class SerializationTest {
 
     @Test
     public void test3() throws Exception {
+
+        Map<String, Object> objx = new HashMap<>();
         Map<String, Object> obj = new LinkedHashMap<String, Object>();
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -111,7 +113,7 @@ public class SerializationTest {
 
         String json = ONode.serialize(obj);
         System.out.println(json);
-        Map<String, Object> obj2 = ONode.deserialize(json, obj.getClass());
+        Map<String, Object> obj2 = ONode.deserialize(json, String.class);
 
         assert obj2.size() == 1;
     }
