@@ -3,7 +3,15 @@
 
 这是snacks的重构项目（snacks为07年的项目），还在性能优化和特殊类型兼容适配中。。。
 
-希望大小能控制在60KB以内
+有序列化反序列化、解析和转换。才57Kb哦
+
+```xml
+<dependency>
+  <groupId>org.noear</groupId>
+  <artifactId>snack3</artifactId>
+  <version>3.0.6</version>
+</dependency>
+```
 
 ## 随便放几个示例
 
