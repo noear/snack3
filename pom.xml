@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>root</name>
-    <description>Java project for solon</description>
+    <description>Java project for snack3</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
