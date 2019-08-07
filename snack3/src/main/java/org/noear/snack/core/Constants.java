@@ -56,7 +56,8 @@ public class Constants {
 
     protected void initialize(){
         _date_format = new SimpleDateFormat(date_format, locale);
-        features = Feature.config(features, Feature.QuoteFieldNames,true);
+        features = Feature.config(features, Feature.QuoteFieldNames ,true);
+        features = Feature.config(features, Feature.WriteDateUseTicks ,true);
     }
 
     public final String dateToString(Date date){
