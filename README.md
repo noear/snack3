@@ -9,7 +9,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.0.8</version>
+  <version>3.0.10</version>
 </dependency>
 ```
 
@@ -23,8 +23,8 @@ String json = ONode.serialize(user);
 UserModel user = ONode.deserialize(json, UserModel.class);
 
 //demo3::转为ONode
-ONode o = ONode.map(json); //将json string 转为 ONode
-ONode o = ONode.map(user); //将bean 转为 ONode
+ONode o = ONode.fromStr(json); //将json string 转为 ONode
+ONode o = ONode.fromObj(user); //将bean 转为 ONode
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
