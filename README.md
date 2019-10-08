@@ -61,3 +61,13 @@ o.get("name").getString();
 o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
 ```
+
+## 序列化特点
+#### 对象（fastJson一致）
+```json
+{"@type":"...",...}
+```
+#### 数组
+```json
+[{"@type":"..."},[...]]
+```
