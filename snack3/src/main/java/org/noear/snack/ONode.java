@@ -528,10 +528,19 @@ public class ONode {
     }
 
     /**
-     * 返回自己（从来源处加载数据）
+     * 返回自己（从来源处加载数据，并做为自己的值），来源：bean object
      */
-    public ONode from(Object source) {
-        ONode tmp = map(source, Constants.def);
+    public ONode loadObj(Object source) throws Exception{
+        ONode tmp = fromObj(source);
+        val(tmp);
+        return this;
+    }
+
+    /**
+     * 返回自己（从来源处加载数据，并做为自己的值），来源：string
+     */
+    public ONode loadStr(String source) throws Exception{
+        ONode tmp = fromStr(source);
         val(tmp);
         return this;
     }
@@ -543,25 +552,38 @@ public class ONode {
     ////////////////////
 
     /**
-     * 加载来源：string or object （返回可能为null 或有异常）
+     * 加载来源：string （返回可能为null 或有异常）
      */
-    public static ONode map(Object source) {
-        return map(source, Constants.def);
+    public static ONode fromStr(String source) throws Exception{
+        return NodeUtil.fromStr(source);
+    }
+    /**
+     * 加载来源：bean object （返回可能为null 或有异常）
+     */
+    public static ONode fromObj(Object source) throws Exception{
+        return NodeUtil.fromObj(source);
     }
 
-    public static ONode map(Object source, Constants config) {
-        if (source == null) {
-            return null;
-        }
-
+    /**
+     * 尝试加载来源：string （返回可能为null 或有异常）
+     */
+    public static ONode fromStrTry(String source) {
         try {
-            if (source instanceof String) {
-                return NodeUtil.fromStr(config, (String) source);
-            } else {
-                return NodeUtil.fromObj(config, source);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            return NodeUtil.fromStr(source);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return new ONode();
+        }
+    }
+    /**
+     * 尝试加载来源：bean object （返回可能为null 或有异常）
+     */
+    public static ONode fromObjTry(Object source) {
+        try {
+            return NodeUtil.fromObj(source);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return new ONode();
         }
     }
 

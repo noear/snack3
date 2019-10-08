@@ -11,7 +11,7 @@ import java.util.*;
  * */
 public class Constants {
     /** 默认配置 */
-    public static final Constants def = new Constants();
+    public static final Constants def = of(Feature.WriteDateUseTicks);
     public static final Constants serialize = of(
             Feature.OrderedField,
             Feature.BrowserCompatible,
@@ -56,8 +56,7 @@ public class Constants {
 
     protected void initialize(){
         _date_format = new SimpleDateFormat(date_format, locale);
-        features = Feature.config(features, Feature.QuoteFieldNames ,true);
-        features = Feature.config(features, Feature.WriteDateUseTicks ,true);
+        features = Feature.config(features, Feature.QuoteFieldNames,true);
     }
 
     public final String dateToString(Date date){
