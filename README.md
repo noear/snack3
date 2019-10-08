@@ -1,4 +1,4 @@
-## QQ交流群：22200020
+` QQ交流群：22200020 `
 
 # snack3 for java
 轻量级JSON框架
@@ -11,7 +11,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.0.10</version>
+  <version>3.0.11</version>
 </dependency>
 ```
 
