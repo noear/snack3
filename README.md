@@ -63,11 +63,11 @@ o.get("list").get(0).get("lev").getInt();
 ```
 
 ## 序列化特点
-#### 对象（fastJson一致）
+#### 对象（与fastJson一致）
 ```json
 {"@type":"...","a":1,"b":"2"}
 ```
-#### 数组（fastJson不同；可以精准反序列化类型）
+#### 数组（与fastJson不同；可以精准反序列化类型）
 ```json
 [{"@type":"..."},[1,2,3]]
 ```
