@@ -60,6 +60,16 @@ public static void push(Collection<String> alias_ary, String text)  {
 o.get("name").getString();
 o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
+
+//demo5:遍历
+//如果是个Object
+o.asMap().forEach((k,v)->{
+  //...
+});
+//如果是个Array
+o.asList().forEach((v)->{
+  //...
+});
 ```
 
 ## 序列化特点
