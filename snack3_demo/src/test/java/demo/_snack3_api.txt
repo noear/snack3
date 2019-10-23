@@ -16,7 +16,7 @@
 
 -cfg(constants:Constants) -> self:ONode   //切换配置
 
--build(n->..) -> self:ONode     //节点构建，用于替代 exp(n->..)
+-build(n->..) -> self:ONode     //节点构建表达式
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
