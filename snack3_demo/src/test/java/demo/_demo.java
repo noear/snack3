@@ -59,12 +59,12 @@ public class _demo {
         String json = new ONode().build(n->{
             //load : 为当前节点加载数据
             //from : 加载数据并生成新节点
-            n.load("{a:1,b:2}").get("c").load(user);
+            n.fill("{a:1,b:2}").get("c").fill(user);
         }).toJson();
 
         //无exp写法，需要给根安排个变量
-        ONode root = ONode.from("{a:1,b:2}");
-        root.get("c").from(user);
+        ONode root = ONode.load("{a:1,b:2}");
+        root.get("c").load(user);
         json = root.toJson();
 
         /*
@@ -73,7 +73,7 @@ public class _demo {
     }
 
     public void demo32() throws Exception{
-        UserModel tmp = ONode.from("{id:1,name:'x'}").toBean(UserModel.class);
+        UserModel tmp = ONode.load("{id:1,name:'x'}").toBean(UserModel.class);
     }
 
     public void demo40(){

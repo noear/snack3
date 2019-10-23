@@ -33,7 +33,7 @@ public class SerializationTest {
 
         String tm2 = "{a:'http:\\/\\/raas.dev.zmapi.cn'}";
 
-        ONode tm3 = ONode.from(tm2);
+        ONode tm3 = ONode.load(tm2);
 
         tm3.toJson().equals("{\"a\":\"http://raas.dev.zmapi.cn\"}");
     }

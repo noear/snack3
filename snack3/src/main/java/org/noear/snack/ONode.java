@@ -5,7 +5,6 @@ import org.noear.snack.core.exts.Act2;
 import org.noear.snack.core.utils.NodeUtil;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.DEFAULTS;
-import sun.awt.geom.AreaOp;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -583,26 +582,29 @@ public class ONode {
     }
 
 
-    public ONode load(Object source) {
-        ONode tmp = from(source);
+    /**
+     * 填充数据，并返回自己
+     * */
+    public ONode fill(Object source) {
+        ONode tmp = load(source);
         val(tmp);
         return this;
     }
 
     /**
-     * 返回自己（从来源处加载数据，并做为自己的值），来源：bean object
+     * 填充数据，并返回自己（从来源处加载数据，并做为自己的值），来源：bean object
      */
-    public ONode loadObj(Object source) throws Exception{
-        ONode tmp = fromObj(source);
+    public ONode fillObj(Object source) throws Exception{
+        ONode tmp = loadObj(source);
         val(tmp);
         return this;
     }
 
     /**
-     * 返回自己（从来源处加载数据，并做为自己的值），来源：string
+     * 填充数据，并返回自己（从来源处加载数据，并做为自己的值），来源：string
      */
-    public ONode loadStr(String source) throws Exception{
-        ONode tmp = fromStr(source);
+    public ONode fillStr(String source) throws Exception{
+        ONode tmp = loadStr(source);
         val(tmp);
         return this;
     }
@@ -613,7 +615,7 @@ public class ONode {
     //
     ////////////////////
 
-    public static ONode from(Object source) {
+    public static ONode load(Object source) {
         try {
             if (source instanceof String) {
                 return NodeUtil.fromStr((String) source);
@@ -628,13 +630,13 @@ public class ONode {
     /**
      * 加载来源：string （返回可能为null 或有异常）
      */
-    public static ONode fromStr(String source) throws Exception{
+    public static ONode loadStr(String source) throws Exception{
         return NodeUtil.fromStr(source);
     }
     /**
      * 加载来源：bean object （返回可能为null 或有异常）
      */
-    public static ONode fromObj(Object source) throws Exception{
+    public static ONode loadObj(Object source) throws Exception{
         return NodeUtil.fromObj(source);
     }
 
