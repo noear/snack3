@@ -641,30 +641,6 @@ public class ONode {
     }
 
     /**
-     * 尝试加载来源：string （返回可能为null 或有异常）
-     */
-    public static ONode fromStrTry(String source) {
-        try {
-            return NodeUtil.fromStr(source);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return new ONode();
-        }
-    }
-    /**
-     * 尝试加载来源：bean object （返回可能为null 或有异常）
-     */
-    public static ONode fromObjTry(Object source) {
-        try {
-            return NodeUtil.fromObj(source);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return new ONode();
-        }
-    }
-
-
-    /**
      * 序列化为 json string
      */
     public static String serialize(Object source)  throws Exception {
