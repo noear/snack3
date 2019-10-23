@@ -34,7 +34,7 @@ public class JsonFromer implements Fromer {
             char suffix = ctx.text.charAt(ctx.text.length() - 1);
 
             if ((prefix == '{' && suffix == '}')
-                    || (prefix == '[' && suffix == '}')) {
+                    || (prefix == '[' && suffix == ']')) {
                 //object or array
                 //
                 CharBuffer sBuf = tlBuilder.get();
