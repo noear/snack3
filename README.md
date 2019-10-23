@@ -25,8 +25,8 @@ String json = ONode.serialize(user);
 UserModel user = ONode.deserialize(json, UserModel.class);
 
 //demo3::转为ONode
-ONode o = ONode.fromStr(json); //将json string 转为 ONode
-ONode o = ONode.fromObj(user); //将bean 转为 ONode
+ONode o = ONode.load(json); //将json string 转为 ONode
+ONode o = ONode.load(user); //将bean 转为 ONode
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
