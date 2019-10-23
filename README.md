@@ -5,7 +5,7 @@
 
 这是snacks的重构项目（snacks为07年的项目），还在性能优化和特殊类型兼容适配中。。。
 
-有序列化反序列化、解析和转换。才57Kb哦
+有序列化反序列化、解析和转换。才60Kb哦
 
 ```xml
 <dependency>
@@ -25,8 +25,8 @@ String json = ONode.serialize(user);
 UserModel user = ONode.deserialize(json, UserModel.class);
 
 //demo3::转为ONode
-ONode o = ONode.fromStr(json); //将json string 转为 ONode
-ONode o = ONode.fromObj(user); //将bean 转为 ONode
+ONode o = ONode.load(json); //将json string 转为 ONode
+ONode o = ONode.load(user); //将bean 转为 ONode
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
@@ -102,7 +102,7 @@ o.forEach((v)->{
 
 -cfg(constants:Constants) -> self:ONode   //切换配置
 
--build(n->..) -> self:ONode     //节点构建，用于替代 exp(n->..)
+-build(n->..) -> self:ONode     //节点构建表达式
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
@@ -110,7 +110,7 @@ o.forEach((v)->{
 
 //值操作
 -val() -> OValue                //获取节点值数据结构体（如果不是值类型，会自动转换）
--val(val:Object) -> self:ONode  //设置节点值
+-val(val:Object) -> self:ONode  //设置节点值 //val:为常规类型或ONode
 -getString()    //获取值并以string输出
 -getShort()     //获取值并以short输出...(以下同...)
 -getInt()
@@ -125,10 +125,10 @@ o.forEach((v)->{
 //对象操作
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool           //是否存在对象子节点?
--get(key:String) -> child:ONode         //获取对象子节点（不存在，则自动生成）
--getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，则为null）
+-get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
+-getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）
 -getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
--set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//obj 不能是复杂模型
+-set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//val:为常规类型或ONode
 -setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
 -setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
 -setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
@@ -138,11 +138,11 @@ o.forEach((v)->{
 
 //数组操作
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
--get(index:int)  -> child:ONode                 //获取数组子节点（超界，则返回空节点）
+-get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
 -getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
 -addNew() -> child:ONode                        //生成新的数组子节点
--add(obj) -> self:ONode                         //添加数组子节点 //obj 不能是复杂模型
--addNode(obj:ONode) -> self:ONode               //添加数组子节点，值为ONode类型
+-add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
+-addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型
 -addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将obj的子节点搬过来
 -addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的子节点搬过来
 -addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的子节点搬过来，并交由代理处置
@@ -161,7 +161,7 @@ o.forEach((v)->{
 -attrForeach((k,v)->..)             //遍历特性
 
 //填充操作（为当前节点填充数据）
--fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 Object）
+-fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
 -fillObj(source:Object) -> self:ONode       //填充object为数据，可能会出异常
 -fillStr(source:String) -> self:ONode       //填充String为数据，可能会出异常
 
@@ -170,7 +170,7 @@ o.forEach((v)->{
 */
 
 //加载操作
-+load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 Object）
++load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 been）
 +loadObj(source:Object) -> new:ONode    //加载object为ONode，可能会出异常
 +loadStr(source:String) -> new:ONode    //加载String为ONode，可能会出异常
 
