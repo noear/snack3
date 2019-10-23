@@ -92,4 +92,4 @@
 +serialize(source:Object) -> String                         //序列化
 +serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
 +deserialize(source:String, clz Class<T>) -> T                          //反序列化
-+deserialize(source:String, clz Class<T>, constants:constants) -> T     //反序列化，可定制常量
++deserialize(source:String, clz Class<T>, constants:Constants) -> T     //反序列化，可定制常量
