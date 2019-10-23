@@ -100,7 +100,7 @@ o.forEach((v)->{
 -nodeData() -> ONodeData //获取节点数据
 -nodeType() -> ONodeType //获取节点类型
 
--cfg(constants) -> self:ONode   //切换配置
+-cfg(constants:Constants) -> self:ONode   //切换配置
 
 -build(n->..) -> self:ONode     //节点构建，用于替代 exp(n->..)
 
@@ -178,6 +178,6 @@ o.forEach((v)->{
 +serialize(source:Object) -> String                         //序列化
 +serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
 +deserialize(source:String, clz Class<T>) -> T                          //反序列化
-+deserialize(source:String, clz Class<T>, constants:constants) -> T     //反序列化，可定制常量
++deserialize(source:String, clz Class<T>, constants:Constants) -> T     //反序列化，可定制常量
 
 ```
