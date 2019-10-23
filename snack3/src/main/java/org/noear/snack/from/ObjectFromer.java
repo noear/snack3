@@ -25,7 +25,7 @@ public class ObjectFromer implements Fromer {
 
     private ONode analyse(Constants cfg, Object source) {
         if (source == null) {
-            return ONode.Null;
+            return new ONode();
         }
 
         Class<?> clz = source.getClass();

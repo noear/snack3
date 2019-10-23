@@ -15,7 +15,6 @@ public class Constants {
     public static final Constants def = of(
             Feature.WriteDateUseTicks).build(c->{
                 c.null_string = "";
-                c.null_node_new=true;
     });
 
     public static final Constants serialize = of(
@@ -23,7 +22,6 @@ public class Constants {
             Feature.BrowserCompatible,
             Feature.WriteClassName).build(c-> {
                 c.null_string = null;
-                c.null_node_new=false;
     });
 
     public static Constants of(Feature... features) {
@@ -46,7 +44,6 @@ public class Constants {
     private SimpleDateFormat _date_format;
 
     public String   null_string = DEFAULTS.DEF_NULL_STRING; //默府null字符串
-    public boolean  null_node_new = DEFAULTS.DEF_NULL_NODE_NEW;
 
     public String   date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
     public String   type_key    = DEFAULTS.DEF_TYPE_KEY;    //类型key

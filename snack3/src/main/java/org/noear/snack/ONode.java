@@ -22,8 +22,7 @@ public class ONode {
     protected Constants _c = Constants.def;
     //内部数据
     protected ONodeData _d = new ONodeData(this);
-    //Null节点
-    public static final ONode Null = new ONode();
+
 
     //版本信息
     public static String version(){return "3.0.12";}
@@ -285,17 +284,24 @@ public class ONode {
     /**
      * 返回对象子节点
      */
-
     public ONode get(String key) {
         _d.tryInitObject(_c);
 
         ONode tmp = _d.object.get(key);
-        if (tmp == null && _c.null_node_new) {
+        if (tmp == null ) {
             tmp = new ONode(_c);
             _d.object.put(key, tmp);
         }
 
         return tmp;
+    }
+    /**
+     * 返回对象子节点，如果没有则返回null
+     */
+    public ONode getOrNull(String key) {
+        _d.tryInitObject(_c);
+
+        return _d.object.get(key);
     }
 
     public ONode getNew(String key) {
@@ -396,14 +402,22 @@ public class ONode {
     public ONode get(int index) {
         _d.tryInitArray();
 
-        if (_d.array.size() > index) {
+        if (index >= 0 && _d.array.size() > index) {
             return _d.array.get(index);
         } else {
-            if(_c.null_node_new){
-                return new ONode();
-            }else {
-                return null;
-            }
+            return new ONode();
+        }
+    }
+    /**
+     * 获取数组项，如果没有则返回null
+     */
+    public ONode getOrNull(int index) {
+        _d.tryInitArray();
+
+        if (index >= 0 && _d.array.size() > index) {
+            return _d.array.get(index);
+        } else {
+            return null;
         }
     }
 
