@@ -11,7 +11,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.0.14</version>
+  <version>3.0.14.2</version>
 </dependency>
 ```
 
@@ -125,7 +125,8 @@ o.forEach((v)->{
 //对象操作
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool           //是否存在对象子节点?
--get(key:String) -> child:ONode         //获取对象子节点（如果不存在自动生成；可配置为null）
+-get(key:String) -> child:ONode         //获取对象子节点（不存在，则自动生成）
+-getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，则为null）
 -getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
 -set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//obj 不能是复杂模型
 -setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
@@ -137,7 +138,8 @@ o.forEach((v)->{
 
 //数组操作
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
--get(index:int)  -> child:ONode                 //获取数组子节点（如果超界，会返回空节点；可配置为null）
+-get(index:int)  -> child:ONode                 //获取数组子节点（超界，则返回空节点）
+-getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
 -addNew() -> child:ONode                        //生成新的数组子节点
 -add(obj) -> self:ONode                         //添加数组子节点 //obj 不能是复杂模型
 -addNode(obj:ONode) -> self:ONode               //添加数组子节点，值为ONode类型
