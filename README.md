@@ -11,7 +11,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.0.12.1</version>
+  <version>3.0.13</version>
 </dependency>
 ```
 
@@ -30,7 +30,7 @@ ONode o = ONode.fromObj(user); //将bean 转为 ONode
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
-    ONode data = new ONode().exp((d)->{
+    ONode data = new ONode().build((d)->{
         d.get("platform").val("all");
 
         d.get("audience").get("alias").addAll(alias_ary);
@@ -38,7 +38,7 @@ public static void push(Collection<String> alias_ary, String text)  {
         d.get("options")
                 .set("apns_production",false);
 
-        d.get("notification").exp(n->{
+        d.get("notification").build(n->{
             n.get("ios")
                     .set("alert",text)
                     .set("badge",0)
