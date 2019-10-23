@@ -1,14 +1,83 @@
-Snack3 是一个轻量级的高性能Json框架
+` QQ交流群：22200020 `
 
-###序列化策略
-* 使用字段（不使用属性）
-* 将Map和Bean设计为：{@type:t,f1:1}，与fastjson类似
-* 将集合设计为[{@type:t},[]]
+# snack3 for java
+轻量级JSON框架
 
-#####特别类型和情况
-* 日期
-* 大数字
-* 枚举
-* 泛型类 和 泛型继承
-* 集合
-* 字典
+这是snacks的重构项目（snacks为07年的项目），还在性能优化和特殊类型兼容适配中。。。
+
+有序列化反序列化、解析和转换。才57Kb哦
+
+```xml
+<dependency>
+  <groupId>org.noear</groupId>
+  <artifactId>snack3</artifactId>
+  <version>3.0.12.1</version>
+</dependency>
+```
+
+## 随便放几个示例
+
+```java
+//demo1::序列化
+String json = ONode.serialize(user);
+
+//demo2::反序列化
+UserModel user = ONode.deserialize(json, UserModel.class);
+
+//demo3::转为ONode
+ONode o = ONode.fromStr(json); //将json string 转为 ONode
+ONode o = ONode.fromObj(user); //将bean 转为 ONode
+
+//demo4:构建json数据(极光推送的rest api调用)
+public static void push(Collection<String> alias_ary, String text)  {
+    ONode data = new ONode().exp((d)->{
+        d.get("platform").val("all");
+
+        d.get("audience").get("alias").addAll(alias_ary);
+
+        d.get("options")
+                .set("apns_production",false);
+
+        d.get("notification").exp(n->{
+            n.get("ios")
+                    .set("alert",text)
+                    .set("badge",0)
+                    .set("sound","happy");
+        });
+    });
+
+    String message = data.toJson();
+    String author = Base64Util.encode(appKey+":"+masterSecret);
+
+    Map<String,String> headers = new HashMap<>();
+    headers.put("Content-Type","application/json");
+    headers.put("Authorization","Basic "+author);
+
+    HttpUtil.postString(apiUrl, message, headers);
+}
+
+//demo5:取值
+o.get("name").getString();
+o.get("num").getInt();
+o.get("list").get(0).get("lev").getInt();
+
+//demo5:遍历
+//如果是个Object
+o.forEach((k,v)->{
+  //...
+});
+//如果是个Array
+o.forEach((v)->{
+  //...
+});
+```
+
+## 序列化特点
+#### 对象（与fastJson一致）
+```json
+{"@type":"...","a":1,"b":"2"}
+```
+#### 数组（与fastJson不同；可以精准反序列化类型）
+```json
+[{"@type":"..."},[1,2,3]]
+```
