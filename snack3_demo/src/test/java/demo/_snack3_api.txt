@@ -72,17 +72,22 @@
 -attrSet(key:String,val:String)     //设置特性
 -attrForeach((k,v)->..)             //遍历特性
 
-//装载操作  （做为当前节点）
--fill(source:Object) -> self:ONode      //当前节点，加载数据（souce 可以是 String 或 Object）
--fillObj(source:Object) -> self:ONode
--fillStr(source:String) -> self:ONode
+//填充操作（为当前节点填充数据）
+-fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 Object）
+-fillObj(source:Object) -> self:ONode       //填充object为数据，可能会出异常
+-fillStr(source:String) -> self:ONode       //填充String为数据，可能会出异常
 
-+load(json:String) -> new:ONode
-+loadObj(source:Object) -> new:ONode
-+loadStr(source:String) -> new:ONode
+/**
+* 以下为静态操作
+*/
+
+//加载操作
++load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 Object）
++loadObj(source:Object) -> new:ONode    //加载object为ONode，可能会出异常
++loadStr(source:String) -> new:ONode    //加载String为ONode，可能会出异常
 
 //序列化操作
-+serialize(source:Object) -> String
-+serialize(source:Object, constants:Constants) -> String
-+deserialize(source:String, clz Class<T>) -> T
-+deserialize(source:String, clz Class<T>, constants:constants) -> T
++serialize(source:Object) -> String                         //序列化
++serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
++deserialize(source:String, clz Class<T>) -> T                          //反序列化
++deserialize(source:String, clz Class<T>, constants:constants) -> T     //反序列化，可定制常量
