@@ -23,9 +23,8 @@ public class ONode {
     //内部数据
     protected ONodeData _d = new ONodeData(this);
 
-
     //版本信息
-    public static String version(){return "3.0.12";}
+    public static String version(){return "3.0.14";}
 
     public ONode() {
     }
@@ -91,11 +90,6 @@ public class ONode {
         fun.run(this);
         return this;
     }
-    public ONode exp(Act1<ONode> fun) {
-        fun.run(this);
-        return this;
-    }
-
 
     ////////////////////
     //
