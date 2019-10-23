@@ -31,16 +31,30 @@ public class JsonFromer implements Fromer {
             ctx.node = new ONode(ctx.config);
         } else {
             char prefix = ctx.text.charAt(0);
+            char suffix = ctx.text.charAt(ctx.text.length() - 1);
 
-            if (prefix == '{' || prefix == '[') { //object or array
+            if ((prefix == '{' && suffix == '}')
+                    || (prefix == '[' && suffix == '}')) {
+                //object or array
+                //
                 CharBuffer sBuf = tlBuilder.get();
                 sBuf.setLength(0);
                 ctx.node = new ONode(ctx.config);
                 analyse(new CharReader(ctx.text), sBuf, ctx.node);
-            } else if (len >= 2 && (prefix == '"' || prefix == '\'')) {//string
-                ctx.node = analyse_val(ctx.text.substring(1, len - 1), true);
-            } else if (prefix != '<' && len < 40) {//null,num,bool,other
-                ctx.node = analyse_val(ctx.text, false);
+            } else if (len >= 2 && (
+                    (prefix == '"' && suffix == '"') ||
+                            (prefix == '\'' && suffix == '\''))) {
+                //string
+                //
+                ctx.node = analyse_val(ctx.text.substring(1, len - 1), true, false);
+            } else if (prefix != '<' && len < 40) {
+                //null,num,bool,other
+                //
+                ctx.node = analyse_val(ctx.text, false, true);
+            } else {
+                //普通的字符串
+                ctx.node = new ONode(ctx.config);
+                ctx.node.val().setString(ctx.text);
             }
         }
     }
@@ -199,10 +213,10 @@ public class JsonFromer implements Fromer {
         if (sBuf.isString == false) {
             sBuf.trimLast();//去掉尾部的空格
         }
-        return analyse_val(sBuf.toString(), sBuf.isString);
+        return analyse_val(sBuf.toString(), sBuf.isString, false);
     }
 
-    private ONode analyse_val(String sval, boolean isString) {
+    private ONode analyse_val(String sval, boolean isString, boolean isNoterr) {
         ONode orst = new ONode();
         OValue oval = orst.val();
 
@@ -242,7 +256,11 @@ public class JsonFromer implements Fromer {
                     }
                 }
             } else { //other
-                throw new RuntimeException("Format error!");
+                if(isNoterr){
+                    oval.setString(sval);
+                }else {
+                    throw new RuntimeException("Format error!");
+                }
             }
         }
 
