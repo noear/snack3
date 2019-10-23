@@ -63,11 +63,11 @@ o.get("list").get(0).get("lev").getInt();
 
 //demo5:遍历
 //如果是个Object
-o.asMap().forEach((k,v)->{
+o.forEach((k,v)->{
   //...
 });
 //如果是个Array
-o.asList().forEach((v)->{
+o.forEach((v)->{
   //...
 });
 ```
