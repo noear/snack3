@@ -269,7 +269,7 @@ public class ONode {
     /**
      * 获取节点对象
      * */
-    public Map<String,ONode> object() {
+    public Map<String,ONode> obj() {
         return asObject()._d.object;
     }
 
@@ -386,7 +386,7 @@ public class ONode {
     /**
      * 获取节点对象
      * */
-    public List<ONode> array() {
+    public List<ONode> ary() {
         return asArray()._d.array;
     }
 

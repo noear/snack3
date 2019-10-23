@@ -37,7 +37,7 @@
 -getChar()
 
 //对象操作
--object() -> Map<String,ONode>          //获取节点对象数据结构体（如果不是对象类型，会自动转换）
+-obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool           //是否存在对象子节点?
 -get(key:String) -> child:ONode         //获取对象子节点（如果不存在自动生成；可配置为null）
 -getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
@@ -50,7 +50,7 @@
 -forEach((k,v)->..)     //遍历对象的子节点
 
 //数组操作
--array() -> List<ONode>                 //获取节点数组数据结构体（如果不是数组，会自动转换）
+-ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
 -get(index:int)  -> child:ONode                 //获取数组子节点（如果超界，会返回空节点；可配置为null）
 -addNew() -> child:ONode                        //生成新的数组子节点
 -add(obj) -> self:ONode                         //添加数组子节点
