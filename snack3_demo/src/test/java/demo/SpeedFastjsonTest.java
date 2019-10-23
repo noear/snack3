@@ -13,7 +13,7 @@ import java.util.*;
 
 public class SpeedFastjsonTest {
 
-    /** 测试性能 */
+    /** 测试性能（大json） */
     @Test
     public void test00() throws IOException {
 
@@ -23,7 +23,7 @@ public class SpeedFastjsonTest {
 
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
             JSON.parseArray(c.text);
 
             //assert "1".equals(c.node.get("data").get("list").get(0).get("id").getString());
@@ -33,7 +33,7 @@ public class SpeedFastjsonTest {
 
     }
 
-    /** 测试性能 */
+    /** 测试性能（小json） */
     @Test
     public void test0() throws IOException {
 
