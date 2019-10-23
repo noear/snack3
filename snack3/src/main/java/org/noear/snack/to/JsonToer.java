@@ -46,15 +46,15 @@ public class JsonToer implements Toer {
 
         switch (o.nodeType()) {
             case Value:
-                writeValue(cfg, sb, o.getData());
+                writeValue(cfg, sb, o.nodeData());
                 break;
 
             case Array:
-                writeArray(cfg, sb, o.getData());
+                writeArray(cfg, sb, o.nodeData());
                 break;
 
             case Object:
-                writeObject(cfg, sb, o.getData());
+                writeObject(cfg, sb, o.nodeData());
                 break;
 
             default:

@@ -5,5 +5,4 @@ import org.noear.snack.core.Handler;
 /**
  * 来源处理者
  * */
-public interface Fromer extends Handler {
-}
+public interface Fromer extends Handler { }

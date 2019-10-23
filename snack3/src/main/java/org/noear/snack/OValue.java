@@ -1,5 +1,7 @@
 package org.noear.snack;
 
+import org.noear.snack.core.Constants;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -16,6 +18,10 @@ public class OValue {
     protected boolean _bool; //布尔值
     protected Date _date; //日期
     protected Number _bignumber;//大数字
+    protected ONode _n;
+    public OValue(ONode n){
+        _n = n;
+    }
 
     private OValueType _type = OValueType.Null;
 
@@ -239,7 +245,7 @@ public class OValue {
             case Bignumber:return String.valueOf(_bignumber);
             case Boolean:return String.valueOf(_bool);
             case DateTime:return String.valueOf(_date);
-            default:return "";
+            default:return _n._c.null_string;
         }
     }
 

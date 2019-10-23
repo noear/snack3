@@ -19,6 +19,27 @@ public class ONodeData {
     /** 节点类型 */
     public ONodeType nodeType = ONodeType.Null;
 
+    public Map<String, ONode> object(){
+        tryInitObject(_n._c);
+        return object;
+    }
+
+    public List<ONode> array(){
+        tryInitArray();
+        return array;
+    }
+
+    public OValue value(){
+        tryInitValue();
+        return value;
+    }
+
+
+    protected ONode _n;
+    public ONodeData(ONode n){
+        _n = n;
+    }
+
     /** 尝试初始化为 null */
     protected void tryInitNull(){
         if(nodeType != ONodeType.Null) {
@@ -44,7 +65,7 @@ public class ONodeData {
             nodeType = ONodeType.Value;
 
             if (value == null) {
-                value = new OValue();
+                value = new OValue(_n);
             }
         }
     }

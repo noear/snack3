@@ -1,24 +1,9 @@
 package org.noear.snack.to;
 
 import org.noear.snack.ONode;
-import org.noear.snack.ONodeData;
 import org.noear.snack.OValue;
-import org.noear.snack.OValueType;
-import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
-import org.noear.snack.core.exts.EnumWrap;
-import org.noear.snack.core.exts.FieldWrap;
-import org.noear.snack.core.utils.BeanUtil;
-import org.noear.snack.core.utils.StringUtil;
-import org.noear.snack.core.utils.TypeUtil;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.InetSocketAddress;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -39,7 +24,7 @@ public class DataToer implements Toer {
 
         switch (o.nodeType()) {
             case Value:
-                OValue d = o.getData().value;
+                OValue d = o.nodeData().value;
                 switch (d.type()) {
                     case Integer:
                         return d.getRawInteger();

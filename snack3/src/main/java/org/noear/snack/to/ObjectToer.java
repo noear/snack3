@@ -70,7 +70,7 @@ public class ObjectToer implements Toer {
 
         switch (o.nodeType()) {
             case Value:
-                return analyseVal(cfg, o.getData(), clz);
+                return analyseVal(cfg, o.nodeData(), clz);
             case Object:
                 clz = getTypeByNode(cfg, o, clz);
                 o.remove(cfg.type_key);//尝试移除类型内容
@@ -90,7 +90,7 @@ public class ObjectToer implements Toer {
                 clz = getTypeByNode(cfg, o, clz);
 
                 if (clz.isArray()) {
-                    return analyseArray(cfg, o.getData(), clz);
+                    return analyseArray(cfg, o.nodeData(), clz);
                 } else {
                     return analyseCollection(cfg, o, clz, type);
                 }
@@ -255,7 +255,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        for(ONode o1 : o.getData().array){
+        for(ONode o1 : o.nodeData().array){
             list.add(analyse(cfg,o1,(Class<?>) itemType,itemType));
         }
         return list;
@@ -279,16 +279,16 @@ public class ObjectToer implements Toer {
             }
 
             if (kType == String.class) {
-                for (Map.Entry<String, ONode> kv : o.getData().object.entrySet()) {
+                for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
                     map.put(kv.getKey(), analyse(cfg, kv.getValue(), (Class<?>) vType, vType));
                 }
             } else {
-                for (Map.Entry<String, ONode> kv : o.getData().object.entrySet()) {
+                for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
                     map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(cfg, kv.getValue(), (Class<?>) vType,vType));
                 }
             }
         } else {
-            for (Map.Entry<String, ONode> kv : o.getData().object.entrySet()) {
+            for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
                 map.put(kv.getKey(), analyse(cfg, kv.getValue(), Object.class,Object.class));
             }
         }

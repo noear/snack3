@@ -22,7 +22,7 @@ public class BaseTest {
 
         System.out.println(times);
 
-        assert times == 0;
+        assert times > 0;
     }
 
     @Test
@@ -39,7 +39,7 @@ public class BaseTest {
 
         System.out.println(times);
 
-        assert times == 0;
+        assert times > 0;
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BaseTest {
 
         System.out.println(times);
 
-        assert times == 0;
+        assert times > 0;
     }
 
     @Test

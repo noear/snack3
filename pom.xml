@@ -6,11 +6,11 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3-parent</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.x</version>
     <packaging>pom</packaging>
 
-    <name>root</name>
-    <description>Java project for snack3</description>
+    <name>snack3_java</name>
+    <description>Java project for solon</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -19,12 +19,15 @@ import java.util.function.Consumer;
  * 节点（One Node）
  * */
 public class ONode {
+    //内部配置
     protected Constants _c = Constants.def;
-    protected ONodeData _d = new ONodeData();
-
+    //内部数据
+    protected ONodeData _d = new ONodeData(this);
+    //Null节点
     public static final ONode Null = new ONode();
 
-    public static String version(){return "3.0.6";}
+    //版本信息
+    public static String version(){return "3.0.12";}
 
     public ONode() {
     }
@@ -33,51 +36,83 @@ public class ONode {
         _c = cfg;
     }
 
+    /** 初始化为 Object */
     public ONode asObject() {
         _d.tryInitObject(_c);
         return this;
     }
 
+    /** 初始化为 Array */
     public ONode asArray() {
         _d.tryInitArray();
         return this;
     }
 
+    /** 初始化为 Value */
+    public ONode asValue() {
+        _d.tryInitValue();
+        return this;
+    }
+
+    /** 初始化为 Null */
     public ONode asNull() {
         _d.tryInitNull();
         return this;
     }
 
     /**
-     * 获取内部数据
+     * 节点数据
      */
-    public ONodeData getData() {
+    public ONodeData nodeData() {
         return _d;
     }
-
-    public Map<String,ONode> asMap(){
-        return asObject()._d.object;
-    }
-
-    public List<ONode> asList(){
-        return asArray()._d.array;
-    }
-
+    /**
+     * 节点类型
+     * */
     public ONodeType nodeType() {
         return _d.nodeType;
     }
 
-    public ONode cfg(Constants config) {
-        if (config != null) {
-            _c = config;
+    /**
+     * 切换配置
+     * */
+    public ONode cfg(Constants constants) {
+        if (constants != null) {
+            _c = constants;
         } else {
             _c = Constants.def;
         }
         return this;
     }
 
+
     /**
-     * 节点赋值(搞不清楚是自身还是被新值，所以不返回)
+     * 返回自己，构建表达式
+     */
+    public ONode build(Act1<ONode> fun) {
+        fun.run(this);
+        return this;
+    }
+    public ONode exp(Act1<ONode> fun) {
+        fun.run(this);
+        return this;
+    }
+
+
+    ////////////////////
+    //
+    // 值处理
+    //
+    ////////////////////
+    /**
+     * 获取节点值
+     * */
+    public OValue val() {
+        return asValue()._d.value;
+    }
+
+    /**
+     * 节点赋值
      */
     public ONode val(Object val) {
         if (val == null) {
@@ -93,35 +128,6 @@ public class ONode {
         return this;
     }
 
-    /**
-     * 获取值数据
-     */
-    public OValue val() {
-        _d.tryInitValue();
-        return _d.value;
-    }
-
-    /**
-     * 返回自己，构建表达式
-     */
-    public ONode exp(Act1<ONode> fun) {
-        fun.run(this);
-        return this;
-    }
-
-    public boolean contains(String name) {
-        if (isObject()) {
-            return _d.object.containsKey(name);
-        } else {
-            return false;
-        }
-    }
-
-    ////////////////////
-    //
-    // 值处理
-    //
-    ////////////////////
 
     /**
      * 获取 string 值
@@ -130,7 +136,15 @@ public class ONode {
         if (isValue()) {
             return _d.value.getString();
         } else {
-            return null;
+            if(isArray()){
+                return toJson();
+            }
+
+            if(isObject()){
+                return toJson();
+            }
+
+            return _c.null_string;
         }
     }
 
@@ -219,7 +233,55 @@ public class ONode {
             return 0;
     }
 
-    ////////
+    ////////////////////
+    //
+    // 对象与数组公共处理
+    //
+    ////////////////////
+
+    /**
+     * 清空子节点
+     */
+    public void clear() {
+        if (isObject()) {
+            _d.object.clear();
+        } else if (isArray()) {
+            _d.array.clear();
+        }
+    }
+
+    public int count() {
+        if (isObject()) {
+            return _d.object.size();
+        }
+
+        if (isArray()) {
+            return _d.array.size();
+        }
+
+        return 0;
+    }
+
+    ////////////////////
+    //
+    // 对象处理
+    //
+    ////////////////////
+    /**
+     * 获取节点对象
+     * */
+    public Map<String,ONode> object() {
+        return asObject()._d.object;
+    }
+
+    //是否存在节点
+    public boolean contains(String key) {
+        if (isObject()) {
+            return _d.object.containsKey(key);
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 返回对象子节点
@@ -229,7 +291,7 @@ public class ONode {
         _d.tryInitObject(_c);
 
         ONode tmp = _d.object.get(key);
-        if (tmp == null) {
+        if (tmp == null && _c.null_node_new) {
             tmp = new ONode(_c);
             _d.object.put(key, tmp);
         }
@@ -315,18 +377,19 @@ public class ONode {
         _d.object.remove(key);
     }
 
-    /**
-     * 清空子节点
-     */
-    public void clear() {
-        if (isObject()) {
-            _d.object.clear();
-        } else if (isArray()) {
-            _d.array.clear();
-        }
-    }
 
-    //数组操作
+
+    ////////////////////
+    //
+    // 数组处理
+    //
+    ////////////////////
+    /**
+     * 获取节点对象
+     * */
+    public List<ONode> array() {
+        return asArray()._d.array;
+    }
 
     /**
      * 获取数组项
@@ -337,7 +400,11 @@ public class ONode {
         if (_d.array.size() > index) {
             return _d.array.get(index);
         } else {
-            return null;
+            if(_c.null_node_new){
+                return new ONode();
+            }else {
+                return null;
+            }
         }
     }
 
@@ -438,17 +505,6 @@ public class ONode {
 
     //////////////////////
 
-    public int count() {
-        if (isObject()) {
-            return _d.object.size();
-        }
-
-        if (isArray()) {
-            return _d.array.size();
-        }
-
-        return 0;
-    }
 
     /**
      * 遍历对象
@@ -474,12 +530,6 @@ public class ONode {
     //
     ////////////////////
 
-    public void attrForeach(BiConsumer<String, String> consumer) {
-        if (_d.attrs != null) {
-            _d.attrs.forEach(consumer);
-        }
-    }
-
     /**
      * 获取特性
      */
@@ -494,6 +544,11 @@ public class ONode {
         _d.attrSet(key, val);
     }
 
+    public void attrForeach(BiConsumer<String, String> consumer) {
+        if (_d.attrs != null) {
+            _d.attrs.forEach(consumer);
+        }
+    }
 
     ////////////////////
     //
@@ -527,6 +582,13 @@ public class ONode {
         return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
     }
 
+
+    public ONode load(Object source) {
+        ONode tmp = from(source);
+        val(tmp);
+        return this;
+    }
+
     /**
      * 返回自己（从来源处加载数据，并做为自己的值），来源：bean object
      */
@@ -550,6 +612,18 @@ public class ONode {
     // 来源加载
     //
     ////////////////////
+
+    public static ONode from(Object source) {
+        try {
+            if (source instanceof String) {
+                return NodeUtil.fromStr((String) source);
+            }
+            return NodeUtil.fromObj(source);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ONode();
+        }
+    }
 
     /**
      * 加载来源：string （返回可能为null 或有异常）
@@ -595,8 +669,8 @@ public class ONode {
         return NodeUtil.fromObj(Constants.serialize, source).toJson();
     }
 
-    public static String serialize(Object source, Constants config)  throws Exception {
-        return NodeUtil.fromObj(config, source).toJson();
+    public static String serialize(Object source, Constants constants)  throws Exception {
+        return NodeUtil.fromObj(constants, source).toJson();
     }
 
     /**
@@ -606,7 +680,7 @@ public class ONode {
         return (T)NodeUtil.fromStr(Constants.serialize, source).toBean(clz);
     }
 
-    public static <T> T deserialize(String source, Class<?> clz, Constants config)  throws Exception{
-        return (T)NodeUtil.fromStr(config, source).toBean(clz);
+    public static <T> T deserialize(String source, Class<?> clz, Constants constants)  throws Exception{
+        return (T)NodeUtil.fromStr(constants, source).toBean(clz);
     }
 }
