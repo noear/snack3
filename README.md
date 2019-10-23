@@ -125,8 +125,8 @@ o.forEach((v)->{
 //对象操作
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool           //是否存在对象子节点?
--get(key:String) -> child:ONode         //获取对象子节点（不存在，则自动生成）
--getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，则为null）
+-get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
+-getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）
 -getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
 -set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//val:为常规类型或ONode
 -setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
@@ -138,7 +138,7 @@ o.forEach((v)->{
 
 //数组操作
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
--get(index:int)  -> child:ONode                 //获取数组子节点（超界，则返回空节点）
+-get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
 -getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
 -addNew() -> child:ONode                        //生成新的数组子节点
 -add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
