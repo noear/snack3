@@ -85,7 +85,7 @@
 
 //加载操作
 +load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 been）
-+loadObj(source:Object) -> new:ONode    //加载object为ONode，可能会出异常
++loadObj(source:Object) -> new:ONode    //加载bean为ONode，可能会出异常
 +loadStr(source:String) -> new:ONode    //加载String为ONode，可能会出异常
 
 //序列化操作

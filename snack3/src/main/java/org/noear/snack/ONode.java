@@ -684,7 +684,7 @@ public class ONode {
     }
 
     /**
-     * 填充been数据，可能会出异常
+     * 填充been数据（可能会出异常）
      * @param source bean 数据
      * @throws Exception
      * @return self:ONode
@@ -696,7 +696,7 @@ public class ONode {
     }
 
     /**
-     * 填充string数据，可能会出异常
+     * 填充string数据（可能会出异常）
      * @param source string 数据
      * @throws Exception
      * @return self:ONode
@@ -714,7 +714,7 @@ public class ONode {
     ////////////////////
 
     /**
-     * 加载数据生成新节点（如果异常，会生成空ONode）
+     * 加载数据并生成新节点（如果异常，会生成空ONode）
      * @param source 可以是 String 或 been 数据
      * @return new:ONode
      */
@@ -731,7 +731,7 @@ public class ONode {
     }
 
     /**
-     * 加载string数据生成新节点，可能会出异常
+     * 加载string数据并生成新节点（可能会出异常）
      * @param source string 数据
      * @throws Exception
      * @return new:ONode
@@ -740,7 +740,7 @@ public class ONode {
         return NodeUtil.fromStr(source);
     }
     /**
-     * 加载bean数据生成新节点，可能会出异常
+     * 加载bean数据并生成新节点（可能会出异常）
      * @param source bean 数据
      * @throws Exception
      * @return new:ONode
