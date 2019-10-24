@@ -1,7 +1,7 @@
 ` QQ交流群：22200020 `
 
 # snack3 for java
-轻量级JSON框架
+微型JSON框架
 
 这是snacks的重构项目（snacks为07年的项目），还在性能优化和特殊类型兼容适配中。。。
 
