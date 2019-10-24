@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 /**
  * 节点（One Node）
+ *
+ * @author noear
  * */
 public class ONode {
     //内部配置
@@ -23,7 +25,9 @@ public class ONode {
     //内部数据
     protected ONodeData _d = new ONodeData(this);
 
-    //版本信息
+    /**
+     * @return 版本信息
+     * */
     public static String version(){return "3.0.14";}
 
     public ONode() {
@@ -33,25 +37,37 @@ public class ONode {
         _c = cfg;
     }
 
-    /** 初始化为 Object */
+    /**
+     * 将节点切换为对象
+     * @return self:ONode
+     * */
     public ONode asObject() {
         _d.tryInitObject(_c);
         return this;
     }
 
-    /** 初始化为 Array */
+    /**
+     * 将节点切换为数组
+     * @return self:ONode
+     * */
     public ONode asArray() {
         _d.tryInitArray();
         return this;
     }
 
-    /** 初始化为 Value */
+    /**
+     * 将节点切换为值
+     * @return self:ONode
+     * */
     public ONode asValue() {
         _d.tryInitValue();
         return this;
     }
 
-    /** 初始化为 Null */
+    /**
+     * 将节点切换为null
+     * @return self:ONode
+     * */
     public ONode asNull() {
         _d.tryInitNull();
         return this;
@@ -59,12 +75,16 @@ public class ONode {
 
     /**
      * 节点数据
+     * @return ONodeData
+     * @see ONodeData
      */
     public ONodeData nodeData() {
         return _d;
     }
     /**
      * 节点类型
+     * @return ONodeType
+     * @see ONodeType
      * */
     public ONodeType nodeType() {
         return _d.nodeType;
@@ -72,6 +92,8 @@ public class ONode {
 
     /**
      * 切换配置
+     * @param constants 常量配置
+     * @return self:ONode
      * */
     public ONode cfg(Constants constants) {
         if (constants != null) {
@@ -84,7 +106,9 @@ public class ONode {
 
 
     /**
-     * 返回自己，构建表达式
+     * 构建表达式
+     * @param fun lambda表达式
+     * @return self:ONode
      */
     public ONode build(Act1<ONode> fun) {
         fun.run(this);
@@ -97,14 +121,18 @@ public class ONode {
     //
     ////////////////////
     /**
-     * 获取节点值
+     * 获取节点值数据结构体（如果不是值类型，会自动转换）
+     * @return OValue
+     * @see OValue
      * */
     public OValue val() {
         return asValue()._d.value;
     }
 
     /**
-     * 节点赋值
+     * 设置节点值
+     * @param val 为常规类型或ONode
+     * @return self:ONode
      */
     public ONode val(Object val) {
         if (val == null) {
@@ -122,7 +150,8 @@ public class ONode {
 
 
     /**
-     * 获取 string 值
+     * 获取节点值并以 String 输出
+     * 如果节点为对象或数组类型，则输出json
      */
     public String getString() {
         if (isValue()) {
@@ -140,6 +169,9 @@ public class ONode {
         }
     }
 
+    /**
+     * 获取节点值并以 short 输出
+     * */
     public short getShort() {
         if (isValue())
             return _d.value.getShort();
@@ -148,7 +180,7 @@ public class ONode {
     }
 
     /**
-     * 获取 int 值
+     * 获取节点值并以 int 输出
      */
     public int getInt() {
         if (isValue())
@@ -158,7 +190,7 @@ public class ONode {
     }
 
     /**
-     * 获取 boolean 值
+     * 获取节点值并以 boolean 输出
      */
     public boolean getBoolean() {
         if (isValue())
@@ -168,7 +200,7 @@ public class ONode {
     }
 
     /**
-     * 获取 long 值
+     * 获取节点值并以 long 输出
      */
     public long getLong() {
         if (isValue())
@@ -178,7 +210,7 @@ public class ONode {
     }
 
     /**
-     * 获取 date 值
+     * 获取节点值并以 Date 输出
      */
     public Date getDate() {
         if (isValue())
@@ -187,6 +219,9 @@ public class ONode {
             return null;
     }
 
+    /**
+     * 获取节点值并以 float 输出
+     * */
     public float getFloat() {
         if (isValue())
             return _d.value.getFloat();
@@ -195,7 +230,7 @@ public class ONode {
     }
 
     /**
-     * 获取 double 值
+     * 获取节点值并以 double 输出
      */
     public double getDouble() {
         if (isValue())
@@ -205,7 +240,8 @@ public class ONode {
     }
 
     /**
-     * 获取 double 值
+     * 获取节点值并以 double 输出
+     * @param scale 精度，即小数点长度
      */
     public double getDouble(int scale) {
         double temp = getDouble();
@@ -218,6 +254,9 @@ public class ONode {
                     .doubleValue();
     }
 
+    /**
+     * 获取节点值并以 char 输出
+     * */
     public char getChar() {
         if (isValue())
             return _d.value.getChar();
@@ -232,7 +271,7 @@ public class ONode {
     ////////////////////
 
     /**
-     * 清空子节点
+     * 清空子节点（对象或数组有效）
      */
     public void clear() {
         if (isObject()) {
@@ -241,7 +280,9 @@ public class ONode {
             _d.array.clear();
         }
     }
-
+    /**
+     * 子节点数量（对象或数组有效）
+     * */
     public int count() {
         if (isObject()) {
             return _d.object.size();
@@ -259,14 +300,18 @@ public class ONode {
     // 对象处理
     //
     ////////////////////
+
     /**
-     * 获取节点对象
+     * 获取节点对象数据结构体（如果不是对象类型，会自动转换）
+     * @return Map<String,ONode>
      * */
     public Map<String,ONode> obj() {
         return asObject()._d.object;
     }
 
-    //是否存在节点
+    /**
+     * 是否存在对象子节点
+     * */
     public boolean contains(String key) {
         if (isObject()) {
             return _d.object.containsKey(key);
@@ -276,7 +321,8 @@ public class ONode {
     }
 
     /**
-     * 返回对象子节点
+     * 获取对象子节点（不存在，生成新的子节点并返回）
+     * @return child:ONode
      */
     public ONode get(String key) {
         _d.tryInitObject(_c);
@@ -290,7 +336,8 @@ public class ONode {
         return tmp;
     }
     /**
-     * 返回对象子节点，如果没有则返回null
+     * 获取对象子节点（不存在，返回null）
+     * @return child:ONode
      */
     public ONode getOrNull(String key) {
         _d.tryInitObject(_c);
@@ -298,6 +345,10 @@ public class ONode {
         return _d.object.get(key);
     }
 
+    /**
+     * 生成新的对象子节点，会清除之前的数据
+     * @return child:ONode
+     * */
     public ONode getNew(String key) {
         ONode tmp = new ONode(_c);
         _d.object.put(key, tmp);
@@ -306,7 +357,9 @@ public class ONode {
     }
 
     /**
-     * 返回自己，设置对象子节点
+     * 设置对象的子节点（会自动处理类型）
+     * @param val 为常规类型或ONode
+     * @return self:ONode
      */
     public ONode set(String key, Object val) {
         _d.tryInitObject(_c);
@@ -321,14 +374,18 @@ public class ONode {
     }
 
     /**
-     * 设置对象子节点（需要手工提前初始化对象类型）
+     * 设置对象的子节点，值为ONode类型
+     * @return self:ONode
      */
-    public void setNode(String key, ONode val) {
+    public ONode setNode(String key, ONode val) {
         _d.object.put(key, val);
+        return this;
     }
 
     /**
-     * 返回自己，尝试添加对象型节点
+     * 设置对象的子节点，将obj的子节点搬过来
+     * @param obj 对象类型的节点
+     * @return self:ONode
      */
     public ONode setAll(ONode obj) {
         _d.tryInitObject(_c);
@@ -341,7 +398,8 @@ public class ONode {
     }
 
     /**
-     * 返回自己，尝试添加一个集合
+     * 设置对象的子节点，将map的成员搬过来
+     * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map) {
         _d.tryInitObject(_c);
@@ -355,7 +413,8 @@ public class ONode {
     }
 
     /**
-     * 返回自己，尝试添加一个集合，handler里获取的是自动产生的子节点
+     * 设置对象的子节点，将map的成员搬过来，并交由代理处置
+     * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map, Act2<ONode, T> handler) {
         _d.tryInitObject(_c);
@@ -369,29 +428,30 @@ public class ONode {
     }
 
     /**
-     * 移除对象子节点(搞不清楚是自身还是被移除的，所以不返回)
+     * 移除对象的子节点 (搞不清楚是自身还是被移除的，所以不返回)
      */
     public void remove(String key) {
         _d.tryInitObject(_c);
         _d.object.remove(key);
     }
 
-
-
     ////////////////////
     //
     // 数组处理
     //
     ////////////////////
+
     /**
-     * 获取节点对象
+     * 获取节点数组数据结构体（如果不是数组，会自动转换）
+     * @return List<ONode>
      * */
     public List<ONode> ary() {
         return asArray()._d.array;
     }
 
     /**
-     * 获取数组项
+     * 获取数组子节点（超界，返回空节点）
+     * @return child:ONode
      */
     public ONode get(int index) {
         _d.tryInitArray();
@@ -403,7 +463,8 @@ public class ONode {
         }
     }
     /**
-     * 获取数组项，如果没有则返回null
+     * 获取数组子节点（超界，返回null）
+     * @return child:ONode
      */
     public ONode getOrNull(int index) {
         _d.tryInitArray();
@@ -416,7 +477,7 @@ public class ONode {
     }
 
     /**
-     * 移除数组子节点(搞不清楚是自身还是被移除的，所以不返回)
+     * 移除数组的子节点(搞不清楚是自身还是被移除的，所以不返回)
      */
     public void removeAt(int index) {
         _d.tryInitArray();
@@ -424,7 +485,8 @@ public class ONode {
     }
 
     /**
-     * 返回数组子节点，创建数据新的子节点
+     * 生成新的数组子节点
+     * @return child:ONode
      */
     public ONode addNew() {
         _d.tryInitArray();
@@ -434,7 +496,9 @@ public class ONode {
     }
 
     /**
-     * 返回自己，为数组添加子节点
+     * 添加数组子节点
+     * @param val 为常规类型或ONode
+     * @return self:ONode
      */
     public ONode add(Object val) {
         _d.tryInitArray();
@@ -449,14 +513,17 @@ public class ONode {
     }
 
     /**
-     * 添加节点（需要手工提前初始化数组类型）
+     * 添加数组子节点，值为ONode类型
+     * @return self:ONode
      */
     public void addNode(ONode val) {
         _d.array.add(val);
     }
 
     /**
-     * 返回自己，尝试添加数组型节点
+     * 添加数组子节点，将ary的子节点搬过来
+     * @param ary 数组类型的节点
+     * @return self:ONode
      */
     public ONode addAll(ONode ary) {
         _d.tryInitArray();
@@ -469,7 +536,8 @@ public class ONode {
     }
 
     /**
-     * 返回自己，尝试添加一个集合
+     * 添加数组子节点，将ary的成员点搬过来
+     * @return self:ONode
      */
     public <T> ONode addAll(Collection<T> ary) {
         _d.tryInitArray();
@@ -481,7 +549,8 @@ public class ONode {
     }
 
     /**
-     * 返回自己，尝试添加一个集合，handler里获取的是自动产生的子节点
+     * 添加数组子节点，将ary的成员点搬过来，并交由代理处置
+     * @return self:ONode
      */
     public <T> ONode addAll(Collection<T> ary, Act2<ONode, T> handler) {
         _d.tryInitArray();
@@ -493,19 +562,27 @@ public class ONode {
     }
 
     //////////////////////
-
+    /**
+     * 检查节点是否为null
+     * */
     public boolean isNull() {
         return (_d.nodeType == ONodeType.Null) || (isValue() && _d.value.isNull());
     }
-
+    /**
+     * 检查节点是否为值
+     * */
     public boolean isValue() {
         return _d.nodeType == ONodeType.Value;
     }
-
+    /**
+     * 检查节点是否为对象
+     * */
     public boolean isObject() {
         return _d.nodeType == ONodeType.Object;
     }
-
+    /**
+     * 检查节点是否为数组
+     * */
     public boolean isArray() {
         return _d.nodeType == ONodeType.Array;
     }
@@ -514,7 +591,7 @@ public class ONode {
 
 
     /**
-     * 遍历对象
+     * 遍历对象的子节点
      */
     public void forEach(BiConsumer<String, ONode> consumer) {
         if (isObject()) {
@@ -523,7 +600,7 @@ public class ONode {
     }
 
     /**
-     * 遍历数组
+     * 遍历数组的子节点
      */
     public void forEach(Consumer<ONode> consumer) {
         if (isArray()) {
@@ -550,7 +627,9 @@ public class ONode {
     public void attrSet(String key, String val) {
         _d.attrSet(key, val);
     }
-
+    /**
+     * 遍历特性
+     */
     public void attrForeach(BiConsumer<String, String> consumer) {
         if (_d.attrs != null) {
             _d.attrs.forEach(consumer);
@@ -563,6 +642,9 @@ public class ONode {
     //
     ////////////////////
 
+    /**
+     * 将当前ONode 转为 string（由 stringToer 决定）
+     */
     @Override
     public String toString() {
         return NodeUtil.toStr(_c, this, _c.stringToer);
@@ -591,7 +673,9 @@ public class ONode {
 
 
     /**
-     * 填充数据，并返回自己
+     * 填充数据（如有问题会跳过，不会出异常）
+     * @param source 可以是 String 或 been 数据
+     * @return self:ONode
      * */
     public ONode fill(Object source) {
         ONode tmp = load(source);
@@ -600,7 +684,10 @@ public class ONode {
     }
 
     /**
-     * 填充数据，并返回自己（从来源处加载数据，并做为自己的值），来源：bean object
+     * 填充been数据，可能会出异常
+     * @param source bean 数据
+     * @throws Exception
+     * @return self:ONode
      */
     public ONode fillObj(Object source) throws Exception{
         ONode tmp = loadObj(source);
@@ -609,7 +696,10 @@ public class ONode {
     }
 
     /**
-     * 填充数据，并返回自己（从来源处加载数据，并做为自己的值），来源：string
+     * 填充string数据，可能会出异常
+     * @param source string 数据
+     * @throws Exception
+     * @return self:ONode
      */
     public ONode fillStr(String source) throws Exception{
         ONode tmp = loadStr(source);
@@ -623,6 +713,11 @@ public class ONode {
     //
     ////////////////////
 
+    /**
+     * 加载数据生成新节点（如果异常，会生成空ONode）
+     * @param source 可以是 String 或 been 数据
+     * @return new:ONode
+     */
     public static ONode load(Object source) {
         try {
             if (source instanceof String) {
@@ -636,36 +731,57 @@ public class ONode {
     }
 
     /**
-     * 加载来源：string （返回可能为null 或有异常）
+     * 加载string数据生成新节点，可能会出异常
+     * @param source string 数据
+     * @throws Exception
+     * @return new:ONode
      */
     public static ONode loadStr(String source) throws Exception{
         return NodeUtil.fromStr(source);
     }
     /**
-     * 加载来源：bean object （返回可能为null 或有异常）
+     * 加载bean数据生成新节点，可能会出异常
+     * @param source bean 数据
+     * @throws Exception
+     * @return new:ONode
      */
     public static ONode loadObj(Object source) throws Exception{
         return NodeUtil.fromObj(source);
     }
 
     /**
-     * 序列化为 json string
+     * 序列化为 string（由序列化器决定格式）
+     * @param source bean
+     * @throws Exception
      */
     public static String serialize(Object source)  throws Exception {
         return NodeUtil.fromObj(Constants.serialize, source).toJson();
     }
-
+    /**
+     * 序列化为 string（由序列化器决定格式）
+     * @param source bean
+     * @param constants 常量配置
+     * @throws Exception
+     */
     public static String serialize(Object source, Constants constants)  throws Exception {
         return NodeUtil.fromObj(constants, source).toJson();
     }
 
     /**
-     * 反序列化为 Object
+     * 反序列化为 bean（由返序列化器决定格式）
+     * @param source string
+     * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz) throws Exception{
         return (T)NodeUtil.fromStr(Constants.serialize, source).toBean(clz);
     }
 
+    /**
+     * 反序列化为 bean（由返序列化器决定格式）
+     * @param source string
+     * @param constants 常量配置
+     * @throws Exception
+     */
     public static <T> T deserialize(String source, Class<?> clz, Constants constants)  throws Exception{
         return (T)NodeUtil.fromStr(constants, source).toBean(clz);
     }
