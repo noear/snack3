@@ -306,7 +306,12 @@ public class ObjectToer implements Toer {
             return new InetSocketAddress(o.get("address").getString(),o.get("port").getInt());
         }
 
-        Object rst = target.newInstance();
+        Object rst = null;
+        try {
+            rst = target.newInstance();
+        }catch (Exception ex){
+            throw new Exception("create instance error, class "+ target.getName());
+        }
 
         // 遍历每个字段
         for (FieldWrap f : BeanUtil.getAllFields(target)) {

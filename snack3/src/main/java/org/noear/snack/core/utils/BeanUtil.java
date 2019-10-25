@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Clob;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,8 +43,11 @@ public class BeanUtil {
 
         List<FieldWrap> list = fieldsCached.get(key);
         if(list == null){
-            list = new ArrayList<>();
-            scanAllFields(clz,list);
+            Map<String,FieldWrap> map = new HashMap<>();
+            scanAllFields(clz,map);
+
+            list = new ArrayList<>(map.values());
+
             fieldsCached.put(key, list);
         }
 
@@ -51,13 +55,16 @@ public class BeanUtil {
     }
 
     /** 扫描一个类的所有字段 */
-    private static void scanAllFields(Class<?> clz, List<FieldWrap> fields) {
+    private static void scanAllFields(Class<?> clz, Map<String,FieldWrap> fields) {
         for (Field f : clz.getDeclaredFields()) {
             int mod = f.getModifiers();
 
             if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod)) {
                 f.setAccessible(true);
-                fields.add(new FieldWrap(f));
+
+                if(fields.containsKey(f.getName()) == false){
+                    fields.put(f.getName(),new FieldWrap(f));
+                }
             }
         }
 
