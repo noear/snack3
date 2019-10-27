@@ -6,10 +6,7 @@ import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Clob;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -35,18 +32,18 @@ public class BeanUtil {
     /////////////////
 
     /**  */
-    private static transient final Map<String,List<FieldWrap>> fieldsCached = new ConcurrentHashMap<>();
+    private static transient final Map<String,Collection<FieldWrap>> fieldsCached = new ConcurrentHashMap<>();
 
     /** 获取一个类的所有字段 （已实现缓存） */
-    public static List<FieldWrap> getAllFields(Class<?> clz){
+    public static Collection<FieldWrap> getAllFields(Class<?> clz){
         String key = clz.getName();
 
-        List<FieldWrap> list = fieldsCached.get(key);
+        Collection<FieldWrap> list = fieldsCached.get(key);
         if(list == null){
-            Map<String,FieldWrap> map = new HashMap<>();
+            Map<String,FieldWrap> map = new LinkedHashMap<>();
             scanAllFields(clz,map);
 
-            list = new ArrayList<>(map.values());
+            list = map.values();
 
             fieldsCached.put(key, list);
         }
