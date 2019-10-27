@@ -2,6 +2,7 @@ package demo;
 
 import demo.models.*;
 import org.junit.Test;
+import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.from.ObjectFromer;
@@ -69,7 +70,7 @@ public class DataTest {
     }
 
     @Test
-    public void test2() throws IllegalAccessException {
+    public void test2() throws Exception {
 
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -89,15 +90,21 @@ public class DataTest {
             group.iids[i] = (int) i;
         }
 
-        Context context = new Context(Constants.serialize, group);
+//        Context context = new Context(Constants.serialize, group);
+//
+//        new ObjectFromer().handle(context);
 
-        new ObjectFromer().handle(context);
+        String json = ONode.serialize(group);
 
-        System.out.println(context.node.toJson());
+        System.out.println(json);//context.node.toJson());
 
-        Object data = context.node.toData();
+        Object g2 = ONode.deserialize(json);
 
-        assert (data instanceof Map);
+        ONode node = ONode.load(json); //context.node.toData();
+
+        Object tmp = node.toData();
+
+        assert (tmp instanceof Map);
 
     }
 

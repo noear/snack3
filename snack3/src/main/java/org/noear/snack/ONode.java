@@ -779,6 +779,15 @@ public class ONode {
     /**
      * 反序列化为 bean（由返序列化器决定格式）
      * @param source string
+     * @throws Exception
+     */
+    public static <T> T deserialize(String source) throws Exception{
+        return (T)NodeUtil.fromStr(Constants.serialize, source).toBean(Object.class);
+    }
+
+    /**
+     * 反序列化为 bean（由返序列化器决定格式）
+     * @param source string
      * @param constants 常量配置
      * @throws Exception
      */
