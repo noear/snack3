@@ -516,8 +516,9 @@ public class ONode {
      * 添加数组子节点，值为ONode类型
      * @return self:ONode
      */
-    public void addNode(ONode val) {
+    public ONode addNode(ONode val) {
         _d.array.add(val);
+        return this;
     }
 
     /**
