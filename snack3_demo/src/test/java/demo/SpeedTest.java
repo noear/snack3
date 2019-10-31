@@ -24,9 +24,9 @@ public class SpeedTest {
 
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             c.handle(handler);
-            //ONode.tryLoad(c.text);
+//            ONode.load(c.text);
 
             //assert "1".equals(c.node.get("data").get("list").get(0).get("id").getString());
         }

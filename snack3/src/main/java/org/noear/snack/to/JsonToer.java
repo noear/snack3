@@ -21,15 +21,14 @@ import java.util.Iterator;
  * 将ONode 转为 json string
  * */
 public class JsonToer implements Toer {
-    private static final ThData<StringBuilder> tlBuilder = new ThData(new StringBuilder(1024*5));
+    private static final ThData<StringBuilder> tlBuilder = new ThData(()->new StringBuilder(1024*5));
 
     @Override
     public void handle(Context context) {
         ONode o = context.node;
 
         if (null != o) {
-
-            StringBuilder sb = tlBuilder.get();
+            StringBuilder sb =  tlBuilder.get(); // new StringBuilder(1024*5); //
             sb.setLength(0);
 
             analyse(context.config, o, sb);

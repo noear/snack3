@@ -19,7 +19,7 @@ import java.util.Date;
  * str：支持双引号、单引号
  */
 public class JsonFromer implements Fromer {
-    private static final ThData<CharBuffer> tlBuilder = new ThData<>(new CharBuffer());
+    private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
 
     @Override
     public void handle(Context ctx) throws IOException {
@@ -37,10 +37,12 @@ public class JsonFromer implements Fromer {
                     || (prefix == '[' && suffix == ']')) {
                 //object or array
                 //
-                CharBuffer sBuf = tlBuilder.get();
+                CharBuffer sBuf = tlBuilder.get(); // new CharBuffer();//
                 sBuf.setLength(0);
+
                 ctx.node = new ONode(ctx.config);
                 analyse(new CharReader(ctx.text), sBuf, ctx.node);
+
             } else if (len >= 2 && (
                     (prefix == '"' && suffix == '"') ||
                             (prefix == '\'' && suffix == '\''))) {
