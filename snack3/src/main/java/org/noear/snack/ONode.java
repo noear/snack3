@@ -27,8 +27,10 @@ public class ONode {
 
     /**
      * @return 版本信息
-     * */
-    public static String version(){return "3.0.14";}
+     */
+    public static String version() {
+        return "3.0.14";
+    }
 
     public ONode() {
     }
@@ -39,8 +41,9 @@ public class ONode {
 
     /**
      * 将节点切换为对象
+     *
      * @return self:ONode
-     * */
+     */
     public ONode asObject() {
         _d.tryInitObject(_c);
         return this;
@@ -48,8 +51,9 @@ public class ONode {
 
     /**
      * 将节点切换为数组
+     *
      * @return self:ONode
-     * */
+     */
     public ONode asArray() {
         _d.tryInitArray();
         return this;
@@ -57,8 +61,9 @@ public class ONode {
 
     /**
      * 将节点切换为值
+     *
      * @return self:ONode
-     * */
+     */
     public ONode asValue() {
         _d.tryInitValue();
         return this;
@@ -66,8 +71,9 @@ public class ONode {
 
     /**
      * 将节点切换为null
+     *
      * @return self:ONode
-     * */
+     */
     public ONode asNull() {
         _d.tryInitNull();
         return this;
@@ -75,26 +81,30 @@ public class ONode {
 
     /**
      * 节点数据
+     *
      * @return ONodeData
      * @see ONodeData
      */
     public ONodeData nodeData() {
         return _d;
     }
+
     /**
      * 节点类型
+     *
      * @return ONodeType
      * @see ONodeType
-     * */
+     */
     public ONodeType nodeType() {
         return _d.nodeType;
     }
 
     /**
      * 切换配置
+     *
      * @param constants 常量配置
      * @return self:ONode
-     * */
+     */
     public ONode cfg(Constants constants) {
         if (constants != null) {
             _c = constants;
@@ -107,6 +117,7 @@ public class ONode {
 
     /**
      * 构建表达式
+     *
      * @param fun lambda表达式
      * @return self:ONode
      */
@@ -120,17 +131,20 @@ public class ONode {
     // 值处理
     //
     ////////////////////
+
     /**
      * 获取节点值数据结构体（如果不是值类型，会自动转换）
+     *
      * @return OValue
      * @see OValue
-     * */
+     */
     public OValue val() {
         return asValue()._d.value;
     }
 
     /**
      * 设置节点值
+     *
      * @param val 为常规类型或ONode
      * @return self:ONode
      */
@@ -157,11 +171,11 @@ public class ONode {
         if (isValue()) {
             return _d.value.getString();
         } else {
-            if(isArray()){
+            if (isArray()) {
                 return toJson();
             }
 
-            if(isObject()){
+            if (isObject()) {
                 return toJson();
             }
 
@@ -171,7 +185,7 @@ public class ONode {
 
     /**
      * 获取节点值并以 short 输出
-     * */
+     */
     public short getShort() {
         if (isValue())
             return _d.value.getShort();
@@ -221,7 +235,7 @@ public class ONode {
 
     /**
      * 获取节点值并以 float 输出
-     * */
+     */
     public float getFloat() {
         if (isValue())
             return _d.value.getFloat();
@@ -241,6 +255,7 @@ public class ONode {
 
     /**
      * 获取节点值并以 double 输出
+     *
      * @param scale 精度，即小数点长度
      */
     public double getDouble(int scale) {
@@ -256,7 +271,7 @@ public class ONode {
 
     /**
      * 获取节点值并以 char 输出
-     * */
+     */
     public char getChar() {
         if (isValue())
             return _d.value.getChar();
@@ -280,9 +295,10 @@ public class ONode {
             _d.array.clear();
         }
     }
+
     /**
      * 子节点数量（对象或数组有效）
-     * */
+     */
     public int count() {
         if (isObject()) {
             return _d.object.size();
@@ -303,15 +319,16 @@ public class ONode {
 
     /**
      * 获取节点对象数据结构体（如果不是对象类型，会自动转换）
-     * @return Map<String,ONode>
-     * */
-    public Map<String,ONode> obj() {
+     *
+     * @return Map<String, ONode>
+     */
+    public Map<String, ONode> obj() {
         return asObject()._d.object;
     }
 
     /**
      * 是否存在对象子节点
-     * */
+     */
     public boolean contains(String key) {
         if (isObject()) {
             return _d.object.containsKey(key);
@@ -322,21 +339,24 @@ public class ONode {
 
     /**
      * 获取对象子节点（不存在，生成新的子节点并返回）
+     *
      * @return child:ONode
      */
     public ONode get(String key) {
         _d.tryInitObject(_c);
 
         ONode tmp = _d.object.get(key);
-        if (tmp == null ) {
+        if (tmp == null) {
             tmp = new ONode(_c);
             _d.object.put(key, tmp);
         }
 
         return tmp;
     }
+
     /**
      * 获取对象子节点（不存在，返回null）
+     *
      * @return child:ONode
      */
     public ONode getOrNull(String key) {
@@ -347,8 +367,9 @@ public class ONode {
 
     /**
      * 生成新的对象子节点，会清除之前的数据
+     *
      * @return child:ONode
-     * */
+     */
     public ONode getNew(String key) {
         ONode tmp = new ONode(_c);
         _d.object.put(key, tmp);
@@ -358,6 +379,7 @@ public class ONode {
 
     /**
      * 设置对象的子节点（会自动处理类型）
+     *
      * @param val 为常规类型或ONode
      * @return self:ONode
      */
@@ -375,6 +397,7 @@ public class ONode {
 
     /**
      * 设置对象的子节点，值为ONode类型
+     *
      * @return self:ONode
      */
     public ONode setNode(String key, ONode val) {
@@ -384,6 +407,7 @@ public class ONode {
 
     /**
      * 设置对象的子节点，将obj的子节点搬过来
+     *
      * @param obj 对象类型的节点
      * @return self:ONode
      */
@@ -399,6 +423,7 @@ public class ONode {
 
     /**
      * 设置对象的子节点，将map的成员搬过来
+     *
      * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map) {
@@ -414,6 +439,7 @@ public class ONode {
 
     /**
      * 设置对象的子节点，将map的成员搬过来，并交由代理处置
+     *
      * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map, Act2<ONode, T> handler) {
@@ -443,14 +469,16 @@ public class ONode {
 
     /**
      * 获取节点数组数据结构体（如果不是数组，会自动转换）
+     *
      * @return List<ONode>
-     * */
+     */
     public List<ONode> ary() {
         return asArray()._d.array;
     }
 
     /**
      * 获取数组子节点（超界，返回空节点）
+     *
      * @return child:ONode
      */
     public ONode get(int index) {
@@ -462,8 +490,10 @@ public class ONode {
             return new ONode();
         }
     }
+
     /**
      * 获取数组子节点（超界，返回null）
+     *
      * @return child:ONode
      */
     public ONode getOrNull(int index) {
@@ -486,6 +516,7 @@ public class ONode {
 
     /**
      * 生成新的数组子节点
+     *
      * @return child:ONode
      */
     public ONode addNew() {
@@ -497,6 +528,7 @@ public class ONode {
 
     /**
      * 添加数组子节点
+     *
      * @param val 为常规类型或ONode
      * @return self:ONode
      */
@@ -514,6 +546,7 @@ public class ONode {
 
     /**
      * 添加数组子节点，值为ONode类型
+     *
      * @return self:ONode
      */
     public ONode addNode(ONode val) {
@@ -523,6 +556,7 @@ public class ONode {
 
     /**
      * 添加数组子节点，将ary的子节点搬过来
+     *
      * @param ary 数组类型的节点
      * @return self:ONode
      */
@@ -538,6 +572,7 @@ public class ONode {
 
     /**
      * 添加数组子节点，将ary的成员点搬过来
+     *
      * @return self:ONode
      */
     public <T> ONode addAll(Collection<T> ary) {
@@ -551,6 +586,7 @@ public class ONode {
 
     /**
      * 添加数组子节点，将ary的成员点搬过来，并交由代理处置
+     *
      * @return self:ONode
      */
     public <T> ONode addAll(Collection<T> ary, Act2<ONode, T> handler) {
@@ -563,27 +599,31 @@ public class ONode {
     }
 
     //////////////////////
+
     /**
      * 检查节点是否为null
-     * */
+     */
     public boolean isNull() {
         return (_d.nodeType == ONodeType.Null) || (isValue() && _d.value.isNull());
     }
+
     /**
      * 检查节点是否为值
-     * */
+     */
     public boolean isValue() {
         return _d.nodeType == ONodeType.Value;
     }
+
     /**
      * 检查节点是否为对象
-     * */
+     */
     public boolean isObject() {
         return _d.nodeType == ONodeType.Object;
     }
+
     /**
      * 检查节点是否为数组
-     * */
+     */
     public boolean isArray() {
         return _d.nodeType == ONodeType.Array;
     }
@@ -628,6 +668,7 @@ public class ONode {
     public void attrSet(String key, String val) {
         _d.attrSet(key, val);
     }
+
     /**
      * 遍历特性
      */
@@ -675,9 +716,10 @@ public class ONode {
 
     /**
      * 填充数据（如有问题会跳过，不会出异常）
+     *
      * @param source 可以是 String 或 been 数据
      * @return self:ONode
-     * */
+     */
     public ONode fill(Object source) {
         ONode tmp = load(source);
         val(tmp);
@@ -686,11 +728,12 @@ public class ONode {
 
     /**
      * 填充been数据（可能会出异常）
+     *
      * @param source bean 数据
-     * @throws Exception
      * @return self:ONode
+     * @throws Exception
      */
-    public ONode fillObj(Object source) throws Exception{
+    public ONode fillObj(Object source) throws Exception {
         ONode tmp = loadObj(source);
         val(tmp);
         return this;
@@ -698,11 +741,12 @@ public class ONode {
 
     /**
      * 填充string数据（可能会出异常）
+     *
      * @param source string 数据
-     * @throws Exception
      * @return self:ONode
+     * @throws Exception
      */
-    public ONode fillStr(String source) throws Exception{
+    public ONode fillStr(String source) throws Exception {
         ONode tmp = loadStr(source);
         val(tmp);
         return this;
@@ -716,6 +760,7 @@ public class ONode {
 
     /**
      * 加载数据并生成新节点（如果异常，会生成空ONode）
+     *
      * @param source 可以是 String 或 been 数据
      * @return new:ONode
      */
@@ -733,66 +778,95 @@ public class ONode {
 
     /**
      * 加载string数据并生成新节点（可能会出异常）
+     *
      * @param source string 数据
-     * @throws Exception
      * @return new:ONode
+     * @throws Exception
      */
-    public static ONode loadStr(String source) throws Exception{
+    public static ONode loadStr(String source) throws Exception {
         return NodeUtil.fromStr(source);
     }
+
     /**
      * 加载bean数据并生成新节点（可能会出异常）
+     *
      * @param source bean 数据
-     * @throws Exception
      * @return new:ONode
+     * @throws Exception
      */
-    public static ONode loadObj(Object source) throws Exception{
+    public static ONode loadObj(Object source) throws Exception {
         return NodeUtil.fromObj(source);
     }
 
     /**
-     * 序列化为 string（由序列化器决定格式）
+     * 字会串化 （由序列化器决定格式）
      * @param source bean
      * @throws Exception
-     */
-    public static String serialize(Object source)  throws Exception {
-        return NodeUtil.fromObj(Constants.serialize, source).toJson();
+     * */
+    public static String stringify(Object source) throws Exception {
+        return NodeUtil.fromObj(Constants.def, source).toString();
     }
+
     /**
-     * 序列化为 string（由序列化器决定格式）
+     * 字会串化 （由序列化器决定格式）
+     *
      * @param source bean
      * @param constants 常量配置
      * @throws Exception
+     * */
+    public static String stringify(Object source, Constants constants) throws Exception {
+        return NodeUtil.fromObj(constants, source).toString();
+    }
+
+    /**
+     * 序列化为 string（由序列化器决定格式）
+     *
+     * @param source bean
+     * @throws Exception
      */
-    public static String serialize(Object source, Constants constants)  throws Exception {
+    public static String serialize(Object source) throws Exception {
+        return NodeUtil.fromObj(Constants.serialize, source).toJson();
+    }
+
+    /**
+     * 序列化为 string（由序列化器决定格式）
+     *
+     * @param source    bean
+     * @param constants 常量配置
+     * @throws Exception
+     */
+    public static String serialize(Object source, Constants constants) throws Exception {
         return NodeUtil.fromObj(constants, source).toJson();
     }
 
     /**
      * 反序列化为 bean（由返序列化器决定格式）
+     *
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz) throws Exception{
-        return (T)NodeUtil.fromStr(Constants.serialize, source).toBean(clz);
+    public static <T> T deserialize(String source, Class<?> clz) throws Exception {
+        return (T) NodeUtil.fromStr(Constants.serialize, source).toBean(clz);
     }
 
     /**
      * 反序列化为 bean（由返序列化器决定格式）
+     *
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source) throws Exception{
-        return (T)NodeUtil.fromStr(Constants.serialize, source).toBean(Object.class);
+    public static <T> T deserialize(String source) throws Exception {
+        return (T) NodeUtil.fromStr(Constants.serialize, source).toBean(Object.class);
     }
 
     /**
      * 反序列化为 bean（由返序列化器决定格式）
-     * @param source string
+     *
+     * @param source    string
      * @param constants 常量配置
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz, Constants constants)  throws Exception{
-        return (T)NodeUtil.fromStr(constants, source).toBean(clz);
+    public static <T> T deserialize(String source, Class<?> clz, Constants constants) throws Exception {
+        return (T) NodeUtil.fromStr(constants, source).toBean(clz);
     }
 }
