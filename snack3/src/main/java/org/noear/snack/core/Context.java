@@ -36,7 +36,7 @@ public class Context {
         }
 
         if (from instanceof String) {
-            this.text = ((String) from);//.trim();
+            this.text = ((String) from).trim(); //不能去掉 .trim()
         } else {
             this.object = from;
         }
@@ -52,7 +52,7 @@ public class Context {
         }
 
         if (fromIsStr) {
-            this.text = ((String) from);//.trim();
+            this.text = ((String) from).trim(); //不能去掉 .trim()
         } else {
             this.object = from;
         }
