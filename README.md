@@ -9,7 +9,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.0.14.5</version>
+  <version>3.1.0.3</version>
 </dependency>
 ```
 
