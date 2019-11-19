@@ -186,12 +186,12 @@ public class TypeUtil {
             return new ConcurrentHashMap();
         }
 
-        if (type == Map.class || type == HashMap.class) {
-            return new HashMap();
-        }
-
         if (type == LinkedHashMap.class) {
             return new LinkedHashMap();
+        }
+
+        if (type == Map.class || type == HashMap.class) {
+            return new HashMap();
         }
 
         if (type instanceof ParameterizedType) {
