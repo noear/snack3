@@ -6,6 +6,7 @@ import org.noear.snack.ONode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class _demo {
     @Test
@@ -43,6 +44,10 @@ public class _demo {
                         .set("sound","happy");
             });
         });
+
+        data.val();
+        data.ary();
+        data.obj();
 
         String message = data.toJson();
 
