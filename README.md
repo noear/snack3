@@ -16,6 +16,9 @@
 ## 随便放几个示例
 
 ```java
+//demo0::字符串化
+String json = ONode.stringify(user); //不带@type
+
 //demo1::序列化
 String json = ONode.serialize(user);
 
