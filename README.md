@@ -175,8 +175,12 @@ o.forEach((v)->{
 +loadObj(source:Object) -> new:ONode    //加载bean为ONode，可能会出异常
 +loadStr(source:String) -> new:ONode    //加载String为ONode，可能会出异常
 
+//字符串化操作
++stringify(source:Object) -> String                         //字符串化
++stringify(source:Object, constants:Constants) -> String    //字符串化，可定制常量
+
 //序列化操作
-+serialize(source:Object) -> String                         //序列化
++serialize(source:Object) -> String                         //序列化（带@type属性）
 +serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
 +deserialize(source:String, clz Class<T>) -> T                          //反序列化
 +deserialize(source:String, clz Class<T>, constants:Constants) -> T     //反序列化，可定制常量
