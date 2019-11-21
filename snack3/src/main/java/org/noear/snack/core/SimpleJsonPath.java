@@ -2,6 +2,8 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 
+import java.util.Map;
+
 /**
  * Simple json path
  *
@@ -17,8 +19,27 @@ public class SimpleJsonPath {
         for (int i = index; i < ss.length; i++) {
             String s = ss[i];
 
-            if("$".equals(s)){
+            if ("$".equals(s)) {
                 continue; //当前节点
+            }
+
+            if ("*".equals(s)) {
+                ONode tmp2 = new ONode().asArray();
+                ONode tmp2_2 = new ONode().asArray();
+                if (i + 1 < ss.length) {
+                    scan(ss[i + 1], tmp, tmp2_2);
+                }
+
+                if(tmp2_2.count()>0){
+                    for (ONode n1 : tmp2_2.ary()) {
+                        ONode n2 = get(ss, i + 2, n1);
+                        if (n2.isNull() == false) {
+                            tmp2.add(n2);
+                        }
+                    }
+                }
+
+                return tmp2;
             }
 
             if (s.endsWith("]")) {
@@ -95,5 +116,23 @@ public class SimpleJsonPath {
         }
 
         return tmp;
+    }
+
+    private static void scan(String name, ONode source, ONode target) {
+        if (source.isObject()) {
+            for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
+                if (name.equals(kv.getKey())) {
+                    target.add(kv.getValue());
+                }else{
+                    scan(name, kv.getValue(), target);
+                }
+            }
+        }
+
+        if (source.isObject()) {
+            for (ONode n1 : source.ary()) {
+                scan(name, n1, target);
+            }
+        }
     }
 }
