@@ -95,7 +95,7 @@ o.forEach((v)->{
 ```
 
 ## 关于Json path的支持
-* 支持`Json path`的选择操作，不支持过滤操作。我称它为：`Simple json path`
+* 支持`Json path`的选择操作，但不支持过滤操作。可称它为：`Simple json path`
 
 | 支持操作 |	说明 |
 | --- | --- |
