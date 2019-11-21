@@ -69,7 +69,8 @@ UserModel user = o.get("user").toBean(UserModel.class); //取user节点，并转
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）
-List<String> list = o.select("data.list[*].mobile").toBean(List.class);
+List<String> list = o.select("..mobile").toBean(List.class);//性能差点
+List<String> list = o.select("data.list[*].mobile").toBean(List.class);//性能好点
 
 
 //demo7:遍历
