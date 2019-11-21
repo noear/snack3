@@ -74,7 +74,7 @@ o.select("$..mobile").forEach(n->n.val("186"));
 //修改data.list[1]下的的mobile字段
 o.select("$.data.list[1].mobile").val("186");
 
-//查找所有手机号，并转为List<String>
+//查找所有手机号，并转为List<String> //$可写，也可不写
 List<String> list = o.select("..mobile").toBean(List.class);//性能差点
 //查询data.list下的所有mobile，并转为List<String>
 List<String> list = o.select("data.list[*].mobile").toBean(List.class);//性能好点
