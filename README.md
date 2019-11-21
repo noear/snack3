@@ -19,10 +19,10 @@ ONode 即 `One node` 之意；借签了 `Javascript` 所有变量由 `var` 申�
 
 ```java
 //demo0::字符串化
-String json = ONode.stringify(user); //不带@type
+String json = ONode.stringify(user); 
 
 //demo1::序列化
-String json = ONode.serialize(user);
+String json = ONode.serialize(user); //带@type
 
 //demo2::反序列化
 UserModel user = ONode.deserialize(json, UserModel.class);
