@@ -53,20 +53,39 @@ public class SimpleJsonPath {
                 if ("*".equals(idx_s)) {
                     //[*]
                     ONode tmp2 = new ONode().asArray();
-                    for (ONode n1 : tmp.ary()) {
-                        ONode n2 = get(ss, i + 1, n1);
-                        if (n2.isNull() == false) {
-                            tmp2.add(n2);
+                    if(tmp.isArray()) {
+                        for (ONode n1 : tmp.ary()) {
+                            ONode n2 = get(ss, i + 1, n1);
+                            if (n2.isNull() == false) {
+                                tmp2.add(n2);
+                            }
                         }
                     }
+
+                    if(tmp.isObject()){
+                        for (ONode n1 : tmp.obj().values()) {
+                            ONode n2 = get(ss, i + 1, n1);
+                            if (n2.isNull() == false) {
+                                tmp2.add(n2);
+                            }
+                        }
+                    }
+
                     return tmp2;
                 } else if (idx_s.indexOf(",") > 0) {
-                    //[1,4,6]
+                    //[1,4,6] //['p1','p2']
                     ONode tmp2 = new ONode().asArray();
                     String[] iAry = idx_s.split(",");
 
                     for (String i1 : iAry) {
-                        ONode n1 = tmp.getOrNull(Integer.parseInt(i1));
+                        ONode n1 = null;
+                        if(i1.startsWith("'")){
+                            if(i1.endsWith("'")){
+                                n1 = tmp.getOrNull(i1.substring(1,i1.length()-1));
+                            }
+                        }else {
+                            n1 = tmp.getOrNull(Integer.parseInt(i1));
+                        }
 
                         if (n1 != null) {
                             ONode n2 = get(ss, i + 1, n1);
@@ -77,7 +96,7 @@ public class SimpleJsonPath {
                     }
                     return tmp2;
 
-                } else if (idx_s.indexOf(":") > 0) {
+                } else if (idx_s.indexOf(":") >= 0) {
                     //[2:4]
                     ONode tmp2 = new ONode().asArray();
                     String[] iAry = idx_s.split(":");
