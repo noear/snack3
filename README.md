@@ -13,6 +13,8 @@
 </dependency>
 ```
 
+ONode 是 One Node 的意思。借签js里，所有变量都是 var 申明，及xml 里一切是节点的套路。
+
 ## 随便放几个示例
 
 ```java
