@@ -45,10 +45,6 @@ public class _demo {
             });
         });
 
-        data.val();
-        data.ary();
-        data.obj();
-
         String message = data.toJson();
 
         assert message!=null;
