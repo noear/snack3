@@ -107,7 +107,7 @@ o.forEach((v)->{
 | [\<number> (, \<number>)]	| 数组索引或索引 |
 | [start:end]	| 数组切片操作 |
 
-例：`$.store.book [0].title` 或 `$['store']['book'][0]['title']`
+例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
 
 ## Snack3 接口字典
 ```swift
