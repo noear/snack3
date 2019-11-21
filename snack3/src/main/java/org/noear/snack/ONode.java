@@ -1,5 +1,6 @@
 package org.noear.snack;
 
+import org.noear.snack.core.SimpleJsonPath;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
 import org.noear.snack.core.utils.NodeUtil;
@@ -48,22 +49,8 @@ public class ONode {
      * */
     public ONode select(String expr) {
         String[] ss = expr.split("\\.|\\[");
-        ONode tmp = this;
-        for (String s : ss) {
-            if (s.endsWith("]")) {
-                String idx_s = s.substring(0,s.length() - 1);
-                int idx = Integer.parseInt(idx_s);
-                if (idx < 0) {
-                    tmp = tmp.get(tmp.count() + idx);//倒数位
-                } else {
-                    tmp = tmp.get(idx);//正数位
-                }
-            } else {
-                tmp = tmp.get(s);
-            }
-        }
 
-        return tmp;
+        return SimpleJsonPath.get(ss, 0, this);
     }
 
     /**
