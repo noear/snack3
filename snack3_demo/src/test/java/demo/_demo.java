@@ -6,9 +6,27 @@ import org.noear.snack.ONode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class _demo {
+    @Test
+    public void demo1() {
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5]}}");
+
+        //2.取一个属性的值
+        String msg = n.get("msg").getString();
+
+        //3.取列表里的一项
+        int li2  = n.get("data").get("list").get(2).getInt();
+
+        //4.获取一个数组
+        List<Integer> ary = n.get("data").get("list").toBean(List.class);
+
+        assert ary.size() == 5;
+    }
+
     @Test
     public void demo10() throws Exception{
         UserModel user = new UserModel();
