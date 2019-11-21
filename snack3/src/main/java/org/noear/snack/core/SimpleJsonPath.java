@@ -129,14 +129,22 @@ public class SimpleJsonPath {
                     return tmp2;
 
                 } else {
-                    // [2]
-                    // [-2]
+                    // [2] [-2] ['p1']
                     //
-                    int idx = Integer.parseInt(idx_s);
-                    if (idx < 0) {
-                        tmp = tmp.getOrNull(tmp.count() + idx);//倒数位
-                    } else {
-                        tmp = tmp.getOrNull(idx);//正数位
+                    if(idx_s.startsWith("'")){
+                        if (idx_s.endsWith("'")){
+                            String k2 = idx_s.substring(1,idx_s.length()-1);
+                            tmp = tmp.getOrNull(k2);
+                        }else{
+                            tmp = null;
+                        }
+                    }else {
+                        int idx = Integer.parseInt(idx_s);
+                        if (idx < 0) {
+                            tmp = tmp.getOrNull(tmp.count() + idx);//倒数位
+                        } else {
+                            tmp = tmp.getOrNull(idx);//正数位
+                        }
                     }
                 }
             } else {

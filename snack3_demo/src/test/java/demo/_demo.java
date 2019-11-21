@@ -82,6 +82,8 @@ public class _demo {
 
         ONode ary2_b = n.select("$.data[*]");
 
+        ONode ary2_c = n.select("$['data']['list'][2]");
+
 
         assert ary2_a.count() == 2;
     }
