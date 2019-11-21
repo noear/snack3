@@ -114,6 +114,7 @@ o.forEach((v)->{
 -cfg(constants:Constants) -> self:ONode   //切换配置
 
 -build(n->..) -> self:ONode     //节点构建表达式
+-select(expr:String) -> new:Node //使用Simple Json Path表达式选择节点（只支持选择，不支持过滤）
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
