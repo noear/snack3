@@ -39,6 +39,33 @@ public class ONode {
         _c = cfg;
     }
 
+
+    /**
+     * simple json path
+     * 支持属性和索引
+     * 例：.name
+     * 例：[1]
+     * */
+    public ONode select(String expr) {
+        String[] ss = expr.split("\\.|\\[");
+        ONode tmp = this;
+        for (String s : ss) {
+            if (s.endsWith("]")) {
+                String idx_s = s.substring(0,s.length() - 1);
+                int idx = Integer.parseInt(idx_s);
+                if (idx < 0) {
+                    tmp = tmp.get(tmp.count() + idx);//倒数位
+                } else {
+                    tmp = tmp.get(idx);//正数位
+                }
+            } else {
+                tmp = tmp.get(s);
+            }
+        }
+
+        return tmp;
+    }
+
     /**
      * 将节点切换为对象
      *
@@ -477,12 +504,16 @@ public class ONode {
     }
 
     /**
-     * 获取数组子节点（超界，返回空节点）
+     * 获取数组子节点（超界，返回空节点） //支持倒数取
      *
      * @return child:ONode
      */
     public ONode get(int index) {
         _d.tryInitArray();
+
+        if (index < 0) {
+            index = count() + index; //支持倒数取
+        }
 
         if (index >= 0 && _d.array.size() > index) {
             return _d.array.get(index);
