@@ -45,7 +45,7 @@ public class ONode {
      * simple json path
      * 支持属性和索引
      * 例：.name
-     * 例：[1]
+     * 例：[1],[1,3,4],[2:10]
      * */
     public ONode select(String expr) {
         String[] ss = expr.split("\\.|\\[");
