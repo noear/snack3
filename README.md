@@ -3,7 +3,7 @@
 # snack3 for java
 一个微型JSON框架
 
-有序列化反序列化、解析和转换。才60Kb哦
+有序列化反序列化、解析和转换、支持json path查询。才60Kb哦
 
 ```xml
 <dependency>
