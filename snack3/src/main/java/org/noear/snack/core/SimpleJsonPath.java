@@ -17,9 +17,14 @@ public class SimpleJsonPath {
     public static ONode get(String[] ss, int index, ONode source) {
         ONode tmp = source;
         for (int i = index; i < ss.length; i++) {
+
+            if(tmp == null){
+                break;
+            }
+
             String s = ss[i];
 
-            if ("$".equals(s)) {
+            if (s.length() == 0 || "$".equals(s)) {
                 continue; //当前节点
             }
 
@@ -30,7 +35,7 @@ public class SimpleJsonPath {
                     scan(ss[i + 1], tmp, tmp2_2);
                 }
 
-                if(tmp2_2.count()>0){
+                if (tmp2_2.count() > 0) {
                     for (ONode n1 : tmp2_2.ary()) {
                         ONode n2 = get(ss, i + 2, n1);
                         if (n2.isNull() == false) {
@@ -61,10 +66,13 @@ public class SimpleJsonPath {
                     String[] iAry = idx_s.split(",");
 
                     for (String i1 : iAry) {
-                        ONode n1 = tmp.get(Integer.parseInt(i1));
-                        ONode n2 = get(ss, i + 1, n1);
-                        if (n2.isNull() == false) {
-                            tmp2.add(n2);
+                        ONode n1 = tmp.getOrNull(Integer.parseInt(i1));
+
+                        if (n1 != null) {
+                            ONode n2 = get(ss, i + 1, n1);
+                            if (n2.isNull() == false) {
+                                tmp2.add(n2);
+                            }
                         }
                     }
                     return tmp2;
@@ -90,10 +98,13 @@ public class SimpleJsonPath {
                     }
 
                     for (int i1 = start; i1 < end; i1++) {
-                        ONode n1 = tmp.get(i1);
-                        ONode n2 = get(ss, i + 1, n1);
-                        if (n2.isNull() == false) {
-                            tmp2.add(n2);
+                        ONode n1 = tmp.getOrNull(i1);
+
+                        if (n1 != null) {
+                            ONode n2 = get(ss, i + 1, n1);
+                            if (n2.isNull() == false) {
+                                tmp2.add(n2);
+                            }
                         }
                     }
                     return tmp2;
@@ -104,18 +115,22 @@ public class SimpleJsonPath {
                     //
                     int idx = Integer.parseInt(idx_s);
                     if (idx < 0) {
-                        tmp = tmp.get(tmp.count() + idx);//倒数位
+                        tmp = tmp.getOrNull(tmp.count() + idx);//倒数位
                     } else {
-                        tmp = tmp.get(idx);//正数位
+                        tmp = tmp.getOrNull(idx);//正数位
                     }
                 }
             } else {
                 //name
-                tmp = tmp.get(s);
+                tmp = tmp.getOrNull(s);
             }
         }
 
-        return tmp;
+        if (tmp == null) {
+            return new ONode();
+        } else {
+            return tmp;
+        }
     }
 
     private static void scan(String name, ONode source, ONode target) {
@@ -127,12 +142,14 @@ public class SimpleJsonPath {
                     scan(name, kv.getValue(), target);
                 }
             }
+            return;
         }
 
-        if (source.isObject()) {
+        if (source.isArray()) {
             for (ONode n1 : source.ary()) {
                 scan(name, n1, target);
             }
+            return;
         }
     }
 }

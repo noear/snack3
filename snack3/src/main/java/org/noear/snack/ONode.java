@@ -48,7 +48,7 @@ public class ONode {
      * 例：[1],[1,3,4],[2:10]
      * */
     public ONode select(String expr) {
-        String[] ss = expr.replace("..",".*").split("\\.|\\[");
+        String[] ss = expr.replace("..",".*.").split("\\.|\\[");
 
         return SimpleJsonPath.get(ss, 0, this);
     }
@@ -496,17 +496,8 @@ public class ONode {
      * @return child:ONode
      */
     public ONode get(int index) {
-        _d.tryInitArray();
-
-        if (index < 0) {
-            index = count() + index; //支持倒数取
-        }
-
-        if (index >= 0 && _d.array.size() > index) {
-            return _d.array.get(index);
-        } else {
-            return new ONode();
-        }
+        ONode tmp = getOrNull(index);
+        return tmp == null ? new ONode() : tmp;
     }
 
     /**
@@ -516,6 +507,10 @@ public class ONode {
      */
     public ONode getOrNull(int index) {
         _d.tryInitArray();
+
+        if (index < 0) {
+            index = count() + index; //支持倒数取
+        }
 
         if (index >= 0 && _d.array.size() > index) {
             return _d.array.get(index);
