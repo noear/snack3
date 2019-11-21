@@ -68,8 +68,15 @@ o.get("list").get(0).get("lev").getInt();
 UserModel user = o.get("user").toBean(UserModel.class); //取user节点，并转为UserModel
 
 
-//demo6:Simple json path（只支持选择，不支持过滤）
+//demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
+//修改所有的手机号为186
+o.select("$..mobile").forEach(n->n.val("186"));
+//修改data.list[1]下的的mobile字段
+o.select("$.data.list[1].mobile").val("186");
+
+//查找所有手机号，并转为List<String>
 List<String> list = o.select("..mobile").toBean(List.class);//性能差点
+//查询data.list下的所有mobile，并转为List<String>
 List<String> list = o.select("data.list[*].mobile").toBean(List.class);//性能好点
 
 
