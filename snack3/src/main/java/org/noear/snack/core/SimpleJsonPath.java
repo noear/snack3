@@ -28,7 +28,7 @@ public class SimpleJsonPath {
                 continue; //当前节点
             }
 
-            if ("*".equals(s)) {
+            if ("**".equals(s)) {
                 ONode tmp2 = new ONode().asArray();
                 ONode tmp2_2 = new ONode().asArray();
                 if (i + 1 < ss.length) {
