@@ -13,7 +13,7 @@ public class _demo {
     @Test
     public void demo1() {
         //1.加载json
-        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5]}}");
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
         //2.取一个属性的值
         String msg = n.get("msg").getString();
@@ -22,9 +22,21 @@ public class _demo {
         int li2  = n.get("data").get("list").get(2).getInt();
 
         //4.获取一个数组
-        List<Integer> ary = n.get("data").get("list").toBean(List.class);
+        //List<Integer> list = n.get("data").get("list").toBean(List.class);
+        List<Integer> list = n.select("data.list").toBean(List.class);
 
-        assert ary.size() == 5;
+
+
+        //int mi = n.get("data").get("list").get(0).getInt();
+        int mi = n.select("data.list[-1]").getInt();
+
+        List<Integer> list2 = n.select("data.list[2,4]").toBean(List.class);
+        List<Integer> list3 = n.select("data.list[2:4]").toBean(List.class);
+
+        ONode ary2_a = n.select("data.ary2[*].b.c");
+
+
+        assert list.size() == 5;
     }
 
     @Test
