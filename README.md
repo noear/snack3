@@ -3,13 +3,13 @@
 # snack3 for java
 一个微型JSON框架
 
-有序列化反序列化、解析和转换。才60Kb哦
+有序列化反序列化、解析和转换、支持json path查询。才60Kb哦
 
 ```xml
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.0.3</version>
+  <version>3.1.0.5</version>
 </dependency>
 ```
 
@@ -69,7 +69,8 @@ UserModel user = o.get("user").toBean(UserModel.class); //取user节点，并转
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）
-List<String> list = o.select("data.list[*].mobile").toBean(List.class);
+List<String> list = o.select("..mobile").toBean(List.class);//性能差点
+List<String> list = o.select("data.list[*].mobile").toBean(List.class);//性能好点
 
 
 //demo7:遍历
@@ -114,7 +115,7 @@ o.forEach((v)->{
 -cfg(constants:Constants) -> self:ONode   //切换配置
 
 -build(n->..) -> self:ONode     //节点构建表达式
--select(expr:String) -> new:Node //使用Simple Json Path表达式选择节点（只支持选择，不支持过滤）
+-select(jpath:String) -> new:ONode //使用JsonPath表达式选择节点（只支持选择，不支持过滤）
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
