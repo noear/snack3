@@ -64,7 +64,15 @@ o.get("name").getString();
 o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
 
-//demo5:遍历
+//demo5.1::取值并转换
+UserModel user = o.get("user").toBean(UserModel.class); //取user节点，并转为UserModel
+
+
+//demo6:Simple json path（只支持选择，不支持过滤）
+List<String> list = o.select("data.list[*].mobile").toBean(List.class);
+
+
+//demo7:遍历
 //如果是个Object
 o.forEach((k,v)->{
   //...
