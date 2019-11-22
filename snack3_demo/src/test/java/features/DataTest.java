@@ -39,7 +39,7 @@ public class DataTest {
 
         System.out.println(((ONode)c.target).toJson());
 
-        Object data = ((ONode)c.target).toData();
+        Object data = ((ONode)c.target).toObject(null);
 
         assert (data instanceof Map);
     }
@@ -62,7 +62,7 @@ public class DataTest {
 
         System.out.println(((ONode)c.target).toJson());
 
-        Object data = ((ONode)c.target).toData();
+        Object data = ((ONode)c.target).toObject(null);
 
         assert (data instanceof Map);
 
@@ -101,7 +101,7 @@ public class DataTest {
 
         ONode node = ONode.load(json); //context.node.toData();
 
-        Object tmp = node.toData();
+        Object tmp = node.toObject(null);
 
         assert (tmp instanceof Map);
 
