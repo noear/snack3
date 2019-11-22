@@ -63,12 +63,12 @@ public class SpeedFastjsonTest {
         //
         String text = ("{\"code\":1,\"msg\":\"Succeed\",\"data\":{\"list\":[{\"name\":\"北京'\\ud83d\\udc4c\\t\\n\",\"id\":1},{\"name\":\"新疆\",\"id\":31},{\"name\":\"重庆\",\"id\":4},{\"name\":\"广东\",\"id\":19},{\"name\":\"浙江\",\"id\":15},{\"name\":\"天津\",\"id\":3},{\"name\":\"港澳\",\"id\":52993},{\"name\":\"广西\",\"id\":20},{\"name\":\"内蒙古\",\"id\":11},{\"name\":\"宁夏\",\"id\":30},{\"name\":\"江西\",\"id\":21},{\"name\":\"台湾\",\"id\":32},{\"name\":\"安徽\",\"id\":14},{\"name\":\"贵州\",\"id\":24},{\"name\":\"陕西\",\"id\":27},{\"name\":\"辽宁\",\"id\":8},{\"name\":\"山西\",\"id\":6},{\"name\":\"青海\",\"id\":29},{\"name\":\"四川\",\"id\":22},{\"name\":\"江苏\",\"id\":12},{\"name\":\"河北\",\"id\":5},{\"name\":\"西藏\",\"id\":26},{\"name\":\"钓鱼岛\",\"id\":84},{\"name\":\"福建\",\"id\":16},{\"name\":\"吉林\",\"id\":9},{\"name\":\"湖北\",\"id\":17},{\"name\":\"云南\",\"id\":25},{\"name\":\"海南\",\"id\":23},{\"name\":\"上海\",\"id\":2},{\"name\":\"甘肃\",\"id\":28},{\"name\":\"湖南\",\"id\":18},{\"name\":\"山东\",\"id\":13},{\"name\":\"河南\",\"id\":7},{\"name\":\"黑龙江\",\"id\":10}]}}");
 
-        JSON.parseObject(text);
+        JSON.parse(text);
 
         long start = System.currentTimeMillis();
 
         for (int i = 0; i < 1000000; i++) {
-            JSON.parseObject(text);
+            JSON.parse(text);
 
             //assert "1".equals(c.node.get("data").get("list").get(0).get("id").getString());
         }
@@ -93,7 +93,7 @@ public class SpeedFastjsonTest {
         obj.put("list", list);
 
         long start = System.currentTimeMillis();
-        for(int i=0,len=100000; i<len; i++) {
+        for(int i=0,len=1000000; i<len; i++) {
             JSON.toJSONString(obj,
                     SerializerFeature.BrowserCompatible,
                     SerializerFeature.WriteClassName,

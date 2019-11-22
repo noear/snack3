@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class SpeedBaseTest {
+public class BaseSpeedTest {
 
     @Test
     public void test01(){

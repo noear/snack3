@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class SerializationFastjsonTest {
+public class _SerializationFastjsonTest {
     @Test
     public void test1() throws IllegalAccessException {
 

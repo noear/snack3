@@ -77,7 +77,7 @@ public class SpeedTest {
         obj.put("list", list);
 
         long start = System.currentTimeMillis();
-        for(int i=0,len=100000; i<len; i++) {
+        for(int i=0,len=1000000; i<len; i++) {
             ONode.serialize(obj);
             //String json = context.node.toJson();
         }
