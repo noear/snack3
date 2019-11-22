@@ -35,14 +35,14 @@ public class _test {
 
     @Test
     public void test2(){
-        ONode n = new ONode(); //默认为空
+        ONode n = new ONode(); //默认,null string 为 空字符
 
         assert "".equals(n.getString());
     }
 
     @Test
     public void test3(){
-        ONode n = new ONode(Constants.of()); //默认为空
+        ONode n = new ONode(Constants.of()); //空特性，什么都没有
 
         assert "".equals(n.getString()) == false;
     }
