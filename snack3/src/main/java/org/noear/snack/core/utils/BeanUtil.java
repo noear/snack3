@@ -32,20 +32,26 @@ public class BeanUtil {
     /////////////////
 
     /**  */
-    private static transient final Map<String,Collection<FieldWrap>> fieldsCached = new ConcurrentHashMap<>();
+    private static transient final Map<String,Collection<FieldWrap>> fieldsCached = new HashMap<>();
 
     /** 获取一个类的所有字段 （已实现缓存） */
-    public static Collection<FieldWrap> getAllFields(Class<?> clz){
+    public static Collection<FieldWrap> getAllFields(Class<?> clz) {
         String key = clz.getName();
 
         Collection<FieldWrap> list = fieldsCached.get(key);
-        if(list == null){
-            Map<String,FieldWrap> map = new LinkedHashMap<>();
-            scanAllFields(clz,map);
+        if (list == null) {
+            synchronized (key.intern()) {
+                list = fieldsCached.get(key);
 
-            list = map.values();
+                if (list == null) {
+                    Map<String, FieldWrap> map = new LinkedHashMap<>();
+                    scanAllFields(clz, map);
 
-            fieldsCached.put(key, list);
+                    list = map.values();
+
+                    fieldsCached.put(key, list);
+                }
+            }
         }
 
         return list;
