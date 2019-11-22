@@ -10,9 +10,35 @@ import org.noear.snack.from.JsonFromer;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class _demo {
+
+    @Test
+    public void demo2(){
+        List<UserModel> list = new ArrayList<>();
+        UserModel u1 = new UserModel();
+        u1.id=1;
+        u1.name="name1";
+        list.add(u1);
+
+        UserModel u2 = new UserModel();
+        u2.id=2;
+        u2.name="name2";
+        list.add(u2);
+
+
+        ONode o = ONode.load("{code:1,msg:'succeed'}");
+        o.cfg(Constants.serialize).get("data").get("list").fill(list);
+
+        assert o.select("data.list").count() ==2;
+
+        String message = o.toJson();
+        System.out.println(message);
+
+        assert message != null;
+    }
 
     /** 测试性能（大json） */
     @Test

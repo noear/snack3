@@ -763,7 +763,7 @@ public class ONode {
      * @return self:ONode
      */
     public ONode fill(Object source) {
-        ONode tmp = load(source);
+        ONode tmp = loadDo(source, source instanceof String, _c);
         val(tmp);
         return this;
     }
@@ -776,7 +776,7 @@ public class ONode {
      * @throws Exception
      */
     public ONode fillObj(Object source) throws Exception {
-        ONode tmp = loadObj(source);
+        ONode tmp = loadDo(source, false, _c);
         val(tmp);
         return this;
     }
@@ -789,7 +789,7 @@ public class ONode {
      * @throws Exception
      */
     public ONode fillStr(String source) throws Exception {
-        ONode tmp = loadStr(source);
+        ONode tmp = loadDo(source, true, _c);
         val(tmp);
         return this;
     }
@@ -807,11 +807,16 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
+        return loadDo(source, source instanceof String, Constants.def);
+    }
+
+    private static ONode loadDo(Object source, boolean isString, Constants constants) {
         try {
-            if (source instanceof String) {
-                return NodeUtil.fromStr((String) source);
+            if (isString) {
+                return NodeUtil.fromStr(constants, (String) source);
+            } else {
+                return NodeUtil.fromObj(constants, source);
             }
-            return NodeUtil.fromObj(source);
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ONode();
