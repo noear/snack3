@@ -29,7 +29,7 @@ public class ObjectToer implements Toer {
     @Override
     public void handle(Context ctx) throws Exception {
         if (null != ctx.node) {
-            ctx.target = analyse(ctx, ctx.node, ctx.target_type, ctx.target_type);
+            ctx.target = analyse(ctx, ctx.node, ctx.target_clz, ctx.target_type);
         }
     }
 

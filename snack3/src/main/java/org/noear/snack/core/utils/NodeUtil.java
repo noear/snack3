@@ -5,6 +5,8 @@ import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.to.Toer;
 
+import java.lang.reflect.Type;
+
 public final class NodeUtil {
     /**
      * 将 str 转换为 ONode
@@ -40,11 +42,11 @@ public final class NodeUtil {
         }
     }
 
-    public static Object toObj(ONode node, Class<?> toclz, Toer toer) {
+    public static Object toObj(ONode node, Type toclz, Toer toer) {
         return toObj(Constants.def, node, toclz, toer);
     }
 
-    public static Object toObj(Constants cfg, ONode node, Class<?> toclz, Toer toer) {
+    public static Object toObj(Constants cfg, ONode node, Type toclz, Toer toer) {
         try {
             return new Context(cfg, node, toclz).handle(toer).target;
         } catch (Exception ex) {

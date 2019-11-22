@@ -7,6 +7,7 @@ import org.noear.snack.core.utils.NodeUtil;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.DEFAULTS;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -735,7 +736,7 @@ public class ONode {
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
      */
-    public <T> T toObject(Class<T> clz) {
+    public <T> T toObject(Type clz) {
         return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
     }
 
@@ -906,7 +907,7 @@ public class ONode {
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz) throws Exception {
+    public static <T> T deserialize(String source, Type clz) throws Exception {
         return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(clz);
     }
 
@@ -919,7 +920,7 @@ public class ONode {
      * @param constants 常量配置
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz, Constants constants) throws Exception {
+    public static <T> T deserialize(String source, Type clz, Constants constants) throws Exception {
         return (T) NodeUtil.fromStr(constants, source).toObject(clz);
     }
 }
