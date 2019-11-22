@@ -27,6 +27,9 @@ String json = ONode.serialize(user); //带@type
 //demo2::反序列化
 UserModel user = ONode.deserialize(json, UserModel.class);
 
+//demo2.1::返序列化泛型
+List<UserModel> user = ONode.deserialize(json, (new ArrayList<UserModel>(){}).class);
+
 //demo3::转为ONode
 ONode o = ONode.load(json); //将json String 转为 ONode
 ONode o = ONode.load(user); //将java Object 转为 ONode
