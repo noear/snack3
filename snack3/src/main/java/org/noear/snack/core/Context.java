@@ -15,8 +15,6 @@ public class Context {
     /** 来源 */
     public Object source;
 
-    public ONode node;
-
     /** 目标 */
     public Object target;
     public Class<?> target_clz;
@@ -48,7 +46,7 @@ public class Context {
      */
     public Context(Constants config, ONode node, Class<?> target_type) {
         this.config = config;
-        this.node = node;
+        this.source = node;
 
         if (target_type == null) {
             return;
@@ -80,8 +78,12 @@ public class Context {
     /**
      * 使用代理对当前上下文进行处理
      */
-    public Context handle(Handler handler) throws Exception {
-        handler.handle(this);
-        return this;
+    public Context handle(Handler handler)  {
+        try {
+            handler.handle(this);
+            return this;
+        }catch (Exception ex){
+            throw new RuntimeException(ex);
+        }
     }
 }

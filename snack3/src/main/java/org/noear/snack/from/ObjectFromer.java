@@ -20,7 +20,7 @@ import java.util.*;
 public class ObjectFromer implements Fromer {
     @Override
     public void handle(Context ctx) {
-        ctx.node = analyse(ctx.config, ctx.source); //如果是null,会返回 ONode.Null
+        ctx.target = analyse(ctx.config, ctx.source); //如果是null,会返回 ONode.Null
     }
 
     private ONode analyse(Constants cfg, Object source) {

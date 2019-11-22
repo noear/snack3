@@ -23,13 +23,21 @@ public class JsonFromer implements Fromer {
 
     @Override
     public void handle(Context ctx) throws IOException {
-        String text = (String) ctx.source;
+        ctx.target = do_handle(ctx, (String) ctx.source);
+    }
+
+    private ONode do_handle(Context ctx, String text) throws IOException {
+        if(text == null){
+            return new ONode();
+        }
+
         int len = text.length();
+        ONode node;
 
         //完整的处理（支持像："xx",'xx',12,true,{...},[],null,undefined 等）
         //
         if (len == 0) {
-            ctx.node = new ONode(ctx.config);
+            node = new ONode(ctx.config);
         } else {
             char prefix = text.charAt(0);
             char suffix = text.charAt(text.length() - 1);
@@ -41,25 +49,27 @@ public class JsonFromer implements Fromer {
                 CharBuffer sBuf = tlBuilder.get(); // new CharBuffer();//
                 sBuf.setLength(0);
 
-                ctx.node = new ONode(ctx.config);
-                analyse(new CharReader(text), sBuf, ctx.node);
+                node = new ONode(ctx.config);
+                analyse(new CharReader(text), sBuf, node);
 
             } else if (len >= 2 && (
                     (prefix == '"' && suffix == '"') ||
                             (prefix == '\'' && suffix == '\''))) {
                 //string
                 //
-                ctx.node = analyse_val(text.substring(1, len - 1), true, false);
+                node = analyse_val(text.substring(1, len - 1), true, false);
             } else if (prefix != '<' && len < 40) {
                 //null,num,bool,other
                 //
-                ctx.node = analyse_val(text, false, true);
+                node = analyse_val(text, false, true);
             } else {
                 //普通的字符串
-                ctx.node = new ONode(ctx.config);
-                ctx.node.val().setString(text);
+                node = new ONode(ctx.config);
+                node.val().setString(text);
             }
         }
+
+        return node;
     }
 
     public void analyse(CharReader sr, CharBuffer sBuf, ONode p) throws IOException {

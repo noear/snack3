@@ -24,16 +24,16 @@ public class JsonToer implements Toer {
     private static final ThData<StringBuilder> tlBuilder = new ThData(()->new StringBuilder(1024*5));
 
     @Override
-    public void handle(Context context) {
-        ONode o = context.node;
+    public void handle(Context ctx) {
+        ONode o = (ONode) ctx.source;
 
         if (null != o) {
             StringBuilder sb =  tlBuilder.get(); // new StringBuilder(1024*5); //
             sb.setLength(0);
 
-            analyse(context.config, o, sb);
+            analyse(ctx.config, o, sb);
 
-            context.target = sb.toString();
+            ctx.target = sb.toString();
         }
     }
 
