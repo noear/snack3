@@ -4,7 +4,6 @@ import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
-import org.noear.snack.core.TypeRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +102,7 @@ public class _test {
 
         //普通数据，转为泛型列表
         //
-        List<UserModel> list2 = o.select("data.list").toObject((new TypeRef<List<UserModel>>(){}).getType());
+        List<UserModel> list2 = o.select("data.list").toObject((new ArrayList<UserModel>(){}).getClass());
 
         assert list2.size() == list.size();
 

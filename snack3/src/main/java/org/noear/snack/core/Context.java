@@ -50,15 +50,28 @@ public class Context {
         this.config = config;
         this.node = node;
 
-        if(target_type == null){
+        if (target_type == null) {
             return;
         }
 
-        Type type = target_type.getGenericSuperclass();
-        if(type instanceof ParameterizedType){
-            this.target_type = type;
-            this.target_clz = (Class<?>) ((ParameterizedType) type).getRawType();
-        }else{
+        if (target_type.getName().indexOf("$") > 0) {
+            //
+            // 临时类：
+            //      (new ArrayList<UserModel>(){}).getClass()
+            //      (new UserModel(){}).getClass();
+            //
+            Type type = target_type.getGenericSuperclass();
+
+            if (type instanceof ParameterizedType) {
+                ParameterizedType pType = (ParameterizedType) type;
+
+                this.target_type = type;
+                this.target_clz = (Class<?>) pType.getRawType();
+            } else {
+                this.target_type = type;
+                this.target_clz = (Class<?>) type;
+            }
+        } else {
             this.target_type = target_type;
             this.target_clz = target_type;
         }

@@ -6,7 +6,6 @@ import _models.UserGroupModel;
 import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.TypeRef;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -137,7 +136,7 @@ public class SerializationTest {
         System.out.println(json);
         UserGroupModel group2 = ONode.deserialize(json, UserGroupModel.class);
 
-        Object group22 = ONode.deserialize(json, (new TypeRef<UserGroupModel>(){}).getType());
+        Object group22 = ONode.deserialize(json, (new UserGroupModel(){}).getClass());
         assert group22 instanceof  UserGroupModel;
 
         Object group23 = ONode.deserialize(json, LinkedHashMap.class);

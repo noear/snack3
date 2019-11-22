@@ -34,7 +34,7 @@ public final class NodeUtil {
 
     public static String toStr(Constants cfg, ONode node, Toer toer) {
         try {
-            return (String) (new Context(cfg, node, String.class).handle(toer).target);
+            return (String) (new Context(cfg, node, null).handle(toer).target);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
