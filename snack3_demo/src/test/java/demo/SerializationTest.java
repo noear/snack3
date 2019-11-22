@@ -177,4 +177,14 @@ public class SerializationTest {
 
         assert obj2.list.size()==obj.list.size();
     }
+
+    @Test
+    public void test6() throws Exception{
+        String tmp = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
+        //1.加载json
+        Object n = ONode.deserialize(tmp);
+
+        assert n instanceof Map;
+        assert ((Map)n).size() == 3;
+    }
 }
