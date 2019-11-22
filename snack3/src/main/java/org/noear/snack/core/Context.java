@@ -46,19 +46,21 @@ public class Context {
     /**
      * 用于去处的构造
      */
-    public Context(Constants config, ONode node, Type target_type) {
+    public Context(Constants config, ONode node, Class<?> target_type) {
         this.config = config;
         this.node = node;
-        this.target_type = target_type;
 
-        if (target_type != null) {
-            if (target_type instanceof ParameterizedType) {
-                this.target_clz = (Class<?>) ((ParameterizedType) target_type).getRawType();
-            }
+        if(target_type == null){
+            return;
+        }
 
-            if (target_type instanceof Class) {
-                this.target_clz = (Class<?>) target_type;
-            }
+        Type type = target_type.getGenericSuperclass();
+        if(type instanceof ParameterizedType){
+            this.target_type = type;
+            this.target_clz = (Class<?>) ((ParameterizedType) type).getRawType();
+        }else{
+            this.target_type = target_type;
+            this.target_clz = target_type;
         }
     }
 
