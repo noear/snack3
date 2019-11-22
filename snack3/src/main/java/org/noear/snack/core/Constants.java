@@ -11,7 +11,9 @@ import java.util.*;
  * 参数配置
  * */
 public class Constants {
-    /** 默认配置 */
+    /**
+     * 默认配置
+     */
     public static final Constants def = of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
@@ -32,52 +34,70 @@ public class Constants {
         return l;
     }
 
-    public Constants build(Act1<Constants> builder){
+
+
+    /**
+     * 构建自己
+     */
+    public Constants build(Act1<Constants> builder) {
         builder.run(this);
         return this;
     }
 
 
-
     private SimpleDateFormat _date_format;
 
-    public String   date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
-    public String   type_key    = DEFAULTS.DEF_TYPE_KEY;    //类型key
-    public TimeZone time_zone   = DEFAULTS.DEF_TIME_ZONE;   //时区
-    public Locale   locale      = DEFAULTS.DEF_LOCALE;      //地区
-    public int      features    = DEFAULTS.DEF_FEATURES;    //特性
+    public String date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
+    public String type_key = DEFAULTS.DEF_TYPE_KEY;    //类型key
+    public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;   //时区
+    public Locale locale = DEFAULTS.DEF_LOCALE;      //地区
+    public int features = DEFAULTS.DEF_FEATURES;    //特性
 
     //=================
 
 
-    /** 字符来源器 */
+    /**
+     * 字符来源器
+     */
     public Fromer stringFromer = DEFAULTS.DEF_JSON_FROMER;
-    /** 字符去处器 */
+    /**
+     * 字符去处器
+     */
     public Toer stringToer = DEFAULTS.DEF_JSON_TOER;
 
-    /** 对象来源器 */
-    public Fromer objectFromer  = DEFAULTS.DEF_OBJECT_FROMER;
-    /** 对象去处器 */
-    public Toer objectToer      = DEFAULTS.DEF_OBJECT_TOER;
+    /**
+     * 对象来源器
+     */
+    public Fromer objectFromer = DEFAULTS.DEF_OBJECT_FROMER;
+    /**
+     * 对象去处器
+     */
+    public Toer objectToer = DEFAULTS.DEF_OBJECT_TOER;
 
 
-    public Constants(){
+    public Constants() {
         initialize();
     }
 
-    protected void initialize(){
+    protected void initialize() {
         _date_format = new SimpleDateFormat(date_format, locale);
-        features = Feature.config(features, Feature.QuoteFieldNames,true);
+        features = Feature.config(features, Feature.QuoteFieldNames, true);
     }
 
-    public final String dateToString(Date date){
+    public final String dateToString(Date date) {
         return _date_format.format(date);
     }
 
+    /**
+     * 检查是否有特性
+     */
     public final boolean hasFeature(Feature feature) {
         return Feature.isEnabled(features, feature);
     }
 
+    /**
+     * null string 默认值
+     */
     public final String null_string() {
         if (hasFeature(Feature.StringNullAsEmpty)) {
             return "";

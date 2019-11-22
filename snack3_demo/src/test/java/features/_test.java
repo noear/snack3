@@ -2,10 +2,11 @@ package features;
 
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Constants;
 
 public class _test {
     @Test
-    public void test(){
+    public void test1(){
         String str = "{\"g_udid\":\"1EFB07BFE0D98F8BF9EAF276C92C95FA4BEA3423\",\"g_imid\":\"864499040824376\",\"g_lkey\":\"d359a30a239e9e17daa8f8367ef35422\",\"g_encode\":\"1\",\"g_time\":1572511666,\"g_platform\":\"Android\",\"g_system\":\"8.1.0\",\"g_model\":\"PACM00\",\"g_brand\":\"OPPO\"}";
         ONode n = ONode.load(str);
 
@@ -30,5 +31,19 @@ public class _test {
         System.out.println(str2);
 
         assert str.equals(str2);
+    }
+
+    @Test
+    public void test2(){
+        ONode n = new ONode(); //默认为空
+
+        assert "".equals(n.getString());
+    }
+
+    @Test
+    public void test3(){
+        ONode n = new ONode(Constants.of()); //默认为空
+
+        assert "".equals(n.getString()) == false;
     }
 }
