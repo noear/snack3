@@ -29,7 +29,7 @@ public class _demo {
         list.add(u2);
 
 
-        ONode o = ONode.load("{code:1,msg:'succeed'}", Constants.serialize);
+        ONode o = ONode.load("{code:1,msg:'succeed'}", true, Constants.serialize);
         o.get("data").get("list").fill(list);
 
         assert o.select("data.list").count() == 2;

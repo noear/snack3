@@ -65,7 +65,7 @@ public class _test {
         list.add(u2);
 
 
-        ONode o = ONode.load("{code:1,msg:'succeed'}", Constants.serialize);//当toJson(),会产生@type
+        ONode o = ONode.load("{code:1,msg:'succeed'}", true, Constants.serialize);//当toJson(),会产生@type
         o.get("data").get("list").fill(list);
 
         assert o.select("data.list").count() == 2;
@@ -123,7 +123,7 @@ public class _test {
 
     @Test
     public void test7() {
-        ONode tmp = ONode.loadObj("{asdfasdf}");
+        ONode tmp = ONode.load("{asdfasdf}");
 
         System.out.println(tmp.getString());
 

@@ -793,34 +793,15 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
-        return load(source, Constants.def);
+        return load(source, source instanceof String, Constants.def);
     }
 
-    public static ONode load(Object source, Constants cfg) {
-        return loadDo(source, source instanceof String, cfg, null);
+    public static ONode load(Object source , boolean isString) {
+        return load(source, isString, Constants.def);
     }
 
-
-    /**
-     * 加载string数据并生成新节点（可能会出异常）
-     *
-     * @param source string 数据
-     * @return new:ONode
-     * @throws Exception
-     */
-    public static ONode loadStr(String source) {
-        return loadDo(source, true, Constants.def, DEFAULTS.DEF_JSON_FROMER);
-    }
-
-    /**
-     * 加载bean数据并生成新节点（可能会出异常）
-     *
-     * @param source bean 数据
-     * @return new:ONode
-     * @throws Exception
-     */
-    public static ONode loadObj(Object source) {
-        return loadDo(source, false, Constants.def, DEFAULTS.DEF_OBJECT_FROMER);
+    public static ONode load(Object source, boolean isString, Constants cfg) {
+        return loadDo(source, isString, cfg, null);
     }
 
 
@@ -857,7 +838,7 @@ public class ONode {
      * @throws Exception
      */
     public static String stringify(Object source, Constants cfg) {
-        return load(source, cfg).toString();
+        return load(source, false, cfg).toString();
     }
 
     /**
@@ -878,7 +859,7 @@ public class ONode {
      * @throws Exception
      */
     public static String serialize(Object source, Constants cfg) {
-        return load(source, cfg).toJson();
+        return load(source, false, cfg).toJson();
     }
 
     /**
@@ -909,6 +890,6 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz, Constants cfg) {
-        return load(source, cfg).toObject(clz, cfg.objectToer);
+        return load(source, true, cfg).toObject(clz, cfg.objectToer);
     }
 }

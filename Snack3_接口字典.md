@@ -87,7 +87,8 @@
 
 //加载操作
 +load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 been）
-+load(source:Object, cfg:Constants) -> new:ONode
++load(source:Object, isString:boolean) -> new:ONode
++load(source:Object, isString:boolean, cfg:Constants) -> new:ONode
 
 //字符串化操作
 +stringify(source:Object) -> String                         //字符串化
