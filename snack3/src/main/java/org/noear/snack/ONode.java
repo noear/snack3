@@ -119,14 +119,14 @@ public class ONode {
     /**
      * 切换配置
      *
-     * @param constants 常量配置
+     * @param cfg 常量配置
      * @return self:ONode
      */
-    public ONode cfg(Constants constants) {
-        if (constants != null) {
-            _c = constants;
+    public ONode cfg(Constants cfg) {
+        if (cfg != null) {
+            _c = cfg;
         } else {
-            _c = Constants.def;
+            _c = cfg.def;
         }
         return this;
     }
@@ -795,22 +795,22 @@ public class ONode {
         return load(source, Constants.def);
     }
 
-    public static ONode load(Object source, Constants constants) {
-        return loadDo(source, source instanceof String, constants, null);
+    public static ONode load(Object source, Constants cfg) {
+        return loadDo(source, source instanceof String, cfg, null);
     }
 
-    private static ONode loadDo(Object source, boolean isString, Constants constants, Fromer fromer) {
+    private static ONode loadDo(Object source, boolean isString, Constants cfg, Fromer fromer) {
         try {
             if (isString) {
                 if(fromer == null){
-                    fromer = constants.stringFromer;
+                    fromer = cfg.stringFromer;
                 }
-                return NodeUtil.fromStr(constants, (String) source, fromer);
+                return NodeUtil.fromStr(cfg, (String) source, fromer);
             } else {
                 if(fromer == null){
-                    fromer = constants.objectFromer;
+                    fromer = cfg.objectFromer;
                 }
-                return NodeUtil.fromObj(constants, source, fromer);
+                return NodeUtil.fromObj(cfg, source, fromer);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -825,7 +825,7 @@ public class ONode {
      * @return new:ONode
      * @throws Exception
      */
-    public static ONode loadStr(String source) throws Exception {
+    public static ONode loadStr(String source)  {
         return NodeUtil.fromStr(source, DEFAULTS.DEF_JSON_FROMER);
     }
 
@@ -855,12 +855,12 @@ public class ONode {
      * 字会串化 （由序列化器决定格式）
      *
      * @param source java object
-     * @param constants 常量配置
+     * @param cfg 常量配置
      * @throws Exception
      * */
-    public static String stringify(Object source, Constants constants) {
-        return NodeUtil.fromObj(constants, source, constants.objectFromer)
-                .toObject(null, constants.stringToer);
+    public static String stringify(Object source, Constants cfg) {
+        return NodeUtil.fromObj(cfg, source, cfg.objectFromer)
+                .toObject(null, cfg.stringToer);
     }
 
     /**
@@ -877,11 +877,11 @@ public class ONode {
      * 序列化为 string（由序列化器决定格式）
      *
      * @param source    java object
-     * @param constants 常量配置
+     * @param cfg 常量配置
      * @throws Exception
      */
-    public static String serialize(Object source, Constants constants) {
-        return NodeUtil.fromObj(constants, source, constants.objectFromer)
+    public static String serialize(Object source, Constants cfg) {
+        return NodeUtil.fromObj(cfg, source, cfg.objectFromer)
                 .toJson();
     }
 
@@ -909,11 +909,11 @@ public class ONode {
      * 反序列化为 java object（由返序列化器决定格式）
      *
      * @param source    string
-     * @param constants 常量配置
+     * @param cfg 常量配置
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz, Constants constants)  {
-        return NodeUtil.fromStr(constants, source, constants.stringFromer)
-                .toObject(clz, constants.objectToer);
+    public static <T> T deserialize(String source, Class<?> clz, Constants cfg)  {
+        return NodeUtil.fromStr(cfg, source, cfg.stringFromer)
+                .toObject(clz, cfg.objectToer);
     }
 }
