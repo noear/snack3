@@ -1,6 +1,7 @@
 package features;
 
 import org.junit.Test;
+import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
@@ -22,35 +23,35 @@ public class JsonTest {
     public void test11() throws IOException{
         Context c = new Context(Constants.def, "\"xxx\"");
         new JsonFromer().handle(c);
-        assert "xxx".equals(c.node.getString());
+        assert "xxx".equals(((ONode)c.target).getString());
 
         c =new Context(Constants.def, "'xxx'");
         new JsonFromer().handle(c);
-        assert "xxx".equals(c.node.getString());
+        assert "xxx".equals(((ONode)c.target).getString());
 
         c =new Context(Constants.def, "true");
         new JsonFromer().handle(c);
-        assert c.node.getBoolean();
+        assert ((ONode)c.target).getBoolean();
 
         c =new Context(Constants.def, "false");
         new JsonFromer().handle(c);
-        assert c.node.getBoolean()==false;
+        assert ((ONode)c.target).getBoolean()==false;
 
         c =new Context(Constants.def, "123");
         new JsonFromer().handle(c);
-        assert 123 == c.node.getInt();
+        assert 123 == ((ONode)c.target).getInt();
 
         c =new Context(Constants.def, "null");
         new JsonFromer().handle(c);
-        assert c.node.isNull();
+        assert ((ONode)c.target).isNull();
 
         c =new Context(Constants.def, "NaN");
         new JsonFromer().handle(c);
-        assert c.node.isNull();
+        assert ((ONode)c.target).isNull();
 
         c =new Context(Constants.def, "undefined");
         new JsonFromer().handle(c);
-        assert c.node.isNull();
+        assert ((ONode)c.target).isNull();
 
     }
 
@@ -60,9 +61,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "m".equals(c.node.get("i").get(0).get("l").getString());
-        assert "n".equals(c.node.get("i").get(1).getString());
+        assert "m".equals(((ONode)c.target).get("i").get(0).get("l").getString());
+        assert "n".equals(((ONode)c.target).get("i").get(1).getString());
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\"b\",\"c\":{\"d\":\"e\"},\"f\":{\"g\":\"h\"},\"i\":[{\"j\":\"k\",\"l\":\"m\"},\"n\"]}".equals(c.target);
@@ -74,8 +76,9 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "b".equals(c.node.get("a").getString());
+        assert "b".equals(((ONode)c.target).get("a").getString());
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\"b\"}".equals(c.target);
@@ -87,8 +90,9 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "f".equals(c.node.get("a").get("b").get("c").get("d").get("e").getString());
+        assert "f".equals(((ONode)c.target).get("a").get("b").get("c").get("d").get("e").getString());
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":{\"b\":{\"c\":{\"d\":{\"e\":\"f\"}}}}}".equals(c.target);
@@ -102,6 +106,7 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert json.equals(c.target);
@@ -113,8 +118,9 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "f".equals(c.node.get(2).get(0).get("e").getString());
+        assert "f".equals(((ONode)c.target).get(2).get(0).get("e").getString());
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "[{\"a\":\"b\"},{\"c\":\"d\"},[{\"e\":\"f\"}]]".equals(c.target);
@@ -126,13 +132,14 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert 123 == c.node.get(0).getInt();
-        assert 123.45 == c.node.get(1).getDouble();
-        assert "123.45".equals(c.node.get(2).getString());
-        assert "2019-01-02 03:04:05".equals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(c.node.get(3).getDate()));
-        assert c.node.get(4).getBoolean();
-        assert !c.node.get(5).getBoolean();
+        assert 123 == ((ONode)c.target).get(0).getInt();
+        assert 123.45 == ((ONode)c.target).get(1).getDouble();
+        assert "123.45".equals(((ONode)c.target).get(2).getString());
+        assert "2019-01-02 03:04:05".equals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(((ONode)c.target).get(3).getDate()));
+        assert ((ONode)c.target).get(4).getBoolean();
+        assert !((ONode)c.target).get(5).getBoolean();
 
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "[123,123.45,\"123.45\",\"2019-01-02 03:04:05\",true,false]".equals(c.target);
@@ -146,8 +153,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "\t".equals(c.node.get("a").getString());
+        assert "\t".equals(((ONode)c.target).get("a").getString());
 
+
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\"\\t\"}".equals(c.target);
@@ -162,8 +171,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "'的\t\n".equals(c.node.get("a").getString());
+        assert "'的\t\n".equals(((ONode)c.target).get("a").getString());
 
+
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\"'的\\t\\n\"}".equals(c.target);
@@ -178,8 +189,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert "'👌\t\n".equals(c.node.get("a").getString());
+        assert "'👌\t\n".equals(((ONode)c.target).get("a").getString());
 
+
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equalsIgnoreCase((String) c.target);
@@ -193,8 +206,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert " \0\1\2\3\4\5\6\7".equals(c.node.get("a").getString());
+        assert " \0\1\2\3\4\5\6\7".equals(((ONode)c.target).get("a").getString());
 
+
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}".equals(c.target);
@@ -208,8 +223,10 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
-        assert " \u000f\u0012".equals(c.node.get("a").getString());
+        assert " \u000f\u0012".equals(((ONode)c.target).get("a").getString());
 
+
+        c.source = c.target;
         new JsonToer().handle(c);
 
         assert "{\"a\":\" \\u000f\\u0012\"}".equalsIgnoreCase((String) c.target);

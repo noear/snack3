@@ -33,13 +33,13 @@ public class DataTest {
         a.b = b;
         b.a = a;
 
-        Context context = new Context(Constants.def, a);
+        Context c = new Context(Constants.def, a);
 
-        new ObjectFromer().handle(context);
+        new ObjectFromer().handle(c);
 
-        System.out.println(context.node.toJson());
+        System.out.println(((ONode)c.target).toJson());
 
-        Object data = context.node.toData();
+        Object data = ((ONode)c.target).toData();
 
         assert (data instanceof Map);
     }
@@ -56,13 +56,13 @@ public class DataTest {
         order.order_id = 2222;
         order.order_num = "ddddd";
 
-        Context context = new Context(Constants.def, order);
+        Context c = new Context(Constants.def, order);
 
-        new ObjectFromer().handle(context);
+        new ObjectFromer().handle(c);
 
-        System.out.println(context.node.toJson());
+        System.out.println(((ONode)c.target).toJson());
 
-        Object data = context.node.toData();
+        Object data = ((ONode)c.target).toData();
 
         assert (data instanceof Map);
 

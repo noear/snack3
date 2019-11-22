@@ -2,6 +2,7 @@ package features;
 
 import _models.*;
 import org.junit.Test;
+import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.from.ObjectFromer;
@@ -32,13 +33,13 @@ public class ObjectTest {
         a.b = b;
         b.a = a;
 
-        Context context = new Context(Constants.def, a);
+        Context c = new Context(Constants.def, a);
 
-        new ObjectFromer().handle(context);
+        new ObjectFromer().handle(c);
 
-        System.out.println(context.node.toJson());
+        System.out.println(((ONode)c.target).toJson());
 
-        assert "{\"b\":{}}".equals(context.node.toJson());
+        assert "{\"b\":{}}".equals(((ONode)c.target).toJson());
     }
 
     @Test
@@ -53,16 +54,16 @@ public class ObjectTest {
         order.order_id = 2222;
         order.order_num = "ddddd";
 
-        Context context = new Context(Constants.def, order);
+        Context c = new Context(Constants.def, order);
 
-        new ObjectFromer().handle(context);
+        new ObjectFromer().handle(c);
 
-        System.out.println(context.node.toJson());
+        System.out.println(((ONode)c.target).toJson());
 
-        context = new Context(Constants.def,context.node,OrderModel.class);
-        new ObjectToer().handle(context);
+        c = new Context(Constants.def,((ONode)c.target),OrderModel.class);
+        new ObjectToer().handle(c);
 
-        OrderModel order2 = (OrderModel)context.target;
+        OrderModel order2 = (OrderModel)c.target;
 
         assert 1111 == order2.user.id;
 
@@ -89,15 +90,15 @@ public class ObjectTest {
             group.iids[i] = (int) i;
         }
 
-        Context context = new Context(Constants.serialize, group);
+        Context c = new Context(Constants.serialize, group);
 
-        new ObjectFromer().handle(context);
+        new ObjectFromer().handle(c);
 
-        System.out.println(context.node.toJson());
+        System.out.println(((ONode)c.target).toJson());
 
-        assert 1 == context.node.get("users").get(1).get(1).get("id").getInt();
+        assert 1 == ((ONode)c.target).get("users").get(1).get(1).get("id").getInt();
 
-        UserGroupModel g = context.node.toObject(UserGroupModel.class);
+        UserGroupModel g = ((ONode)c.target).toObject(UserGroupModel.class);
 
         assert g.id == 9999;
 
