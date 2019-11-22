@@ -33,7 +33,7 @@ public class JsonToer implements Toer {
 
             analyse(context.config, o, sb);
 
-            context.text = sb.toString();
+            context.target = sb.toString();
         }
     }
 

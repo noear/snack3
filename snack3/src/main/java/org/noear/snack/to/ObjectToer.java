@@ -30,7 +30,7 @@ public class ObjectToer implements Toer {
     @Override
     public void handle(Context ctx) throws Exception {
         if (null != ctx.node) {
-            ctx.object = analyse(ctx.config, ctx.node, ctx.target_type, ctx.target_type);
+            ctx.target = analyse(ctx.config, ctx.node, ctx.target_type, ctx.target_type);
         }
     }
 

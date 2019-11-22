@@ -14,7 +14,7 @@ import java.util.*;
 public class DataToer implements Toer {
     @Override
     public void handle(Context ctx) {
-        ctx.object = analyse(ctx.node);
+        ctx.target = analyse(ctx.node);
     }
 
     private Object analyse(ONode o) {

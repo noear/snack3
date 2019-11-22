@@ -34,7 +34,7 @@ public final class NodeUtil {
 
     public static String toStr(Constants cfg, ONode node, Toer toer) {
         try {
-            return new Context(cfg, node, String.class).handle(toer).text;
+            return (String) (new Context(cfg, node, String.class).handle(toer).target);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -46,7 +46,7 @@ public final class NodeUtil {
 
     public static Object toObj(Constants cfg, ONode node, Class<?> toclz, Toer toer) {
         try {
-            return new Context(cfg, node, toclz).handle(toer).object;
+            return new Context(cfg, node, toclz).handle(toer).target;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

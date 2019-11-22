@@ -11,21 +11,11 @@ public class Context {
      */
     public final Constants config;
 
-    /**
-     * 文本
-     */
-    public String text;
-    /**
-     * ONode
-     */
+    public Object source;
+
     public ONode node;
-    /**
-     * 对象
-     */
-    public Object object;
-    /**
-     * 目标类型
-     */
+
+    public Object target;
     public Class<?> target_type;
 
     public Context(Constants config, Object from){
@@ -36,9 +26,9 @@ public class Context {
         }
 
         if (from instanceof String) {
-            this.text = ((String) from).trim(); //不能去掉 .trim()
+            this.source = ((String) from).trim(); //不能去掉 .trim()
         } else {
-            this.object = from;
+            this.source = from;
         }
     }
     /**
@@ -52,9 +42,9 @@ public class Context {
         }
 
         if (fromIsStr) {
-            this.text = ((String) from).trim(); //不能去掉 .trim()
+            this.source = ((String) from).trim(); //不能去掉 .trim()
         } else {
-            this.object = from;
+            this.source = from;
         }
     }
 
