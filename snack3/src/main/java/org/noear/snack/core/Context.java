@@ -26,7 +26,7 @@ public class Context {
     /**
      * 目标类型
      */
-    public Class<?> type;
+    public Class<?> target_type;
 
     public Context(Constants config, Object from){
         this.config = config;
@@ -64,7 +64,7 @@ public class Context {
     public Context(Constants config, ONode node, Class<?> to) {
         this.config = config;
         this.node = node;
-        this.type = to;
+        this.target_type = to;
     }
 
     /**
