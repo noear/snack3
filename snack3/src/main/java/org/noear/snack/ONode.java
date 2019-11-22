@@ -800,6 +800,30 @@ public class ONode {
         return loadDo(source, source instanceof String, cfg, null);
     }
 
+
+    /**
+     * 加载string数据并生成新节点（可能会出异常）
+     *
+     * @param source string 数据
+     * @return new:ONode
+     * @throws Exception
+     */
+    public static ONode loadStr(String source) {
+        return loadDo(source, true, Constants.def, DEFAULTS.DEF_JSON_FROMER);
+    }
+
+    /**
+     * 加载bean数据并生成新节点（可能会出异常）
+     *
+     * @param source bean 数据
+     * @return new:ONode
+     * @throws Exception
+     */
+    public static ONode loadObj(Object source) {
+        return loadDo(source, false, Constants.def, DEFAULTS.DEF_OBJECT_FROMER);
+    }
+
+
     private static ONode loadDo(Object source, boolean isString, Constants cfg, Fromer fromer) {
         if (isString) {
             if (fromer == null) {
@@ -812,30 +836,6 @@ public class ONode {
         }
 
         return (ONode) new Context(cfg, source, isString).handle(fromer).target;
-    }
-
-    /**
-     * 加载string数据并生成新节点（可能会出异常）
-     *
-     * @param source string 数据
-     * @return new:ONode
-     * @throws Exception
-     */
-    @Deprecated
-    public static ONode loadStr(String source) {
-        return loadDo(source, true, Constants.def, DEFAULTS.DEF_JSON_FROMER);
-    }
-
-    /**
-     * 加载bean数据并生成新节点（可能会出异常）
-     *
-     * @param source bean 数据
-     * @return new:ONode
-     * @throws Exception
-     */
-    @Deprecated
-    public static ONode loadObj(Object source) {
-        return loadDo(source, false, Constants.def, DEFAULTS.DEF_OBJECT_FROMER);
     }
 
 
