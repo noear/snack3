@@ -6,7 +6,7 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3-parent</artifactId>
-    <version>1.0.x</version>
+    <version>dev</version>
     <packaging>pom</packaging>
 
     <name>snack3_java</name>
@@ -22,8 +22,6 @@
         <module>snack3</module>
         <module>snack3_demo</module>
     </modules>
-
-    
 
     <repositories>
         <repository>
