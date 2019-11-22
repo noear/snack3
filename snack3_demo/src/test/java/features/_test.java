@@ -1,8 +1,13 @@
 package features;
 
+import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
+import org.noear.snack.core.TypeRef;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class _test {
     @Test
@@ -45,5 +50,66 @@ public class _test {
         ONode n = new ONode(Constants.of()); //空特性，什么都没有
 
         assert "".equals(n.getString()) == false;
+    }
+
+    @Test
+    public void test4() {
+        List<UserModel> list = new ArrayList<>();
+        UserModel u1 = new UserModel();
+        u1.id = 1;
+        u1.name = "name1";
+        list.add(u1);
+
+        UserModel u2 = new UserModel();
+        u2.id = 2;
+        u2.name = "name2";
+        list.add(u2);
+
+
+        ONode o = ONode.load("{code:1,msg:'succeed'}", Constants.serialize);
+        o.get("data").get("list").fill(list);
+
+        assert o.select("data.list").count() == 2;
+
+        List<UserModel> list2 = o.select("data.list").toObject(List.class);
+        assert list2.size()==2;
+
+        String message = o.toJson();
+        System.out.println(message);
+
+        assert message != null;
+    }
+
+    @Test
+    public void test5() {
+        List<UserModel> list = new ArrayList<>();
+        UserModel u1 = new UserModel();
+        u1.id = 1;
+        u1.name = "name1";
+        list.add(u1);
+
+        UserModel u2 = new UserModel();
+        u2.id = 2;
+        u2.name = "name2";
+        list.add(u2);
+
+
+        ONode o = ONode.load("{code:1,msg:'succeed'}");
+        o.get("data").get("list").fill(list);
+
+        assert o.select("data.list").count() == 2;
+
+
+
+        //普通数据，转为泛型列表
+        //
+        List<UserModel> list2 = o.select("data.list").toObject((new TypeRef<List<UserModel>>(){}).getType());
+
+        assert list2.size() == list.size();
+
+        String message = o.toJson();
+        System.out.println(message);
+
+        assert message != null;
     }
 }

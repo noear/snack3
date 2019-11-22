@@ -7,10 +7,10 @@ import java.lang.reflect.Type;
  *
  * 例：(new TypeReference<List<String>>(){}).getType()
  * */
-public abstract class TypeReference<T>{
+public abstract class TypeRef<T>{
     protected final Type type;
 
-    protected TypeReference() {
+    protected TypeRef() {
         Type superClass = this.getClass().getGenericSuperclass();
         this.type = ((ParameterizedType)superClass).getActualTypeArguments()[0];
     }
