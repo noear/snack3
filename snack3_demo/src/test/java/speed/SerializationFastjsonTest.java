@@ -1,4 +1,4 @@
-package features;
+package speed;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
