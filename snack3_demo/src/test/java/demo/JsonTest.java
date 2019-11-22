@@ -65,7 +65,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"b\",\"c\":{\"d\":\"e\"},\"f\":{\"g\":\"h\"},\"i\":[{\"j\":\"k\",\"l\":\"m\"},\"n\"]}".equals(c.text);
+        assert "{\"a\":\"b\",\"c\":{\"d\":\"e\"},\"f\":{\"g\":\"h\"},\"i\":[{\"j\":\"k\",\"l\":\"m\"},\"n\"]}".equals(c.target);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"b\"}".equals(c.text);
+        assert "{\"a\":\"b\"}".equals(c.target);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":{\"b\":{\"c\":{\"d\":{\"e\":\"f\"}}}}}".equals(c.text);
+        assert "{\"a\":{\"b\":{\"c\":{\"d\":{\"e\":\"f\"}}}}}".equals(c.target);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert json.equals(c.text);
+        assert json.equals(c.target);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "[{\"a\":\"b\"},{\"c\":\"d\"},[{\"e\":\"f\"}]]".equals(c.text);
+        assert "[{\"a\":\"b\"},{\"c\":\"d\"},[{\"e\":\"f\"}]]".equals(c.target);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "[123,123.45,\"123.45\",\"2019-01-02 03:04:05\",true,false]".equals(c.text);
+        assert "[123,123.45,\"123.45\",\"2019-01-02 03:04:05\",true,false]".equals(c.target);
     }
 
     /** 测试：换行符之类的 转码 */
@@ -150,7 +150,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"\\t\"}".equals(c.text);
+        assert "{\"a\":\"\\t\"}".equals(c.target);
 
     }
 
@@ -166,7 +166,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"'的\\t\\n\"}".equals(c.text);
+        assert "{\"a\":\"'的\\t\\n\"}".equals(c.target);
 
     }
 
@@ -182,7 +182,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equalsIgnoreCase(c.text);
+        assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equals(c.target);
 
     }
 
@@ -197,7 +197,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}".equalsIgnoreCase(c.text);
+        assert "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}".equals(c.target);
 
     }
 
@@ -212,7 +212,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\" \\u000f\\u0012\"}".equalsIgnoreCase(c.text);
+        assert "{\"a\":\" \\u000f\\u0012\"}".equals(c.target);
 
     }
 

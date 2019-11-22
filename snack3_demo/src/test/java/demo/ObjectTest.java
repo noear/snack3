@@ -62,7 +62,7 @@ public class ObjectTest {
         context = new Context(Constants.def,context.node,OrderModel.class);
         new ObjectToer().handle(context);
 
-        OrderModel order2 = (OrderModel)context.object;
+        OrderModel order2 = (OrderModel)context.target;
 
         assert 1111 == order2.user.id;
 
