@@ -123,7 +123,7 @@ public class _test {
 
     @Test
     public void test7() {
-        ONode tmp = ONode.load("{asdfasdf}");
+        ONode tmp = ONode.load("{asdfasdf}", false);
 
         System.out.println(tmp.getString());
 
