@@ -67,7 +67,7 @@
 -forEach(v->..)         //遍历数组的子节点
 
 //输出操作
--toString() -> String           //转为string （如果是对象或数组，则为json）
+-toString() -> String           //转为string （由字符串转换器决定，默认为json）
 -toJson() -> String             //转为json string
 -toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value；clz=Object.class：自动输出类型）
 
