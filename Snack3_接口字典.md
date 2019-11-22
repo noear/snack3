@@ -69,7 +69,7 @@
 //输出操作
 -toString() -> String           //转为string （如果是对象或数组，则为json）
 -toJson() -> String             //转为json string
--toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value）
+-toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value；clz=Object.class：自动输出类型）
 
 //特性操作（不破坏数据的情况上，添加数据；一般用不到）
 -attrGet(key:String)                //获取特性
