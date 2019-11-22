@@ -4,7 +4,6 @@ import org.noear.snack.core.Context;
 import org.noear.snack.core.SimpleJsonPath;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
-import org.noear.snack.core.utils.NodeUtil;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.from.Fromer;
@@ -49,9 +48,9 @@ public class ONode {
      * 支持属性和索引
      * 例：.name
      * 例：[1],[1,3,4],[2:10]
-     * */
+     */
     public ONode select(String jpath) {
-        String[] ss = jpath.replace("..",".**.").split("\\.|\\[");
+        String[] ss = jpath.replace("..", ".**.").split("\\.|\\[");
 
         return SimpleJsonPath.get(ss, 0, this);
     }
@@ -344,15 +343,17 @@ public class ONode {
     }
 
     private boolean _readonly;
+
     /**
      * 只读模式
      * get(key) 不会自动产生新节点
-     * */
-    public ONode readonly(boolean readonly){
+     */
+    public ONode readonly(boolean readonly) {
         _readonly = readonly;
         return this;
     }
-    public ONode readonly(){
+
+    public ONode readonly() {
         return readonly(true);
     }
 
@@ -733,7 +734,7 @@ public class ONode {
 
     /**
      * 将当前ONode 转为 java object
-     *
+     * <p>
      * clz = XxxModel.class => XxxModel
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
@@ -743,7 +744,7 @@ public class ONode {
     }
 
     public <T> T toObject(Class<?> clz, Toer toer) {
-        return (T)(new Context(_c,this, clz).handle(toer).target);
+        return (T) (new Context(_c, this, clz).handle(toer).target);
     }
 
     /**
@@ -800,22 +801,17 @@ public class ONode {
     }
 
     private static ONode loadDo(Object source, boolean isString, Constants cfg, Fromer fromer) {
-        try {
-            if (isString) {
-                if(fromer == null){
-                    fromer = cfg.stringFromer;
-                }
-                return NodeUtil.fromStr(cfg, (String) source, fromer);
-            } else {
-                if(fromer == null){
-                    fromer = cfg.objectFromer;
-                }
-                return NodeUtil.fromObj(cfg, source, fromer);
+        if (isString) {
+            if (fromer == null) {
+                fromer = cfg.stringFromer;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ONode();
+        } else {
+            if (fromer == null) {
+                fromer = cfg.objectFromer;
+            }
         }
+
+        return (ONode) new Context(cfg, source, isString).handle(fromer).target;
     }
 
     /**
@@ -825,8 +821,9 @@ public class ONode {
      * @return new:ONode
      * @throws Exception
      */
-    public static ONode loadStr(String source)  {
-        return NodeUtil.fromStr(source, DEFAULTS.DEF_JSON_FROMER);
+    @Deprecated
+    public static ONode loadStr(String source) {
+        return loadDo(source, true, Constants.def, DEFAULTS.DEF_JSON_FROMER);
     }
 
     /**
@@ -836,18 +833,19 @@ public class ONode {
      * @return new:ONode
      * @throws Exception
      */
+    @Deprecated
     public static ONode loadObj(Object source) {
-        return NodeUtil.fromObj(source, DEFAULTS.DEF_OBJECT_FROMER);
+        return loadDo(source, false, Constants.def, DEFAULTS.DEF_OBJECT_FROMER);
     }
-
 
 
     /**
      * 字会串化 （由序列化器决定格式）
+     *
      * @param source java object
      * @throws Exception
-     * */
-    public static String stringify(Object source) throws Exception {
+     */
+    public static String stringify(Object source) {
         return stringify(source, Constants.def);
     }
 
@@ -855,12 +853,11 @@ public class ONode {
      * 字会串化 （由序列化器决定格式）
      *
      * @param source java object
-     * @param cfg 常量配置
+     * @param cfg    常量配置
      * @throws Exception
-     * */
+     */
     public static String stringify(Object source, Constants cfg) {
-        return NodeUtil.fromObj(cfg, source, cfg.objectFromer)
-                .toObject(null, cfg.stringToer);
+        return load(source, cfg).toString();
     }
 
     /**
@@ -876,13 +873,12 @@ public class ONode {
     /**
      * 序列化为 string（由序列化器决定格式）
      *
-     * @param source    java object
-     * @param cfg 常量配置
+     * @param source java object
+     * @param cfg    常量配置
      * @throws Exception
      */
     public static String serialize(Object source, Constants cfg) {
-        return NodeUtil.fromObj(cfg, source, cfg.objectFromer)
-                .toJson();
+        return load(source, cfg).toJson();
     }
 
     /**
@@ -901,19 +897,18 @@ public class ONode {
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz)  {
+    public static <T> T deserialize(String source, Class<?> clz) {
         return deserialize(source, clz, Constants.serialize);
     }
 
     /**
      * 反序列化为 java object（由返序列化器决定格式）
      *
-     * @param source    string
-     * @param cfg 常量配置
+     * @param source string
+     * @param cfg    常量配置
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz, Constants cfg)  {
-        return NodeUtil.fromStr(cfg, source, cfg.stringFromer)
-                .toObject(clz, cfg.objectToer);
+    public static <T> T deserialize(String source, Class<?> clz, Constants cfg) {
+        return load(source, cfg).toObject(clz, cfg.objectToer);
     }
 }
