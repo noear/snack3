@@ -182,7 +182,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equals(c.target);
+        assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equalsIgnoreCase((String) c.target);
 
     }
 
@@ -212,7 +212,7 @@ public class JsonTest {
 
         new JsonToer().handle(c);
 
-        assert "{\"a\":\" \\u000f\\u0012\"}".equals(c.target);
+        assert "{\"a\":\" \\u000f\\u0012\"}".equalsIgnoreCase((String) c.target);
 
     }
 

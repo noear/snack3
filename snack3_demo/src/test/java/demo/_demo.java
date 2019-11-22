@@ -18,6 +18,8 @@ public class _demo {
         Object n = ONode.deserialize(tmp);
 
         assert n instanceof Map;
+
+        assert ((Map)n).size()==3;
     }
 
     @Test
