@@ -70,6 +70,7 @@
 -toString() -> String           //转为string （由字符串转换器决定，默认为json）
 -toJson() -> String             //转为json string
 -toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value；clz=Object.class：自动输出类型）
+-toObject(clz:Class<T>, toer:Toer) -> T     //转为java object，由toer决定处理
 
 //特性操作（不破坏数据的情况上，添加数据；一般用不到）
 -attrGet(key:String)                //获取特性
@@ -77,9 +78,8 @@
 -attrForeach((k,v)->..)             //遍历特性
 
 //填充操作（为当前节点填充数据）
--fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
--fillObj(source:Object) -> self:ONode       //填充been数据，可能会出异常
--fillStr(source:String) -> self:ONode       //填充String数据，可能会出异常
+-fill(source:Object)    -> self:ONode               //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
+-fill(source:Object, fromer:Fromer) -> self:ONode    //填充数据，由fromer决定处理
 
 /**
 * 以下为静态操作
