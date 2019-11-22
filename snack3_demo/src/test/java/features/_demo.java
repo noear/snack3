@@ -100,12 +100,14 @@ public class _demo {
 
         //无exp写法，需要给根安排个变量
         ONode root = ONode.load("{a:1,b:2}");
-        root.get("c").load(user);
+        root.get("c").fill(user);
         json = root.toJson();
 
         /*
          * {a:1,b:2,c:{id:1,name:"x",note:null}}
          * */
+
+        assert json != null;
     }
 
     public void demo32() throws Exception{
