@@ -20,8 +20,12 @@ public class Context {
 
     /**
      * 用于来源处理的构造
-     * */
-    public Context(Constants config, boolean fromIsStr,  Object from) {
+     */
+    public Context(Constants config, Object from) {
+        this(config, from, from instanceof String);
+    }
+
+    public Context(Constants config, Object from, boolean fromIsStr) {
         this.config = config;
 
         if (from == null) {
@@ -37,7 +41,7 @@ public class Context {
 
     /**
      * 用于去处的构造
-     * */
+     */
     public Context(Constants config, ONode node, Class<?> target_type) {
         this.config = config;
         this.node = node;
@@ -47,7 +51,7 @@ public class Context {
     /**
      * 使用代理对当前上下文进行处理
      */
-    public Context handle(Handler handler) throws Exception{
+    public Context handle(Handler handler) throws Exception {
         handler.handle(this);
         return this;
     }

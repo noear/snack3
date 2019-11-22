@@ -14,7 +14,7 @@ public final class NodeUtil {
     }
 
     public static ONode fromStr(Constants cfg, String str) throws Exception {
-        return new Context(cfg, true, str).handle(cfg.stringFromer).node;
+        return new Context(cfg, str, true).handle(cfg.stringFromer).node;
     }
 
     public static ONode fromObj(Object obj) throws Exception {
@@ -22,7 +22,7 @@ public final class NodeUtil {
     }
 
     public static ONode fromObj(Constants cfg, Object obj) throws Exception {
-        return new Context(cfg, false, obj).handle(cfg.objectFromer).node;
+        return new Context(cfg, obj, false).handle(cfg.objectFromer).node;
     }
 
     /**
@@ -51,5 +51,4 @@ public final class NodeUtil {
             throw new RuntimeException(ex);
         }
     }
-
 }

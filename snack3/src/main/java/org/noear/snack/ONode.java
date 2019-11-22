@@ -733,7 +733,7 @@ public class ONode {
     }
 
     /**
-     * 将当前ONode 转为 Map or List or val（请改用 toObject(clz)）
+     * 将当前ONode 转为 Map or List or val；请改用 toObject(null)
      */
     @Deprecated
     public Object toData() {
@@ -741,7 +741,7 @@ public class ONode {
     }
 
     /**
-     * 将当前ONode 转为 Object（请改用 toObject(clz)）
+     * 将当前ONode 转为 java Object；请改用 toObject(clz)
      */
     @Deprecated
     public <T> T toBean(Class<T> clz) {
