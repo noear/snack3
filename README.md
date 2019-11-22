@@ -9,7 +9,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.1</version>
+  <version>3.1.2</version>
 </dependency>
 ```
 
@@ -66,6 +66,9 @@ o.get("list").get(0).get("lev").getInt();
 
 //demo5.1::取值并转换
 UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并转为UserModel
+
+//demo5.2::取值并填充
+o.get("list2").fill("[1,2,3,4,5,5,6]");
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
