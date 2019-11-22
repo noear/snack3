@@ -172,7 +172,7 @@ public class SpeedTest {
     @Test
     public void test11_x() throws Exception {
         //
-        //10000000=>6.3s,6.6s
+        //10000000=>6.3s,6.4s
         //1000000=>6.8s
         //100000=>1s
         //
@@ -201,7 +201,7 @@ public class SpeedTest {
         ONode.deserialize(json, null);
 
         long start = System.currentTimeMillis();
-        for(int i=0,len=10000000; i<len; i++) {
+        for(int i=0,len=100000; i<len; i++) {
             ONode.deserialize(json, null);
         }
         long times = System.currentTimeMillis() - start;
@@ -292,7 +292,7 @@ public class SpeedTest {
         tmp.toObject(null);
 
         long start = System.currentTimeMillis();
-        for(int i=0,len=10000000; i<len; i++) {
+        for(int i=0,len=100000; i<len; i++) {
             tmp.toObject(null);
         }
         long times = System.currentTimeMillis() - start;
