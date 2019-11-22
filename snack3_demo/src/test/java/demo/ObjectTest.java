@@ -97,7 +97,7 @@ public class ObjectTest {
 
         assert 1 == context.node.get("users").get(1).get(1).get("id").getInt();
 
-        UserGroupModel g = context.node.toBean(UserGroupModel.class);
+        UserGroupModel g = context.node.toObject(UserGroupModel.class);
 
         assert g.id == 9999;
 
