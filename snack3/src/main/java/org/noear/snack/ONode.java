@@ -341,7 +341,10 @@ public class ONode {
     }
 
     private boolean _readonly;
-    /** 只读时，get(key) 不会自动产生新节点 */
+    /**
+     * 只读模式
+     * get(key) 不会自动产生新节点
+     * */
     public ONode readonly(boolean readonly){
         _readonly = readonly;
         return this;

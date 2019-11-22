@@ -9,6 +9,8 @@ public class _test {
         String str = "{\"g_udid\":\"1EFB07BFE0D98F8BF9EAF276C92C95FA4BEA3423\",\"g_imid\":\"864499040824376\",\"g_lkey\":\"d359a30a239e9e17daa8f8367ef35422\",\"g_encode\":\"1\",\"g_time\":1572511666,\"g_platform\":\"Android\",\"g_system\":\"8.1.0\",\"g_model\":\"PACM00\",\"g_brand\":\"OPPO\"}";
         ONode n = ONode.load(str);
 
+        n.readonly(true);
+
         String g_lkey = n.get("g_lkey").getString();
         long g_time = n.get("g_time").getLong();
         int g_encode = n.get("g_encode").getInt();
