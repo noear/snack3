@@ -63,11 +63,6 @@ public class Context {
      * */
     public Context(Constants config, ONode node, Class<?> to) {
         this.config = config;
-
-        if (to == null) {
-            return;
-        }
-
         this.node = node;
         this.type = to;
     }
