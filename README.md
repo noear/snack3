@@ -65,7 +65,7 @@ o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
 
 //demo5.1::取值并转换
-UserModel user = o.get("user").toBean(UserModel.class); //取user节点，并转为UserModel
+UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并转为UserModel
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
@@ -75,9 +75,9 @@ o.select("$..mobile").forEach(n->n.val("186"));
 o.select("$.data.list[1].mobile").val("186");
 
 //查找所有手机号，并转为List<String> //$可写，也可不写
-List<String> list = o.select("..mobile").toBean(List.class);//性能差点
+List<String> list = o.select("..mobile").toObject(List.class);//性能差点
 //查询data.list下的所有mobile，并转为List<String>
-List<String> list = o.select("data.list[*].mobile").toBean(List.class);//性能好点
+List<String> list = o.select("data.list[*].mobile").toObject(List.class);//性能好点
 
 
 //demo7:遍历
@@ -185,10 +185,9 @@ o.forEach((v)->{
 -forEach(v->..)         //遍历数组的子节点
 
 //输出操作
--toString() -> String   //转为string （如果是对象或数组，则为json）
--toJson() -> String     //转为json string
--toData() -> Object     //转为数据块（可能值，可能是Map<String,Object>，可能是List<Object>；由内部数据决定）
--toBean(clz:Class<T>) -> T
+-toString() -> String           //转为string （如果是对象或数组，则为json）
+-toJson() -> String             //转为json string
+-toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为 Map,List,Value）
 
 //特性操作（不破坏数据的情况上，添加数据；一般用不到）
 -attrGet(key:String)                //获取特性

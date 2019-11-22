@@ -19,16 +19,16 @@ public class JsonPathTest {
         int li2  = n.get("data").get("list").get(2).getInt();
 
         //4.获取一个数组
-        //List<Integer> list = n.get("data").get("list").toBean(List.class);
-        List<Integer> list = n.select("data.list").toBean(List.class);
+        //List<Integer> list = n.get("data").get("list").toObject(List.class);
+        List<Integer> list = n.select("data.list").toObject(List.class);
 
 
 
         //int mi = n.get("data").get("list").get(0).getInt();
         int mi = n.select("data.list[-1]").getInt();
 
-        List<Integer> list2 = n.select("data.list[2,4]").toBean(List.class);
-        List<Integer> list3 = n.select("data.list[2:4]").toBean(List.class);
+        List<Integer> list2 = n.select("data.list[2,4]").toObject(List.class);
+        List<Integer> list3 = n.select("data.list[2:4]").toObject(List.class);
 
         ONode ary2_a = n.select("data.ary2[*].b.c");
 
@@ -47,17 +47,17 @@ public class JsonPathTest {
 
 
         //4.获取一个数组
-        //List<Integer> list = n.get("data").get("list").toBean(List.class);
-        List<Integer> list = n.select("$.data.list").toBean(List.class);
+        //List<Integer> list = n.get("data").get("list").toObject(List.class);
+        List<Integer> list = n.select("$.data.list").toObject(List.class);
 
 
 
         //int mi = n.get("data").get("list").get(0).getInt();
         int mi = n.select("$.data.list[-1]").getInt();
 
-        List<Integer> list2 = n.select("$.data.list[2,4]").toBean(List.class);
-        List<Integer> list3 = n.select("$.data.list[1:4]").toBean(List.class);
-        List<Integer> list4 = n.select("$.data.list[:4]").toBean(List.class);
+        List<Integer> list2 = n.select("$.data.list[2,4]").toObject(List.class);
+        List<Integer> list3 = n.select("$.data.list[1:4]").toObject(List.class);
+        List<Integer> list4 = n.select("$.data.list[:4]").toObject(List.class);
 
         ONode ary2_a = n.select("$.data.ary2[*].b.c");
 

@@ -87,7 +87,7 @@ public class _demo {
     }
 
     public void demo32() throws Exception{
-        UserModel tmp = ONode.load("{id:1,name:'x'}").toBean(UserModel.class);
+        UserModel tmp = ONode.load("{id:1,name:'x'}").toObject(UserModel.class);
     }
 
     public void demo40(){

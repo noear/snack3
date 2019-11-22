@@ -67,10 +67,9 @@
 -forEach(v->..)         //遍历数组的子节点
 
 //输出操作
--toString() -> String   //转为string （如果是对象或数组，则为json）
--toJson() -> String     //转为json string
--toData() -> Object     //转为数据块（可能值，可能是Map<String,Object>，可能是List<Object>；由内部数据决定）
--toBean(clz:Class<T>) -> T
+-toString() -> String           //转为string （如果是对象或数组，则为json）
+-toJson() -> String             //转为json string
+-toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value）
 
 //特性操作（不破坏数据的情况上，添加数据；一般用不到）
 -attrGet(key:String)                //获取特性
