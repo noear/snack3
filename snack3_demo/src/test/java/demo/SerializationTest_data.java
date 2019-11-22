@@ -28,6 +28,10 @@ public class SerializationTest_data {
 
             NullPointerException ex2 = ONode.deserialize(json,NullPointerException.class);
 
+            Object ex22 = ONode.deserialize(json,Object.class);
+
+            Object ex23 = ONode.deserialize(json,null);
+
             ex2.printStackTrace();
 
             assert json != null;

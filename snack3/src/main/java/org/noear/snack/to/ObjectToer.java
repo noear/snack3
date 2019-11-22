@@ -37,7 +37,7 @@ public class ObjectToer implements Toer {
         //
         // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
         //
-        if(ctx.target == null){
+        if(ctx.target_type == null){
             if (o.isObject()) {
                 return HashMap.class;
             }

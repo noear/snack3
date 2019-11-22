@@ -6,15 +6,15 @@ import org.noear.snack.ONode;
  * 处理上下文对象
  * */
 public class Context {
-    /**
-     * 前量配置
-     */
+    /** 常量配置 */
     public final Constants config;
 
+    /** 来源 */
     public Object source;
 
     public ONode node;
 
+    /** 目标 */
     public Object target;
     public Class<?> target_type;
 
