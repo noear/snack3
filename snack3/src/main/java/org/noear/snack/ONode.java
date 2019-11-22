@@ -193,7 +193,7 @@ public class ONode {
                 return toJson();
             }
 
-            return _c.null_string;
+            return _c.null_string();
         }
     }
 

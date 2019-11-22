@@ -14,16 +14,13 @@ public class Constants {
     /** 默认配置 */
     public static final Constants def = of(
             Feature.OrderedField,
-            Feature.WriteDateUseTicks).build(c->{
-                c.null_string = "";
-    });
+            Feature.WriteDateUseTicks,
+            Feature.StringNullAsEmpty);
 
     public static final Constants serialize = of(
             Feature.OrderedField,
             Feature.BrowserCompatible,
-            Feature.WriteClassName).build(c-> {
-                c.null_string = null;
-    });
+            Feature.WriteClassName);
 
     public static Constants of(Feature... features) {
         Constants l = new Constants();
@@ -43,8 +40,6 @@ public class Constants {
 
 
     private SimpleDateFormat _date_format;
-
-    public String   null_string = DEFAULTS.DEF_NULL_STRING; //默府null字符串
 
     public String   date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
     public String   type_key    = DEFAULTS.DEF_TYPE_KEY;    //类型key
@@ -81,5 +76,13 @@ public class Constants {
 
     public final boolean hasFeature(Feature feature) {
         return Feature.isEnabled(features, feature);
+    }
+
+    public final String null_string() {
+        if (hasFeature(Feature.StringNullAsEmpty)) {
+            return "";
+        } else {
+            return null;
+        }
     }
 }

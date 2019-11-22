@@ -15,10 +15,6 @@ import java.util.TimeZone;
  * */
 public class DEFAULTS {
 
-    /** 默府NULL字符串值 */
-    public static final String DEF_NULL_STRING = "";
-    public static final boolean DEF_NULL_NODE_NEW = false;
-
     /** 默认时间格式 */
     public static final String DEF_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     /** 默认类型的key */

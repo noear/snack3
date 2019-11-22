@@ -32,6 +32,8 @@ public enum  Feature {
 
     EnumUsingName,
 
+    StringNullAsEmpty,
+
     ;
 
     Feature(){
