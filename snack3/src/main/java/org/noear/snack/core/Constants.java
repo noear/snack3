@@ -13,6 +13,7 @@ import java.util.*;
 public class Constants {
     /** 默认配置 */
     public static final Constants def = of(
+            Feature.OrderedField,
             Feature.WriteDateUseTicks).build(c->{
                 c.null_string = "";
     });
