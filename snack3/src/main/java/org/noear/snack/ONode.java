@@ -30,7 +30,7 @@ public class ONode {
      * @return 版本信息
      */
     public static String version() {
-        return "3.0.14";
+        return "3.1.1";
     }
 
     public ONode() {
@@ -340,6 +340,13 @@ public class ONode {
         return asObject()._d.object;
     }
 
+    private boolean _readonly;
+    /** 只读时，get(key) 不会自动产生新节点 */
+    public ONode readonly(boolean readonly){
+        _readonly = readonly;
+        return this;
+    }
+
     /**
      * 是否存在对象子节点
      */
@@ -362,7 +369,10 @@ public class ONode {
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
             tmp = new ONode(_c);
-            _d.object.put(key, tmp);
+
+            if (_readonly == false) {
+                _d.object.put(key, tmp);
+            }
         }
 
         return tmp;
