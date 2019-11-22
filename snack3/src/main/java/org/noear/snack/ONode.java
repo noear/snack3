@@ -721,18 +721,14 @@ public class ONode {
      */
     @Override
     public String toString() {
-        return toString(_c.stringToer);
-    }
-
-    public String toString(Toer toer) {
-        return NodeUtil.toStr(_c, this, toer);
+        return toObject(null, _c.stringToer);
     }
 
     /**
      * 将当前ONode 转为 json string
      */
     public String toJson() {
-        return toString(DEFAULTS.DEF_JSON_TOER);
+        return toObject(null, DEFAULTS.DEF_JSON_TOER);
     }
 
     /**
@@ -747,7 +743,7 @@ public class ONode {
     }
 
     public <T> T toObject(Class<?> clz, Toer toer) {
-        return (T) NodeUtil.toObj(_c, this, clz, toer);
+        return (T)(new Context(_c,this, clz).handle(toer).target);
     }
 
     /**
@@ -864,7 +860,7 @@ public class ONode {
      * */
     public static String stringify(Object source, Constants constants) {
         return NodeUtil.fromObj(constants, source, constants.objectFromer)
-                .toString(constants.stringToer);
+                .toObject(null, constants.stringToer);
     }
 
     /**
