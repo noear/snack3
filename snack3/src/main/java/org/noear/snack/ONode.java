@@ -783,30 +783,6 @@ public class ONode {
         return this;
     }
 
-    /**
-     * 填充been数据（可能会出异常）
-     *
-     * @param source java object 数据
-     * @return self:ONode
-     * @throws Exception
-     */
-    public ONode fillObj(Object source) {
-        val(loadDo(source, false, _c, null));
-        return this;
-    }
-
-    /**
-     * 填充string数据（可能会出异常）
-     *
-     * @param source string 数据
-     * @return self:ONode
-     * @throws Exception
-     */
-    public ONode fillStr(String source) {
-        val(loadDo(source, true, _c, null));
-        return this;
-    }
-
     ////////////////////
     //
     // 来源加载

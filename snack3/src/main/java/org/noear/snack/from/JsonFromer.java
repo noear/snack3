@@ -229,6 +229,9 @@ public class JsonFromer implements Fromer {
         return analyse_val(sBuf.toString(), sBuf.isString, false);
     }
 
+    /**
+     * @param isNoterr 不抛出异常
+     * */
     private ONode analyse_val(String sval, boolean isString, boolean isNoterr) {
         ONode orst = new ONode();
         OValue oval = orst.val();
