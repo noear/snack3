@@ -277,22 +277,26 @@ public class ObjectToer implements Toer {
     public Object analyseCollection(Context ctx, ONode o, Class<?> clz, Type type) throws Exception {
         Collection list = TypeUtil.createCollection(clz, false);
 
-        if(list == null){
+        if (list == null) {
             return null;
         }
 
-        Type itemType = TypeUtil.getCollectionItemType(type);
-
-        if(o.count()==2) {
+        if (o.count() == 2) {
             ONode o1 = o.get(0);
             if (o1.count() == 1 && o1.contains(ctx.config.type_key)) { //说明，是有类型的集合
                 o = o.get(1); //取第二个节点，做为数据节点（第1个为类型节点）;
             }
         }
 
-        for(ONode o1 : o.nodeData().array){
-            list.add(analyse(ctx,o1,(Class<?>) itemType,itemType));
+        Type itemType = null;
+        if (ctx.target_type != null) {
+            itemType = TypeUtil.getCollectionItemType(type);
         }
+
+        for (ONode o1 : o.nodeData().array) {
+            list.add(analyse(ctx, o1, (Class<?>) itemType, itemType));
+        }
+
         return list;
     }
 

@@ -49,10 +49,6 @@ public class TypeUtil {
 
 
     public static Type getCollectionItemType(Type fieldType) {
-        if(fieldType == null){
-            return null;
-        }
-
         if (fieldType instanceof ParameterizedType) {
             return getCollectionItemType((ParameterizedType) fieldType);
         }
@@ -178,14 +174,14 @@ public class TypeUtil {
     }
 
 
-    public static Map<Object, Object> createMap(Type type) {
+    public static Map createMap(Type type) {
         if(type == null){
-            return new HashMap<>();
+            return new HashMap();
         }
 
         //最常用的放前面
         if(type == HashMap.class){
-            return new HashMap<>();
+            return new HashMap();
         }
 
         if (type == Properties.class) {
@@ -234,7 +230,7 @@ public class TypeUtil {
         }
 
         try {
-            return (Map<Object, Object>) clazz.newInstance();
+            return (Map) clazz.newInstance();
         } catch (Exception e) {
             throw new RuntimeException("unsupport type " + type, e);
         }

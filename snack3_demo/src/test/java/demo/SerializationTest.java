@@ -44,14 +44,21 @@ public class SerializationTest {
         try{
             String val = null;
             val.equals("");
-        }catch (Exception ex){
+        }catch (Exception ex) {
             ex.printStackTrace();
 
             String json = ONode.serialize(ex);
 
             System.out.println(json);
 
-            NullPointerException ex2 = ONode.deserialize(json,NullPointerException.class);
+            NullPointerException ex2 = ONode.deserialize(json, NullPointerException.class);
+
+            Object ex22 = ONode.deserialize(json, Object.class);
+            assert ex22 instanceof  NullPointerException;
+
+
+            Object ex23 = ONode.deserialize(json, null);
+            assert  ex23 instanceof Map;
 
             ex2.printStackTrace();
 
@@ -89,6 +96,12 @@ public class SerializationTest {
         System.out.println(json);
         UserGroupModel group2 = ONode.deserialize(json, UserGroupModel.class);
 
+        Object group22 = ONode.deserialize(json, Object.class);
+        assert group22 instanceof  UserGroupModel;
+
+        Object group23 = ONode.deserialize(json, null);
+        assert group23 instanceof  Map;
+
         assert group2.id == 9999;
 
     }
@@ -113,7 +126,14 @@ public class SerializationTest {
 
         String json = ONode.serialize(obj);
         System.out.println(json);
-        Map<String, Object> obj2 = ONode.deserialize(json, String.class);
+        Map<String, Object> obj2 = ONode.deserialize(json, LinkedHashMap.class);
+        assert obj2 instanceof LinkedHashMap;
+
+        Map<String, Object> obj22 = ONode.deserialize(json, Object.class);
+        assert obj22 instanceof HashMap;
+
+        Map<String, Object> obj23 = ONode.deserialize(json, null);
+        assert obj23 instanceof  Map;
 
         assert obj2.size() == 1;
     }
@@ -134,8 +154,9 @@ public class SerializationTest {
 
         String json = ONode.serialize(order);
         System.out.println(json);
-        OrderModel order2 = ONode.deserialize(json,OrderModel.class);
-
+        OrderModel order2 = ONode.deserialize(json, OrderModel.class);
+        Object order22 = ONode.deserialize(json, Object.class);
+        Map order23 = ONode.deserialize(json, null);
 
 
         assert 1111 == order2.user.id;
