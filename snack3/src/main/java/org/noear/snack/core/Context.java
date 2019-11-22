@@ -18,23 +18,10 @@ public class Context {
     public Object target;
     public Class<?> target_type;
 
-    public Context(Constants config, Object from){
-        this.config = config;
-
-        if (from == null) {
-            return;
-        }
-
-        if (from instanceof String) {
-            this.source = ((String) from).trim(); //不能去掉 .trim()
-        } else {
-            this.source = from;
-        }
-    }
     /**
      * 用于来源处理的构造
      * */
-    public Context(Constants config, Object from , boolean fromIsStr) {
+    public Context(Constants config, boolean fromIsStr,  Object from) {
         this.config = config;
 
         if (from == null) {
@@ -51,10 +38,10 @@ public class Context {
     /**
      * 用于去处的构造
      * */
-    public Context(Constants config, ONode node, Class<?> to) {
+    public Context(Constants config, ONode node, Class<?> target_type) {
         this.config = config;
         this.node = node;
-        this.target_type = to;
+        this.target_type = target_type;
     }
 
     /**

@@ -881,7 +881,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source) throws Exception {
-        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(null);
+        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(Object.class);
     }
 
     /**
