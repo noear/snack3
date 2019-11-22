@@ -726,17 +726,26 @@ public class ONode {
     }
 
     /**
-     * 将当前ONode 转为 Map or List or val
+     * 将当前ONode 转为 java object
      */
-    public Object toData() {
-        return NodeUtil.toObj(_c, this, ONode.class, DEFAULTS.DEF_DATA_TOER);
+    public <T> T toObject(Class<T> clz) {
+        return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
     }
 
     /**
-     * 将当前ONode 转为 Object
+     * 将当前ONode 转为 Map or List or val（请改用 toObject(clz)）
      */
+    @Deprecated
+    public Object toData() {
+        return toObject(null);
+    }
+
+    /**
+     * 将当前ONode 转为 Object（请改用 toObject(clz)）
+     */
+    @Deprecated
     public <T> T toBean(Class<T> clz) {
-        return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
+        return toObject(clz);
     }
 
 
@@ -872,7 +881,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source) throws Exception {
-        return (T) NodeUtil.fromStr(Constants.serialize, source).toBean(null);
+        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(null);
     }
 
     /**
@@ -882,7 +891,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz) throws Exception {
-        return (T) NodeUtil.fromStr(Constants.serialize, source).toBean(clz);
+        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(clz);
     }
 
 
@@ -895,6 +904,6 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz, Constants constants) throws Exception {
-        return (T) NodeUtil.fromStr(constants, source).toBean(clz);
+        return (T) NodeUtil.fromStr(constants, source).toObject(clz);
     }
 }

@@ -4,7 +4,6 @@ import org.noear.snack.from.Fromer;
 import org.noear.snack.from.JsonFromer;
 import org.noear.snack.from.ObjectFromer;
 import org.noear.snack.to.JsonToer;
-import org.noear.snack.to.DataToer;
 import org.noear.snack.to.ObjectToer;
 import org.noear.snack.to.Toer;
 
@@ -35,8 +34,7 @@ public class DEFAULTS {
     public static final Fromer DEF_OBJECT_FROMER = new ObjectFromer();
     /** 默认对象去处器 */
     public static final Toer DEF_OBJECT_TOER   = new ObjectToer();
-    /** 默认数据去处器 */
-    public static final Toer DEF_DATA_TOER   = new DataToer();
+
 
     /** 默认JSON来源器 */
     public static final Fromer DEF_JSON_FROMER = new JsonFromer();
