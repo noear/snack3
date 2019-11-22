@@ -810,6 +810,10 @@ public class ONode {
         return loadDo(source, source instanceof String, Constants.def);
     }
 
+    public static ONode load(Object source, Constants constants) {
+        return loadDo(source, source instanceof String, constants);
+    }
+
     private static ONode loadDo(Object source, boolean isString, Constants constants) {
         try {
             if (isString) {

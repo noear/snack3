@@ -29,8 +29,8 @@ public class _demo {
         list.add(u2);
 
 
-        ONode o = ONode.load("{code:1,msg:'succeed'}");
-        o.cfg(Constants.serialize).get("data").get("list").fill(list);
+        ONode o = ONode.load("{code:1,msg:'succeed'}", Constants.serialize);
+        o.get("data").get("list").fill(list);
 
         assert o.select("data.list").count() ==2;
 
