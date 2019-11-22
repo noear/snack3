@@ -727,6 +727,10 @@ public class ONode {
 
     /**
      * 将当前ONode 转为 java object
+     *
+     * clz = XxxModel.class => XxxModel
+     * clz = Object.class   => auto type
+     * clz = null           => Map or List or Value
      */
     public <T> T toObject(Class<T> clz) {
         return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
