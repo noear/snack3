@@ -10,7 +10,7 @@ import java.util.List;
 
 public class _test {
     @Test
-    public void test1(){
+    public void test1() {
         String str = "{\"g_udid\":\"1EFB07BFE0D98F8BF9EAF276C92C95FA4BEA3423\",\"g_imid\":\"864499040824376\",\"g_lkey\":\"d359a30a239e9e17daa8f8367ef35422\",\"g_encode\":\"1\",\"g_time\":1572511666,\"g_platform\":\"Android\",\"g_system\":\"8.1.0\",\"g_model\":\"PACM00\",\"g_brand\":\"OPPO\"}";
         ONode n = ONode.load(str);
 
@@ -26,7 +26,7 @@ public class _test {
         String g_udid = n.get("g_udid").getString();
         String g_imid = n.get("g_imid").getString();
         double g_lng = n.get("g_lng").getDouble();
-        double  g_lat = n.get("g_lat").getDouble();
+        double g_lat = n.get("g_lat").getDouble();
         String g_adr = n.get("g_adr").getString();
 
         String str2 = n.toJson();
@@ -38,14 +38,14 @@ public class _test {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         ONode n = new ONode(); //默认,null string 为 空字符
 
         assert "".equals(n.getString());
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         ONode n = new ONode(Constants.of()); //空特性，什么都没有
 
         assert "".equals(n.getString()) == false;
@@ -71,7 +71,7 @@ public class _test {
         assert o.select("data.list").count() == 2;
 
         List<UserModel> list2 = o.select("data.list").toObject(List.class);
-        assert list2.size()==2;
+        assert list2.size() == 2;
 
         String message = o.toJson();
         System.out.println(message);
@@ -99,10 +99,10 @@ public class _test {
         assert o.select("data.list").count() == 2;
 
 
-
         //普通数据，转为泛型列表
         //
-        List<UserModel> list2 = o.select("data.list").toObject((new ArrayList<UserModel>(){}).getClass());
+        List<UserModel> list2 = o.select("data.list").toObject((new ArrayList<UserModel>() {
+        }).getClass());
 
         assert list2.size() == list.size();
 
@@ -110,5 +110,23 @@ public class _test {
         System.out.println(message);
 
         assert message != null;
+    }
+
+    @Test
+    public void test6() {
+        ONode tmp = ONode.load("{asdfasdf}");
+
+        System.out.println(tmp.toString());
+
+        assert tmp.isObject();
+    }
+
+    @Test
+    public void test7() {
+        ONode tmp = ONode.loadObj("{asdfasdf}");
+
+        System.out.println(tmp.getString());
+
+        assert "{asdfasdf}".equals(tmp.getString());
     }
 }
