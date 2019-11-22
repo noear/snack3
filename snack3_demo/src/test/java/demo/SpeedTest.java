@@ -50,7 +50,7 @@ public class SpeedTest {
 
         long start = System.currentTimeMillis();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             c.handle(handler);
             //ONode.tryLoad(c.text);
 
