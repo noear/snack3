@@ -184,7 +184,7 @@ public class ObjectFromer implements Fromer {
         Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
         for (FieldWrap f : list) {
             Object val = f.get(obj);
-            if (val != null && val.equals(obj)==false) { //null 值不需要处理,减量
+            if (val != null && val.equals(obj)==false) { //null 和 自引用 不需要处理
                 rst.setNode(f.name(), analyse(cfg, val));
             }
         }
