@@ -1,4 +1,4 @@
-package demo.models;
+package _models;
 
 public class UserModel {
     public int id;

@@ -1,9 +1,9 @@
-package demo;
+package features;
 
-import demo.models.CModel;
-import demo.models.OrderModel;
-import demo.models.UserGroupModel;
-import demo.models.UserModel;
+import _models.CModel;
+import _models.OrderModel;
+import _models.UserGroupModel;
+import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 

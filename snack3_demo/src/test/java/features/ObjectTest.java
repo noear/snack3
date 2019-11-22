@@ -1,8 +1,7 @@
-package demo;
+package features;
 
-import demo.models.*;
+import _models.*;
 import org.junit.Test;
-import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.from.ObjectFromer;
@@ -11,14 +10,13 @@ import org.noear.snack.to.ObjectToer;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 2019.01.30
  *
  * @author cjl
  */
-public class DataTest {
+public class ObjectTest {
 
 
     /**
@@ -40,9 +38,7 @@ public class DataTest {
 
         System.out.println(context.node.toJson());
 
-        Object data = context.node.toData();
-
-        assert (data instanceof Map);
+        assert "{\"b\":{}}".equals(context.node.toJson());
     }
 
     @Test
@@ -63,14 +59,17 @@ public class DataTest {
 
         System.out.println(context.node.toJson());
 
-        Object data = context.node.toData();
+        context = new Context(Constants.def,context.node,OrderModel.class);
+        new ObjectToer().handle(context);
 
-        assert (data instanceof Map);
+        OrderModel order2 = (OrderModel)context.target;
+
+        assert 1111 == order2.user.id;
 
     }
 
     @Test
-    public void test2() throws Exception {
+    public void test2() throws IllegalAccessException {
 
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -90,21 +89,17 @@ public class DataTest {
             group.iids[i] = (int) i;
         }
 
-//        Context context = new Context(Constants.serialize, group);
-//
-//        new ObjectFromer().handle(context);
+        Context context = new Context(Constants.serialize, group);
 
-        String json = ONode.serialize(group);
+        new ObjectFromer().handle(context);
 
-        System.out.println(json);//context.node.toJson());
+        System.out.println(context.node.toJson());
 
-        Object g2 = ONode.deserialize(json);
+        assert 1 == context.node.get("users").get(1).get(1).get("id").getInt();
 
-        ONode node = ONode.load(json); //context.node.toData();
+        UserGroupModel g = context.node.toObject(UserGroupModel.class);
 
-        Object tmp = node.toData();
-
-        assert (tmp instanceof Map);
+        assert g.id == 9999;
 
     }
 

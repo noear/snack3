@@ -1,4 +1,4 @@
-package demo;
+package speed;
 
 import org.junit.Test;
 

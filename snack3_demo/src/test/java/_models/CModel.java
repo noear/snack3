@@ -1,4 +1,4 @@
-package demo.models;
+package _models;
 
 import org.noear.snack.ONodeType;
 

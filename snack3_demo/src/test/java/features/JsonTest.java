@@ -1,4 +1,4 @@
-package demo;
+package features;
 
 import org.junit.Test;
 import org.noear.snack.core.Constants;

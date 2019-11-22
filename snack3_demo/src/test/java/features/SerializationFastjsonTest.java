@@ -1,11 +1,11 @@
-package demo;
+package features;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import demo.models.CModel;
-import demo.models.OrderModel;
-import demo.models.UserGroupModel;
-import demo.models.UserModel;
+import _models.CModel;
+import _models.OrderModel;
+import _models.UserGroupModel;
+import _models.UserModel;
 import org.junit.Test;
 
 import java.util.*;

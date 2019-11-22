@@ -1,7 +1,7 @@
-package demo;
+package speed;
 
-import demo.models.UserGroupModel;
-import demo.models.UserModel;
+import _models.UserGroupModel;
+import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;

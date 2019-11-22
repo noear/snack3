@@ -1,12 +1,11 @@
-package demo;
+package features;
 
-import demo.models.UserModel;
+import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class _demo {
