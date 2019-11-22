@@ -1,11 +1,14 @@
 package org.noear.snack;
 
+import org.noear.snack.core.Context;
 import org.noear.snack.core.SimpleJsonPath;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
 import org.noear.snack.core.utils.NodeUtil;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.DEFAULTS;
+import org.noear.snack.from.Fromer;
+import org.noear.snack.to.Toer;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -718,14 +721,18 @@ public class ONode {
      */
     @Override
     public String toString() {
-        return NodeUtil.toStr(_c, this, _c.stringToer);
+        return toString(_c.stringToer);
+    }
+
+    public String toString(Toer toer) {
+        return NodeUtil.toStr(_c, this, toer);
     }
 
     /**
      * 将当前ONode 转为 json string
      */
     public String toJson() {
-        return NodeUtil.toStr(_c, this, DEFAULTS.DEF_JSON_TOER);
+        return toString(DEFAULTS.DEF_JSON_TOER);
     }
 
     /**
@@ -736,7 +743,11 @@ public class ONode {
      * clz = null           => Map or List or Value
      */
     public <T> T toObject(Class<?> clz) {
-        return (T) NodeUtil.toObj(_c, this, clz, _c.objectToer);
+        return toObject(clz, _c.objectToer);
+    }
+
+    public <T> T toObject(Class<?> clz, Toer toer) {
+        return (T) NodeUtil.toObj(_c, this, clz, toer);
     }
 
     /**
@@ -759,25 +770,28 @@ public class ONode {
     /**
      * 填充数据（如有问题会跳过，不会出异常）
      *
-     * @param source 可以是 String 或 been 数据
+     * @param source 可以是 String 或 java object 数据
      * @return self:ONode
      */
     public ONode fill(Object source) {
-        ONode tmp = loadDo(source, source instanceof String, _c);
-        val(tmp);
+        val(loadDo(source, source instanceof String, _c, null));
+        return this;
+    }
+
+    public ONode fill(Object source, Fromer fromer) {
+        val(loadDo(source, source instanceof String, _c, fromer));
         return this;
     }
 
     /**
      * 填充been数据（可能会出异常）
      *
-     * @param source bean 数据
+     * @param source java object 数据
      * @return self:ONode
      * @throws Exception
      */
-    public ONode fillObj(Object source) throws Exception {
-        ONode tmp = loadDo(source, false, _c);
-        val(tmp);
+    public ONode fillObj(Object source) {
+        val(loadDo(source, false, _c, null));
         return this;
     }
 
@@ -788,9 +802,8 @@ public class ONode {
      * @return self:ONode
      * @throws Exception
      */
-    public ONode fillStr(String source) throws Exception {
-        ONode tmp = loadDo(source, true, _c);
-        val(tmp);
+    public ONode fillStr(String source) {
+        val(loadDo(source, true, _c, null));
         return this;
     }
 
@@ -807,19 +820,25 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
-        return loadDo(source, source instanceof String, Constants.def);
+        return load(source, Constants.def);
     }
 
     public static ONode load(Object source, Constants constants) {
-        return loadDo(source, source instanceof String, constants);
+        return loadDo(source, source instanceof String, constants, null);
     }
 
-    private static ONode loadDo(Object source, boolean isString, Constants constants) {
+    private static ONode loadDo(Object source, boolean isString, Constants constants, Fromer fromer) {
         try {
             if (isString) {
-                return NodeUtil.fromStr(constants, (String) source);
+                if(fromer == null){
+                    fromer = constants.stringFromer;
+                }
+                return NodeUtil.fromStr(constants, (String) source, fromer);
             } else {
-                return NodeUtil.fromObj(constants, source);
+                if(fromer == null){
+                    fromer = constants.objectFromer;
+                }
+                return NodeUtil.fromObj(constants, source, fromer);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -835,7 +854,7 @@ public class ONode {
      * @throws Exception
      */
     public static ONode loadStr(String source) throws Exception {
-        return NodeUtil.fromStr(source);
+        return NodeUtil.fromStr(source, DEFAULTS.DEF_JSON_FROMER);
     }
 
     /**
@@ -845,49 +864,53 @@ public class ONode {
      * @return new:ONode
      * @throws Exception
      */
-    public static ONode loadObj(Object source) throws Exception {
-        return NodeUtil.fromObj(source);
+    public static ONode loadObj(Object source) {
+        return NodeUtil.fromObj(source, DEFAULTS.DEF_OBJECT_FROMER);
     }
+
+
 
     /**
      * 字会串化 （由序列化器决定格式）
-     * @param source bean
+     * @param source java object
      * @throws Exception
      * */
     public static String stringify(Object source) throws Exception {
-        return NodeUtil.fromObj(Constants.def, source).toString();
+        return stringify(source, Constants.def);
     }
 
     /**
      * 字会串化 （由序列化器决定格式）
      *
-     * @param source bean
+     * @param source java object
      * @param constants 常量配置
      * @throws Exception
      * */
-    public static String stringify(Object source, Constants constants) throws Exception {
-        return NodeUtil.fromObj(constants, source).toString();
+    public static String stringify(Object source, Constants constants) {
+        return NodeUtil.fromObj(constants, source, constants.objectFromer)
+                .toString(constants.stringToer);
     }
 
     /**
      * 序列化为 string（由序列化器决定格式）
      *
-     * @param source bean
+     * @param source java object
      * @throws Exception
      */
-    public static String serialize(Object source) throws Exception {
-        return NodeUtil.fromObj(Constants.serialize, source).toJson();
+    public static String serialize(Object source) {
+        return serialize(source, Constants.serialize);
     }
 
     /**
      * 序列化为 string（由序列化器决定格式）
      *
-     * @param source    bean
+     * @param source    java object
      * @param constants 常量配置
      * @throws Exception
      */
-    public static String serialize(Object source, Constants constants) throws Exception {
-        return NodeUtil.fromObj(constants, source).toJson();
+    public static String serialize(Object source, Constants constants) {
+        return NodeUtil.fromObj(constants, source, constants.objectFromer)
+                .toJson();
     }
 
     /**
@@ -896,30 +919,29 @@ public class ONode {
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source) throws Exception {
-        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(Object.class);
+    public static <T> T deserialize(String source) {
+        return deserialize(source, Object.class);
     }
 
     /**
-     * 反序列化为 bean（由返序列化器决定格式）
+     * 反序列化为 java object（由返序列化器决定格式）
      *
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz) throws Exception {
-        return (T) NodeUtil.fromStr(Constants.serialize, source).toObject(clz);
+    public static <T> T deserialize(String source, Class<?> clz)  {
+        return deserialize(source, clz, Constants.serialize);
     }
 
-
-
     /**
-     * 反序列化为 bean（由返序列化器决定格式）
+     * 反序列化为 java object（由返序列化器决定格式）
      *
      * @param source    string
      * @param constants 常量配置
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz, Constants constants) throws Exception {
-        return (T) NodeUtil.fromStr(constants, source).toObject(clz);
+    public static <T> T deserialize(String source, Class<?> clz, Constants constants)  {
+        return NodeUtil.fromStr(constants, source, constants.stringFromer)
+                .toObject(clz, constants.objectToer);
     }
 }

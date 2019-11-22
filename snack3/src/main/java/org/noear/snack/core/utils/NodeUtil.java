@@ -4,30 +4,28 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Handler;
+import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 
 public final class NodeUtil {
     /**
      * 将 str 转换为 ONode
      */
-    public static ONode fromStr(String str)  {
-        return fromStr(Constants.def, str);
+    public static ONode fromStr(String str, Fromer fromer) {
+        return fromStr(Constants.def, str, fromer);
     }
 
-    public static ONode fromStr(Constants cfg, String str) {
-        return (ONode) do_handler(new Context(cfg, str, true), cfg.stringFromer);
-        //return new Context(cfg, str, true).handle(cfg.stringFromer).node;
+    public static ONode fromStr(Constants cfg, String str, Fromer fromer) {
+        return (ONode) do_handler(new Context(cfg, str, true), fromer);
     }
 
-    public static ONode fromObj(Object obj)  {
-        return fromObj(Constants.def, obj);
+    public static ONode fromObj(Object obj, Fromer fromer) {
+        return fromObj(Constants.def, obj, fromer);
     }
 
-    public static ONode fromObj(Constants cfg, Object obj)  {
-        return (ONode) do_handler(new Context(cfg, obj, false), cfg.objectFromer);
-        //return new Context(cfg, obj, false).handle(cfg.objectFromer).node;
+    public static ONode fromObj(Constants cfg, Object obj, Fromer fromer) {
+        return (ONode) do_handler(new Context(cfg, obj, false), fromer);
     }
-
 
 
     /**
