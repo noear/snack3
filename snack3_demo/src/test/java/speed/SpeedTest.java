@@ -170,6 +170,141 @@ public class SpeedTest {
     }
 
     @Test
+    public void test11_x() throws Exception {
+        //
+        //10000000=>6.3s,6.6s
+        //1000000=>6.8s
+        //100000=>1s
+        //
+        UserGroupModel group = new UserGroupModel();
+        group.id = 9999;
+        group.users = new ArrayList<>();
+        group.users2 = new LinkedHashMap<>();
+        group.names = new String[5];
+        group.ids = new short[5];
+        group.iids = new Integer[5];
+
+        for (short i = 0; i < 5 ; i++) {
+            UserModel user = new UserModel();
+            user.id = i;
+            user.name = "张三" + i;
+            user.note = null;
+            group.users.add(user);
+            group.users2.put(Integer.valueOf(i),user);
+            group.names[i] = "李四" + i;
+            group.ids[i] = i;
+        }
+
+        String json = ONode.serialize(group);
+        System.out.println(json);
+
+        ONode.deserialize(json, null);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=10000000; i<len; i++) {
+            ONode.deserialize(json, null);
+        }
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+
+    }
+
+
+    @Test
+    public void test11_2() throws Exception {
+        //
+        //10000000=>19s,19s
+        //1000000=>3.1s
+        //100000=>1.2s
+        //
+        UserGroupModel group = new UserGroupModel();
+        group.id = 9999;
+        group.users = new ArrayList<>();
+        group.users2 = new LinkedHashMap<>();
+        group.names = new String[5];
+        group.ids = new short[5];
+        group.iids = new Integer[5];
+
+        for (short i = 0; i < 5 ; i++) {
+            UserModel user = new UserModel();
+            user.id = i;
+            user.name = "张三" + i;
+            user.note = null;
+            group.users.add(user);
+            group.users2.put(Integer.valueOf(i),user);
+            group.names[i] = "李四" + i;
+            group.ids[i] = i;
+        }
+
+        String json = ONode.serialize(group);
+        System.out.println(json);
+
+        ONode tmp = ONode.load(json);
+
+        tmp.toObject(UserGroupModel.class);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=100000; i<len; i++) {
+            tmp.toObject(UserGroupModel.class);
+        }
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+
+    }
+
+    @Test
+    public void test11_3() throws Exception {
+        //
+        //10000000=>9.6s,9.7s
+        //1000000=>1.4s
+        //100000=>0.17s
+        //
+        UserGroupModel group = new UserGroupModel();
+        group.id = 9999;
+        group.users = new ArrayList<>();
+        group.users2 = new LinkedHashMap<>();
+        group.names = new String[5];
+        group.ids = new short[5];
+        group.iids = new Integer[5];
+
+        for (short i = 0; i < 5 ; i++) {
+            UserModel user = new UserModel();
+            user.id = i;
+            user.name = "张三" + i;
+            user.note = null;
+            group.users.add(user);
+            group.users2.put(Integer.valueOf(i),user);
+            group.names[i] = "李四" + i;
+            group.ids[i] = i;
+        }
+
+        String json = ONode.serialize(group);
+        System.out.println(json);
+
+        ONode tmp = ONode.load(json);
+
+        tmp.toObject(null);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=10000000; i<len; i++) {
+            tmp.toObject(null);
+        }
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+
+    }
+
+
+    @Test
     public void test12() throws Exception {
         Map<String, Object> obj = new LinkedHashMap<String, Object>();
 
