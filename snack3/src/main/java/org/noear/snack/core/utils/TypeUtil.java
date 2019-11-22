@@ -49,6 +49,10 @@ public class TypeUtil {
 
 
     public static Type getCollectionItemType(Type fieldType) {
+        if(fieldType == null){
+            return null;
+        }
+
         if (fieldType instanceof ParameterizedType) {
             return getCollectionItemType((ParameterizedType) fieldType);
         }
@@ -129,6 +133,15 @@ public class TypeUtil {
     }
 
     public static Collection createCollection(Type type, boolean isThrow) {
+        if(type == null){
+            return new ArrayList();
+        }
+
+        //最常用的放前面
+        if(type == ArrayList.class){
+            return new ArrayList();
+        }
+
         Class<?> rawClass = getRawClass(type);
         Collection list;
         if(rawClass == AbstractCollection.class //
@@ -166,6 +179,15 @@ public class TypeUtil {
 
 
     public static Map<Object, Object> createMap(Type type) {
+        if(type == null){
+            return new HashMap<>();
+        }
+
+        //最常用的放前面
+        if(type == HashMap.class){
+            return new HashMap<>();
+        }
+
         if (type == Properties.class) {
             return new Properties();
         }
@@ -190,7 +212,7 @@ public class TypeUtil {
             return new LinkedHashMap();
         }
 
-        if (type == Map.class || type == HashMap.class) {
+        if (type == Map.class) {
             return new HashMap();
         }
 

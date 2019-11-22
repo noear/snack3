@@ -29,22 +29,34 @@ import java.util.*;
 public class ObjectToer implements Toer {
     @Override
     public void handle(Context ctx) throws Exception {
-        if (null != ctx.node && null != ctx.type) {
+        if (null != ctx.node) {
             ctx.object = analyse(ctx.config, ctx.node, ctx.type, ctx.type);
         }
     }
 
     private Class<?> getTypeByNode(Constants cfg, ONode o, Class<?> def) {
+        //
+        // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
+        //
         String typeStr = null;
-        if (o.isArray() && o.count() == 2) {
-            ONode o1 = o.get(0);
-            if (o1.count() == 1) { //如果只有一个成员，则可能为list的类型节点
-                o = o1;
+        if (o.isArray() && o.ary().size() == 2) {
+            ONode o1 = o.ary().get(0);
+            if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
+                //
+                // 这段，不能与下面的 o.isObject() 复用
+                //
+                ONode n1 = o1.obj().get(cfg.type_key);
+                if (n1 != null) {
+                    typeStr = n1.val().getString();
+                }
             }
         }
 
         if (o.isObject()) {
-            typeStr = o.get(cfg.type_key).getString();
+            ONode n1 = o.obj().get(cfg.type_key);
+            if (n1 != null) {
+                typeStr = n1.val().getString();
+            }
         }
 
         if (StringUtil.isEmpty(typeStr) == false) {
@@ -55,6 +67,16 @@ public class ObjectToer implements Toer {
                 return clz;
             }
         } else {
+            if (def == null || def == Object.class) {
+                if (o.isObject()) {
+                    return HashMap.class;
+                }
+
+                if (o.isArray()) {
+                    return ArrayList.class;
+                }
+            }
+
             return def;
         }
     }
@@ -64,7 +86,7 @@ public class ObjectToer implements Toer {
             return null;
         }
 
-        if (ONode.class.isAssignableFrom(clz)) {
+        if (clz != null && ONode.class.isAssignableFrom(clz)) {
             return o;
         }
 
@@ -109,6 +131,10 @@ public class ObjectToer implements Toer {
 
         if(v.type() == OValueType.Null){
             return null;
+        }
+
+        if(clz == null){
+            return v.getRaw();
         }
 
         if (is(Byte.class, clz) || clz == Byte.TYPE) {
@@ -289,7 +315,7 @@ public class ObjectToer implements Toer {
             }
         } else {
             for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                map.put(kv.getKey(), analyse(cfg, kv.getValue(), Object.class,Object.class));
+                map.put(kv.getKey(), analyse(cfg, kv.getValue(), null, null));
             }
         }
 
