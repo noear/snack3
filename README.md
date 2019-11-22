@@ -195,8 +195,8 @@ o.forEach((v)->{
 -attrForeach((k,v)->..)             //遍历特性
 
 //填充操作（为当前节点填充数据）
--fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
--fillObj(source:Object) -> self:ONode       //填充been数据，可能会出异常
+-fill(source:Object)    -> self:ONode       //填充数据（如果异常，会跳过）（souce 可以是 String 或 Object）
+-fillObj(source:Object) -> self:ONode       //填充Object数据，可能会出异常
 -fillStr(source:String) -> self:ONode       //填充String数据，可能会出异常
 
 /**
@@ -204,8 +204,8 @@ o.forEach((v)->{
 */
 
 //加载操作
-+load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 been）
-+loadObj(source:Object) -> new:ONode    //加载bean为ONode，可能会出异常
++load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 Object）
++loadObj(source:Object) -> new:ONode    //加载Object为ONode，可能会出异常
 +loadStr(source:String) -> new:ONode    //加载String为ONode，可能会出异常
 
 //字符串化操作
@@ -215,6 +215,7 @@ o.forEach((v)->{
 //序列化操作
 +serialize(source:Object) -> String                         //序列化（带@type属性）
 +serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
++deserialize(source:String) -> T                                        //反序列化
 +deserialize(source:String, clz Class<T>) -> T                          //反序列化
 +deserialize(source:String, clz Class<T>, constants:Constants) -> T     //反序列化，可定制常量
 
