@@ -14,39 +14,6 @@ import java.util.Map;
 
 public class _demo {
 
-    @Test
-    public void demo1()  {
-        Collection<String> alias_ary = new ArrayList<>();
-        String text = "Hello world1";
-
-        alias_ary.add("18612123434");
-        alias_ary.add("18712123434");
-        alias_ary.add("18812123434");
-
-        ONode data = new ONode().build((d)->{
-            d.get("platform").val("all");
-
-            d.get("audience").get("alias").addAll(alias_ary);
-
-            d.get("options")
-                    .set("apns_production",false);
-
-            d.get("notification").build(n->{
-                n.get("ios")
-                        .set("alert",text)
-                        .set("badge",0)
-                        .set("sound","happy");
-            });
-        });
-
-        String message = data.toJson();
-
-        System.out.println(message);
-
-        assert message != null;
-    }
-
-
     /** 测试性能（大json） */
     @Test
     public void demo3() throws Exception {
@@ -88,8 +55,12 @@ public class _demo {
 
     @Test
     public void demo20()  {
-        Collection<String>alias_ary  =new ArrayList<>();
-        String text="Hello world!";
+        Collection<String> alias_ary = new ArrayList<>();
+        String text = "Hello world1";
+
+        alias_ary.add("18612123434");
+        alias_ary.add("18712123434");
+        alias_ary.add("18812123434");
 
         ONode data = new ONode().build((d)->{
             d.get("platform").val("all");
@@ -109,7 +80,9 @@ public class _demo {
 
         String message = data.toJson();
 
-        assert message!=null;
+        System.out.println(message);
+
+        assert message != null;
     }
 
     @Test
