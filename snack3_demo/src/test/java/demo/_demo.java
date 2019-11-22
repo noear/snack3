@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class _demo {
 
-
     @Test
     public void demo4() throws Exception{
         String tmp = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
