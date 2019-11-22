@@ -97,6 +97,7 @@
 //序列化操作
 +serialize(source:Object) -> String                         //序列化（带@type属性）
 +serialize(source:Object, constants:Constants) -> String    //序列化，可定制常量
++deserialize(source:String) -> T                                        //反序列化
 +deserialize(source:String, clz Class<T>) -> T                          //反序列化
 +deserialize(source:String, clz Class<T>, constants:Constants) -> T     //反序列化，可定制常量
 
