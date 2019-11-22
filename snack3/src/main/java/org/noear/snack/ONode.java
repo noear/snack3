@@ -349,6 +349,9 @@ public class ONode {
         _readonly = readonly;
         return this;
     }
+    public ONode readonly(){
+        return readonly(true);
+    }
 
     /**
      * 是否存在对象子节点
