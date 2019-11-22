@@ -59,6 +59,7 @@ public class Constants {
     public Fromer stringFromer = DEFAULTS.DEF_JSON_FROMER;
     /** 字符去处器 */
     public Toer stringToer = DEFAULTS.DEF_JSON_TOER;
+
     /** 对象来源器 */
     public Fromer objectFromer  = DEFAULTS.DEF_OBJECT_FROMER;
     /** 对象去处器 */
