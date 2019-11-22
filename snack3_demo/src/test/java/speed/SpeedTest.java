@@ -128,7 +128,11 @@ public class SpeedTest {
 
     @Test
     public void test11() throws Exception {
-
+        //
+        //10000000=>78s,74s,73s
+        //1000000=>8.5s
+        //100000=>1.6s
+        //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
         group.users = new ArrayList<>();
@@ -151,6 +155,7 @@ public class SpeedTest {
         String json = ONode.serialize(group);
         System.out.println(json);
 
+        ONode.deserialize(json, UserGroupModel.class);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=100000; i<len; i++) {

@@ -151,7 +151,11 @@ public class SpeedFastjsonTest {
 
     @Test
     public void test11() throws IllegalAccessException {
-
+        //
+        //10000000=>76s,47s,47s
+        //1000000=>5.3s
+        //100000=>783
+        //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
         group.users = new ArrayList<>();
@@ -177,6 +181,7 @@ public class SpeedFastjsonTest {
                 SerializerFeature.DisableCircularReferenceDetect);
         System.out.println(json);
 
+        JSON.parseObject(json, UserGroupModel.class);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=100000; i<len; i++) {
