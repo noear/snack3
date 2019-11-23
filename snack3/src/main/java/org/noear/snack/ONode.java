@@ -426,7 +426,7 @@ public class ONode {
         _d.tryInitObject();
 
         if (val instanceof ONode) {
-            _d.object.put(key, ((ONode) val).cfg(_c));
+            _d.object.put(key, ((ONode) val));
         } else {
             _d.object.put(key, new ONode(_c).val(val));
         }
