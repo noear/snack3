@@ -40,7 +40,11 @@ public class ONode {
     }
 
     public ONode(Constants cfg) {
-        _c = cfg;
+        if(cfg ==null){
+            _c = Constants.def();
+        }else {
+            _c = cfg;
+        }
     }
 
 
@@ -800,7 +804,12 @@ public class ONode {
         return load(source, cfg, null);
     }
     public static ONode load(Object source, Constants cfg, Fromer fromer) {
-        return doLoad(source, source instanceof String, cfg, fromer);
+        try {
+            return doLoad(source, source instanceof String, cfg, fromer);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return new ONode(cfg);
+        }
     }
 
     public static ONode loadStr(String source) {
