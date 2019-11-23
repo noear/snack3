@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * */
 public class ONode {
     //内部配置
-    protected Constants _c = Constants.def();
+    protected Constants _c;
     //内部数据
     protected ONodeData _d = new ONodeData(this);
 
@@ -36,6 +36,7 @@ public class ONode {
     }
 
     public ONode() {
+        _c = Constants.def();
     }
 
     public ONode(Constants cfg) {
@@ -126,6 +127,10 @@ public class ONode {
             _c = cfg;
         }
         return this;
+    }
+
+    public Constants cfg(){
+        return _c;
     }
 
 
@@ -515,7 +520,7 @@ public class ONode {
      */
     public ONode get(int index) {
         ONode tmp = getOrNull(index);
-        return tmp == null ? new ONode() : tmp;
+        return tmp == null ? new ONode(_c) : tmp;
     }
 
     /**
@@ -552,7 +557,7 @@ public class ONode {
      */
     public ONode addNew() {
         _d.tryInitArray();
-        ONode n = new ONode().cfg(_c);
+        ONode n = new ONode(_c);
         _d.array.add(n);
         return n;
     }

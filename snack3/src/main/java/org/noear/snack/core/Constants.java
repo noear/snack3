@@ -1,8 +1,6 @@
 package org.noear.snack.core;
 
 import org.noear.snack.core.exts.Act1;
-import org.noear.snack.from.Fromer;
-import org.noear.snack.to.Toer;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -11,21 +9,26 @@ import java.util.*;
  * 参数配置
  * */
 public class Constants {
+    public static int features_def = Feature.of(
+            Feature.OrderedField,
+            Feature.WriteDateUseTicks,
+            Feature.StringNullAsEmpty,
+            Feature.QuoteFieldNames);
+
+    public static int features_serialize = Feature.of(
+            Feature.OrderedField,
+            Feature.BrowserCompatible,
+            Feature.WriteClassName,
+            Feature.QuoteFieldNames);
     /**
      * 默认配置
      */
     public static final Constants def() {
-        return of(
-                Feature.OrderedField,
-                Feature.WriteDateUseTicks,
-                Feature.StringNullAsEmpty);
+        return new Constants(features_def);
     }
 
     public static final Constants serialize() {
-        return of(
-                Feature.OrderedField,
-                Feature.BrowserCompatible,
-                Feature.WriteClassName);
+        return new Constants(features_serialize);
     }
 
     public static Constants of(Feature... features) {
@@ -38,6 +41,13 @@ public class Constants {
         return l;
     }
 
+    public Constants(){
+
+    }
+
+    public Constants(int features){
+        this.features = features;
+    }
 
 
     /**
@@ -49,9 +59,7 @@ public class Constants {
     }
 
 
-    private SimpleDateFormat _date_format;
-
-    public String date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
+    public SimpleDateFormat date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
     public String type_key = DEFAULTS.DEF_TYPE_KEY;    //类型key
     public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;   //时区
     public Locale locale = DEFAULTS.DEF_LOCALE;      //地区
@@ -59,17 +67,9 @@ public class Constants {
 
     //=================
 
-    public Constants() {
-        initialize();
-    }
-
-    protected void initialize() {
-        _date_format = new SimpleDateFormat(date_format, locale);
-        features = Feature.config(features, Feature.QuoteFieldNames, true);
-    }
 
     public final String dateToString(Date date) {
-        return _date_format.format(date);
+        return date_format.format(date);
     }
 
     /**

@@ -27,9 +27,9 @@ public class JsonFromer implements Fromer {
     }
 
     private ONode do_handle(Context ctx, String text) throws IOException {
-        if(text == null){
-            return new ONode();
-        }else{
+        if (text == null) {
+            return new ONode(ctx.config);
+        } else {
             text = text.trim();//去除两边的空隔
         }
 
@@ -52,18 +52,18 @@ public class JsonFromer implements Fromer {
                 sBuf.setLength(0);
 
                 node = new ONode(ctx.config);
-                analyse(new CharReader(text), sBuf, node);
+                analyse(ctx,new CharReader(text), sBuf, node);
 
             } else if (len >= 2 && (
                     (prefix == '"' && suffix == '"') ||
                             (prefix == '\'' && suffix == '\''))) {
                 //string
                 //
-                node = analyse_val(text.substring(1, len - 1), true, false);
+                node = analyse_val(ctx, text.substring(1, len - 1), true, false);
             } else if (prefix != '<' && len < 40) {
                 //null,num,bool,other
                 //
-                node = analyse_val(text, false, true);
+                node = analyse_val(ctx, text, false, true);
             } else {
                 //普通的字符串
                 node = new ONode(ctx.config);
@@ -74,7 +74,7 @@ public class JsonFromer implements Fromer {
         return node;
     }
 
-    public void analyse(CharReader sr, CharBuffer sBuf, ONode p) throws IOException {
+    public void analyse(Context ctx, CharReader sr, CharBuffer sBuf, ONode p) throws IOException {
         String name = null;
 
         // 读入字符
@@ -85,37 +85,37 @@ public class JsonFromer implements Fromer {
             switch (c) {
                 case '"':
                     scanString(sr, sBuf, '"');
-                    if (analyse_buf(p, name, sBuf)) {
+                    if (analyse_buf(ctx,p, name, sBuf)) {
                         name = null;
                     }
                     break;
 
                 case '\'':
                     scanString(sr, sBuf, '\'');
-                    if (analyse_buf(p, name, sBuf)) {
+                    if (analyse_buf(ctx,p, name, sBuf)) {
                         name = null;
                     }
                     break;
 
                 case '{':
                     if (p.isObject()) {
-                        analyse(sr, sBuf, p.getNew(name).asObject());
+                        analyse(ctx,sr, sBuf, p.getNew(name).asObject());
                         name = null;
                     } else if (p.isArray()) {
-                        analyse(sr, sBuf, p.addNew().asObject());
+                        analyse(ctx,sr, sBuf, p.addNew().asObject());
                     } else {
-                        analyse(sr, sBuf, p.asObject());
+                        analyse(ctx,sr, sBuf, p.asObject());
                     }
                     break;
 
                 case '[':
                     if (p.isObject()) {
-                        analyse(sr, sBuf, p.getNew(name).asArray());
+                        analyse(ctx,sr, sBuf, p.getNew(name).asArray());
                         name = null;
                     } else if (p.isArray()) {
-                        analyse(sr, sBuf, p.addNew().asArray());
+                        analyse(ctx,sr, sBuf, p.addNew().asArray());
                     } else {
-                        analyse(sr, sBuf, p.asArray());
+                        analyse(ctx,sr, sBuf, p.asArray());
                     }
                     break;
 
@@ -127,7 +127,7 @@ public class JsonFromer implements Fromer {
 
                 case ',':
                     if (sBuf.length() > 0) {
-                        if (analyse_buf(p, name, sBuf)) {
+                        if (analyse_buf(ctx,p, name, sBuf)) {
                             name = null;
                         }
                     }
@@ -135,13 +135,13 @@ public class JsonFromer implements Fromer {
 
                 case '}':
                     if (sBuf.length() > 0) {
-                        analyse_buf(p, name, sBuf);//都返回了，不需要name=null了
+                        analyse_buf(ctx,p, name, sBuf);//都返回了，不需要name=null了
                     }
                     return;
 
                 case ']':
                     if (sBuf.length() > 0) {
-                        analyse_buf(p, name, sBuf);//都返回了，不需要name=null了
+                        analyse_buf(ctx,p, name, sBuf);//都返回了，不需要name=null了
                     }
                     return;
 
@@ -158,15 +158,15 @@ public class JsonFromer implements Fromer {
         }
     }
 
-    private boolean analyse_buf(ONode p, String name, CharBuffer sBuf) {
+    private boolean analyse_buf(Context ctx,ONode p, String name, CharBuffer sBuf) {
         if (p.isObject()) {
             if (name != null) {
-                p.setNode(name, analyse_val(sBuf));
+                p.setNode(name, analyse_val(ctx, sBuf));
                 sBuf.setLength(0);
                 return true;
             }
         } else if (p.isArray()) {
-            p.addNode(analyse_val(sBuf));
+            p.addNode(analyse_val(ctx, sBuf));
             sBuf.setLength(0);
         }
         return false;
@@ -224,18 +224,18 @@ public class JsonFromer implements Fromer {
         }
     }
 
-    private ONode analyse_val(CharBuffer sBuf) {
+    private ONode analyse_val(Context ctx,CharBuffer sBuf) {
         if (sBuf.isString == false) {
             sBuf.trimLast();//去掉尾部的空格
         }
-        return analyse_val(sBuf.toString(), sBuf.isString, false);
+        return analyse_val(ctx,sBuf.toString(), sBuf.isString, false);
     }
 
     /**
      * @param isNoterr 不抛出异常
      * */
-    private ONode analyse_val(String sval, boolean isString, boolean isNoterr) {
-        ONode orst = new ONode();
+    private ONode analyse_val(Context ctx,String sval, boolean isString, boolean isNoterr) {
+        ONode orst = new ONode(ctx.config);
         OValue oval = orst.val();
 
         if (isString) {

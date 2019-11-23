@@ -60,7 +60,7 @@ public enum  Feature {
     }
 
     /** 特性合并生成 */
-    public static int of(Feature[] features) {
+    public static int of(Feature... features) {
         if (features == null) {
             return 0;
         }
