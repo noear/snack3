@@ -1,6 +1,5 @@
 package org.noear.snack;
 
-import org.noear.snack.core.Constants;
 import org.noear.snack.core.Feature;
 
 import java.util.*;
@@ -19,8 +18,14 @@ public class ONodeData {
     /** 节点类型 */
     public ONodeType nodeType = ONodeType.Null;
 
+    protected ONode _n;
+
+    public ONodeData(ONode n){
+        _n = n;
+    }
+
     public Map<String, ONode> object(){
-        tryInitObject(_n._c);
+        tryInitObject();
         return object;
     }
 
@@ -32,12 +37,6 @@ public class ONodeData {
     public OValue value(){
         tryInitValue();
         return value;
-    }
-
-
-    protected ONode _n;
-    public ONodeData(ONode n){
-        _n = n;
     }
 
     /** 尝试初始化为 null */
@@ -71,12 +70,12 @@ public class ONodeData {
     }
 
     /** 尝试初始化为 object */
-    protected  void tryInitObject(Constants cfg) {
+    protected  void tryInitObject() {
         if (nodeType != ONodeType.Object) {
             nodeType = ONodeType.Object;
 
             if (object == null) {
-                if(cfg.hasFeature(Feature.OrderedField)){
+                if(_n._c.hasFeature(Feature.OrderedField)){
                     object = new LinkedHashMap<>();
                 }else {
                     object = new HashMap<>();

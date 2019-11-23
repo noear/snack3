@@ -66,7 +66,7 @@ public class ONode {
      * @return self:ONode
      */
     public ONode asObject() {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
         return this;
     }
 
@@ -379,7 +379,7 @@ public class ONode {
      * @return child:ONode
      */
     public ONode get(String key) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
@@ -399,7 +399,7 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getOrNull(String key) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         return _d.object.get(key);
     }
@@ -423,7 +423,7 @@ public class ONode {
      * @return self:ONode
      */
     public ONode set(String key, Object val) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         if (val instanceof ONode) {
             _d.object.put(key, ((ONode) val).cfg(_c));
@@ -451,7 +451,7 @@ public class ONode {
      * @return self:ONode
      */
     public ONode setAll(ONode obj) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         if (obj != null && obj.isObject()) {
             _d.object.putAll(obj._d.object);
@@ -466,7 +466,7 @@ public class ONode {
      * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         if (map != null) {
             map.forEach((k, v) -> {
@@ -482,7 +482,7 @@ public class ONode {
      * @return self:ONode
      */
     public <T> ONode setAll(Map<String, T> map, Act2<ONode, T> handler) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
 
         if (map != null) {
             map.forEach((k, v) -> {
@@ -496,7 +496,7 @@ public class ONode {
      * 移除对象的子节点 (搞不清楚是自身还是被移除的，所以不返回)
      */
     public void remove(String key) {
-        _d.tryInitObject(_c);
+        _d.tryInitObject();
         _d.object.remove(key);
     }
 
