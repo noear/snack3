@@ -53,7 +53,7 @@ public class SpeedTest {
 
         for (int i = 0; i < 100000; i++) {
 //            c.handle(handler);
-            ONode.load(c.source, cfg);
+            ONode.load(c.source);
 
             //assert "1".equals(c.node.get("data").get("list").get(0).get("id").getString());
         }
