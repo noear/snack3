@@ -16,7 +16,8 @@
 -nodeData() -> ONodeData //获取节点数据
 -nodeType() -> ONodeType //获取节点类型
 
--cfg(constants:Constants) -> self:ONode   //切换配置
+-cfg(cfg:Constants) -> self:ONode   //切换配置
+-cfg() -> Constants //获取配置
 
 -build(n->..) -> self:ONode     //节点构建表达式
 -select(jpath:String) -> new:ONode //使用JsonPath表达式选择节点（只支持选择，不支持过滤）
