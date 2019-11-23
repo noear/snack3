@@ -35,13 +35,21 @@ public class Constants {
     }
 
     public static Constants of(Feature... features) {
-        Constants l = new Constants();
+        return new Constants().add(features);
+    }
 
+    public Constants add(Feature... features){
         for (Feature f : features) {
-            l.features = Feature.config(l.features, f, true);
+            this.features = Feature.config(this.features, f, true);
         }
+        return this;
+    }
 
-        return l;
+    public Constants sub(Feature... features){
+        for (Feature f : features) {
+            this.features = Feature.config(this.features, f, false);
+        }
+        return this;
     }
 
     public Constants(){}
