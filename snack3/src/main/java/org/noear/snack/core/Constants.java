@@ -22,11 +22,14 @@ public class Constants {
             Feature.QuoteFieldNames);
     /**
      * 默认配置
-     */
+     * */
     public static final Constants def() {
         return new Constants(features_def);
     }
 
+    /**
+     * 序列化配置
+     * */
     public static final Constants serialize() {
         return new Constants(features_serialize);
     }
