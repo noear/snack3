@@ -44,10 +44,7 @@ public class Constants {
         return l;
     }
 
-    public Constants(){
-
-    }
-
+    public Constants(){}
     public Constants(int features){
         this.features = features;
     }
@@ -61,13 +58,18 @@ public class Constants {
         return this;
     }
 
-
-    public SimpleDateFormat date_format = DEFAULTS.DEF_DATE_FORMAT; //日期格式
-    public String type_key = DEFAULTS.DEF_TYPE_KEY;    //类型key
-    public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;   //时区
-    public Locale locale = DEFAULTS.DEF_LOCALE;      //地区
-    public int features = DEFAULTS.DEF_FEATURES;    //特性
-    public boolean get_readonly = false; //get时，只读处理
+    //日期格式
+    public SimpleDateFormat date_format = DEFAULTS.DEF_DATE_FORMAT;
+    //类型key
+    public String type_key = DEFAULTS.DEF_TYPE_KEY;
+    //时区
+    public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;
+    //地区
+    public Locale locale = DEFAULTS.DEF_LOCALE;
+    //特性
+    public int features = DEFAULTS.DEF_FEATURES;
+    //get时，只读处理
+    public boolean get_readonly = false;
 
     //=================
 
