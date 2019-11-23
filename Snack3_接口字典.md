@@ -41,6 +41,7 @@
 
 //对象操作
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
+-readonly() -> self:ONode               //只读形态（get时，不会生成新节点）
 -contains(key:String) -> bool           //是否存在对象子节点?
 -get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
 -getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）

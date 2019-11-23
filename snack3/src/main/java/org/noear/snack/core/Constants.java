@@ -14,15 +14,19 @@ public class Constants {
     /**
      * 默认配置
      */
-    public static final Constants def = of(
-            Feature.OrderedField,
-            Feature.WriteDateUseTicks,
-            Feature.StringNullAsEmpty);
+    public static final Constants def() {
+        return of(
+                Feature.OrderedField,
+                Feature.WriteDateUseTicks,
+                Feature.StringNullAsEmpty);
+    }
 
-    public static final Constants serialize = of(
-            Feature.OrderedField,
-            Feature.BrowserCompatible,
-            Feature.WriteClassName);
+    public static final Constants serialize() {
+        return of(
+                Feature.OrderedField,
+                Feature.BrowserCompatible,
+                Feature.WriteClassName);
+    }
 
     public static Constants of(Feature... features) {
         Constants l = new Constants();
@@ -54,26 +58,6 @@ public class Constants {
     public int features = DEFAULTS.DEF_FEATURES;    //特性
 
     //=================
-
-
-    /**
-     * 字符来源器
-     */
-    public Fromer stringFromer = DEFAULTS.DEF_JSON_FROMER;
-    /**
-     * 字符去处器
-     */
-    public Toer stringToer = DEFAULTS.DEF_JSON_TOER;
-
-    /**
-     * 对象来源器
-     */
-    public Fromer objectFromer = DEFAULTS.DEF_OBJECT_FROMER;
-    /**
-     * 对象去处器
-     */
-    public Toer objectToer = DEFAULTS.DEF_OBJECT_TOER;
-
 
     public Constants() {
         initialize();

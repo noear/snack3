@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * */
 public class ONode {
     //内部配置
-    protected Constants _c = Constants.def;
+    protected Constants _c = Constants.def();
     //内部数据
     protected ONodeData _d = new ONodeData(this);
 
@@ -124,8 +124,6 @@ public class ONode {
     public ONode cfg(Constants cfg) {
         if (cfg != null) {
             _c = cfg;
-        } else {
-            _c = cfg.def;
         }
         return this;
     }
@@ -722,7 +720,7 @@ public class ONode {
      */
     @Override
     public String toString() {
-        return toObject(null, _c.stringToer);
+        return toObject(null, DEFAULTS.DEF_STRING_TOER);
     }
 
     /**
@@ -740,7 +738,7 @@ public class ONode {
      * clz = null           => Map or List or Value
      */
     public <T> T toObject(Class<?> clz) {
-        return toObject(clz, _c.objectToer);
+        return toObject(clz, DEFAULTS.DEF_OBJECT_TOER);
     }
 
     public <T> T toObject(Class<?> clz, Toer toer) {
@@ -793,30 +791,35 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
-        return load(source, source instanceof String, Constants.def);
+        return loadDo(source, source instanceof String, null, null);
     }
 
-    public static ONode load(Object source , boolean isString) {
-        return load(source, isString, Constants.def);
+    public static ONode load(Object source, Constants cfg, Fromer fromer) {
+        return loadDo(source, source instanceof String, cfg, fromer);
     }
 
-    public static ONode load(Object source, boolean isString, Constants cfg) {
-        return loadDo(source, isString, cfg, null);
+    public static ONode loadStr(String source) {
+        return loadDo(source, true, null, null);
     }
 
+    public static ONode loadObj(Object source) {
+        return loadDo(source, false, null, null);
+    }
 
     private static ONode loadDo(Object source, boolean isString, Constants cfg, Fromer fromer) {
-        if (isString) {
-            if (fromer == null) {
-                fromer = cfg.stringFromer;
-            }
-        } else {
-            if (fromer == null) {
-                fromer = cfg.objectFromer;
+        if (fromer == null) {
+            if(isString) {
+                fromer = DEFAULTS.DEF_STRING_FROMER;
+            }else{
+                fromer = DEFAULTS.DEF_OBJECT_FROMER;
             }
         }
 
-        return (ONode) new Context(cfg, source, isString).handle(fromer).target;
+        if(cfg == null){
+            cfg = Constants.def();
+        }
+
+        return (ONode) new Context(cfg, source).handle(fromer).target;
     }
 
 
@@ -827,7 +830,7 @@ public class ONode {
      * @throws Exception
      */
     public static String stringify(Object source) {
-        return stringify(source, Constants.def);
+        return stringify(source, Constants.def());
     }
 
     /**
@@ -838,7 +841,8 @@ public class ONode {
      * @throws Exception
      */
     public static String stringify(Object source, Constants cfg) {
-        return load(source, false, cfg).toString();
+        //加载java object，须指定Fromer
+        return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toString();
     }
 
     /**
@@ -848,7 +852,7 @@ public class ONode {
      * @throws Exception
      */
     public static String serialize(Object source) {
-        return serialize(source, Constants.serialize);
+        return serialize(source, Constants.serialize());
     }
 
     /**
@@ -859,7 +863,8 @@ public class ONode {
      * @throws Exception
      */
     public static String serialize(Object source, Constants cfg) {
-        return load(source, false, cfg).toJson();
+        //加载java object，须指定Fromer
+        return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toJson();
     }
 
     /**
@@ -879,7 +884,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz) {
-        return deserialize(source, clz, Constants.serialize);
+        return deserialize(source, clz, Constants.serialize());
     }
 
     /**
@@ -890,6 +895,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz, Constants cfg) {
-        return load(source, true, cfg).toObject(clz, cfg.objectToer);
+        //加载String，不需指定Fromer
+        return load(source,  cfg, null).toObject(clz);
     }
 }

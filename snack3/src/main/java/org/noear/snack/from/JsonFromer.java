@@ -29,6 +29,8 @@ public class JsonFromer implements Fromer {
     private ONode do_handle(Context ctx, String text) throws IOException {
         if(text == null){
             return new ONode();
+        }else{
+            text = text.trim();//去除两边的空隔
         }
 
         int len = text.length();

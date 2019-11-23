@@ -32,8 +32,11 @@ public class DEFAULTS {
     public static final Toer DEF_OBJECT_TOER   = new ObjectToer();
 
 
-    /** 默认JSON来源器 */
-    public static final Fromer DEF_JSON_FROMER = new JsonFromer();
+    /** 默认STRING来源器 */
+    public static final Fromer DEF_STRING_FROMER = new JsonFromer();
+    /** 默认STRING去处器 */
+    public static final Toer DEF_STRING_TOER = new JsonToer();
+
     /** 默认JSON去处器 */
     public static final Toer DEF_JSON_TOER = new JsonToer();
 

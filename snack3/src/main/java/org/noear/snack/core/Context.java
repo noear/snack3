@@ -24,21 +24,8 @@ public class Context {
      * 用于来源处理的构造
      */
     public Context(Constants config, Object from) {
-        this(config, from, from instanceof String);
-    }
-
-    public Context(Constants config, Object from, boolean fromIsStr) {
         this.config = config;
-
-        if (from == null) {
-            return;
-        }
-
-        if (fromIsStr) {
-            this.source = ((String) from).trim(); //不能去掉 .trim()
-        } else {
-            this.source = from;
-        }
+        this.source = from;
     }
 
     /**
