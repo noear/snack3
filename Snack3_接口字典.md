@@ -17,10 +17,10 @@
 -nodeType() -> ONodeType //获取节点类型
 
 -cfg(cfg:Constants) -> self:ONode   //切换配置
--cfg() -> Constants //获取配置
+-cfg() -> Constants 								//获取配置
 
--build(n->..) -> self:ONode     //节点构建表达式
--select(jpath:String) -> new:ONode //使用JsonPath表达式选择节点（只支持选择，不支持过滤）
+-build(n->..) -> self:ONode     		//节点构建表达式
+-select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（只支持选择，不支持过滤）
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
@@ -42,7 +42,7 @@
 
 //对象操作
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
--readonly() -> self:ONode               //只读形态（get时，不会生成新节点）
+-readonly() -> self:ONode               //只读形态（get时，不添加子节点）
 -contains(key:String) -> bool           //是否存在对象子节点?
 -get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
 -getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）
@@ -68,16 +68,17 @@
 -removeAt(index:int)    //移除数组的子节点
 -forEach(v->..)         //遍历数组的子节点
 
-//输出操作
--toString() -> String           //转为string （由字符串转换器决定，默认为json）
--toJson() -> String             //转为json string
--toObject(clz:Class<T>) -> T    //转为java object（clz=null：转为Map,List,Value；clz=Object.class：自动输出类型）
--toObject(clz:Class<T>, toer:Toer) -> T     //转为java object，由toer决定处理
-
-//特性操作（不破坏数据的情况上，添加数据；一般用不到）
+//特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
 -attrGet(key:String)                //获取特性
 -attrSet(key:String,val:String)     //设置特性
 -attrForeach((k,v)->..)             //遍历特性
+
+//转换操作
+-toString() -> String           //转为string （由字符串转换器决定，默认为json）
+-toJson() -> String             //转为json string
+-toData() -> Object 						//转为数据结构体（Map,List,Value）
+-toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
+-toObject(clz:Class<T>, toer:Toer) -> T   //转为java object，由toer决定处理
 
 //填充操作（为当前节点填充数据）
 -fill(source:Object)    -> self:ONode               //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
@@ -88,22 +89,24 @@
 */
 
 //加载操作
-+load(source:Object)    -> new:ONode    //加载数据（如果异常，会生成空ONode）（souce 可以是 String 或 been）
-+load(source:Object, isString:boolean) -> new:ONode
-+load(source:Object, isString:boolean, cfg:Constants) -> new:ONode
++load(source:Object) -> new:ONode    //加载数据（souce 可以是 String 或 java object）
++load(source:Object, cfg:Constants) -> new:ONode
++load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
 
+//加载 string
 +loadStr(source:String) -> new:ONode
+//加载 java object
 +loadObj(source:Object) -> new:ONode
 
 //字符串化操作
-+stringify(source:Object) -> String                         //字符串化
++stringify(source:Object) -> String                   //字符串化
 +stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量
 
 //序列化操作
-+serialize(source:Object) -> String                         //序列化（带@type属性）
-+serialize(source:Object, cfg:Constants) -> String    			//序列化，可定制常量
-+deserialize(source:String) -> T                                        //反序列化
-+deserialize(source:String, clz:Class<?>) -> T                          //反序列化
++serialize(source:Object) -> String                   //序列化（带@type属性）
++serialize(source:Object, cfg:Constants) -> String    //序列化，可定制常量
++deserialize(source:String) -> T                                  //反序列化
++deserialize(source:String, clz:Class<?>) -> T                    //反序列化
 +deserialize(source:String, clz:Class<?>, cfg:Constants) -> T     //反序列化，可定制常量
 
 ```
