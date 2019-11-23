@@ -1,18 +1,21 @@
 # Snack3 接口字典
 ```swift
 //初始化操作
+//
 -asObject() -> self:ONode  //将节点切换为对象
 -asArray()  -> self:ONode  //将节点切换为数组
 -asValue()  -> self:ONode  //将节点切换为值
 -asNull()   -> self:ONode  //将节点切换为null
 
 //检测操作
+//
 -isObject() -> bool  //检查节点是否为对象
 -isArray()  -> bool  //检查节点是否为数组
 -isValue()  -> bool  //检查节点是否为值
 -isNull()   -> bool  //检查节点是否为null
 
 //公共
+//
 -nodeData() -> ONodeData //获取节点数据
 -nodeType() -> ONodeType //获取节点类型
 
@@ -27,6 +30,7 @@
 
 
 //值操作
+//
 -val() -> OValue                //获取节点值数据结构体（如果不是值类型，会自动转换）
 -val(val:Object) -> self:ONode  //设置节点值 //val:为常规类型或ONode
 -getString()    //获取值并以string输出 //如果节点为对象或数组，则输出json
@@ -41,6 +45,7 @@
 -getChar()
 
 //对象操作
+//
 -obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -readonly() -> self:ONode               //只读形态（get时，不添加子节点）
 -contains(key:String) -> bool           //是否存在对象子节点?
@@ -56,6 +61,7 @@
 -forEach((k,v)->..)     //遍历对象的子节点
 
 //数组操作
+//
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
 -get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
 -getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
@@ -69,11 +75,13 @@
 -forEach(v->..)         //遍历数组的子节点
 
 //特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
+//
 -attrGet(key:String)                //获取特性
 -attrSet(key:String,val:String)     //设置特性
 -attrForeach((k,v)->..)             //遍历特性
 
 //转换操作
+//
 -toString() -> String           //转为string （由字符串转换器决定，默认为json）
 -toJson() -> String             //转为json string
 -toData() -> Object 						//转为数据结构体（Map,List,Value）
@@ -89,6 +97,7 @@
 */
 
 //加载操作
+//
 +load(source:Object) -> new:ONode    //加载数据（souce 可以是 String 或 java object）
 +load(source:Object, cfg:Constants) -> new:ONode
 +load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
@@ -99,10 +108,12 @@
 +loadObj(source:Object) -> new:ONode
 
 //字符串化操作
+//
 +stringify(source:Object) -> String                   //字符串化
 +stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量
 
 //序列化操作
+//
 +serialize(source:Object) -> String                   //序列化（带@type属性）
 +serialize(source:Object, cfg:Constants) -> String    //序列化，可定制常量
 +deserialize(source:String) -> T                                  //反序列化

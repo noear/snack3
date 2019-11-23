@@ -718,7 +718,7 @@ public class ONode {
 
     ////////////////////
     //
-    // 数据转换
+    // 转换操作
     //
     ////////////////////
 
@@ -839,6 +839,11 @@ public class ONode {
         return (ONode) new Context(cfg, source).handle(fromer).target;
     }
 
+    ////////////////////
+    //
+    // 字符串化
+    //
+    ////////////////////
 
     /**
      * 字会串化 （由序列化器决定格式）
@@ -861,6 +866,12 @@ public class ONode {
         //加载java object，须指定Fromer
         return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toString();
     }
+
+    ////////////////////
+    //
+    // 序列化
+    //
+    ////////////////////
 
     /**
      * 序列化为 string（由序列化器决定格式）
