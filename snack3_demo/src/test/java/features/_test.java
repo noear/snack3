@@ -129,4 +129,22 @@ public class _test {
 
         assert "{asdfasdf}".equals(tmp.getString());
     }
+
+    @Test
+    public void test8() {
+        UserModel um = new UserModel();
+        um.name = "中文";
+        um.id = 1;
+        um.note = "你好世界!";
+
+        String json = ONode.serialize(um);
+        System.out.println(json);
+
+        String json2 = ONode.loadStr(json).toJson();
+        System.out.println(json2);
+
+        UserModel um2 = ONode.deserialize(json, UserModel.class);
+
+        assert  um2.name.equals(um.name);
+    }
 }
