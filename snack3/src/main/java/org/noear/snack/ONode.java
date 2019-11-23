@@ -32,7 +32,7 @@ public class ONode {
      * @return 版本信息
      */
     public static String version() {
-        return "3.1.1";
+        return "3.1.3";
     }
 
     public ONode() {
