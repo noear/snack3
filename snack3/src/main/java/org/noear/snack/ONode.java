@@ -345,14 +345,12 @@ public class ONode {
         return asObject()._d.object;
     }
 
-    private boolean _readonly;
-
     /**
      * 只读模式
      * get(key) 不会自动产生新节点
      */
     public ONode readonly(boolean readonly) {
-        _readonly = readonly;
+        _c.get_readonly = readonly;
         return this;
     }
 
@@ -383,7 +381,7 @@ public class ONode {
         if (tmp == null) {
             tmp = new ONode(_c);
 
-            if (_readonly == false) {
+            if (_c.get_readonly == false) {
                 _d.object.put(key, tmp);
             }
         }

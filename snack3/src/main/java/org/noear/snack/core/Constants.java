@@ -64,6 +64,7 @@ public class Constants {
     public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;   //时区
     public Locale locale = DEFAULTS.DEF_LOCALE;      //地区
     public int features = DEFAULTS.DEF_FEATURES;    //特性
+    public boolean get_readonly = false; //get时，只读处理
 
     //=================
 
