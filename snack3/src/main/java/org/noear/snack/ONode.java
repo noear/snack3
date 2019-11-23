@@ -58,6 +58,7 @@ public class ONode {
      * 例：[1],[1,3,4],[2:10]
      */
     public ONode select(String jpath) {
+        //将..替换为.**. 方便切割
         String[] ss = jpath.replace("..", ".**.").split("\\.|\\[");
 
         return SimpleJsonPath.get(ss, 0, this);
