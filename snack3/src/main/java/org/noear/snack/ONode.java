@@ -26,7 +26,7 @@ public class ONode {
     //内部配置
     protected Constants _c;
     //内部数据
-    protected ONodeData _d = new ONodeData(this);
+    protected ONodeData _d;
 
     /**
      * @return 版本信息
@@ -37,9 +37,12 @@ public class ONode {
 
     public ONode() {
         _c = Constants.def();
+        _d = new ONodeData(this);
     }
 
     public ONode(Constants cfg) {
+        _d = new ONodeData(this);
+
         if(cfg ==null){
             _c = Constants.def();
         }else {
