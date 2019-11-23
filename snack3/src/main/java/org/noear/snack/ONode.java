@@ -791,9 +791,11 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
-        return loadDo(source, source instanceof String, null, null);
+        return load(source,null);
     }
-
+    public static ONode load(Object source, Constants cfg) {
+        return load(source, cfg, null);
+    }
     public static ONode load(Object source, Constants cfg, Fromer fromer) {
         return loadDo(source, source instanceof String, cfg, fromer);
     }

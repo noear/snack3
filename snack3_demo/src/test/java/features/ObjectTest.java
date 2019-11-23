@@ -33,7 +33,7 @@ public class ObjectTest {
         a.b = b;
         b.a = a;
 
-        Context c = new Context(Constants.def, a);
+        Context c = new Context(Constants.def(), a);
 
         new ObjectFromer().handle(c);
 
@@ -54,13 +54,13 @@ public class ObjectTest {
         order.order_id = 2222;
         order.order_num = "ddddd";
 
-        Context c = new Context(Constants.def, order);
+        Context c = new Context(Constants.def(), order);
 
         new ObjectFromer().handle(c);
 
         System.out.println(((ONode)c.target).toJson());
 
-        c = new Context(Constants.def,((ONode)c.target),OrderModel.class);
+        c = new Context(Constants.def(),((ONode)c.target),OrderModel.class);
         new ObjectToer().handle(c);
 
         OrderModel order2 = (OrderModel)c.target;
@@ -90,7 +90,7 @@ public class ObjectTest {
             group.iids[i] = (int) i;
         }
 
-        Context c = new Context(Constants.serialize, group);
+        Context c = new Context(Constants.serialize(), group);
 
         new ObjectFromer().handle(c);
 

@@ -33,7 +33,7 @@ public class DataTest {
         a.b = b;
         b.a = a;
 
-        Context c = new Context(Constants.def, a);
+        Context c = new Context(Constants.def(), a);
 
         new ObjectFromer().handle(c);
 
@@ -56,7 +56,7 @@ public class DataTest {
         order.order_id = 2222;
         order.order_num = "ddddd";
 
-        Context c = new Context(Constants.def, order);
+        Context c = new Context(Constants.def(), order);
 
         new ObjectFromer().handle(c);
 
