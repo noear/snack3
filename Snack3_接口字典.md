@@ -52,7 +52,7 @@
 -get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
 -getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）
 -getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
--set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//val:为常规类型或ONode
+-set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）
 -setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
 -setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
 -setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
@@ -88,34 +88,34 @@
 -toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
 -toObject(clz:Class<T>, toer:Toer) -> T   //转为java object，由toer决定处理
 
-//填充操作（为当前节点填充数据）
--fill(source:Object)    -> self:ONode               //填充数据（如果异常，会跳过）（souce 可以是 String 或 been）
--fill(source:Object, fromer:Fromer) -> self:ONode    //填充数据，由fromer决定处理
+//填充操作（为当前节点填充数据；source 为 String 或 java object）
+-fill(source:Object)    -> self:ONode               //填充数据
+-fill(source:Object, fromer:Fromer) -> self:ONode   //填充数据，由fromer决定处理
 
 /**
-* 以下为静态操作
-*/
+ * 以下为静态操作
+**/
 
-//加载操作
+//加载操作（source 为 String 或 java object）
 //
-+load(source:Object) -> new:ONode    //加载数据（souce 可以是 String 或 java object）
++load(source:Object) -> new:ONode    //加载数据
 +load(source:Object, cfg:Constants) -> new:ONode
 +load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
 
 //加载 string
-+loadStr(source:String) -> new:ONode
++loadStr(source:String) -> new:ONode	//仅String
 //加载 java object
-+loadObj(source:Object) -> new:ONode
++loadObj(source:Object) -> new:ONode	//仅java object
 
 //字符串化操作
 //
-+stringify(source:Object) -> String                   //字符串化
-+stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量
++stringify(source:Object) -> String                   //字符串化；
++stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量；
 
 //序列化操作
 //
-+serialize(source:Object) -> String                   //序列化（带@type属性）
-+serialize(source:Object, cfg:Constants) -> String    //序列化，可定制常量
++serialize(source:Object) -> String                   //序列化（带@type属性）；
++serialize(source:Object, cfg:Constants) -> String    //序列化，可定制常量；
 +deserialize(source:String) -> T                                  //反序列化
 +deserialize(source:String, clz:Class<?>) -> T                    //反序列化
 +deserialize(source:String, clz:Class<?>, cfg:Constants) -> T     //反序列化，可定制常量
