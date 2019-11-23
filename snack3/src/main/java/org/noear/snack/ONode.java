@@ -772,12 +772,12 @@ public class ONode {
      * @return self:ONode
      */
     public ONode fill(Object source) {
-        val(loadDo(source, source instanceof String, _c, null));
+        val(doLoad(source, source instanceof String, _c, null));
         return this;
     }
 
     public ONode fill(Object source, Fromer fromer) {
-        val(loadDo(source, source instanceof String, _c, fromer));
+        val(doLoad(source, source instanceof String, _c, fromer));
         return this;
     }
 
@@ -790,7 +790,7 @@ public class ONode {
     /**
      * 加载数据并生成新节点（如果异常，会生成空ONode）
      *
-     * @param source 可以是 String 或 been 数据
+     * @param source 可以是 String 或 java object 数据
      * @return new:ONode
      */
     public static ONode load(Object source) {
@@ -800,18 +800,18 @@ public class ONode {
         return load(source, cfg, null);
     }
     public static ONode load(Object source, Constants cfg, Fromer fromer) {
-        return loadDo(source, source instanceof String, cfg, fromer);
+        return doLoad(source, source instanceof String, cfg, fromer);
     }
 
     public static ONode loadStr(String source) {
-        return loadDo(source, true, null, null);
+        return doLoad(source, true, null, null);
     }
 
     public static ONode loadObj(Object source) {
-        return loadDo(source, false, null, null);
+        return doLoad(source, false, null, null);
     }
 
-    private static ONode loadDo(Object source, boolean isString, Constants cfg, Fromer fromer) {
+    private static ONode doLoad(Object source, boolean isString, Constants cfg, Fromer fromer) {
         if (fromer == null) {
             if(isString) {
                 fromer = DEFAULTS.DEF_STRING_FROMER;
@@ -873,7 +873,7 @@ public class ONode {
     }
 
     /**
-     * 反序列化为 bean（由返序列化器决定格式）
+     * 反序列化为 java object（由返序列化器决定格式）
      *
      * @param source string
      * @throws Exception

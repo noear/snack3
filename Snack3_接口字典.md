@@ -92,6 +92,9 @@
 +load(source:Object, isString:boolean) -> new:ONode
 +load(source:Object, isString:boolean, cfg:Constants) -> new:ONode
 
++loadStr(source:String) -> new:ONode
++loadObj(source:Object) -> new:ONode
+
 //字符串化操作
 +stringify(source:Object) -> String                         //字符串化
 +stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量
