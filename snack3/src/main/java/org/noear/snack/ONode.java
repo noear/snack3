@@ -1,7 +1,7 @@
 package org.noear.snack;
 
 import org.noear.snack.core.Context;
-import org.noear.snack.core.SimpleJsonPath;
+import org.noear.snack.core.JsonPath;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
 import org.noear.snack.core.Constants;
@@ -60,7 +60,7 @@ public class ONode {
         //用 . 或 [ 做为切割符
         String[] ss = jpath.replace("..", ".**.").split("\\.|\\[");
 
-        return SimpleJsonPath.get(ss, 0, this);
+        return JsonPath.get(ss, 0, this);
     }
 
     /**

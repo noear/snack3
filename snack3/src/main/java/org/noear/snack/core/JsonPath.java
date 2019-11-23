@@ -13,7 +13,7 @@ import java.util.Map;
  * [index,index] //负数表示倒取
  * [start:end] //负数表示倒取
  * */
-public class SimpleJsonPath {
+public class JsonPath {
     public static ONode get(String[] ss, int index, ONode source) {
         ONode tmp = source;
         for (int i = index; i < ss.length; i++) {
