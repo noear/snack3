@@ -10,6 +10,7 @@ import java.util.*;
  * */
 public class Constants {
     public static int features_def = Feature.of(
+            Feature.OrderedField,
             Feature.WriteDateUseTicks,
             Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
