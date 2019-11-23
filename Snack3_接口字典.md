@@ -110,14 +110,11 @@
 //字符串化操作
 //
 +stringify(source:Object) -> String                   //字符串化；
-+stringify(source:Object, cfg:Constants) -> String    //字符串化，可定制常量；
 
 //序列化操作
 //
-+serialize(source:Object) -> String                   //序列化（带@type属性）；
-+serialize(source:Object, cfg:Constants) -> String    //序列化，可定制常量；
-+deserialize(source:String) -> T                                  //反序列化
-+deserialize(source:String, clz:Class<?>) -> T                    //反序列化
-+deserialize(source:String, clz:Class<?>, cfg:Constants) -> T     //反序列化，可定制常量
++serialize(source:Object) -> String                   //序列化（带@type属性）
++deserialize(source:String) -> T                      //反序列化
++deserialize(source:String, clz:Class<?>) -> T        //反序列化
 
 ```

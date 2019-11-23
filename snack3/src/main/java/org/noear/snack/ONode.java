@@ -883,19 +883,8 @@ public class ONode {
      * @throws Exception
      */
     public static String serialize(Object source) {
-        return serialize(source, Constants.serialize());
-    }
-
-    /**
-     * 序列化为 string（由序列化器决定格式）
-     *
-     * @param source java object
-     * @param cfg    常量配置
-     * @throws Exception
-     */
-    public static String serialize(Object source, Constants cfg) {
         //加载java object，须指定Fromer
-        return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toJson();
+        return load(source, Constants.serialize(), DEFAULTS.DEF_OBJECT_FROMER).toJson();
     }
 
     /**
@@ -915,18 +904,7 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz) {
-        return deserialize(source, clz, Constants.serialize());
-    }
-
-    /**
-     * 反序列化为 java object（由返序列化器决定格式）
-     *
-     * @param source string
-     * @param cfg    常量配置
-     * @throws Exception
-     */
-    public static <T> T deserialize(String source, Class<?> clz, Constants cfg) {
         //加载String，不需指定Fromer
-        return load(source,  cfg, null).toObject(clz);
+        return load(source,  Constants.serialize(), null).toObject(clz);
     }
 }
