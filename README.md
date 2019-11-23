@@ -9,7 +9,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.1</version>
+  <version>3.1.2</version>
 </dependency>
 ```
 
@@ -25,7 +25,9 @@ String json = ONode.stringify(user);
 String json = ONode.serialize(user); //带@type
 
 //demo2::反序列化
-UserModel user = ONode.deserialize(json, UserModel.class);
+UserModel user = ONode.deserialize(json); //json已带@type
+UserModel user = ONode.deserialize(json, UserModel.class); //json可以不带@type
+List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).class); //json可以不带@type，泛型方式
 
 //demo3::转为ONode
 ONode o = ONode.load(json); //将json String 转为 ONode
@@ -66,6 +68,9 @@ o.get("list").get(0).get("lev").getInt();
 
 //demo5.1::取值并转换
 UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并转为UserModel
+
+//demo5.2::取值并填充
+o.get("list2").fill("[1,2,3,4,5,5,6]");
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
