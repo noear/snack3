@@ -738,8 +738,15 @@ public class ONode {
     }
 
     /**
+     * 将当前ONode 转为 数据结构体（Map or List or val）
+     */
+    public Object toData() {
+        return toObject(null);
+    }
+
+    /**
      * 将当前ONode 转为 java object
-     * <p>
+     *
      * clz = XxxModel.class => XxxModel
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
@@ -752,21 +759,7 @@ public class ONode {
         return (T) (new Context(_c, this, clz).handle(toer).target);
     }
 
-    /**
-     * 将当前ONode 转为 Map or List or val；请改用 toObject(null)
-     */
-    @Deprecated
-    public Object toData() {
-        return toObject(null);
-    }
 
-    /**
-     * 将当前ONode 转为 java Object；请改用 toObject(clz)
-     */
-    @Deprecated
-    public <T> T toBean(Class<T> clz) {
-        return toObject(clz);
-    }
 
 
     /**
@@ -780,6 +773,9 @@ public class ONode {
         return this;
     }
 
+    /**
+     * @param fromer 来源处理器
+     * */
     public ONode fill(Object source, Fromer fromer) {
         val(doLoad(source, source instanceof String, _c, fromer));
         return this;
@@ -800,22 +796,31 @@ public class ONode {
     public static ONode load(Object source) {
         return load(source,null);
     }
+
+    /**
+     * @param cfg 常数配置
+     * */
     public static ONode load(Object source, Constants cfg) {
         return load(source, cfg, null);
     }
+
+    /**
+     * @param fromer 来源处理器
+     * */
     public static ONode load(Object source, Constants cfg, Fromer fromer) {
-        try {
-            return doLoad(source, source instanceof String, cfg, fromer);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return new ONode(cfg);
-        }
+        return doLoad(source, source instanceof String, cfg, fromer);
     }
 
+    /**
+     * 加载string并生成新节点
+     * */
     public static ONode loadStr(String source) {
         return doLoad(source, true, null, null);
     }
 
+    /**
+     * 加载java object并生成新节点
+     * */
     public static ONode loadObj(Object source) {
         return doLoad(source, false, null, null);
     }
