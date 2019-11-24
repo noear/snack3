@@ -109,7 +109,7 @@ public class JsonPathTest {
     }
 
     @Test
-    public void testx() {
+    public void testx1() {
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
 
@@ -148,8 +148,26 @@ public class JsonPathTest {
 
         ONode tb = n.select("$..b[2:]");
         assert  tb.count()==2;
+    }
 
-        ONode tc = n.select("$..b[?(@.b)]");
-        assert  tc.count()==1;
+    @Test
+    public void testx2() {
+        //1.加载json
+        ONode n = ONode.load("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+
+        ONode t0 = n.select("$..b");
+        assert  t0.count()==4;
+
+        ONode t1 = n.select("$..b[?(@.c)]");
+        assert  t1.count()==3;
+
+        ONode t2 = n.select("$..b[?(@.c == 1)]");
+        assert  t2.count()==1;
+
+        ONode t3 = n.select("$..b[?(@.c == 12)]");
+        assert  t3.count()==0;
+
+        ONode t4 = n.select("$..b[?(@.c > 1)]");
+        assert  t4.count()==2;
     }
 }

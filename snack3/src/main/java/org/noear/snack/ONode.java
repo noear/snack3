@@ -404,9 +404,11 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getOrNull(String key) {
-        _d.tryInitObject();
-
-        return _d.object.get(key);
+        if(isObject()) {
+            return _d.object.get(key);
+        }else{
+            return null;
+        }
     }
 
     /**

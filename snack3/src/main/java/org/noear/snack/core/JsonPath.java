@@ -90,6 +90,20 @@ public class JsonPath {
                             }
                             tmp = tmp2;
                         }
+                    }else if(ss2.length==3){
+                        if (tmp.isObject()) {
+                            if (compare(tmp.getOrNull(ss2[0]),ss2[1], ss2[2])==false) {
+                                tmp = null;
+                            }
+                        } else if (tmp.isArray()) {
+                            ONode tmp2 = new ONode().asArray();
+                            for (ONode n1 : tmp.ary()) {
+                                if (compare(n1.getOrNull(ss2[0]),ss2[1], ss2[2])) {
+                                    tmp2.addNode(n1);
+                                }
+                            }
+                            tmp = tmp2;
+                        }
                     }
                 } else if (idx_s.indexOf(",") > 0) {
                     //[1,4,6] //['p1','p2']
@@ -201,10 +215,9 @@ public class JsonPath {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
                 if (name.equals(kv.getKey())) {
                     target.add(kv.getValue());
-                    scan(name,kv.getValue(),target);
-                }else{
-                    scan(name, kv.getValue(), target);
                 }
+
+                scan(name,kv.getValue(),target);
             }
             return;
         }
@@ -219,5 +232,48 @@ public class JsonPath {
         if("*".equals(name)){
             target.add(source);
         }
+    }
+
+    private static boolean compare(ONode left, String op, String right) {
+        if (left == null) {
+            return false;
+        }
+
+        if (left.isValue() == false) {
+            return false;
+        }
+
+        switch (op) {
+            case "==": {
+                if (right.startsWith("'")) {
+                    return left.getString().equals(right.substring(1, right.length() - 1));
+                } else {
+                    return left.getDouble() == Double.parseDouble(right);
+                }
+            }
+            case "!=": {
+                if (right.startsWith("'")) {
+                    return left.getString().equals(right.substring(1, right.length() - 1)) == false;
+                } else {
+                    return left.getDouble() != Double.parseDouble(right);
+                }
+            }
+            case "<":
+                return left.getDouble() < Double.parseDouble(right);
+            case "<=":
+                return left.getDouble() <= Double.parseDouble(right);
+            case ">":
+                return left.getDouble() > Double.parseDouble(right);
+            case ">=":
+                return left.getDouble() >= Double.parseDouble(right);
+            case "=~":
+                break;
+            case "in":
+                break;
+            case "nin":
+                break;
+        }
+
+        return false;
     }
 }
