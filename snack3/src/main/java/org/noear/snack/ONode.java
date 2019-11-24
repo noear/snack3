@@ -528,8 +528,13 @@ public class ONode {
      * @return child:ONode
      */
     public ONode get(int index) {
-        ONode tmp = getOrNull(index);
-        return tmp == null ? new ONode(_c) : tmp;
+        _d.tryInitArray();
+
+        if (index >= 0 && _d.array.size() > index) {
+            return _d.array.get(index);
+        }
+
+        return new ONode();
     }
 
     /**
@@ -538,17 +543,13 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getOrNull(int index) {
-        _d.tryInitArray();
-
-        if (index < 0) {
-            index = count() + index; //支持倒数取
+        if(isArray()) {
+            if (index >= 0 && _d.array.size() > index) {
+                return _d.array.get(index);
+            }
         }
 
-        if (index >= 0 && _d.array.size() > index) {
-            return _d.array.get(index);
-        } else {
-            return null;
-        }
+        return null;
     }
 
     /**
