@@ -88,4 +88,68 @@ public class JsonPathTest {
         ONode ary2_c = n.select("$['data']['list'][2]");
         assert ary2_c.getInt() == 3;
     }
+
+    @Test
+    public void demo4() {
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+
+        ONode ary2_a = n.select("$.*");
+        assert ary2_a.count() == 3;
+
+        ONode ary2_b = n.select("$..*");
+        assert ary2_b.count() == 10;
+
+        ONode ary2_c = n.select("$..*[1]");
+        assert ary2_c.isValue();
+
+        ONode ary2_d = n.select("$.*.list[0][0]");
+        assert ary2_d.isValue();
+    }
+
+    @Test
+    public void testx() {
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
+
+        ONode t1 = n.select("$.data.ary2[*].a");
+        assert  t1.count()==2;
+
+        ONode t2 = n.select("$..a");
+        assert  t2.count()==2;
+
+        ONode t3 = n.select("$.data.*");
+        assert  t3.count()==3;
+
+        ONode t4 = n.select("$.data..a");
+        assert  t4.count()==2;
+
+        ONode t5 = n.select("$..a[0]");
+        assert  t5.getInt()==2;
+
+        ONode t60 = n.select("$..b");
+        System.out.println(t60.toJson());
+
+        ONode t6 = n.select("$..b[-1]");
+        assert  t6.getInt()==23;
+
+        ONode t7 = n.select("$..b[0,1]");
+        assert  t7.count()==2;
+
+        ONode t8 = n.select("$..b[:2]");
+        assert  t8.count()==2;
+
+        ONode t9 = n.select("$..b[1:2]");
+        assert  t9.count()==1;
+
+        ONode ta = n.select("$..b[-2:]");
+        assert  ta.count()==2;
+
+        ONode tb = n.select("$..b[2:]");
+        assert  tb.count()==2;
+
+        ONode tc = n.select("$..b[?(@.b)]");
+        assert  tc.count()==1;
+    }
 }

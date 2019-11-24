@@ -73,6 +73,24 @@ public class JsonPath {
                     }
 
                     return tmp2;
+                } else if(idx_s.startsWith("?")){
+                    String s2 = idx_s.substring(4,idx_s.length()-1);
+                    String[] ss2 = s2.split(" ");
+                    if(ss2.length==1) {
+                        if (tmp.isObject()) {
+                            if (tmp.contains(ss2[0]) == false) {
+                                tmp = null;
+                            }
+                        } else if (tmp.isArray()) {
+                            ONode tmp2 = new ONode().asArray();
+                            for (ONode n1 : tmp.ary()) {
+                                if (n1.contains(ss2[0])) {
+                                    tmp2.addNode(n1);
+                                }
+                            }
+                            tmp = tmp2;
+                        }
+                    }
                 } else if (idx_s.indexOf(",") > 0) {
                     //[1,4,6] //['p1','p2']
                     ONode tmp2 = new ONode().asArray();
@@ -100,7 +118,7 @@ public class JsonPath {
                 } else if (idx_s.indexOf(":") >= 0) {
                     //[2:4]
                     ONode tmp2 = new ONode().asArray();
-                    String[] iAry = idx_s.split(":");
+                    String[] iAry = idx_s.split(":",-1);
                     int count = tmp.count();
                     int start = 0;
                     if (iAry[0].length() > 0) {
@@ -183,6 +201,7 @@ public class JsonPath {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
                 if (name.equals(kv.getKey())) {
                     target.add(kv.getValue());
+                    scan(name,kv.getValue(),target);
                 }else{
                     scan(name, kv.getValue(), target);
                 }

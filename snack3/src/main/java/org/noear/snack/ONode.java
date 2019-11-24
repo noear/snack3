@@ -58,7 +58,9 @@ public class ONode {
     public ONode select(String jpath) {
         //将..替换为.**. 方便切割（用**替代为深度扫描）
         //用 . 或 [ 做为切割符
-        String[] ss = jpath.replace("..", ".**.").split("\\.|\\[");
+        String[] ss = jpath.replace("..", ".**.")
+                           .replace("(@.","(@@")
+                           .split("\\.|\\[");
 
         return JsonPath.get(ss, 0, this);
     }
