@@ -20,9 +20,9 @@
 -nodeType() -> ONodeType //获取节点类型
 
 -cfg(cfg:Constants) -> self:ONode   //切换配置
--cfg() -> Constants 								//获取配置
+-cfg() -> Constants 				//获取配置
 
--build(n->..) -> self:ONode     		//节点构建表达式
+-build(n->..) -> self:ONode     	//节点构建表达式
 -select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（只支持选择，不支持过滤）
 
 -clear() //清除子节点，对象或数组有效
@@ -84,7 +84,7 @@
 //
 -toString() -> String           //转为string （由字符串转换器决定，默认为json）
 -toJson() -> String             //转为json string
--toData() -> Object 						//转为数据结构体（Map,List,Value）
+-toData() -> Object 			//转为数据结构体（Map,List,Value）
 -toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
 -toObject(clz:Class<T>, toer:Toer) -> T   //转为java object，由toer决定处理
 
