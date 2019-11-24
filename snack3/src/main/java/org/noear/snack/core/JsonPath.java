@@ -30,21 +30,22 @@ public class JsonPath {
 
             if ("**".equals(s)) {
                 ONode tmp2 = new ONode().asArray();
-                ONode tmp2_2 = new ONode().asArray();
                 if (i + 1 < ss.length) {
-                    scan(ss[i + 1], tmp, tmp2_2);
+                    scan(ss[i + 1], tmp, tmp2);
                 }
 
-                if (tmp2_2.count() > 0) {
-                    for (ONode n1 : tmp2_2.ary()) {
-                        ONode n2 = get(ss, i + 2, n1);
-                        if (n2.isNull() == false) {
-                            tmp2.add(n2);
-                        }
-                    }
+                return get(ss, i + 2, tmp2);
+            }
+
+            if("*".equals(s)){
+                ONode tmp2 = new ONode().asArray();
+                if(tmp.isArray()){
+                    tmp2.addAll(tmp.ary());
+                }else if(tmp.isObject()){
+                    tmp2.addAll(tmp.obj().values());
                 }
 
-                return tmp2;
+                return get(ss, i + 1, tmp2);
             }
 
             if (s.endsWith("]")) {
@@ -149,7 +150,24 @@ public class JsonPath {
                 }
             } else {
                 //name
-                tmp = tmp.getOrNull(s);
+                if(tmp.isArray()){
+                    ONode tmp2  =new ONode().asArray();
+                    for(ONode n1: tmp.ary()){
+                        if(n1.isObject()) {
+                            ONode n2 = n1.getOrNull(s);
+                            if (n2 != null) {
+                                tmp2.add(n2);
+                            }
+                        }
+                    }
+                    return get(ss,i+1,tmp2);
+                }else {
+                    if(tmp.isObject()) {
+                        tmp = tmp.getOrNull(s);
+                    }else{
+                        tmp = null;
+                    }
+                }
             }
         }
 
@@ -177,6 +195,10 @@ public class JsonPath {
                 scan(name, n1, target);
             }
             return;
+        }
+
+        if("*".equals(name)){
+            target.add(source);
         }
     }
 }
