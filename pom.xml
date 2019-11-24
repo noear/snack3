@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.noear</groupId>
-    <artifactId>snack3-parent</artifactId>
+    <artifactId>snack3_java</artifactId>
     <version>dev</version>
     <packaging>pom</packaging>
 
