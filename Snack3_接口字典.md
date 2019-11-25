@@ -23,7 +23,8 @@
 -cfg() -> Constants 				//获取配置
 
 -build(n->..) -> self:ONode     	//节点构建表达式
--select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（只支持选择，不支持过滤）
+-select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（默认缓存路径编译）
+-select(jpath:String, cacheJpath:boolean) //使用JsonPath表达式选择节点
 
 -clear() //清除子节点，对象或数组有效
 -count() //子节点数量，对象或数组有效
