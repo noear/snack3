@@ -281,15 +281,12 @@ public class JsonPath {
 
                     for (int i1 = start; i1 < end; i1++) {
                         ONode n1 = tmp.getOrNull(i1);
-
                         if (n1 != null) {
-                            ONode n2 = exec(cmds, i + 1, n1);
-                            if (n2.isNull() == false) {
-                                tmp2.add(n2);
-                            }
+                            tmp2.add(n1);
                         }
                     }
-                    return tmp2;
+
+                    return exec(cmds, i + 1, tmp2);
 
                 } else {
                     //[x]指令

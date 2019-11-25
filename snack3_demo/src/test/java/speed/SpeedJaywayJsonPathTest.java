@@ -81,8 +81,10 @@ public class SpeedJaywayJsonPathTest {
     @Test
     public void test5(){
         //1.加载json
-        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,d:{c:'ddd',b:23}}]}}");
         Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+
+        Object tmp = JsonPath.read(obj,"$..b");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -98,6 +100,8 @@ public class SpeedJaywayJsonPathTest {
 
     @Test
     public void test6(){
+        //1000000=>3575,3591
+        //
         //1.加载json
         String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
         Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
