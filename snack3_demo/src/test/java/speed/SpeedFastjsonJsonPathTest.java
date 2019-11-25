@@ -1,17 +1,23 @@
 package speed;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
 
-public class SpeedJsonPathTest {
+public class SpeedFastjsonJsonPathTest {
     @Test
     public void test1(){
         //1.加载json
-        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        JSONObject obj = JSON.parseObject(text);
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("$..a");
+            JSONPath.eval(obj,"$..a");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -24,10 +30,12 @@ public class SpeedJsonPathTest {
     @Test
     public void test2(){
         //1.加载json
-        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        JSONObject obj = JSON.parseObject(text);
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.list[2:4]");
+            JSONPath.eval(obj,"data.list[2:4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -40,10 +48,12 @@ public class SpeedJsonPathTest {
     @Test
     public void test3(){
         //1.加载json
-        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        JSONObject obj = JSON.parseObject(text);
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.ary2[*].b.c");
+            JSONPath.eval(obj,"data.ary2[*].b.c"); //不支持*
         }
 
         long times = System.currentTimeMillis() - start;
@@ -56,10 +66,12 @@ public class SpeedJsonPathTest {
     @Test
     public void test4(){
         //1.加载json
-        ONode n = ONode.load("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+        JSONArray obj = JSONArray.parseArray(text);
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("$..b[?(@.c == 12)]");
+            JSONPath.eval(obj,"$..b[?(@.c == 12)]");//不支持
         }
 
         long times = System.currentTimeMillis() - start;
@@ -72,11 +84,12 @@ public class SpeedJsonPathTest {
     @Test
     public void test5(){
         //1.加载json
-        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
+        JSONObject obj = JSON.parseObject(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("$..b.min()");
+            JSONPath.eval(obj,"$..b.min()");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -89,11 +102,12 @@ public class SpeedJsonPathTest {
     @Test
     public void test6(){
         //1.加载json
-        ONode n = ONode.load("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
+        String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
+        JSONObject obj = JSON.parseObject(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("$[?(@.c =~ /a+/)]");//
+            JSONPath.eval(obj,"$[?(@.c =~ /a+/)]");//
         }
 
         long times = System.currentTimeMillis() - start;
