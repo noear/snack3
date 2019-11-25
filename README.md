@@ -142,6 +142,7 @@ o.forEach((v)->{
 | `min()`	| 计算数字数组的最小值 |
 | `max()`	| 计算数字数组的最大值 |
 | `avg()`	| 计算数字数组的平均值 |
+| `sum()`	| 计算数字数组的汇总值 |
 
 例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
 
