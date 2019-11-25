@@ -145,28 +145,40 @@ public class JsonPath {
 
                 if (i + 1 < cmds.length) {
                     String c1 = cmds[i + 1];
+
                     if(c1.lastIndexOf(']')>0){
                         continue;
                     }else {
                         ONode tmp2 = new ONode(tmp.cfg()).asArray();
                         scan(c1, tmp, tmp2);
-                        return exec(cmds, i + 2, tmp2);
+                        i = i + 1;
+                        tmp = tmp2;
+                        continue;
                     }
                 }else{
+                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
+                    scan("*", tmp, tmp2);
+                    tmp = tmp2;
                     continue;
                 }
             }
 
             //*指令
             if ("*".equals(s)) {
-                ONode tmp2 = new ONode(tmp.cfg()).asArray();
-                if (tmp.isArray()) {
-                    tmp2.addAll(tmp.ary());
-                } else if (tmp.isObject()) {
-                    tmp2.addAll(tmp.obj().values());
+                ONode tmp2 = null;
+
+                if (tmp.count() > 0) {
+                    tmp2 = new ONode(tmp.cfg()).asArray();//有节点时，才初始化
+
+                    if (tmp.isObject()) {
+                        tmp2.addAll(tmp.obj().values());
+                    } else {
+                        tmp2.addAll(tmp.ary());
+                    }
                 }
 
-                return exec(cmds, i + 1, tmp2);
+                tmp = tmp2;
+                continue;
             }
 
             //[]指令
@@ -176,26 +188,18 @@ public class JsonPath {
                 if ("*".equals(idx_s)) {
                     //[*]指令
                     //
-                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
+                    ONode tmp2 = null;
                     if (tmp.isArray()) {
-                        for (ONode n1 : tmp.ary()) {
-                            ONode n2 = exec(cmds, i + 1, n1);
-                            if (n2.isNull() == false) {
-                                tmp2.add(n2);
-                            }
-                        }
+                        tmp2 = tmp;
                     }
 
                     if (tmp.isObject()) {
-                        for (ONode n1 : tmp.obj().values()) {
-                            ONode n2 = exec(cmds, i + 1, n1);
-                            if (n2.isNull() == false) {
-                                tmp2.add(n2);
-                            }
-                        }
+                        tmp2 = new ONode(tmp.cfg()).asArray();
+                        tmp2.addAll(tmp.obj().values());
                     }
 
-                    return tmp2;
+                    tmp = tmp2;
+                    continue;
                 } else if (idx_s.startsWith("?")) {
                     //[?()]指令
                     //
@@ -295,7 +299,8 @@ public class JsonPath {
 
                         ONode tmp2 = new ONode(tmp.cfg()).addAll(tmp.ary().subList(start, end));
 
-                        return exec(cmds, i + 1, tmp2);
+                        tmp = tmp2;
+                        continue;
                     }else{
                         return null;
                     }
@@ -391,16 +396,21 @@ public class JsonPath {
                 //
                 //name
                 if (tmp.isArray()) {
-                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
+                    ONode tmp2 = null;
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isObject()) {
                             ONode n2 = n1.nodeData().object.get(s);
                             if (n2 != null) {
+                                if(tmp2 == null){ //有节点时，才初始化
+                                    tmp2 =new ONode(tmp.cfg()).asArray();
+                                }
+
                                 tmp2.add(n2);
                             }
                         }
                     }
-                    return exec(cmds, i + 1, tmp2);
+                    tmp =tmp2;
+                    continue;
                 } else {
                     if (tmp.isObject()) {
                         tmp = tmp.nodeData().object.get(s);
