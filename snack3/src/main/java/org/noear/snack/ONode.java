@@ -56,13 +56,7 @@ public class ONode {
      * 支持属性和索引
      */
     public ONode select(String jpath) {
-        //将..替换为.**. 方便切割（用**替代为深度扫描）
-        //用 . 或 [ 做为切割符
-        String[] ss = jpath.replace("..", ".**.")
-                           .replace("(@.","(@@")
-                           .split("\\.|\\[");
-
-        return JsonPath.get(ss, 0, this);
+        return JsonPath.get(this,jpath);
     }
 
     /**
@@ -503,8 +497,9 @@ public class ONode {
      * 移除对象的子节点 (搞不清楚是自身还是被移除的，所以不返回)
      */
     public void remove(String key) {
-        _d.tryInitObject();
-        _d.object.remove(key);
+        if(isObject()) {
+            _d.object.remove(key);
+        }
     }
 
     ////////////////////
@@ -556,8 +551,9 @@ public class ONode {
      * 移除数组的子节点(搞不清楚是自身还是被移除的，所以不返回)
      */
     public void removeAt(int index) {
-        _d.tryInitArray();
-        _d.array.remove(index);
+        if (isArray()) {
+            _d.array.remove(index);
+        }
     }
 
     /**

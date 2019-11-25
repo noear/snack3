@@ -1,11 +1,16 @@
 package org.noear.snack.core;
 
 import org.noear.snack.ONode;
+import org.noear.snack.core.exts.CharBuffer;
+import org.noear.snack.core.exts.CharReader;
+import org.noear.snack.core.utils.IOUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Simple json path
+ * json path
  *
  * 支持：
  * .name
@@ -14,15 +19,74 @@ import java.util.Map;
  * [start:end] //负数表示倒取
  * */
 public class JsonPath {
-    public static ONode get(String[] ss, int index, ONode source) {
+    public static ONode get(ONode source, String jpath){
+        //解析出指令
+        String[] cmds = parse(jpath);
+
+        //执行指令
+        return exec(cmds, 0, source);
+    }
+
+    private static String[] parse(String jpath){
+        //将..替换为.**. 方便解析（用**替代为深度扫描）
+        String jpath2 = jpath.replace("..", ".**.");
+        List<String> cmds = new ArrayList<>();
+
+        char token = 0;
+        char c = 0;
+        CharBuffer buffer = new CharBuffer();
+        CharReader reader = new CharReader(jpath2);
+        while (true){
+            c = reader.next();
+
+            if(c == IOUtil.EOI){
+                if(buffer.length()>0){
+                    cmds.add(buffer.toString());
+                    buffer.clear();
+                }
+                break;
+            }
+
+            switch (c){
+                case '.':
+                    if(token=='['){
+                        buffer.append(c);
+                    }else {
+                        if(buffer.length()>0) {
+                            cmds.add(buffer.toString());
+                            buffer.clear();
+                        }
+                    }
+                    break;
+                case '[':
+                    token = c;
+                    cmds.add(buffer.toString());
+                    buffer.clear();
+                    break;
+                case ']':
+                    token = c;
+                    buffer.append(c);
+                    cmds.add(buffer.toString());
+                    buffer.clear();
+                    break;
+                default:
+                    buffer.append(c);
+                    break;
+            }
+        }
+
+        return cmds.toArray(new String[cmds.size()]);
+    }
+
+    private static ONode exec(String[] cmds, int index, ONode source) {
         ONode tmp = source;
-        for (int i = index; i < ss.length; i++) {
+        for (int i = index; i < cmds.length; i++) {
 
             if(tmp == null){
                 break;
             }
 
-            String s = ss[i];
+            String s = cmds[i];
 
             if (s.length() == 0 || "$".equals(s)) {
                 continue; //当前节点
@@ -30,11 +94,11 @@ public class JsonPath {
 
             if ("**".equals(s)) {
                 ONode tmp2 = new ONode().asArray();
-                if (i + 1 < ss.length) {
-                    scan(ss[i + 1], tmp, tmp2);
+                if (i + 1 < cmds.length) {
+                    scan(cmds[i + 1], tmp, tmp2);
                 }
 
-                return get(ss, i + 2, tmp2);
+                return exec(cmds, i + 2, tmp2);
             }
 
             if("*".equals(s)){
@@ -45,7 +109,7 @@ public class JsonPath {
                     tmp2.addAll(tmp.obj().values());
                 }
 
-                return get(ss, i + 1, tmp2);
+                return exec(cmds, i + 1, tmp2);
             }
 
             if (s.endsWith("]")) {
@@ -56,7 +120,7 @@ public class JsonPath {
                     ONode tmp2 = new ONode().asArray();
                     if(tmp.isArray()) {
                         for (ONode n1 : tmp.ary()) {
-                            ONode n2 = get(ss, i + 1, n1);
+                            ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
                                 tmp2.add(n2);
                             }
@@ -65,7 +129,7 @@ public class JsonPath {
 
                     if(tmp.isObject()){
                         for (ONode n1 : tmp.obj().values()) {
-                            ONode n2 = get(ss, i + 1, n1);
+                            ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
                                 tmp2.add(n2);
                             }
@@ -74,31 +138,32 @@ public class JsonPath {
 
                     return tmp2;
                 } else if(idx_s.startsWith("?")){
-                    String s2 = idx_s.substring(4,idx_s.length()-1);
+                    String s2 = idx_s.substring(4,idx_s.length()-1);//=>@.a == 1, @.a == @.b
                     String[] ss2 = s2.split(" ");
+                    String left = ss2[0];
                     if(ss2.length==1) {
                         if (tmp.isObject()) {
-                            if (tmp.contains(ss2[0]) == false) {
+                            if (tmp.contains(left) == false) {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
                             ONode tmp2 = new ONode().asArray();
                             for (ONode n1 : tmp.ary()) {
-                                if (n1.contains(ss2[0])) {
+                                if (n1.contains(left)) {
                                     tmp2.addNode(n1);
                                 }
                             }
                             tmp = tmp2;
                         }
-                    }else if(ss2.length==3){
+                    }else if(ss2.length==3) {
                         if (tmp.isObject()) {
-                            if (compare(tmp.getOrNull(ss2[0]),ss2[1], ss2[2])==false) {
+                            if (compare(tmp, tmp.getOrNull(left), ss2[1], ss2[2]) == false) {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
                             ONode tmp2 = new ONode().asArray();
                             for (ONode n1 : tmp.ary()) {
-                                if (compare(n1.getOrNull(ss2[0]),ss2[1], ss2[2])) {
+                                if (compare(n1, n1.getOrNull(left), ss2[1], ss2[2])) {
                                     tmp2.addNode(n1);
                                 }
                             }
@@ -121,7 +186,7 @@ public class JsonPath {
                         }
 
                         if (n1 != null) {
-                            ONode n2 = get(ss, i + 1, n1);
+                            ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
                                 tmp2.add(n2);
                             }
@@ -153,7 +218,7 @@ public class JsonPath {
                         ONode n1 = tmp.getOrNull(i1);
 
                         if (n1 != null) {
-                            ONode n2 = get(ss, i + 1, n1);
+                            ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
                                 tmp2.add(n2);
                             }
@@ -192,7 +257,7 @@ public class JsonPath {
                             }
                         }
                     }
-                    return get(ss,i+1,tmp2);
+                    return exec(cmds,i+1,tmp2);
                 }else {
                     if(tmp.isObject()) {
                         tmp = tmp.getOrNull(s);
@@ -234,7 +299,7 @@ public class JsonPath {
         }
     }
 
-    private static boolean compare(ONode left, String op, String right) {
+    private static boolean compare(ONode parent, ONode left, String op, String right) {
         if (left == null) {
             return false;
         }
@@ -266,11 +331,11 @@ public class JsonPath {
                 return left.getDouble() > Double.parseDouble(right);
             case ">=":
                 return left.getDouble() >= Double.parseDouble(right);
-            case "=~":
+            case "=~"://暂不支持
                 break;
-            case "in":
+            case "in"://暂不支持
                 break;
-            case "nin":
+            case "nin"://暂不支持
                 break;
         }
 
