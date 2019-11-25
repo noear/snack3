@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
  *
  * */
 public class JsonPath {
-    private static Map<String,String[]> _map = new HashMap<>(1024);
+    private static Map<String,Segment[]> _map = new HashMap<>(1024);
     public static ONode get(ONode source, String jpath, boolean cacheJpath) {
         //解析出指令
-        String[] cmds = null;
+        Segment[] cmds = null;
         if (cacheJpath) {
             cmds = _map.get(jpath);
             if (cmds == null) {
@@ -46,10 +46,10 @@ public class JsonPath {
     /**
      * 编译jpath指令
      * */
-    private static String[] compile(String jpath) {
+    private static Segment[] compile(String jpath) {
         //将..替换为.**. 方便解析（用**替代为深度扫描）
         String jpath2 = jpath.replace("..", ".**.");
-        List<String> cmds = new ArrayList<>();
+        List<Segment> cmds = new ArrayList<>();
 
         char token = 0;
         char c = 0;
@@ -61,7 +61,7 @@ public class JsonPath {
 
             if (c == IOUtil.EOI) {
                 if (buffer.length() > 0) {
-                    cmds.add(buffer.toString());
+                    cmds.add(new Segment(buffer.toString()));
                     buffer.clear();
                 }
                 break;
@@ -73,7 +73,7 @@ public class JsonPath {
                         buffer.append(c);
                     } else {
                         if (buffer.length() > 0) {
-                            cmds.add(buffer.toString());
+                            cmds.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     }
@@ -94,7 +94,7 @@ public class JsonPath {
                     if (token == 0) {
                         token = c;
                         if (buffer.length() > 0) {
-                            cmds.add(buffer.toString());
+                            cmds.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     } else {
@@ -106,7 +106,7 @@ public class JsonPath {
                         token = 0;
                         buffer.append(c);
                         if (buffer.length() > 0) {
-                            cmds.add(buffer.toString());
+                            cmds.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     } else {
@@ -119,13 +119,13 @@ public class JsonPath {
             }
         }
 
-        return cmds.toArray(new String[cmds.size()]);
+        return cmds.toArray(new Segment[cmds.size()]);
     }
 
     /**
      * 执行jpath指令
      * */
-    private static ONode exec(String[] cmds, int index, ONode source) {
+    private static ONode exec(Segment[] cmds, int index, ONode source) {
         ONode tmp = source;
         for (int i = index; i < cmds.length; i++) {
 
@@ -133,22 +133,25 @@ public class JsonPath {
                 break;
             }
 
-            String s = cmds[i];
+            Segment segment = cmds[i];
 
             //$指令
-            if (s.length() == 0 || "$".equals(s)) {
+            if (segment.length() == 0 || "$".equals(segment.cmd)) {
                 continue; //当前节点
             }
 
             //**指令（即..指令）
-            if ("**".equals(s)) {
+            if ("**".equals(segment.cmd)) {
 
                 if (i + 1 < cmds.length) {
-                    String c1 = cmds[i + 1];
+                    Segment c1 = cmds[i + 1];
 
                     ONode tmp2 = new ONode(tmp.cfg()).asArray();
-
-                    scan(c1, tmp,true, tmp2);
+                    if("*".equals(c1.cmd)){
+                        scanByAll(c1.cmd, tmp, true, tmp2);
+                    }else {
+                        scanByName(c1.cmd, tmp, tmp2);
+                    }
 
                     i = i + 1;
                     tmp = tmp2;
@@ -160,7 +163,7 @@ public class JsonPath {
             }
 
             //*指令
-            if ("*".equals(s)) {
+            if ("*".equals(segment.cmd)) {
                 ONode tmp2 = null;
 
                 if (tmp.count() > 0) {
@@ -178,10 +181,8 @@ public class JsonPath {
             }
 
             //[]指令
-            if (s.endsWith("]")) {
-                String idx_s = s.substring(0, s.length() - 1);
-
-                if ("*".equals(idx_s)) {
+            if (segment.cmd.endsWith("]")) {
+                if ("*".equals(segment.cmdAry)) {
                     //[*]指令
                     //
                     ONode tmp2 = null;
@@ -196,66 +197,61 @@ public class JsonPath {
 
                     tmp = tmp2;
                     continue;
-                } else if (idx_s.startsWith("?")) {
+                } else if (segment.cmd.startsWith("?")) {
                     //[?()]指令
                     //
-                    String s2 = idx_s.substring(4, idx_s.length() - 1);//=>@.a == 1, @.a == @.b
-                    String[] ss2 = s2.split(" ");
-                    String left = ss2[0];
-                    if (ss2.length == 1) {
+                    if (segment.op == null) {
                         if (tmp.isObject()) {
-                            if (tmp.contains(left) == false) {
+                            if (tmp.contains(segment.left) == false) {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
                             ONode tmp2 = new ONode(tmp.cfg()).asArray();
                             for (ONode n1 : tmp.ary()) {
-                                if (n1.contains(left)) {
+                                if (n1.contains(segment.left)) {
                                     tmp2.addNode(n1);
                                 }
                             }
                             tmp = tmp2;
                         }
-                    } else if (ss2.length == 3) {
+                    } else{
                         if (tmp.isObject()) {
-                            if (compare(tmp, tmp.getOrNull(left), ss2[1], ss2[2]) == false) {
+                            if (compare(tmp, tmp.getOrNull(segment.left), segment.op, segment.right) == false) {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
                             ONode tmp2 = new ONode(tmp.cfg()).asArray();
                             for (ONode n1 : tmp.ary()) {
-                                if (compare(n1, n1.getOrNull(left), ss2[1], ss2[2])) {
+                                if (compare(n1, n1.getOrNull(segment.left), segment.op, segment.right)) {
                                     tmp2.addNode(n1);
                                 }
                             }
                             tmp = tmp2;
                         }
                     }
-                } else if (idx_s.indexOf(",") > 0) {
+                } else if (segment.cmdAry.indexOf(",") > 0) {
                     //[,]指令
                     //
                     //[1,4,6] //['p1','p2']
                     ONode tmp2 = new ONode(tmp.cfg()).asArray();
-                    String[] iAry = idx_s.split(",");
 
-                    if(idx_s.indexOf("'")>=0){
+                    if(segment.cmdAry.indexOf("'")>=0){
                         if(tmp.isObject()){
-                            for (String i1 : iAry) {
-                                ONode n1 = tmp.obj().get(i1.substring(1, i1.length() - 1));
+                            for (String k : segment.nameS) {
+                                ONode n1 = tmp.obj().get(k);
                                 if (n1 != null) {
                                     tmp2.addNode(n1);
                                 }
                             }
                         }
-                    }else {
-                        if (tmp.isArray()) {
+                    }else{
+                        if(tmp.isArray()) {
                             List<ONode> list2 = tmp.nodeData().array;
                             int len2 = list2.size();
 
-                            for (String i1 : iAry) {
-                                int i2 = Integer.parseInt(i1);
-                                if (i2 >= 0 && i2 < len2) {
-                                    tmp2.addNode(list2.get(i2));
+                            for (int idx : segment.indexS) {
+                                if (idx >= 0 && idx < len2) {
+                                    tmp2.addNode(list2.get(idx));
                                 }
                             }
                         }
@@ -264,26 +260,25 @@ public class JsonPath {
                     tmp=tmp2;
                     continue;
 
-                } else if (idx_s.indexOf(":") >= 0) {
+                } else if (segment.cmdAry.indexOf(":") >= 0) {
                     //[:]指令
                     //
                     //[2:4]
-                    if(tmp.isArray()) {
-                        String[] iAry = idx_s.split(":", -1);
+                    if (tmp.isArray()) {
                         int count = tmp.count();
-                        int start = 0;
-                        if (iAry[0].length() > 0) {
-                            start = Integer.parseInt(iAry[0]);
-                            if (start < 0) {//如果是倒数？
-                                start = count + start;
-                            }
+                        int start = segment.start;
+                        int end = segment.end;
+
+                        if (start < 0) {//如果是倒数？
+                            start = count + start;
                         }
-                        int end = count;
-                        if (iAry[1].length() > 0) {
-                            end = Integer.parseInt(iAry[1]);
-                            if (end < 0) { //如果是倒数？
-                                end = count + end;
-                            }
+
+                        if (end == 0) {
+                            end = count;
+                        }
+
+                        if (end < 0) { //如果是倒数？
+                            end = count + end;
                         }
 
                         if (start < 0) {
@@ -297,7 +292,7 @@ public class JsonPath {
 
                         tmp = tmp2;
                         continue;
-                    }else{
+                    } else {
                         return null;
                     }
 
@@ -306,15 +301,10 @@ public class JsonPath {
                     //
                     //[2] [-2] ['p1']
                     //
-                    if (idx_s.startsWith("'")) {
-                        if (idx_s.endsWith("'")) {
-                            String k2 = idx_s.substring(1, idx_s.length() - 1);
-                            tmp = tmp.getOrNull(k2);
-                        } else {
-                            tmp = null;
-                        }
+                    if (segment.cmd.startsWith("'")) {
+                        tmp = tmp.getOrNull(segment.name);
                     } else {
-                        int idx = Integer.parseInt(idx_s);
+                        int idx = segment.start;
                         if (idx < 0) {
                             tmp = tmp.getOrNull(tmp.count() + idx);//倒数位
                         } else {
@@ -323,9 +313,9 @@ public class JsonPath {
                     }
                 }
             }
-            else if(s.endsWith(")")) {
+            else if(segment.cmd.endsWith(")")) {
                 //.fun()指令
-                switch (s) {
+                switch (segment.cmd) {
                     case "size()":
                         return new ONode(tmp.cfg()).val(tmp.count());
                     case "min()": {
@@ -395,7 +385,7 @@ public class JsonPath {
                     ONode tmp2 = null;
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isObject()) {
-                            ONode n2 = n1.nodeData().object.get(s);
+                            ONode n2 = n1.nodeData().object.get(segment.cmd);
                             if (n2 != null) {
                                 if(tmp2 == null){ //有节点时，才初始化
                                     tmp2 =new ONode(tmp.cfg()).asArray();
@@ -409,7 +399,7 @@ public class JsonPath {
                     continue;
                 } else {
                     if (tmp.isObject()) {
-                        tmp = tmp.nodeData().object.get(s);
+                        tmp = tmp.nodeData().object.get(segment.cmd);
                     } else {
                         tmp = null;
                     }
@@ -427,30 +417,44 @@ public class JsonPath {
     /**
      * 深度扫描
      * */
-    private static void scan(String name, ONode source, boolean isRoot, ONode target) {
-        if (!isRoot && "*".equals(name)) {
-            target.add(source);
-        }
-
+    private static void scanByName(String name, ONode source, ONode target) {
         if (source.isObject()) {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
                 if (name.equals(kv.getKey())) {
                     target.add(kv.getValue());
                 }
 
-                scan(name, kv.getValue(), false, target);
+                scanByName(name, kv.getValue(), target);
             }
             return;
         }
 
         if (source.isArray()) {
             for (ONode n1 : source.ary()) {
-                scan(name, n1, false, target);
+                scanByName(name, n1,  target);
+            }
+            return;
+        }
+    }
+
+    private static void scanByAll(String name, ONode source, boolean isRoot, ONode target) {
+        if (isRoot == false) {
+            target.add(source);
+        }
+
+        if (source.isObject()) {
+            for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
+                scanByAll(name, kv.getValue(), false, target);
             }
             return;
         }
 
-
+        if (source.isArray()) {
+            for (ONode n1 : source.ary()) {
+                scanByAll(name, n1, false, target);
+            }
+            return;
+        }
     }
 
     /*
@@ -558,5 +562,82 @@ public class JsonPath {
         }
 
         return p;
+    }
+
+    public static class Segment {
+        public String cmd;
+        public String cmdAry;
+        public List<Integer> indexS;
+        public List<String> nameS;
+
+        public String name;
+        public int start = 0;
+        public int end = 0;
+
+        public String left;
+        public String op;
+        public String right;
+
+        public Segment(String cmd) {
+            this.cmd = cmd;
+            if (cmd.endsWith("]")) {
+                this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
+
+                if (cmdAry.startsWith("?")) {
+                    String s2 = cmdAry.substring(4, cmdAry.length() - 1);//=>@.a == 1, @.a == @.b
+                    String[] ss2 = s2.split(" ");
+                    left = ss2[0];
+                    if (ss2.length == 1) {
+
+                    } else if (ss2.length == 3) {
+                        op = ss2[1];
+                        right = ss2[2];
+                    }
+                } else if (cmdAry.indexOf(":") >= 0) {
+                    String[] iAry = cmdAry.split(":", -1);
+                    start = 0;
+                    if (iAry[0].length() > 0) {
+                        start = Integer.parseInt(iAry[0]);
+                    }
+                    end = 0;
+                    if (iAry[1].length() > 0) {
+                        end = Integer.parseInt(iAry[1]);
+                    }
+                } else if (cmdAry.indexOf(",") > 0) {
+                    if (cmdAry.indexOf("'") >= 0) {
+                        nameS = new ArrayList<>();
+                        String[] iAry = cmdAry.split(",");
+                        for (String i1 : iAry) {
+                            i1 = i1.trim();
+                            nameS.add(i1.substring(1, i1.length() - 1));
+                        }
+
+                    } else {
+                        indexS = new ArrayList<>();
+                        String[] iAry = cmdAry.split(",");
+                        for (String i1 : iAry) {
+                            i1 = i1.trim();
+                            indexS.add(Integer.parseInt(i1));
+                        }
+                    }
+                } else {
+                    if (cmdAry.indexOf("'") >= 0) {
+                        name = cmdAry.substring(1, cmdAry.length() - 1);
+                    } else if (cmdAry.equals("*") == false) {
+                        start = Integer.parseInt(cmdAry);
+                    }
+                }
+
+            }
+        }
+
+        public int length() {
+            return cmd.length();
+        }
+
+        @Override
+        public String toString() {
+            return this.cmd;
+        }
     }
 }
