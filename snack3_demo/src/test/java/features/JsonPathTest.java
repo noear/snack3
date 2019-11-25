@@ -170,4 +170,16 @@ public class JsonPathTest {
         ONode t4 = n.select("$..b[?(@.c > 1)]");
         assert  t4.count()==2;
     }
+
+    @Test
+    public void testx3() {
+        //1.加载json
+        ONode n = ONode.load("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+
+        ONode t5 = n.select("$..b[?(@.c in [1,2])]");
+        assert  t5.count()==2;
+
+        ONode t6 = n.select("$..b[?(@.c nin [1,2])]");
+        assert  t6.count()==1;
+    }
 }
