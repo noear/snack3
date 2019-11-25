@@ -3,6 +3,9 @@ package speed;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SpeedJsonPathTest {
     @Test
@@ -75,9 +78,10 @@ public class SpeedJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
+            ONode ary2 = new ONode().asArray();
             ONode tmp2 = n.get("data").get("list");
-            tmp2.get(1);
-            tmp2.get(4);
+            ary2.addNode(tmp2.get(1));
+            ary2.nodeData().array.add(tmp2.get(4));
         }
 
         long times = System.currentTimeMillis() - start;
