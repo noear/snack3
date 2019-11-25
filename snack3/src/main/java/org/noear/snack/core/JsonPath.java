@@ -403,7 +403,7 @@ public class JsonPath {
         }
 
         if (tmp == null) {
-            return new ONode(tmp.cfg());
+            return new ONode();
         } else {
             return tmp;
         }

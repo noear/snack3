@@ -170,6 +170,9 @@ public class JsonPathTest {
         ONode t4 = n.select("$..b[?(@.c > 1)]");
         assert  t4.count()==2;
 
+        ONode t4_min = n.select("$..b[?(@.c > 1)].c.min()");
+        assert  t4_min.getInt()==2;
+
         ONode t5 = n.select("$..b[?(@.c in [1,2])]");
         assert  t5.count()==2;
 
