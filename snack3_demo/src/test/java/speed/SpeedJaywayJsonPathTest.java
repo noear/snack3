@@ -25,6 +25,24 @@ public class SpeedJaywayJsonPathTest {
     }
 
     @Test
+    public void test12(){
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JsonPath.read(obj,"$..");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
     public void test2(){
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
