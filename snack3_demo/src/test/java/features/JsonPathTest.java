@@ -196,6 +196,9 @@ public class JsonPathTest {
 
         ONode t3 = n.select("$..*");//
         assert  t3.count()==6;
+
+        ONode t4 = n.select("$..*[?(@ =~ /c+/)]");//
+        assert  t4.count()==2;
     }
 
     @Test

@@ -459,16 +459,24 @@ public class JsonPath {
                     }
                 }
             }
-        } else{
+        } else {
             if (tmp.isObject()) {
                 if (compare(tmp, tmp.getOrNull(s.left), s.op, s.right) == false) {
                     tmp2 = null;
                 }
             } else if (tmp.isArray()) {
-                 tmp2 = new ONode(tmp.cfg()).asArray();
-                for (ONode n1 : tmp.ary()) {
-                    if (compare(n1, n1.getOrNull(s.left), s.op, s.right)) {
-                        tmp2.addNode(n1);
+                tmp2 = new ONode(tmp.cfg()).asArray();
+                if("@".equals(s.left)){
+                    for (ONode n1 : tmp.ary()) {
+                        if (compare(n1, n1, s.op, s.right)) {
+                            tmp2.addNode(n1);
+                        }
+                    }
+                }else {
+                    for (ONode n1 : tmp.ary()) {
+                        if (compare(n1, n1.getOrNull(s.left), s.op, s.right)) {
+                            tmp2.addNode(n1);
+                        }
                     }
                 }
             }
@@ -584,14 +592,17 @@ public class JsonPath {
                 this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
 
                 if (cmdAry.startsWith("?")) {
-                    String s2 = cmdAry.substring(4, cmdAry.length() - 1);//=>@.a == 1, @.a == @.b
+                    String s2 = cmdAry.substring(2, cmdAry.length() - 1);//=>@.a == 1, @.a ==
                     String[] ss2 = s2.split(" ");
                     left = ss2[0];
-                    if (ss2.length == 1) {
 
-                    } else if (ss2.length == 3) {
+                    if (ss2.length == 3) {
                         op = ss2[1];
                         right = ss2[2];
+                    }
+
+                    if(left.indexOf(".")>0){
+                        left = left.split("\\.")[1];
                     }
                 } else if (cmdAry.indexOf(":") >= 0) {
                     String[] iAry = cmdAry.split(":", -1);
