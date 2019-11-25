@@ -404,6 +404,20 @@ public class JsonPath {
             case "avg()":{
                 if(tmp.isArray()){
                     double sum = 0;
+                    int num = 0;
+                    for(ONode n1 : tmp.ary()){
+                        sum+=n1.getDouble();
+                        num++;
+                    }
+                    return new ONode(tmp.cfg()).val(sum/num);
+                }else {
+                    return null;
+                }
+            }
+
+            case "sum()":{
+                if(tmp.isArray()){
+                    double sum = 0;
                     for(ONode n1 : tmp.ary()){
                         sum+=n1.getDouble();
                     }
