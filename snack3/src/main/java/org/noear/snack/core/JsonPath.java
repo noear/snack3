@@ -399,18 +399,23 @@ public class JsonPath {
                 return null;
             }
 
-            case "avg()":{
-                if(tmp.isArray()){
+            case "avg()": {
+                if (tmp.isArray()) {
                     double sum = 0;
                     int num = 0;
-                    for(ONode n1 : tmp.ary()){
-                        sum+=n1.getDouble();
-                        num++;
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isValue()) {
+                            sum += n1.getDouble();
+                            num++;
+                        }
                     }
-                    return new ONode(tmp.cfg()).val(sum/num);
-                }else {
-                    return null;
+
+                    if(num>0) {
+                        return new ONode(tmp.cfg()).val(sum / num);
+                    }
                 }
+
+                return null;
             }
 
             case "sum()":{
