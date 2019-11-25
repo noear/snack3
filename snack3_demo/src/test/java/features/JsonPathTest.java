@@ -194,4 +194,22 @@ public class JsonPathTest {
         ONode t3 = n.select("$..*");//
         assert  t3.count()==3;
     }
+
+    @Test
+    public void testx4() {
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,b:{c:'ddd',b:23}}]}}");
+
+        ONode t1 = n.select("$..b");
+        assert t1.count()==4;
+
+        ONode t2 = n.select("$..b.min()");
+        assert t2.getInt()==2;
+
+        ONode t3 = n.select("$..b.max()");
+        assert t3.getInt()==23;
+
+        ONode t4 = n.select("$..b.avg()");
+        assert t4.getInt()==33;
+    }
 }
