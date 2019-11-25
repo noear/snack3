@@ -30,9 +30,20 @@ public enum  Feature {
      */
     BrowserCompatible,
 
+    /**
+     *
+     * */
     EnumUsingName,
 
+    /*
+    * 字符串Null时输出为空(get时用)
+    * */
     StringNullAsEmpty,
+
+    /**
+     * 字符串了段初始化为家
+     * */
+    StringFieldInitEmpty,
 
     ;
 
