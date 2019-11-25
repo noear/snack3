@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.core.Feature;
 import org.noear.snack.from.JsonFromer;
 import org.noear.snack.to.JsonToer;
@@ -128,21 +129,21 @@ public class JsonTest {
 
     @Test
     public void test26() throws IOException {
-        Context c = new Context(Constants.def(), "[123,123.45,'123.45','2019-01-02 03:04:05',true,false]");
+        Context c = new Context(Constants.def(), "[123,123.45,'123.45','2019-01-02T03:04:05',true,false]");
 
         new JsonFromer().handle(c);
 
         assert 123 == ((ONode)c.target).get(0).getInt();
         assert 123.45 == ((ONode)c.target).get(1).getDouble();
         assert "123.45".equals(((ONode)c.target).get(2).getString());
-        assert "2019-01-02 03:04:05".equals(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(((ONode)c.target).get(3).getDate()));
+        assert "2019-01-02T03:04:05".equals(DEFAULTS.DEF_DATE_FORMAT.format(((ONode)c.target).get(3).getDate()));
         assert ((ONode)c.target).get(4).getBoolean();
         assert !((ONode)c.target).get(5).getBoolean();
 
         c.source = c.target;
         new JsonToer().handle(c);
 
-        assert "[123,123.45,\"123.45\",\"2019-01-02 03:04:05\",true,false]".equals(c.target);
+        assert "[123,123.45,\"123.45\",\"2019-01-02T03:04:05\",true,false]".equals(c.target);
     }
 
     /** 测试：换行符之类的 转码 */

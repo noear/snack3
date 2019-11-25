@@ -216,6 +216,6 @@ public class JsonPathTest {
         assert t3.getInt()==23;
 
         ONode t4 = n.select("$..b.avg()");
-        assert t4.getInt()==33;
+        assert t4.getInt()==11;
     }
 }
