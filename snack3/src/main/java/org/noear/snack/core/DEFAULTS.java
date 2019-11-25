@@ -15,16 +15,17 @@ import java.util.TimeZone;
  * 默认值
  * */
 public class DEFAULTS {
+    /** 默认特性 */
+    public static final int DEF_FEATURES = Feature.QuoteFieldNames.code;
     /** 默认类型的key */
     public static final String DEF_TYPE_KEY = "@type";
+
     /** 默认时区 */
     public static final TimeZone  DEF_TIME_ZONE = TimeZone.getDefault();
     /** 默认地区 */
     public static final Locale    DEF_LOCALE    = Locale.getDefault();
-    /** 默认特性 */
-    public static final int DEF_FEATURES = Feature.QuoteFieldNames.code;
     /** 默认时间格式字符串 */
-    public static final String DEF_DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEF_DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss";
     /** 默认时间格式器 */
     public static SimpleDateFormat DEF_DATE_FORMAT = new SimpleDateFormat(DEF_DATE_FORMAT_STRING, DEF_LOCALE);
 

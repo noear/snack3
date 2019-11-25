@@ -1,5 +1,7 @@
 package org.noear.snack;
 
+import org.noear.snack.core.DEFAULTS;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -272,12 +274,10 @@ public class OValue {
         }
     }
 
-    private static final SimpleDateFormat date_def_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
     /** 尝试解析时间 */
     private static Date parseDate(String dateString) {
         try {
-            return date_def_format.parse(dateString);
+            return DEFAULTS.DEF_DATE_FORMAT.parse(dateString);
         } catch (ParseException ex) {
             return null;
         }
