@@ -6,10 +6,10 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3</artifactId>
-    <version>3.1.3.1</version>
+    <version>3.1.4</version>
     <packaging>jar</packaging>
 
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>${project.artifactId}</name>
     <description>Java project for snack3</description>
     <url>https://github.com/noear/snack3</url>
     <licenses>

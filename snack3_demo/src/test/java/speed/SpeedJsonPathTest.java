@@ -3,10 +3,6 @@ package speed;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class SpeedJsonPathTest {
     @Test
     public void test1(){
