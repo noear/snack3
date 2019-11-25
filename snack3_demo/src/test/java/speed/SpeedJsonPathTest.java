@@ -9,6 +9,11 @@ public class SpeedJsonPathTest {
     public void test1(){
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("$..a");
+
+        assert tmp.count()==2;
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             n.select("$..a");
@@ -25,6 +30,11 @@ public class SpeedJsonPathTest {
     public void test12(){
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("$..");
+
+        assert tmp.count()==10;
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             n.select("$..");
@@ -41,6 +51,9 @@ public class SpeedJsonPathTest {
     public void test2(){
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("data.list[1,4]");
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             n.select("data.list[1,4]");
@@ -57,6 +70,9 @@ public class SpeedJsonPathTest {
     public void test22(){
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("data.list[1:4]");
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             n.select("data.list[1:4]");
