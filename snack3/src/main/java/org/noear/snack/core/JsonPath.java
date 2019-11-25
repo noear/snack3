@@ -4,6 +4,7 @@ import org.noear.snack.ONode;
 import org.noear.snack.OValue;
 import org.noear.snack.core.exts.CharBuffer;
 import org.noear.snack.core.exts.CharReader;
+import org.noear.snack.core.exts.ThData;
 import org.noear.snack.core.utils.IOUtil;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class JsonPath {
         return exec(cmds, 0, source);
     }
 
+    private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
     /**
      * 编译jpath指令
      * */
@@ -51,7 +53,8 @@ public class JsonPath {
 
         char token = 0;
         char c = 0;
-        CharBuffer buffer = new CharBuffer();
+        CharBuffer buffer = tlBuilder.get();
+        buffer.setLength(0);
         CharReader reader = new CharReader(jpath2);
         while (true) {
             c = reader.next();
@@ -145,7 +148,7 @@ public class JsonPath {
                     if(c1.lastIndexOf(']')>0){
                         continue;
                     }else {
-                        ONode tmp2 = new ONode().asArray();
+                        ONode tmp2 = new ONode(tmp.cfg()).asArray();
                         scan(c1, tmp, tmp2);
                         return exec(cmds, i + 2, tmp2);
                     }
@@ -156,7 +159,7 @@ public class JsonPath {
 
             //*指令
             if ("*".equals(s)) {
-                ONode tmp2 = new ONode().asArray();
+                ONode tmp2 = new ONode(tmp.cfg()).asArray();
                 if (tmp.isArray()) {
                     tmp2.addAll(tmp.ary());
                 } else if (tmp.isObject()) {
@@ -173,7 +176,7 @@ public class JsonPath {
                 if ("*".equals(idx_s)) {
                     //[*]指令
                     //
-                    ONode tmp2 = new ONode().asArray();
+                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     if (tmp.isArray()) {
                         for (ONode n1 : tmp.ary()) {
                             ONode n2 = exec(cmds, i + 1, n1);
@@ -205,7 +208,7 @@ public class JsonPath {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
-                            ONode tmp2 = new ONode().asArray();
+                            ONode tmp2 = new ONode(tmp.cfg()).asArray();
                             for (ONode n1 : tmp.ary()) {
                                 if (n1.contains(left)) {
                                     tmp2.addNode(n1);
@@ -219,7 +222,7 @@ public class JsonPath {
                                 tmp = null;
                             }
                         } else if (tmp.isArray()) {
-                            ONode tmp2 = new ONode().asArray();
+                            ONode tmp2 = new ONode(tmp.cfg()).asArray();
                             for (ONode n1 : tmp.ary()) {
                                 if (compare(n1, n1.getOrNull(left), ss2[1], ss2[2])) {
                                     tmp2.addNode(n1);
@@ -232,7 +235,7 @@ public class JsonPath {
                     //[,]指令
                     //
                     //[1,4,6] //['p1','p2']
-                    ONode tmp2 = new ONode().asArray();
+                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     String[] iAry = idx_s.split(",");
 
                     for (String i1 : iAry) {
@@ -258,7 +261,7 @@ public class JsonPath {
                     //[:]指令
                     //
                     //[2:4]
-                    ONode tmp2 = new ONode().asArray();
+                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     String[] iAry = idx_s.split(":", -1);
                     int count = tmp.count();
                     int start = 0;
@@ -314,7 +317,7 @@ public class JsonPath {
                 //.fun()指令
                 switch (s) {
                     case "size()":
-                        return new ONode().val(tmp.count());
+                        return new ONode(tmp.cfg()).val(tmp.count());
                     case "min()": {
                         if (tmp.isArray()) {
                             ONode min_n = null;
@@ -339,15 +342,17 @@ public class JsonPath {
 
                     case "max()":{
                         if(tmp.isArray()){
-                            ONode min_n = new ONode();
+                            ONode max_n = null;
                             for(ONode n1 : tmp.ary()){
                                 if(n1.isValue()) {
-                                    if (n1.getDouble() > min_n.getDouble()) {
-                                        min_n = n1;
+                                    if(max_n == null){
+                                        max_n = n1;
+                                    }else if (n1.getDouble() > max_n.getDouble()) {
+                                        max_n = n1;
                                     }
                                 }
                             }
-                            return min_n;
+                            return max_n;
                         }
 
                         if(tmp.isValue()){
@@ -363,7 +368,7 @@ public class JsonPath {
                             for(ONode n1 : tmp.ary()){
                                 sum+=n1.getDouble();
                             }
-                            return new ONode().val(sum);
+                            return new ONode(tmp.cfg()).val(sum);
                         }else {
                             return null;
                         }
@@ -377,7 +382,7 @@ public class JsonPath {
                 //
                 //name
                 if (tmp.isArray()) {
-                    ONode tmp2 = new ONode().asArray();
+                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isObject()) {
                             ONode n2 = n1.getOrNull(s);
@@ -398,7 +403,7 @@ public class JsonPath {
         }
 
         if (tmp == null) {
-            return new ONode();
+            return new ONode(tmp.cfg());
         } else {
             return tmp;
         }

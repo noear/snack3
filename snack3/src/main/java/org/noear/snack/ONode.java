@@ -60,7 +60,7 @@ public class ONode {
     }
 
     public ONode select(String jpath) {
-        return select(jpath, false);
+        return select(jpath, true);
     }
 
     /**
