@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  *
  * */
 public class JsonPath {
-    private static Map<String,String[]> _map = new HashMap<>();
+    private static Map<String,String[]> _map = new HashMap<>(1024);
     public static ONode get(ONode source, String jpath, boolean cacheJpath) {
         //解析出指令
         String[] cmds = null;
@@ -146,20 +146,16 @@ public class JsonPath {
                 if (i + 1 < cmds.length) {
                     String c1 = cmds[i + 1];
 
-                    if(c1.lastIndexOf(']')>0){
-                        continue;
-                    }else {
-                        ONode tmp2 = new ONode(tmp.cfg()).asArray();
-                        scan(c1, tmp, tmp2);
-                        i = i + 1;
-                        tmp = tmp2;
-                        continue;
-                    }
-                }else{
                     ONode tmp2 = new ONode(tmp.cfg()).asArray();
-                    scan("*", tmp, tmp2);
+
+                    scan(c1, tmp,true, tmp2);
+
+                    i = i + 1;
                     tmp = tmp2;
                     continue;
+                }else{
+                    tmp = null;
+                    break;
                 }
             }
 
@@ -431,28 +427,30 @@ public class JsonPath {
     /**
      * 深度扫描
      * */
-    private static void scan(String name, ONode source, ONode target) {
+    private static void scan(String name, ONode source, boolean isRoot, ONode target) {
+        if (!isRoot && "*".equals(name)) {
+            target.add(source);
+        }
+
         if (source.isObject()) {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
                 if (name.equals(kv.getKey())) {
                     target.add(kv.getValue());
                 }
 
-                scan(name, kv.getValue(), target);
+                scan(name, kv.getValue(), false, target);
             }
             return;
         }
 
         if (source.isArray()) {
             for (ONode n1 : source.ary()) {
-                scan(name, n1, target);
+                scan(name, n1, false, target);
             }
             return;
         }
 
-        if ("*".equals(name)) {
-            target.add(source);
-        }
+
     }
 
     /*

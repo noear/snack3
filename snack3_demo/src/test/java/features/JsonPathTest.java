@@ -99,7 +99,7 @@ public class JsonPathTest {
         assert ary2_a.count() == 3;
 
         ONode ary2_b = n.select("$..*");
-        assert ary2_b.count() == 10;
+        assert ary2_b.count() == 16;
 
         ONode ary2_c = n.select("$..*[1]");
         assert ary2_c.isValue();
@@ -195,7 +195,7 @@ public class JsonPathTest {
         assert  t2.count()==1;
 
         ONode t3 = n.select("$..*");//
-        assert  t3.count()==3;
+        assert  t3.count()==6;
     }
 
     @Test

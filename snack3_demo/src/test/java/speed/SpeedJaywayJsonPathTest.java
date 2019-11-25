@@ -30,9 +30,11 @@ public class SpeedJaywayJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
 
+        Object tmp = JsonPath.read(obj,"$..*");
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..");
+            JsonPath.read(obj,"$..*");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -69,6 +71,26 @@ public class SpeedJaywayJsonPathTest {
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             JsonPath.read(obj,"data.list[1:4]");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test23(){
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+
+        Object tmp = JsonPath.read(obj,"data.ary2[1].b.c");;
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JsonPath.read(obj,"data.ary2[1].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
