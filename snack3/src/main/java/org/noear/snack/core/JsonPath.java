@@ -6,6 +6,7 @@ import org.noear.snack.core.exts.CharReader;
 import org.noear.snack.core.utils.IOUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +20,31 @@ import java.util.Map;
  * [start:end] //负数表示倒取
  * */
 public class JsonPath {
-    public static ONode get(ONode source, String jpath){
+    private static Map<String,String[]> _map = new HashMap<>();
+    public static ONode get(ONode source, String jpath, boolean cacheJpath) {
         //解析出指令
-        String[] cmds = parse(jpath);
+        String[] cmds = null;
+        if (cacheJpath) {
+            cmds = _map.get(jpath);
+            if (cmds == null) {
+                synchronized (jpath.intern()) {
+                    cmds = _map.get(jpath);
+                    if (cmds == null) {
+                        cmds = compile(jpath);
+                        _map.put(jpath, cmds);
+                    }
+                }
+            }
+        } else {
+            cmds = compile(jpath);
+        }
+
 
         //执行指令
         return exec(cmds, 0, source);
     }
 
-    private static String[] parse(String jpath){
+    private static String[] compile(String jpath) {
         //将..替换为.**. 方便解析（用**替代为深度扫描）
         String jpath2 = jpath.replace("..", ".**.");
         List<String> cmds = new ArrayList<>();
@@ -36,38 +53,54 @@ public class JsonPath {
         char c = 0;
         CharBuffer buffer = new CharBuffer();
         CharReader reader = new CharReader(jpath2);
-        while (true){
+        while (true) {
             c = reader.next();
 
-            if(c == IOUtil.EOI){
-                if(buffer.length()>0){
+            if (c == IOUtil.EOI) {
+                if (buffer.length() > 0) {
                     cmds.add(buffer.toString());
                     buffer.clear();
                 }
                 break;
             }
 
-            switch (c){
+            switch (c) {
                 case '.':
-                    if(token=='['){
+                    if (token > 0) {
                         buffer.append(c);
-                    }else {
-                        if(buffer.length()>0) {
+                    } else {
+                        if (buffer.length() > 0) {
                             cmds.add(buffer.toString());
                             buffer.clear();
                         }
                     }
                     break;
-                case '[':
-                    token = c;
-                    cmds.add(buffer.toString());
-                    buffer.clear();
-                    break;
-                case ']':
+                case '(':
                     token = c;
                     buffer.append(c);
-                    cmds.add(buffer.toString());
-                    buffer.clear();
+                    break;
+                case ')':
+                    token = c;
+                    buffer.append(c);
+                    break;
+                case '[':
+                    if (token == 0) {
+                        token = c;
+                        cmds.add(buffer.toString());
+                        buffer.clear();
+                    } else {
+                        buffer.append(c);
+                    }
+                    break;
+                case ']':
+                    if (token == '[' || token == ')') {
+                        token = 0;
+                        buffer.append(c);
+                        cmds.add(buffer.toString());
+                        buffer.clear();
+                    } else {
+                        buffer.append(c);
+                    }
                     break;
                 default:
                     buffer.append(c);
@@ -82,7 +115,7 @@ public class JsonPath {
         ONode tmp = source;
         for (int i = index; i < cmds.length; i++) {
 
-            if(tmp == null){
+            if (tmp == null) {
                 break;
             }
 
@@ -101,11 +134,11 @@ public class JsonPath {
                 return exec(cmds, i + 2, tmp2);
             }
 
-            if("*".equals(s)){
+            if ("*".equals(s)) {
                 ONode tmp2 = new ONode().asArray();
-                if(tmp.isArray()){
+                if (tmp.isArray()) {
                     tmp2.addAll(tmp.ary());
-                }else if(tmp.isObject()){
+                } else if (tmp.isObject()) {
                     tmp2.addAll(tmp.obj().values());
                 }
 
@@ -118,7 +151,7 @@ public class JsonPath {
                 if ("*".equals(idx_s)) {
                     //[*]
                     ONode tmp2 = new ONode().asArray();
-                    if(tmp.isArray()) {
+                    if (tmp.isArray()) {
                         for (ONode n1 : tmp.ary()) {
                             ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
@@ -127,7 +160,7 @@ public class JsonPath {
                         }
                     }
 
-                    if(tmp.isObject()){
+                    if (tmp.isObject()) {
                         for (ONode n1 : tmp.obj().values()) {
                             ONode n2 = exec(cmds, i + 1, n1);
                             if (n2.isNull() == false) {
@@ -137,11 +170,11 @@ public class JsonPath {
                     }
 
                     return tmp2;
-                } else if(idx_s.startsWith("?")){
-                    String s2 = idx_s.substring(4,idx_s.length()-1);//=>@.a == 1, @.a == @.b
+                } else if (idx_s.startsWith("?")) {
+                    String s2 = idx_s.substring(4, idx_s.length() - 1);//=>@.a == 1, @.a == @.b
                     String[] ss2 = s2.split(" ");
                     String left = ss2[0];
-                    if(ss2.length==1) {
+                    if (ss2.length == 1) {
                         if (tmp.isObject()) {
                             if (tmp.contains(left) == false) {
                                 tmp = null;
@@ -155,7 +188,7 @@ public class JsonPath {
                             }
                             tmp = tmp2;
                         }
-                    }else if(ss2.length==3) {
+                    } else if (ss2.length == 3) {
                         if (tmp.isObject()) {
                             if (compare(tmp, tmp.getOrNull(left), ss2[1], ss2[2]) == false) {
                                 tmp = null;
@@ -177,11 +210,11 @@ public class JsonPath {
 
                     for (String i1 : iAry) {
                         ONode n1 = null;
-                        if(i1.startsWith("'")){
-                            if(i1.endsWith("'")){
-                                n1 = tmp.getOrNull(i1.substring(1,i1.length()-1));
+                        if (i1.startsWith("'")) {
+                            if (i1.endsWith("'")) {
+                                n1 = tmp.getOrNull(i1.substring(1, i1.length() - 1));
                             }
-                        }else {
+                        } else {
                             n1 = tmp.getOrNull(Integer.parseInt(i1));
                         }
 
@@ -197,7 +230,7 @@ public class JsonPath {
                 } else if (idx_s.indexOf(":") >= 0) {
                     //[2:4]
                     ONode tmp2 = new ONode().asArray();
-                    String[] iAry = idx_s.split(":",-1);
+                    String[] iAry = idx_s.split(":", -1);
                     int count = tmp.count();
                     int start = 0;
                     if (iAry[0].length() > 0) {
@@ -229,14 +262,14 @@ public class JsonPath {
                 } else {
                     // [2] [-2] ['p1']
                     //
-                    if(idx_s.startsWith("'")){
-                        if (idx_s.endsWith("'")){
-                            String k2 = idx_s.substring(1,idx_s.length()-1);
+                    if (idx_s.startsWith("'")) {
+                        if (idx_s.endsWith("'")) {
+                            String k2 = idx_s.substring(1, idx_s.length() - 1);
                             tmp = tmp.getOrNull(k2);
-                        }else{
+                        } else {
                             tmp = null;
                         }
-                    }else {
+                    } else {
                         int idx = Integer.parseInt(idx_s);
                         if (idx < 0) {
                             tmp = tmp.getOrNull(tmp.count() + idx);//倒数位
@@ -247,21 +280,21 @@ public class JsonPath {
                 }
             } else {
                 //name
-                if(tmp.isArray()){
-                    ONode tmp2  =new ONode().asArray();
-                    for(ONode n1: tmp.ary()){
-                        if(n1.isObject()) {
+                if (tmp.isArray()) {
+                    ONode tmp2 = new ONode().asArray();
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isObject()) {
                             ONode n2 = n1.getOrNull(s);
                             if (n2 != null) {
                                 tmp2.add(n2);
                             }
                         }
                     }
-                    return exec(cmds,i+1,tmp2);
-                }else {
-                    if(tmp.isObject()) {
+                    return exec(cmds, i + 1, tmp2);
+                } else {
+                    if (tmp.isObject()) {
                         tmp = tmp.getOrNull(s);
-                    }else{
+                    } else {
                         tmp = null;
                     }
                 }
@@ -282,7 +315,7 @@ public class JsonPath {
                     target.add(kv.getValue());
                 }
 
-                scan(name,kv.getValue(),target);
+                scan(name, kv.getValue(), target);
             }
             return;
         }
@@ -294,7 +327,7 @@ public class JsonPath {
             return;
         }
 
-        if("*".equals(name)){
+        if ("*".equals(name)) {
             target.add(source);
         }
     }
@@ -333,12 +366,43 @@ public class JsonPath {
                 return left.getDouble() >= Double.parseDouble(right);
             case "=~"://暂不支持
                 break;
-            case "in"://暂不支持
-                break;
-            case "nin"://暂不支持
-                break;
+            case "in": {
+                if (right.indexOf("'") > 0) {
+                    return getStringAry(right).contains(left.getString());
+                } else {
+                    return getDoubleAry(right).contains(left.getDouble());
+                }
+            }
+            case "nin":
+                if (right.indexOf("'") > 0) {
+                    return getStringAry(right).contains(left.getString()) == false;
+                } else {
+                    return getDoubleAry(right).contains(left.getDouble()) == false;
+                }
         }
 
         return false;
+    }
+
+    private static List<String> getStringAry(String text) {
+        List<String> ary = new ArrayList<>();
+        String test2 = text.substring(1, text.length() - 1);
+        String[] ss = test2.split(",");
+        for (String s : ss) {
+            ary.add(s.substring(1, s.length() - 1));
+        }
+
+        return ary;
+    }
+
+    private static List<Double> getDoubleAry(String text) {
+        List<Double> ary = new ArrayList<>();
+        String test2 = text.substring(1, text.length() - 1);
+        String[] ss = test2.split(",");
+        for (String s : ss) {
+            ary.add(Double.parseDouble(s));
+        }
+
+        return ary;
     }
 }
