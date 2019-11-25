@@ -15,11 +15,6 @@ import java.util.regex.Pattern;
 /**
  * json path
  *
- * 支持：
- * .name
- * [index] //负数表示倒取
- * [index,index] //负数表示倒取
- * [start:end] //负数表示倒取
  * */
 public class JsonPath {
     private static Map<String,String[]> _map = new HashMap<>();
@@ -81,17 +76,21 @@ public class JsonPath {
                     }
                     break;
                 case '(':
-                    token = c;
+                    if (token == '[') {
+                        token = c;
+                    }
                     buffer.append(c);
                     break;
                 case ')':
-                    token = c;
+                    if (token == '(') {
+                        token = c;
+                    }
                     buffer.append(c);
                     break;
                 case '[':
                     if (token == 0) {
                         token = c;
-                        if(buffer.length()>0) {
+                        if (buffer.length() > 0) {
                             cmds.add(buffer.toString());
                             buffer.clear();
                         }
@@ -103,7 +102,7 @@ public class JsonPath {
                     if (token == '[' || token == ')') {
                         token = 0;
                         buffer.append(c);
-                        if(buffer.length()>0) {
+                        if (buffer.length() > 0) {
                             cmds.add(buffer.toString());
                             buffer.clear();
                         }
@@ -142,19 +141,16 @@ public class JsonPath {
             if ("**".equals(s)) {
 
                 if (i + 1 < cmds.length) {
-                    ONode tmp2 = new ONode().asArray();
                     String c1 = cmds[i + 1];
                     if(c1.lastIndexOf(']')>0){
                         continue;
                     }else {
+                        ONode tmp2 = new ONode().asArray();
                         scan(c1, tmp, tmp2);
-                        tmp = tmp2;
-                        continue;
-                        //return exec(cmds, i + 2, tmp2);
+                        return exec(cmds, i + 2, tmp2);
                     }
                 }else{
                     continue;
-                    //return tmp;
                 }
             }
 
@@ -312,6 +308,69 @@ public class JsonPath {
                             tmp = tmp.getOrNull(idx);//正数位
                         }
                     }
+                }
+            }
+            else if(s.endsWith(")")) {
+                //.fun()指令
+                switch (s) {
+                    case "size()":
+                        return new ONode().val(tmp.count());
+                    case "min()": {
+                        if (tmp.isArray()) {
+                            ONode min_n = null;
+                            for (ONode n1 : tmp.ary()) {
+                                if(n1.isValue()) {
+                                    if (min_n == null) {
+                                        min_n = n1;
+                                    } else if (n1.getDouble() < min_n.getDouble()) {
+                                        min_n = n1;
+                                    }
+                                }
+                            }
+                            return min_n;
+                        }
+
+                        if (tmp.isValue()) {
+                            return tmp;
+                        }
+
+                        return null;
+                    }
+
+                    case "max()":{
+                        if(tmp.isArray()){
+                            ONode min_n = new ONode();
+                            for(ONode n1 : tmp.ary()){
+                                if(n1.isValue()) {
+                                    if (n1.getDouble() > min_n.getDouble()) {
+                                        min_n = n1;
+                                    }
+                                }
+                            }
+                            return min_n;
+                        }
+
+                        if(tmp.isValue()){
+                            return tmp;
+                        }
+
+                        return null;
+                    }
+
+                    case "avg()":{
+                        if(tmp.isArray()){
+                            double sum = 0;
+                            for(ONode n1 : tmp.ary()){
+                                sum+=n1.getDouble();
+                            }
+                            return new ONode().val(sum);
+                        }else {
+                            return null;
+                        }
+                    }
+
+                    default:
+                        return null;
                 }
             } else {
                 //.name 指令
