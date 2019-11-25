@@ -31,6 +31,10 @@ public class Constants {
         return new Constants(features_def);
     }
 
+    public static final Constants javascript() {
+        return new Constants(features_javascript);
+    }
+
     /**
      * 序列化配置
      * */
