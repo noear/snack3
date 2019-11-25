@@ -129,7 +129,7 @@ public class JsonPath {
         ONode tmp = source;
         for (int i = index; i < cmds.length; i++) {
 
-            if (tmp == null) {
+            if (tmp == null || tmp.isNull()) {//多次转换后，可能为null
                 break;
             }
 
@@ -238,55 +238,67 @@ public class JsonPath {
                     ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     String[] iAry = idx_s.split(",");
 
-                    for (String i1 : iAry) {
-                        ONode n1 = null;
-                        if (i1.startsWith("'")) {
-                            if (i1.endsWith("'")) {
-                                n1 = tmp.getOrNull(i1.substring(1, i1.length() - 1));
+                    if(idx_s.indexOf("'")>=0){
+                        if(tmp.isObject()){
+                            for (String i1 : iAry) {
+                                ONode n1 = tmp.obj().get(i1.substring(1, i1.length() - 1));
+                                if (n1 != null) {
+                                    tmp2.addNode(n1);
+                                }
                             }
-                        } else {
-                            n1 = tmp.getOrNull(Integer.parseInt(i1));
                         }
+                    }else {
+                        if (tmp.isArray()) {
+                            List<ONode> list2 = tmp.nodeData().array;
+                            int len2 = list2.size();
 
-                        if (n1 != null) {
-                            ONode n2 = exec(cmds, i + 1, n1);
-                            if (n2.isNull() == false) {
-                                tmp2.add(n2);
+                            for (String i1 : iAry) {
+                                int i2 = Integer.parseInt(i1);
+                                if (i2 >= 0 && i2 < len2) {
+                                    tmp2.addNode(list2.get(i2));
+                                }
                             }
                         }
                     }
-                    return tmp2;
+
+                    tmp=tmp2;
+                    continue;
 
                 } else if (idx_s.indexOf(":") >= 0) {
                     //[:]指令
                     //
                     //[2:4]
-                    ONode tmp2 = new ONode(tmp.cfg()).asArray();
-                    String[] iAry = idx_s.split(":", -1);
-                    int count = tmp.count();
-                    int start = 0;
-                    if (iAry[0].length() > 0) {
-                        start = Integer.parseInt(iAry[0]);
-                        if (start < 0) {//如果是倒数？
-                            start = count + start;
+                    if(tmp.isArray()) {
+                        String[] iAry = idx_s.split(":", -1);
+                        int count = tmp.count();
+                        int start = 0;
+                        if (iAry[0].length() > 0) {
+                            start = Integer.parseInt(iAry[0]);
+                            if (start < 0) {//如果是倒数？
+                                start = count + start;
+                            }
                         }
-                    }
-                    int end = count;
-                    if (iAry[1].length() > 0) {
-                        end = Integer.parseInt(iAry[1]);
-                        if (end < 0) { //如果是倒数？
-                            end = count + end;
+                        int end = count;
+                        if (iAry[1].length() > 0) {
+                            end = Integer.parseInt(iAry[1]);
+                            if (end < 0) { //如果是倒数？
+                                end = count + end;
+                            }
                         }
-                    }
 
-                    for (int i1 = start; i1 < end; i1++) {
-                        ONode n1 = tmp.getOrNull(i1);
-                        if (n1 != null) {
-                            tmp2.add(n1);
+                        if (start < 0) {
+                            start = 0;
                         }
-                    }
+                        if (end > count) {
+                            end = count;
+                        }
 
-                    return exec(cmds, i + 1, tmp2);
+                        ONode tmp2 = new ONode(tmp.cfg()).addAll(tmp.ary().subList(start, end));
+
+                        return exec(cmds, i + 1, tmp2);
+                    }else{
+                        return null;
+                    }
 
                 } else {
                     //[x]指令
@@ -382,7 +394,7 @@ public class JsonPath {
                     ONode tmp2 = new ONode(tmp.cfg()).asArray();
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isObject()) {
-                            ONode n2 = n1.getOrNull(s);
+                            ONode n2 = n1.nodeData().object.get(s);
                             if (n2 != null) {
                                 tmp2.add(n2);
                             }
@@ -391,7 +403,7 @@ public class JsonPath {
                     return exec(cmds, i + 1, tmp2);
                 } else {
                     if (tmp.isObject()) {
-                        tmp = tmp.getOrNull(s);
+                        tmp = tmp.nodeData().object.get(s);
                     } else {
                         tmp = null;
                     }

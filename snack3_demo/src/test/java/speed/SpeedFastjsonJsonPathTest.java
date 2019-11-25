@@ -39,7 +39,27 @@ public class SpeedFastjsonJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"data.list[2:4]");
+            JSONPath.eval(obj,"data.list[1,4]");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test22(){
+        //1000000=>105,109
+        //
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        JSONObject obj = JSON.parseObject(text);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JSONPath.eval(obj,"data.list[1:4]");
         }
 
         long times = System.currentTimeMillis() - start;
