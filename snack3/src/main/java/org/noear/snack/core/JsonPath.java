@@ -355,8 +355,6 @@ public class JsonPath {
 
     public static Fun3<ONode,Segment,ONode,ONode> handler_fun=(s,root,tmp)->{
         switch (s.cmd) {
-            case "size()":
-                return new ONode(tmp.cfg()).val(tmp.count());
             case "min()": {
                 if (tmp.isArray()) {
                     ONode min_n = null;
