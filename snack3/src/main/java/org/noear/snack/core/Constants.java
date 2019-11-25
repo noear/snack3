@@ -15,6 +15,10 @@ public class Constants {
             Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
 
+    public static int features_javascript = Feature.of(
+            Feature.StringNullAsEmpty,
+            Feature.QuoteFieldNames);
+
     public static int features_serialize = Feature.of(
             Feature.OrderedField,
             Feature.BrowserCompatible,
