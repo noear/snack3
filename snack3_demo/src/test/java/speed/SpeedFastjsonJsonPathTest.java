@@ -179,11 +179,11 @@ public class SpeedFastjsonJsonPathTest {
     public void test6(){
         //1.加载json
         String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
-        JSONObject obj = JSON.parseObject(text);
+        JSONArray obj = JSONArray.parseArray(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"$[?(@.c =~ /a+/)]");//
+            JSONPath.eval(obj,"$[?(@.c =~ /a+/)]");//不支持
         }
 
         long times = System.currentTimeMillis() - start;
