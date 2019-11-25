@@ -1,6 +1,7 @@
 package org.noear.snack.core;
 
 import org.noear.snack.ONode;
+import org.noear.snack.OValue;
 import org.noear.snack.core.exts.CharBuffer;
 import org.noear.snack.core.exts.CharReader;
 import org.noear.snack.core.utils.IOUtil;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * json path
@@ -44,6 +46,9 @@ public class JsonPath {
         return exec(cmds, 0, source);
     }
 
+    /**
+     * 编译jpath指令
+     * */
     private static String[] compile(String jpath) {
         //将..替换为.**. 方便解析（用**替代为深度扫描）
         String jpath2 = jpath.replace("..", ".**.");
@@ -86,8 +91,10 @@ public class JsonPath {
                 case '[':
                     if (token == 0) {
                         token = c;
-                        cmds.add(buffer.toString());
-                        buffer.clear();
+                        if(buffer.length()>0) {
+                            cmds.add(buffer.toString());
+                            buffer.clear();
+                        }
                     } else {
                         buffer.append(c);
                     }
@@ -96,8 +103,10 @@ public class JsonPath {
                     if (token == '[' || token == ')') {
                         token = 0;
                         buffer.append(c);
-                        cmds.add(buffer.toString());
-                        buffer.clear();
+                        if(buffer.length()>0) {
+                            cmds.add(buffer.toString());
+                            buffer.clear();
+                        }
                     } else {
                         buffer.append(c);
                     }
@@ -111,6 +120,9 @@ public class JsonPath {
         return cmds.toArray(new String[cmds.size()]);
     }
 
+    /**
+     * 执行jpath指令
+     * */
     private static ONode exec(String[] cmds, int index, ONode source) {
         ONode tmp = source;
         for (int i = index; i < cmds.length; i++) {
@@ -121,19 +133,32 @@ public class JsonPath {
 
             String s = cmds[i];
 
+            //$指令
             if (s.length() == 0 || "$".equals(s)) {
                 continue; //当前节点
             }
 
+            //**指令（即..指令）
             if ("**".equals(s)) {
-                ONode tmp2 = new ONode().asArray();
-                if (i + 1 < cmds.length) {
-                    scan(cmds[i + 1], tmp, tmp2);
-                }
 
-                return exec(cmds, i + 2, tmp2);
+                if (i + 1 < cmds.length) {
+                    ONode tmp2 = new ONode().asArray();
+                    String c1 = cmds[i + 1];
+                    if(c1.lastIndexOf(']')>0){
+                        continue;
+                    }else {
+                        scan(c1, tmp, tmp2);
+                        tmp = tmp2;
+                        continue;
+                        //return exec(cmds, i + 2, tmp2);
+                    }
+                }else{
+                    continue;
+                    //return tmp;
+                }
             }
 
+            //*指令
             if ("*".equals(s)) {
                 ONode tmp2 = new ONode().asArray();
                 if (tmp.isArray()) {
@@ -145,11 +170,13 @@ public class JsonPath {
                 return exec(cmds, i + 1, tmp2);
             }
 
+            //[]指令
             if (s.endsWith("]")) {
                 String idx_s = s.substring(0, s.length() - 1);
 
                 if ("*".equals(idx_s)) {
-                    //[*]
+                    //[*]指令
+                    //
                     ONode tmp2 = new ONode().asArray();
                     if (tmp.isArray()) {
                         for (ONode n1 : tmp.ary()) {
@@ -171,6 +198,8 @@ public class JsonPath {
 
                     return tmp2;
                 } else if (idx_s.startsWith("?")) {
+                    //[?()]指令
+                    //
                     String s2 = idx_s.substring(4, idx_s.length() - 1);//=>@.a == 1, @.a == @.b
                     String[] ss2 = s2.split(" ");
                     String left = ss2[0];
@@ -204,6 +233,8 @@ public class JsonPath {
                         }
                     }
                 } else if (idx_s.indexOf(",") > 0) {
+                    //[,]指令
+                    //
                     //[1,4,6] //['p1','p2']
                     ONode tmp2 = new ONode().asArray();
                     String[] iAry = idx_s.split(",");
@@ -228,6 +259,8 @@ public class JsonPath {
                     return tmp2;
 
                 } else if (idx_s.indexOf(":") >= 0) {
+                    //[:]指令
+                    //
                     //[2:4]
                     ONode tmp2 = new ONode().asArray();
                     String[] iAry = idx_s.split(":", -1);
@@ -260,7 +293,9 @@ public class JsonPath {
                     return tmp2;
 
                 } else {
-                    // [2] [-2] ['p1']
+                    //[x]指令
+                    //
+                    //[2] [-2] ['p1']
                     //
                     if (idx_s.startsWith("'")) {
                         if (idx_s.endsWith("'")) {
@@ -279,6 +314,8 @@ public class JsonPath {
                     }
                 }
             } else {
+                //.name 指令
+                //
                 //name
                 if (tmp.isArray()) {
                     ONode tmp2 = new ONode().asArray();
@@ -308,6 +345,9 @@ public class JsonPath {
         }
     }
 
+    /**
+     * 深度扫描
+     * */
     private static void scan(String name, ONode source, ONode target) {
         if (source.isObject()) {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
@@ -332,14 +372,19 @@ public class JsonPath {
         }
     }
 
-    private static boolean compare(ONode parent, ONode left, String op, String right) {
-        if (left == null) {
+    /*
+    * ?(left op right)
+    * */
+    private static boolean compare(ONode parent, ONode leftO, String op, String right) {
+        if (leftO == null) {
             return false;
         }
 
-        if (left.isValue() == false) {
+        if (leftO.isValue() == false || leftO.val().isNull()) {
             return false;
         }
+
+        OValue left = leftO.val();
 
         switch (op) {
             case "==": {
@@ -364,8 +409,11 @@ public class JsonPath {
                 return left.getDouble() > Double.parseDouble(right);
             case ">=":
                 return left.getDouble() >= Double.parseDouble(right);
-            case "=~"://暂不支持
-                break;
+            case "=~": {
+                int end = right.lastIndexOf('/');
+                String exp = right.substring(1, end);
+                return regex(right, exp).matcher(left.getString()).find();
+            }
             case "in": {
                 if (right.indexOf("'") > 0) {
                     return getStringAry(right).contains(left.getString());
@@ -384,6 +432,9 @@ public class JsonPath {
         return false;
     }
 
+    /**
+     * 将 ['a','1'] 转为 List<String>
+     * */
     private static List<String> getStringAry(String text) {
         List<String> ary = new ArrayList<>();
         String test2 = text.substring(1, text.length() - 1);
@@ -395,6 +446,9 @@ public class JsonPath {
         return ary;
     }
 
+    /**
+     * 将 [1,2,3,1.1] 转为 List<Double>
+     * */
     private static List<Double> getDoubleAry(String text) {
         List<Double> ary = new ArrayList<>();
         String test2 = text.substring(1, text.length() - 1);
@@ -404,5 +458,24 @@ public class JsonPath {
         }
 
         return ary;
+    }
+
+    private static Map<String,Pattern> _regexLib = new HashMap<>();
+    private static Pattern regex(String exprFull, String expr) {
+        Pattern p = _regexLib.get(exprFull);
+        if (p == null) {
+            synchronized (exprFull.intern()) {
+                if (p == null) {
+                    if (exprFull.endsWith("i")) {
+                        p = Pattern.compile(expr, Pattern.CASE_INSENSITIVE);
+                    } else {
+                        p = Pattern.compile(expr);
+                    }
+                    _regexLib.put(exprFull, p);
+                }
+            }
+        }
+
+        return p;
     }
 }

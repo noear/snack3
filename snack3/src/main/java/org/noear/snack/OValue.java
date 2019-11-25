@@ -284,4 +284,9 @@ public class OValue {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return getString();
+    }
 }
