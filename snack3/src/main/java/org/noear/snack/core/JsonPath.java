@@ -18,18 +18,24 @@ import java.util.regex.Pattern;
  *
  * */
 public class JsonPath {
-    private static Map<String,List<Segment>> _map = new HashMap<>(1024);
+    private static Map<String,List<Segment>> _cmdLib = new HashMap<>(1024);
+
     public static ONode get(ONode source, String jpath, boolean cacheJpath) {
+        tlCache.get().clear();
+        return do_get(source, jpath, cacheJpath);
+    }
+
+    public static ONode do_get(ONode source, String jpath, boolean cacheJpath) {
         //解析出指令
         List<Segment> cmds = null;
         if (cacheJpath) {
-            cmds = _map.get(jpath);
+            cmds = _cmdLib.get(jpath);
             if (cmds == null) {
                 synchronized (jpath.intern()) {
-                    cmds = _map.get(jpath);
+                    cmds = _cmdLib.get(jpath);
                     if (cmds == null) {
                         cmds = compile(jpath);
-                        _map.put(jpath, cmds);
+                        _cmdLib.put(jpath, cmds);
                     }
                 }
             }
@@ -43,6 +49,7 @@ public class JsonPath {
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
+    private static final ThData<NodeCache> tlCache = new ThData<>(()->new NodeCache());
     /**
      * 编译jpath指令
      * */
@@ -230,12 +237,17 @@ public class JsonPath {
         OValue left = leftO.val();
         ONode  rightO = null;
 
-        if(right.startsWith("$")){
-            rightO = get(root,right,true);
+        if(right.startsWith("$")) {
+            //全局描扫的数据，进行缓存
+            rightO = tlCache.get().get(right);
+            if (rightO == null) {
+                rightO = do_get(root, right, true);
+                tlCache.get().put(right, rightO);
+            }
         }
 
         if(right.startsWith("@")){
-            rightO = get(parent,right,true);
+            rightO = do_get(parent,right,true);
         }
 
         if(rightO != null) {
@@ -561,13 +573,13 @@ public class JsonPath {
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
-                if(get(tmp,s.left,true).isNull()){
+                if(do_get(tmp,s.left,true).isNull()){
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
                 for (ONode n1 : tmp.ary()) {
-                    if(get(n1,s.left,true).isNull() == false){
+                    if(do_get(n1,s.left,true).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
                 }
@@ -578,7 +590,7 @@ public class JsonPath {
                     return null;
                 }
 
-                ONode leftO = get(tmp,s.left,true);
+                ONode leftO = do_get(tmp,s.left,true);
                 if (compare(root, tmp, leftO, s.op, s.right) == false) {
                     return null;
                 }
@@ -592,7 +604,7 @@ public class JsonPath {
                     }
                 }else {
                     for (ONode n1 : tmp.ary()) {
-                        ONode leftO = get(n1,s.left,true);
+                        ONode leftO = do_get(n1,s.left,true);
 
                         if (compare(root, n1, leftO, s.op, s.right)) {
                             tmp2.addNode(n1);

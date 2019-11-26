@@ -116,7 +116,7 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test42(){
-        //1000000=>1509,1467,1494
+        //1000000=>678,674,667
         //
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
