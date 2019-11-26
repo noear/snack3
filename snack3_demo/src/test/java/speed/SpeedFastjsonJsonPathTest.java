@@ -11,7 +11,7 @@ import org.noear.snack.ONode;
 public class SpeedFastjsonJsonPathTest {
     @Test
     public void test0(){
-        //1000000=>529,546,539
+        //100000=>269,288,266
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
