@@ -437,15 +437,11 @@ public class JsonPath {
         }
 
         if (tmp.isArray()) {
-            ONode tmp2 = null;
+            ONode tmp2 = new ONode(tmp.cfg()).asArray();
             for (ONode n1 : tmp.ary()) {
                 if (n1.isObject()) {
                     ONode n2 = n1.nodeData().object.get(s.cmd);
                     if (n2 != null) {
-                        if(tmp2 == null){ //有节点时，才初始化
-                            tmp2 =new ONode(tmp.cfg()).asArray();
-                        }
-
                         tmp2.add(n2);
                     }
                 }

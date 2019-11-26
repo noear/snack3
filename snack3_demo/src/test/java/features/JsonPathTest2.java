@@ -119,6 +119,10 @@ public class JsonPathTest2 {
         ONode t7 = n.select("$.store.book[*]");
         System.out.println(t7);
         assert t7.isArray() && t7.count()==2;
+
+        ONode t8 = n.select("$..book[*].author");
+        System.out.println(t8);
+        assert t8.isArray() && t8.count()==2;
     }
 
     @Test
