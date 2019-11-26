@@ -42,3 +42,9 @@ snack3：从测试的情况看，处理策略如下：
 ($..ary2[0]).a    
 ($..c).min()  //所以会有结果
 
+事后说明：
+* json-path只能：
+data.list[?(@ in $..ary2[0].a)]
+* snack3可以：
+data.list[?(@ in $..ary2[0].a)] 或
+data.list[?(@ == $..ary2[0].a[0])]
