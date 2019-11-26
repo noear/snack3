@@ -106,6 +106,9 @@ public class JsonPathTest {
 
         ONode ary2_d = n.select("$.*.list[0][0]");
         assert ary2_d.isValue();
+
+        ONode ary2_e = n.select("$..list[0]");
+        assert ary2_e.isValue();
     }
 
     @Test

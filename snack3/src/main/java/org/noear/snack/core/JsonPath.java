@@ -303,8 +303,11 @@ public class JsonPath {
             } else {
                 scanByName(p, tmp, tmp2);
             }
-
-            return tmp2;
+            if(tmp2.count()==1){
+                return tmp2.getOrNull(0);
+            }else {
+                return tmp2;
+            }
         } else {
             return null;
         }
