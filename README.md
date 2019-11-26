@@ -112,7 +112,7 @@ String ymal = ONode.load(xml,Constants.def(),xmlFromer).toObject(null,ymalToer);
 
 //加载xml，去掉手机号，再转为java object
 ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
-tmp.select("$..\[?(@.mobile)]").forEach(n->n.remove("mobile"));
+tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
 XxxModel m =tmp.toObject(XxxModel.class);
 ```
 
