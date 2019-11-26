@@ -77,8 +77,8 @@ o.get("list2").fill("[1,2,3,4,5,5,6]");
 
 
 //demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
-//找到所有的187开头的手机号，并改为186
-o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186"));
+//找到所有的187开头的手机号，改为186，最后输出修改后的json
+o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
 //修改data.list[1]下的的mobile字段
 o.select("$.data.list[1].mobile").val("186");
 
