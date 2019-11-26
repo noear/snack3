@@ -76,11 +76,11 @@ UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并�
 o.get("list2").fill("[1,2,3,4,5,5,6]");
 
 
-//demo6:Simple json path（只支持选择，不支持过滤）//不确定返回数量的，会返回array类型
+//demo6::json path //不确定返回数量的，者会返回array类型
 //找到所有的187开头的手机号，改为186，最后输出修改后的json
 o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
-//修改data.list[1]下的的mobile字段
-o.select("$.data.list[1].mobile").val("186");
+//找到data.list[1]下的的mobile字段，并转为long
+o.select("$.data.list[1].mobile").getLong();
 
 //查找所有手机号，并转为List<String> //$可写，也可不写
 List<String> list = o.select("..mobile").toObject(List.class);//性能差点
@@ -171,10 +171,11 @@ o.forEach((v)->{
 -cfg() -> Constants 				//获取配置
 
 -build(n->..) -> self:ONode     	//节点构建表达式
--select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（只支持选择，不支持过滤）
+-select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
+-select(jpath:String, cacheJpath:boolean)-> new:ONode   //使用JsonPath表达式选择节点
 
--clear() //清除子节点，对象或数组有效
--count() //子节点数量，对象或数组有效
+-clear()        //清除子节点，对象或数组有效
+-count() -> int //子节点数量，对象或数组有效
 
 
 //值操作
@@ -205,8 +206,8 @@ o.forEach((v)->{
 -setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
 -setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
 -setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //设置对象的子节点，将map的成员搬过来，并交由代理处置
--remove(key:String)     //移除对象的子节点
--forEach((k,v)->..)     //遍历对象的子节点
+-remove(key:String)                   //移除对象的子节点
+-forEach((k,v)->..) -> self:ONode     //遍历对象的子节点
 
 //数组操作
 //
@@ -219,14 +220,14 @@ o.forEach((v)->{
 -addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将ary的子节点搬过来
 -addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的成员点搬过来
 -addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的成员点搬过来，并交由代理处置
--removeAt(index:int)    //移除数组的子节点
--forEach(v->..)         //遍历数组的子节点
+-removeAt(index:int)                 //移除数组的子节点
+-forEach(v->..) -> self:ONode        //遍历数组的子节点
 
 //特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
 //
--attrGet(key:String)                //获取特性
--attrSet(key:String,val:String)     //设置特性
--attrForeach((k,v)->..)             //遍历特性
+-attrGet(key:String) -> String                  //获取特性
+-attrSet(key:String,val:String) -> self:ONode   //设置特性
+-attrForeach((k,v)->..) -> self:ONode           //遍历特性
 
 //转换操作
 //
@@ -264,5 +265,6 @@ o.forEach((v)->{
 +serialize(source:Object) -> String                   //序列化（带@type属性）
 +deserialize(source:String) -> T                      //反序列化
 +deserialize(source:String, clz:Class<?>) -> T        //反序列化
+
 
 ```
