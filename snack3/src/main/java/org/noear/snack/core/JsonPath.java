@@ -589,33 +589,29 @@ public class JsonPath {
                 end = count;
             }
 
-            ONode tmp2 = new ONode(tmp.cfg()).addAll(tmp.ary().subList(start, end));
-
-            return tmp2;
+            return new ONode(tmp.cfg()).addAll(tmp.ary().subList(start, end));
         } else {
             return null;
         }
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_prop=(s,root, tmp)->{
-        ONode tmp2 = null;
-        if (s.cmd.startsWith("'")) {
-            tmp2 = tmp.getOrNull(s.name);
+    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_prop=(s,root, tmp)-> {
+        //如果是value,会返回null
+        if (s.cmdHasQuote) {
+            return tmp.getOrNull(s.name);
         } else {
-            int idx = s.start;
-            if (idx < 0) {
-                tmp2 = tmp.getOrNull(tmp.count() + idx);//倒数位
+            if (s.start < 0) {
+                return tmp.getOrNull(tmp.count() + s.start);//倒数位
             } else {
-                tmp2 = tmp.getOrNull(idx);//正数位
+                return tmp.getOrNull(s.start);//正数位
             }
         }
-
-        return tmp2;
     };
 
     public static class Segment {
         public String cmd;
         public String cmdAry;
+        public boolean cmdHasQuote;
         public List<Integer> indexS;
         public List<String> nameS;
 
@@ -631,6 +627,7 @@ public class JsonPath {
 
         public Segment(String test) {
             cmd = test.trim();
+            cmdHasQuote = cmd.indexOf("'")>=0;
 
             if (cmd.endsWith("]")) {
                 this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();

@@ -4,45 +4,6 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 
 public class SpeedJsonPathTest {
-    @Test
-    public void test0(){
-        //100000=>287,288,294
-        //
-        //1.加载json
-
-        String text = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
-
-        long start = System.currentTimeMillis();
-        for(int i=0,len=100000; i<len; i++) {
-            ONode.load(text);
-        }
-
-        long times = System.currentTimeMillis() - start;
-
-        System.out.println(times);
-
-        assert times > 0;
-    }
-
-    @Test
-    public void test00(){
-        //100000=>350,379,340
-        //
-        //1.加载json
-
-        String text = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
-
-        long start = System.currentTimeMillis();
-        for(int i=0,len=100000; i<len; i++) {
-            ONode.load(text).select("$..a");
-        }
-
-        long times = System.currentTimeMillis() - start;
-
-        System.out.println(times);
-
-        assert times > 0;
-    }
 
     @Test
     public void test1(){
@@ -92,7 +53,7 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test2(){
-        //1000000=>152,137,143
+        //1000000=>133,137,131
         //
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
