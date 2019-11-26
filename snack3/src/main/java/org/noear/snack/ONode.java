@@ -680,19 +680,23 @@ public class ONode {
     /**
      * 遍历对象的子节点
      */
-    public void forEach(BiConsumer<String, ONode> consumer) {
+    public ONode forEach(BiConsumer<String, ONode> consumer) {
         if (isObject()) {
             _d.object.forEach(consumer);
         }
+
+        return this;
     }
 
     /**
      * 遍历数组的子节点
      */
-    public void forEach(Consumer<ONode> consumer) {
+    public ONode forEach(Consumer<ONode> consumer) {
         if (isArray()) {
             _d.array.forEach(consumer);
         }
+
+        return this;
     }
 
     ////////////////////
@@ -711,17 +715,19 @@ public class ONode {
     /**
      * 设置特性
      */
-    public void attrSet(String key, String val) {
+    public ONode attrSet(String key, String val) {
         _d.attrSet(key, val);
+        return this;
     }
 
     /**
      * 遍历特性
      */
-    public void attrForeach(BiConsumer<String, String> consumer) {
+    public ONode attrForeach(BiConsumer<String, String> consumer) {
         if (_d.attrs != null) {
             _d.attrs.forEach(consumer);
         }
+        return this;
     }
 
     ////////////////////
