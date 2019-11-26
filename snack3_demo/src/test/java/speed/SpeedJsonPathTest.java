@@ -94,6 +94,27 @@ public class SpeedJsonPathTest {
     }
 
     @Test
+    public void test41(){
+        //1000000=>143,145,146
+        //
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("data.list[?(@ == $..ary2[0].a)]");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            n.select("data.list[?(@ == $..ary2[0].a)]");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
     public void test5(){
         //1000000=>84,86,80
         //

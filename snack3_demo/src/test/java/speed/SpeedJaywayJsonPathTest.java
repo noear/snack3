@@ -4,6 +4,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import org.junit.Test;
+import org.noear.snack.ONode;
 
 
 public class SpeedJaywayJsonPathTest {
@@ -80,6 +81,29 @@ public class SpeedJaywayJsonPathTest {
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             JsonPath.read(obj,"data.list[1:4]");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test41(){
+        //1000000=>143,145,146
+        //
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+
+        Object tmp1 = JsonPath.read(obj,"$..ary2[0].a");
+        Object tmp2 = JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a.min())]");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a)]");
         }
 
         long times = System.currentTimeMillis() - start;

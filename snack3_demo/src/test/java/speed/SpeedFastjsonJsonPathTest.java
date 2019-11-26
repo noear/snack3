@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -84,6 +86,29 @@ public class SpeedFastjsonJsonPathTest {
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             JSONPath.eval(obj,"data.list[1:4]");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test41(){
+        //1000000=>143,145,146
+        //
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        JSONObject obj = JSON.parseObject(text);
+
+        Object tmp1 = JSONPath.eval(obj,"$..ary2[0].a");
+        Object tmp2 = JSONPath.eval(obj,"$.data.list[?(@ == $..ary2[0].a)]");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JSONPath.eval(obj,"$.data.list[?(@ == $..ary2[0].a)]");
         }
 
         long times = System.currentTimeMillis() - start;
