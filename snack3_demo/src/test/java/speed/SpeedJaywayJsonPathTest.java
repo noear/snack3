@@ -92,18 +92,43 @@ public class SpeedJaywayJsonPathTest {
 
     @Test
     public void test41(){
+        //1000000=>2522,2551,2591
+        //
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+
+        Object tmp30 = JsonPath.read(obj,"$..ary2[0].a");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            JsonPath.read(obj,"$..ary2[0].a");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test42(){
         //1000000=>143,145,146
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
 
-        Object tmp00 = JsonPath.read(obj,"$..ary2");
-        Object tmp01 = JsonPath.read(obj,"$..list[2]");
-        Object tmp0 = JsonPath.read(obj,"$..list[-2:]");
-        Object tmp1 = JsonPath.read(obj,"$..ary2[0].a");
+//        Object tmp00 = JsonPath.read(obj,"$..ary2");
+//        Object tmp01 = JsonPath.read(obj,"$..list[2]");
+//        Object tmp0 = JsonPath.read(obj,"$..list[-2:]");
+//        Object tmp1 = JsonPath.read(obj,"$..ary2[0].a");
+//
+//        Object tmp2 = JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a.min())]");
 
-        Object tmp2 = JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a.min())]");
+        Object tmp30 = JsonPath.read(obj,"$..ary2[0].a");
+        Object tmp3 = JsonPath.read(obj,"$.data.list[?(@ in $..ary2[0].a)]");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {

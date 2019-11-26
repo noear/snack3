@@ -7,7 +7,7 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test1(){
-        //1000000=>282,270,274
+        //1000000=>225,225,232
         //
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -30,7 +30,7 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test2(){
-        //1000000=>306,315,325
+        //1000000=>277,292,275
         //
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -95,16 +95,37 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test41(){
-        //1000000=>143,145,146
+        //1000000=>310,311,314
         //
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
-        ONode tmp = n.select("data.list[?(@ == $..ary2[0].a)]");
+        ONode tmp = n.select("$..ary2[0].a)");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.list[?(@ == $..ary2[0].a)]");
+            n.select("$..ary2[0].a)");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test42(){
+        //1000000=>1509,1467,1494
+        //
+        //1.加载json
+        ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        ONode tmp = n.select("data.list[?(@ in $..ary2[0].a)]");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=1000000; i<len; i++) {
+            n.select("data.list[?(@ in $..ary2[0].a)]");
         }
 
         long times = System.currentTimeMillis() - start;
