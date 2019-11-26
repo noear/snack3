@@ -58,11 +58,11 @@ public class SpeedJsonPathTest {
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
-        ONode tmp = n.select("data.list[1,4]");
+        ONode tmp = n.select("$.data.list[1,4]");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.list[1,4]");
+            n.select("$.data.list[1,4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -79,11 +79,11 @@ public class SpeedJsonPathTest {
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
-        ONode tmp = n.select("data.list[1:4]");
+        ONode tmp = n.select("$.data.list[1:4]");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.list[1:4]");
+            n.select("$.data.list[1:4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -121,11 +121,11 @@ public class SpeedJsonPathTest {
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
-        ONode tmp = n.select("data.list[?(@ in $..ary2[0].a)]");
+        ONode tmp = n.select("$.data.list[?(@ in $..ary2[0].a)]");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.list[?(@ in $..ary2[0].a)]");
+            n.select("$.data.list[?(@ in $..ary2[0].a)]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -142,11 +142,11 @@ public class SpeedJsonPathTest {
         //1.加载json
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
 
-        ONode tmp = n.select("data.ary2[1].b.c");
+        ONode tmp = n.select("$.data.ary2[1].b.c");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.ary2[1].b.c");
+            n.select("$.data.ary2[1].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -164,7 +164,7 @@ public class SpeedJsonPathTest {
         ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            n.select("data.ary2[*].b.c");
+            n.select("$.data.ary2[*].b.c");
         }
 
         long times = System.currentTimeMillis() - start;

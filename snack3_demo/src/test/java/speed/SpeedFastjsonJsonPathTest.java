@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
-import org.noear.snack.ONode;
 
 
 public class SpeedFastjsonJsonPathTest {
@@ -57,15 +54,17 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test3(){
-        //1000000=>105,109,102
+        //1000000=>85,90,86
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
 
+        Object tmp = JSONPath.eval(obj,"$.data.list[1,4]");
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"data.list[1,4]");
+            JSONPath.eval(obj,"$.data.list[1,4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -85,7 +84,7 @@ public class SpeedFastjsonJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"data.list[1:4]");
+            JSONPath.eval(obj,"$.data.list[1:4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -138,17 +137,17 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test5(){
-        //1000000=>34,34,34
+        //1000000=>60,58,58
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
 
-        Object tmp =JSONPath.eval(obj,"ata.ary2[1].b.c");
+        Object tmp =JSONPath.eval(obj,"$.data.ary2[1].b.c");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"ata.ary2[1].b.c");
+            JSONPath.eval(obj,"$.data.ary2[1].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -168,7 +167,7 @@ public class SpeedFastjsonJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"data.ary2[*].b.c"); //不支持*
+            JSONPath.eval(obj,"$.data.ary2[*].b.c"); //不支持*
         }
 
         long times = System.currentTimeMillis() - start;

@@ -2,9 +2,7 @@ package speed;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.spi.json.JsonProvider;
 import org.junit.Test;
-import org.noear.snack.ONode;
 
 
 public class SpeedJaywayJsonPathTest {
@@ -60,7 +58,7 @@ public class SpeedJaywayJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"data.list[1,4]");
+            JsonPath.read(obj,"$.data.list[1,4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -80,7 +78,7 @@ public class SpeedJaywayJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"data.list[1:4]");
+            JsonPath.read(obj,"$.data.list[1:4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -154,7 +152,7 @@ public class SpeedJaywayJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"data.ary2[1].b.c");
+            JsonPath.read(obj,"$.data.ary2[1].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -174,7 +172,7 @@ public class SpeedJaywayJsonPathTest {
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"data.ary2[*].b.c"); //不支持*
+            JsonPath.read(obj,"$.data.ary2[*].b.c"); //不支持*
         }
 
         long times = System.currentTimeMillis() - start;
