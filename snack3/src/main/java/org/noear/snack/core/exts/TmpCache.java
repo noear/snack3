@@ -4,6 +4,6 @@ import org.noear.snack.ONode;
 
 import java.util.HashMap;
 
-public class NodeCache extends HashMap<String, ONode> {
+public class TmpCache extends HashMap<String, ONode> {
 
 }

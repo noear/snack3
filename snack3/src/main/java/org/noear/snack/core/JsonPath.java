@@ -49,7 +49,7 @@ public class JsonPath {
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
-    private static final ThData<NodeCache> tlCache = new ThData<>(()->new NodeCache());
+    private static final ThData<TmpCache> tlCache = new ThData<>(()->new TmpCache());
     /**
      * 编译jpath指令
      * */
