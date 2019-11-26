@@ -594,8 +594,9 @@ public class JsonPath {
 
         public Fun3<ONode,Segment,ONode,ONode> handler;
 
-        public Segment(String cmd) {
-            this.cmd = cmd;
+        public Segment(String test) {
+            cmd = test.trim();
+
             if (cmd.endsWith("]")) {
                 this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
 
