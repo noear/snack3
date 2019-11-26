@@ -29,7 +29,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test12(){
+    public void test2(){
         //1000000=>306,315,325
         //
         //1.加载json
@@ -52,7 +52,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test2(){
+    public void test3(){
         //1000000=>133,137,131
         //
         //1.加载json
@@ -73,7 +73,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test22(){
+    public void test4(){
         //1000000=>143,145,146
         //
         //1.加载json
@@ -94,7 +94,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test23(){
+    public void test5(){
         //1000000=>84,86,80
         //
         //1.加载json
@@ -115,7 +115,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test3(){
+    public void test6(){
         //1000000=>173,152,155
         //
         //1.加载json
@@ -133,7 +133,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test4(){
+    public void test7(){
         //1000000=>580,535,532
         //
         //1.加载json
@@ -151,7 +151,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test5(){
+    public void test8(){
         //1000000=>279,282,285
         //
         //1.加载json
@@ -170,7 +170,7 @@ public class SpeedJsonPathTest {
     }
 
     @Test
-    public void test6(){
+    public void test9(){
         //1000000=>444,423,429
         //
         //1.加载json

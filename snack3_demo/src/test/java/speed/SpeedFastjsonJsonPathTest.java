@@ -32,7 +32,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test12(){
+    public void test2(){
         //不支持
         //
         //1.加载json
@@ -54,7 +54,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test2(){
+    public void test3(){
         //1000000=>105,109,102
         //
         //1.加载json
@@ -74,7 +74,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test22(){
+    public void test4(){
         //1000000=>105,109,114
         //
         //1.加载json
@@ -94,7 +94,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test23(){
+    public void test5(){
         //1000000=>34,34,34
         //
         //1.加载json
@@ -116,7 +116,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test3(){
+    public void test6(){
         //不支持*
         //
         //1.加载json
@@ -136,7 +136,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test4(){
+    public void test7(){
         //不支持
         //
         //1.加载json
@@ -156,7 +156,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test5(){
+    public void test8(){
         //不支持
         //
         //1.加载json
@@ -177,7 +177,7 @@ public class SpeedFastjsonJsonPathTest {
     }
 
     @Test
-    public void test6(){
+    public void test9(){
         //1.加载json
         String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
         JSONArray obj = JSONArray.parseArray(text);
