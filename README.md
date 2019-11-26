@@ -104,6 +104,7 @@ o.forEach((v)->{
 ```
 
 //demo8:互转
+```java
 String xml = "<xml>....</xml>";
 XmlFromer xmlFromer = new XmlFromer();
 YmalToer  ymalToer  = new YmalToer();
@@ -115,6 +116,7 @@ String ymal = ONode.load(xml,Constants.def(),xmlFromer).toObject(null,ymalToer);
 ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
 tmp.select("$..\[?(@.mobile)]").forEach(n->n.remove("mobile"));
 XxxModel m =tmp.toObject(XxxModel.class);
+```
 
 ## 关于序列化的特点
 #### 对象（与fastJson一致）
