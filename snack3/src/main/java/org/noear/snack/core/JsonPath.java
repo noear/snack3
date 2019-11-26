@@ -380,6 +380,16 @@ public class JsonPath {
 
     public static Fun3<ONode,Segment,ONode,ONode> handler_fun=(s,root,tmp)->{
         switch (s.cmd) {
+            case "size()":{
+                return new ONode(tmp.cfg()).val(tmp.count());
+            }
+            case "length()":{
+                if(tmp.isValue()){
+                    return new ONode(tmp.cfg()).val(tmp.getString().length());
+                }else{
+                    return new ONode(tmp.cfg()).val(tmp.count());
+                }
+            }
             case "min()": {
                 if (tmp.isArray()) {
                     ONode min_n = null;
@@ -478,20 +488,21 @@ public class JsonPath {
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
-                if (tmp.contains(s.left) == false) {
+                if(get(tmp,s.left,true).isNull()){
                     tmp2 = null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
                 for (ONode n1 : tmp.ary()) {
-                    if (n1.contains(s.left)) {
+                    if(get(n1,s.left,true).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
                 }
             }
         } else {
             if (tmp.isObject()) {
-                if (compare(root, tmp, tmp.getOrNull(s.left), s.op, s.right) == false) {
+                ONode leftO = get(tmp,s.left,true);
+                if (compare(root, tmp, leftO, s.op, s.right) == false) {
                     tmp2 = null;
                 }
             } else if (tmp.isArray()) {
@@ -504,7 +515,9 @@ public class JsonPath {
                     }
                 }else {
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(root, n1, n1.getOrNull(s.left), s.op, s.right)) {
+                        ONode leftO = get(n1,s.left,true);
+
+                        if (compare(root, n1, leftO, s.op, s.right)) {
                             tmp2.addNode(n1);
                         }
                     }
@@ -630,10 +643,6 @@ public class JsonPath {
                     if (ss2.length == 3) {
                         op = ss2[1];
                         right = ss2[2];
-                    }
-
-                    if(left.indexOf(".")>0){
-                        left = left.split("\\.")[1];
                     }
                 } else if (cmdAry.indexOf(":") >= 0) {
                     String[] iAry = cmdAry.split(":", -1);

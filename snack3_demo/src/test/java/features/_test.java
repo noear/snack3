@@ -147,4 +147,11 @@ public class _test {
 
         assert  um2.name.equals(um.name);
     }
+
+//    @Test
+//    public void test9() {
+//        String text = "{a:'\\x'}";
+//        ONode tmp = ONode.loadStr(text);
+//        assert tmp.count() == 1;
+//    }
 }
