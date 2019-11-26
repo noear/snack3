@@ -199,6 +199,8 @@ public class SpeedJsonPathTest {
         //1.加载json
         ONode n = ONode.load("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
 
+        ONode tmp = n.select("$..c.min()");
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             n.select("$..c.min()");

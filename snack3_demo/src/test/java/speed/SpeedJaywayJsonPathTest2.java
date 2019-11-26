@@ -19,5 +19,9 @@ public class SpeedJaywayJsonPathTest2 {
         JSONArray t8 = JsonPath.read(json,"$..book.author");
         System.out.println(t8);
         assert t8.size() == 0;
+
+        JSONArray t9 = JsonPath.read(json,"$.*.book.author");
+        System.out.println(t9);
+        assert t9.size() == 0;
     }
 }

@@ -212,13 +212,13 @@ public class JsonPathTest {
         ONode t1 = n.select("$..b");
         assert t1.count()==4;
 
-        ONode t2 = n.select("$..b.min()");
-        assert t2.getInt()==2;
-
-        ONode t3 = n.select("$..b.max()");
-        assert t3.getInt()==23;
-
-        ONode t4 = n.select("$..b.avg()");
-        assert t4.getInt()==11;
+//        ONode t2 = n.select("$..b.min()");
+//        assert t2.getInt()==2;
+//
+//        ONode t3 = n.select("$..b.max()");
+//        assert t3.getInt()==23;
+//
+//        ONode t4 = n.select("$..b.avg()");
+//        assert t4.getInt()==11;
     }
 }
