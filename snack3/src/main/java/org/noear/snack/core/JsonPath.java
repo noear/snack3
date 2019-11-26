@@ -133,7 +133,7 @@ public class JsonPath {
                 break;
             }
 
-            if (branch_do && s.cmdAry != null) { //..a[x] 下属进行分支处理
+            if (branch_do) { //..a[x] 下属进行分支处理
                 ONode tmp2 = new ONode().asArray();
 
                 Consumer<ONode> act1 = (n1) -> {
@@ -160,7 +160,6 @@ public class JsonPath {
                 tmp = tmp2;
                 branch_do = false;
             } else {
-                branch_do = false;
                 tmp = s.handler.run(s, source, tmp);
                 branch_do = s.cmdHasUnline;
             }
