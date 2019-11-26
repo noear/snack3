@@ -102,12 +102,12 @@ public class JsonPathTest {
         assert ary2_b.count() == 16;
 
         ONode ary2_c = n.select("$..*[1]");
-        assert ary2_c.isValue();
+        assert ary2_c.count()==2;
 
         ONode ary2_d = n.select("$.*.list[0][0]");
         assert ary2_d.isValue();
 
-        ONode ary2_e = n.select("$..list[0]");
+        ONode ary2_e = n.select("$..list[0][0]");
         assert ary2_e.isValue();
     }
 
@@ -128,29 +128,29 @@ public class JsonPathTest {
         ONode t4 = n.select("$.data..a");
         assert  t4.count()==2;
 
-        ONode t5 = n.select("$..a[0]");
-        assert  t5.getInt()==2;
+//        ONode t5 = n.select("$..a[0]");//a不是数组，不会支持了
+//        assert  t5.getInt()==2;
 
         ONode t60 = n.select("$..b");
         System.out.println(t60.toJson());
 
-        ONode t6 = n.select("$..b[-1]");
-        assert  t6.getInt()==23;
+        ONode t6 = n.select("$..list[-1]");
+        assert  t6.get(0).getInt()==5;
 
-        ONode t7 = n.select("$..b[0,1]");
+        ONode t7 = n.select("$..list[0,1]");
         assert  t7.count()==2;
 
-        ONode t8 = n.select("$..b[:2]");
+        ONode t8 = n.select("$..list[:2]");
         assert  t8.count()==2;
 
-        ONode t9 = n.select("$..b[1:2]");
+        ONode t9 = n.select("$..list[1:2]");
         assert  t9.count()==1;
 
-        ONode ta = n.select("$..b[-2:]");
+        ONode ta = n.select("$..list[-2:]");
         assert  ta.count()==2;
 
-        ONode tb = n.select("$..b[2:]");
-        assert  tb.count()==2;
+        ONode tb = n.select("$..list[2:]");
+        assert  tb.count()==3;
     }
 
     @Test

@@ -103,6 +103,7 @@ public class SpeedFastjsonJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
 
+        Object tmp0 = JSONPath.eval(obj,"$..ary2.a");
         Object tmp1 = JSONPath.eval(obj,"$..ary2[0].a");
         Object tmp2 = JSONPath.eval(obj,"$.data.list[?(@ == $..ary2[0].a)]");
 

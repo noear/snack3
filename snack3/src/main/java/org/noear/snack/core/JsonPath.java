@@ -41,7 +41,7 @@ public class JsonPath {
 
 
         //执行指令
-        return exec(cmds,  source);
+        return exec(cmds, source);
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
@@ -129,12 +129,35 @@ public class JsonPath {
      * */
     private static ONode exec(List<Segment> cmds, ONode source) {
         ONode tmp = source;
-        for (Segment s : cmds) {
+        boolean branch_do = false;
+        for (Segment s: cmds) {
             if (tmp == null) {//多次转换后，可能为null
                 break;
             }
 
-            tmp = s.handler.run(s, source, tmp);
+            if (branch_do && s.cmdAry != null) { //..a[x] 下属进行分支处理
+                ONode tmp2 = new ONode().asArray();
+                for (ONode n1 : tmp.ary()) {
+                    ONode n2 = s.handler.run(s, source, n1);
+                    if (n2 != null) {
+                        if (s.cmdAry != null) {
+                            if (n2.isArray()) {
+                                tmp2.addAll(n2.ary());
+                            } else {
+                                tmp2.addNode(n2);
+                            }
+                        } else {
+                            tmp2.addNode(n2);
+                        }
+                    }
+                }
+                tmp = tmp2;
+                branch_do = false;
+            } else {
+                branch_do = false;
+                tmp = s.handler.run(s, source, tmp);
+                branch_do = s.cmdHasUnline;
+            }
         }
 
         if (tmp == null) {
@@ -147,7 +170,7 @@ public class JsonPath {
     /**
      * 深度扫描
      * */
-    private static void scanByName(String name, ONode source, ONode target) {
+    private static void scanByName(String name, ONode source, List<ONode> target) {
         if (source.isObject()) {
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
                 if (name.equals(kv.getKey())) {
@@ -167,7 +190,7 @@ public class JsonPath {
         }
     }
 
-    private static void scanByAll(String name, ONode source, boolean isRoot, ONode target) {
+    private static void scanByAll(String name, ONode source, boolean isRoot, List<ONode> target) {
         if (isRoot == false) {
             target.add(source);
         }
@@ -317,22 +340,21 @@ public class JsonPath {
 
     public static Fun3<ONode,Segment,ONode,ONode> handler_$=(s,root, tmp)->{ return tmp;};
     public static Fun3<ONode,Segment,ONode,ONode> handler_xx=(s,root, tmp)-> {
-        String p = s.cmd.substring(1);
-        if (p.length() > 0) {
-            ONode tmp2 = new ONode(tmp.cfg()).asArray();
-            if ("*".equals(p)) {
-                scanByAll(p, tmp, true, tmp2);
+
+        if (s.name.length() > 0) {
+            ONode tmp2 = new ONode().asArray();
+            if ("*".equals(s.name)) {
+                scanByAll(s.name, tmp, true, tmp2.ary());
             } else {
-                scanByName(p, tmp, tmp2);
+                scanByName(s.name, tmp, tmp2.ary());
             }
-            if(tmp2.count()==1){
-                return tmp2.getOrNull(0);
-            }else {
+
+            if (tmp2.count() > 0) {
                 return tmp2;
             }
-        } else {
-            return null;
         }
+
+        return null;
     };
 
     public static Fun3<ONode,Segment,ONode,ONode> handler_x=(s,root, tmp)->{
@@ -489,7 +511,7 @@ public class JsonPath {
         if (s.op == null) {
             if (tmp.isObject()) {
                 if(get(tmp,s.left,true).isNull()){
-                    tmp2 = null;
+                    return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
@@ -501,9 +523,13 @@ public class JsonPath {
             }
         } else {
             if (tmp.isObject()) {
+                if("@".equals(s.left)){
+                    return null;
+                }
+
                 ONode leftO = get(tmp,s.left,true);
                 if (compare(root, tmp, leftO, s.op, s.right) == false) {
-                    tmp2 = null;
+                    return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
@@ -520,6 +546,12 @@ public class JsonPath {
                         if (compare(root, n1, leftO, s.op, s.right)) {
                             tmp2.addNode(n1);
                         }
+                    }
+                }
+            } else if(tmp.isValue()){
+                if("@".equals(s.left)){
+                    if (compare(root, tmp, tmp, s.op, s.right) == false) {
+                        return null;
                     }
                 }
             }
@@ -612,6 +644,7 @@ public class JsonPath {
         public String cmd;
         public String cmdAry;
         public boolean cmdHasQuote;
+        public boolean cmdHasUnline;
         public List<Integer> indexS;
         public List<String> nameS;
 
@@ -628,6 +661,11 @@ public class JsonPath {
         public Segment(String test) {
             cmd = test.trim();
             cmdHasQuote = cmd.indexOf("'")>=0;
+            cmdHasUnline = cmd.startsWith("_");
+
+            if(cmdHasUnline){
+                name = cmd.substring(1);
+            }
 
             if (cmd.endsWith("]")) {
                 this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();

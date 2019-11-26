@@ -41,7 +41,7 @@ public class JsonPathTest2 {
 
         ONode t8 =  n.select("$..book[-2]");
         System.out.println(t8);
-        assert "Herman Melville".equals(t8.get("author").getString());
+        assert "Herman Melville".equals(t8.get(0).get("author").getString());
 
         ONode t9 = n.select("$..book[0,1]");
         System.out.println(t9);
