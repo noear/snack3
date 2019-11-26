@@ -91,7 +91,7 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test2(){
-        //1000000=>105,109
+        //1000000=>105,109,102
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -111,7 +111,7 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test22(){
-        //1000000=>105,109
+        //1000000=>105,109,114
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -131,7 +131,7 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test23(){
-        //1000000=>105,109
+        //1000000=>34,34,34
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -193,15 +193,16 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test5(){
+        //不支持
+        //
         //1.加载json
-        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5],b:2,ary2:[{a:2,b:8},{a:3,d:{c:'ddd',b:23}}]}}");
-        JSONObject obj = JSON.parseObject(text);
+        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+        JSONArray obj = JSONArray.parseArray(text);
 
-        Object tmp = JSONPath.eval(obj,"$..b");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JSONPath.eval(obj,"$..b.min()");
+            JSONPath.eval(obj,"$..c.min()");
         }
 
         long times = System.currentTimeMillis() - start;
