@@ -2,10 +2,47 @@ package speed;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.JsonProvider;
 import org.junit.Test;
 
 
 public class SpeedJaywayJsonPathTest {
+    @Test
+    public void test0(){
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        JsonProvider jsonProvider = Configuration.defaultConfiguration().jsonProvider();
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=100000; i<len; i++) {
+            jsonProvider.parse(text);
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
+    @Test
+    public void test00(){
+        //1.加载json
+        String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=100000; i<len; i++) {
+            JsonPath.read(text,"$..a");
+        }
+
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+    }
+
     @Test
     public void test1(){
         //1.加载json
