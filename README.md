@@ -17,6 +17,10 @@
 ```
 
 ONode 即 `One node` 之意；借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。
+* 强调文档树的操控和构建能力
+* 做为中间媒体，方便不同格式互转
+* 支持`序列化、反序列化`
+* 支持`Json path`查询
 
 ## 随便放几个示例
 
@@ -97,6 +101,19 @@ o.forEach((k,v)->{
 o.forEach((v)->{
   //...
 });
+
+//demo8:互转
+String xml = "<xml>....</xml>";
+XmlFromer xmlFromer = new XmlFromer();
+YmalToer  ymalToer  = new YmalToer();
+
+//加载xml，输出ymal
+String ymal = ONode.load(xml,Constants.def(),xmlFromer).toObject(null,ymalToer);
+
+//加载xml，去掉手机号，再转为java object
+ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
+tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
+XxxModel m =tmp.toObject(XxxModel.class);
 ```
 
 ## 关于序列化的特点
