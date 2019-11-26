@@ -30,7 +30,7 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test00(){
-        //1000000=>529,546,539
+        //100000=>363,352,343
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -54,8 +54,6 @@ public class SpeedFastjsonJsonPathTest {
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
-
-        Object tmp = JSONPath.eval(obj,"$..a");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {

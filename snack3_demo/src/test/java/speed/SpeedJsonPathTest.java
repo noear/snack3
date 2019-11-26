@@ -6,6 +6,8 @@ import org.noear.snack.ONode;
 public class SpeedJsonPathTest {
     @Test
     public void test0(){
+        //100000=>287,288,294
+        //
         //1.加载json
 
         String text = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
@@ -24,6 +26,8 @@ public class SpeedJsonPathTest {
 
     @Test
     public void test00(){
+        //100000=>350,379,340
+        //
         //1.加载json
 
         String text = "{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}";
