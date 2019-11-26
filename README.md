@@ -86,10 +86,13 @@ o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
 //找到data.list[1]下的的mobile字段，并转为long
 o.select("$.data.list[1].mobile").getLong();
 
-//查找所有手机号，并转为List<String> //$可写，也可不写
-List<String> list = o.select("..mobile").toObject(List.class);//性能差点
+//查找所有手机号，并转为List<String> 
+List<String> list = o.select("$..mobile").toObject(List.class);
 //查询data.list下的所有mobile，并转为List<String>
-List<String> list = o.select("data.list[*].mobile").toObject(List.class);//性能好点
+List<String> list = o.select("$.data.list[*].mobile").toObject(List.class);
+//找到187手机号的用户，并输出List<UserModel>
+List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
+                        .toObject((new ArrayList<UserModel>(){}).getClass());
 
 
 //demo7:遍历
