@@ -101,10 +101,8 @@ o.forEach((k,v)->{
 o.forEach((v)->{
   //...
 });
-```
 
 //demo8:互转
-```java
 String xml = "<xml>....</xml>";
 XmlFromer xmlFromer = new XmlFromer();
 YmalToer  ymalToer  = new YmalToer();
