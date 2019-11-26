@@ -2,6 +2,7 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
+import org.noear.snack.OValueType;
 import org.noear.snack.core.exts.CharBuffer;
 import org.noear.snack.core.exts.CharReader;
 import org.noear.snack.core.exts.Fun3;
@@ -189,7 +190,7 @@ public class JsonPath {
     /*
     * ?(left op right)
     * */
-    private static boolean compare(ONode parent, ONode leftO, String op, String right) {
+    private static boolean compare(ONode root, ONode parent, ONode leftO, String op, String right) {
         if (leftO == null) {
             return false;
         }
@@ -199,6 +200,27 @@ public class JsonPath {
         }
 
         OValue left = leftO.val();
+        ONode  rightO = null;
+
+        if(right.startsWith("$")){
+            rightO = get(root,right,true);
+        }
+
+        if(right.startsWith("@")){
+            rightO = get(parent,right,true);
+        }
+
+        if(rightO != null) {
+            if (rightO.isValue()) {
+                if (rightO.val().type() == OValueType.String) {
+                    right = "'" + rightO.getString() + "'";
+                } else {
+                    right = rightO.getDouble() + "";
+                }
+            } else {
+                return false;
+            }
+        }
 
         switch (op) {
             case "==": {
@@ -469,20 +491,20 @@ public class JsonPath {
             }
         } else {
             if (tmp.isObject()) {
-                if (compare(tmp, tmp.getOrNull(s.left), s.op, s.right) == false) {
+                if (compare(root, tmp, tmp.getOrNull(s.left), s.op, s.right) == false) {
                     tmp2 = null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
                 if("@".equals(s.left)){
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(n1, n1, s.op, s.right)) {
+                        if (compare(root, n1, n1, s.op, s.right)) {
                             tmp2.addNode(n1);
                         }
                     }
                 }else {
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(n1, n1.getOrNull(s.left), s.op, s.right)) {
+                        if (compare(root, n1, n1.getOrNull(s.left), s.op, s.right)) {
                             tmp2.addNode(n1);
                         }
                     }
@@ -651,7 +673,7 @@ public class JsonPath {
             }
 
             //$指令
-            if ("$".equals(this.cmd)) {
+            if ("$".equals(this.cmd) || "@".equals(this.cmd)) {
                 handler = handler_$;
                 return;
             }

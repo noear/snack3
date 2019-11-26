@@ -79,6 +79,9 @@ public class JsonPathTest2 {
         System.out.println(th);
         assert th.count()==28;
 
+        ONode ti = n.select("$..book[?(@.price <= $['expensive'])]");
+        System.out.println(ti);
+        assert ti.count()==2;
     }
 
     @Test
