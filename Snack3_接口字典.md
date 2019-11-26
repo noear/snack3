@@ -23,11 +23,11 @@
 -cfg() -> Constants 				//获取配置
 
 -build(n->..) -> self:ONode     	//节点构建表达式
--select(jpath:String) -> new:ONode 	//使用JsonPath表达式选择节点（默认缓存路径编译）
--select(jpath:String, cacheJpath:boolean) //使用JsonPath表达式选择节点
+-select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
+-select(jpath:String, cacheJpath:boolean)-> new:ONode   //使用JsonPath表达式选择节点
 
--clear() //清除子节点，对象或数组有效
--count() //子节点数量，对象或数组有效
+-clear()        //清除子节点，对象或数组有效
+-count() -> int //子节点数量，对象或数组有效
 
 
 //值操作
@@ -58,8 +58,8 @@
 -setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
 -setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
 -setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //设置对象的子节点，将map的成员搬过来，并交由代理处置
--remove(key:String)     //移除对象的子节点
--forEach((k,v)->..)     //遍历对象的子节点
+-remove(key:String)                   //移除对象的子节点
+-forEach((k,v)->..) -> self:ONode     //遍历对象的子节点
 
 //数组操作
 //
@@ -72,14 +72,14 @@
 -addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将ary的子节点搬过来
 -addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的成员点搬过来
 -addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的成员点搬过来，并交由代理处置
--removeAt(index:int)    //移除数组的子节点
--forEach(v->..)         //遍历数组的子节点
+-removeAt(index:int)                 //移除数组的子节点
+-forEach(v->..) -> self:ONode        //遍历数组的子节点
 
 //特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
 //
--attrGet(key:String)                //获取特性
--attrSet(key:String,val:String)     //设置特性
--attrForeach((k,v)->..)             //遍历特性
+-attrGet(key:String) -> String                  //获取特性
+-attrSet(key:String,val:String) -> self:ONode   //设置特性
+-attrForeach((k,v)->..) -> self:ONode           //遍历特性
 
 //转换操作
 //
