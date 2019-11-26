@@ -165,6 +165,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 | `sum()`	| 计算数字数组的汇总值 |
 
 例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
+例：`n.select("$..book.price.min()") //找到最低的价格` 
 
 ## Snack3 接口字典
 ```swift
