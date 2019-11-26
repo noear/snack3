@@ -80,6 +80,6 @@ System.out.println(times);
 
 #### 附：测试代码
 
-- com.alibaba:fastjson 代码：
-- com.jayway.jsonpath:json-path  代码：
-- org.noear:snack3  代码：
+* com.alibaba:fastjson 代码：https://github.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedFastjsonJsonPathTest.java
+* com.jayway.jsonpath:json-path  代码：https://github.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedJaywayJsonPathTest.java
+* org.noear:snack3  代码：https://github.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedJsonPathTest.java
