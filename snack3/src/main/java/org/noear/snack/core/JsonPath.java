@@ -3,16 +3,14 @@ package org.noear.snack.core;
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
 import org.noear.snack.OValueType;
-import org.noear.snack.core.exts.CharBuffer;
-import org.noear.snack.core.exts.CharReader;
-import org.noear.snack.core.exts.Fun3;
-import org.noear.snack.core.exts.ThData;
+import org.noear.snack.core.exts.*;
 import org.noear.snack.core.utils.IOUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
@@ -137,7 +135,8 @@ public class JsonPath {
 
             if (branch_do && s.cmdAry != null) { //..a[x] 下属进行分支处理
                 ONode tmp2 = new ONode().asArray();
-                for (ONode n1 : tmp.ary()) {
+
+                Consumer<ONode> act1 = (n1) -> {
                     ONode n2 = s.handler.run(s, source, n1);
                     if (n2 != null) {
                         if (s.cmdAry != null) {
@@ -150,7 +149,14 @@ public class JsonPath {
                             tmp2.addNode(n2);
                         }
                     }
+                };
+
+                if(tmp.count()>5){
+                    tmp.ary().parallelStream().forEach(act1);
+                }else{
+                    tmp.ary().forEach(act1);
                 }
+
                 tmp = tmp2;
                 branch_do = false;
             } else {
@@ -241,12 +247,16 @@ public class JsonPath {
                     right = rightO.getDouble() + "";
                 }
             } else {
-                return false;
+                right = null;
             }
         }
 
         switch (op) {
             case "==": {
+                if(right == null){
+                    return false;
+                }
+
                 if (right.startsWith("'")) {
                     return left.getString().equals(right.substring(1, right.length() - 1));
                 } else {
@@ -254,38 +264,84 @@ public class JsonPath {
                 }
             }
             case "!=": {
+                if(right == null){
+                    return false;
+                }
+
                 if (right.startsWith("'")) {
                     return left.getString().equals(right.substring(1, right.length() - 1)) == false;
                 } else {
                     return left.getDouble() != Double.parseDouble(right);
                 }
             }
-            case "<":
+            case "<": {
+                if (right == null) {
+                    return false;
+                }
+
                 return left.getDouble() < Double.parseDouble(right);
-            case "<=":
+            }
+            case "<=": {
+                if (right == null) {
+                    return false;
+                }
                 return left.getDouble() <= Double.parseDouble(right);
-            case ">":
+            }
+            case ">": {
+                if (right == null) {
+                    return false;
+                }
                 return left.getDouble() > Double.parseDouble(right);
-            case ">=":
+            }
+            case ">=": {
+                if (right == null) {
+                    return false;
+                }
                 return left.getDouble() >= Double.parseDouble(right);
+            }
             case "=~": {
+                if(right == null){
+                    return false;
+                }
                 int end = right.lastIndexOf('/');
                 String exp = right.substring(1, end);
                 return regex(right, exp).matcher(left.getString()).find();
             }
             case "in": {
-                if (right.indexOf("'") > 0) {
-                    return getStringAry(right).contains(left.getString());
+                if(right == null){
+                    Object val = left.getRaw();
+                    for(ONode n1 : rightO.ary()){
+                        if(n1.val().getRaw().equals(val)){
+                            return true;
+                        }
+                    }
+                    return false;
+                }else{
+                    if (right.indexOf("'") > 0) {
+                        return getStringAry(right).contains(left.getString());
+                    } else {
+                        return getDoubleAry(right).contains(left.getDouble());
+                    }
+                }
+
+            }
+            case "nin": {
+                if (right == null) {
+                    Object val = left.getRaw();
+                    for(ONode n1 : rightO.ary()){
+                        if(n1.val().getRaw().equals(val)){
+                            return false;
+                        }
+                    }
+                    return true;
                 } else {
-                    return getDoubleAry(right).contains(left.getDouble());
+                    if (right.indexOf("'") > 0) {
+                        return getStringAry(right).contains(left.getString()) == false;
+                    } else {
+                        return getDoubleAry(right).contains(left.getDouble()) == false;
+                    }
                 }
             }
-            case "nin":
-                if (right.indexOf("'") > 0) {
-                    return getStringAry(right).contains(left.getString()) == false;
-                } else {
-                    return getDoubleAry(right).contains(left.getDouble()) == false;
-                }
         }
 
         return false;
