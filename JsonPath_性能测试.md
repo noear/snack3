@@ -5,7 +5,7 @@
 ##### 测试目标框架：
 * com.alibaba:fastjson:1.2.29
 * com.jayway.jsonpath:json-path:2.2.0
-* org.noear:snack3:3.1.5.2
+* org.noear:snack3:3.1.5.3
 
 ##### 三份测试数据样本：
 * A:`{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}`
