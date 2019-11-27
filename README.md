@@ -16,7 +16,7 @@
 </dependency>
 ```
 
-Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意。
+Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
 * 强调文档树的操控和构建能力
 * 做为中间媒体，方便不同格式互转
 * 高性能`Json path`查询（兼容性和性能很赞）
@@ -162,7 +162,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 | `min()`	| 计算数字数组的最小值 |
 | `max()`	| 计算数字数组的最大值 |
 | `avg()`	| 计算数字数组的平均值 |
-| `sum()`	| 计算数字数组的汇总值 |
+| `sum()`	| 计算数字数组的汇总值（新加的） |
 
 例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
 例：`n.select("$..book.price.min()") //找到最低的价格` 
