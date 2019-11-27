@@ -16,6 +16,8 @@ public class SpeedTest {
     /** 测试性能（大json） */
     @Test
     public void test00() throws Exception {
+        //10000=>2377,2190,2285
+        //
         //
         //62kb
         //
