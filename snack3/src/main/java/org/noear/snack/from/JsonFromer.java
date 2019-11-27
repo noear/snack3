@@ -146,13 +146,13 @@ public class JsonFromer implements Fromer {
                     return;
 
                 default:
-                    if (sBuf.length() == 0) { //支持：new Date(xxx) //当中有空隔
+//                    if (sBuf.length() == 0) { //支持：new Date(xxx) //当中有空隔
                         if (c > 32) {//无引号的，只添加可见字符(key,no string val)
                             sBuf.append(c);
                         }
-                    } else {
-                        sBuf.append(c);
-                    }
+//                    } else {
+//                        sBuf.append(c);
+//                    }
                     break;
             }
         }

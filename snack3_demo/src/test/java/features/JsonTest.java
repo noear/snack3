@@ -21,38 +21,43 @@ public class JsonTest {
 
     /** 测试非对象，非数组数据 */
     @Test
-    public void test11() throws IOException{
+    public void test11() throws IOException {
         Context c = new Context(Constants.def(), "\"xxx\"");
         new JsonFromer().handle(c);
-        assert "xxx".equals(((ONode)c.target).getString());
+        assert "xxx".equals(((ONode) c.target).getString());
 
-        c =new Context(Constants.def(), "'xxx'");
+        c = new Context(Constants.def(), "'xxx'");
         new JsonFromer().handle(c);
-        assert "xxx".equals(((ONode)c.target).getString());
+        assert "xxx".equals(((ONode) c.target).getString());
 
-        c =new Context(Constants.def(), "true");
+        c = new Context(Constants.def(), "true");
         new JsonFromer().handle(c);
-        assert ((ONode)c.target).getBoolean();
+        assert ((ONode) c.target).getBoolean();
 
-        c =new Context(Constants.def(), "false");
+        c = new Context(Constants.def(), "false");
         new JsonFromer().handle(c);
-        assert ((ONode)c.target).getBoolean()==false;
+        assert ((ONode) c.target).getBoolean() == false;
 
-        c =new Context(Constants.def(), "123");
+        c = new Context(Constants.def(), "123");
         new JsonFromer().handle(c);
-        assert 123 == ((ONode)c.target).getInt();
+        assert 123 == ((ONode) c.target).getInt();
 
-        c =new Context(Constants.def(), "null");
+        c = new Context(Constants.def(), "null");
         new JsonFromer().handle(c);
-        assert ((ONode)c.target).isNull();
+        assert ((ONode) c.target).isNull();
 
-        c =new Context(Constants.def(), "NaN");
+        c = new Context(Constants.def(), "NaN");
         new JsonFromer().handle(c);
-        assert ((ONode)c.target).isNull();
+        assert ((ONode) c.target).isNull();
 
-        c =new Context(Constants.def(), "undefined");
+        c = new Context(Constants.def(), "undefined");
         new JsonFromer().handle(c);
-        assert ((ONode)c.target).isNull();
+        assert ((ONode) c.target).isNull();
+
+        long times = System.currentTimeMillis();
+        c = new Context(Constants.def(), "new Date(" + times + ") ");
+        new JsonFromer().handle(c);
+        assert ((ONode) c.target).getDate().getTime() == times;
 
     }
 
