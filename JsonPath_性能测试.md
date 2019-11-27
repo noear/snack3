@@ -2,11 +2,23 @@
 
 最近给自己的`json`框架`snack3`添加了`json path`支持。搞好之后，找了两个市面上流行框架比较性测试，以助自己改进框架的性能和兼容性。
 
+
+
 测了一圈之后，发现`snack3`兼容性良好，性能更是最好的。晚上要喝点小酒庆祝一下！！！
 
 免责声明：我也是个java新手，可能测试得方式不对而造成不科学的结果，可以留言指出来。以下测试数值只对我的电脑有效（配置：Macbook pro 2018款 i7+16G+512G）。
 
-##### 测试的三个框架及版本：
+
+
+ONode 即 `One node` 之意；借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。
+* 强调文档树的操控和构建能力
+* 做为中间媒体，方便不同格式互转
+* 高性能`Json path`查询（兼容性和性能很赞）
+* 支持`序列化、反序列化`
+
+
+
+##### 本案测试用的三个框架及版本：
 * com.alibaba:fastjson:1.2.29
 * com.jayway.jsonpath:json-path:2.2.0
 * org.noear:snack3:3.1.5.3
@@ -63,7 +75,12 @@ System.out.println(times);
 * json-path 性能不理想，函数使用局限性大
 * snack3 性能最好，函数使用余地更大
 
-#### 附1：..及函数表达式的兼容性说明
+#### 附1：snack3项目地址：
+
+* https://github.com/noear/snack3
+* https://gitee.com/noear/snack3
+
+#### 附2：..及函数表达式的兼容性说明
 ##### json-path：从测试的情况看，处理策略如下：
 
 * 1.带..输出必为数组;如果有[x]，合并为一维数组
@@ -83,7 +100,7 @@ System.out.println(times);
 
 * 4.可以：在原数组节点上执行函数 或 查询结果上执行
 
-#### 附2：测试代码
+#### 附3：测试代码
 
 * com.alibaba:fastjson 代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedFastjsonJsonPathTest.java
 * com.jayway.jsonpath:json-path  代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedJaywayJsonPathTest.java
