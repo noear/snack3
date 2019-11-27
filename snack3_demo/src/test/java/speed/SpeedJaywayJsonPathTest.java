@@ -2,6 +2,7 @@ package speed;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.junit.Test;
 
 
@@ -14,11 +15,11 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..a");
+            context.read("$..a");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -33,13 +34,13 @@ public class SpeedJaywayJsonPathTest {
         //1000000=>3227,3220,3156
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
-        Object tmp = JsonPath.read(obj,"$..*");
+        Object tmp = context.read("$..*");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..*");
+            context.read("$..*");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -54,11 +55,11 @@ public class SpeedJaywayJsonPathTest {
         //1000000=>782,798,776
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$.data.list[1,4]");
+            context.read("$.data.list[1,4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -74,11 +75,11 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$.data.list[1:4]");
+            context.read("$.data.list[1:4]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -94,13 +95,13 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
-        Object tmp30 = JsonPath.read(obj,"$..ary2[0].a");
+        Object tmp30 = context.read("$..ary2[0].a");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..ary2[0].a");
+            context.read("$..ary2[0].a");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -116,7 +117,7 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
 //        Object tmp00 = JsonPath.read(obj,"$..ary2");
 //        Object tmp01 = JsonPath.read(obj,"$..list[2]");
@@ -125,12 +126,12 @@ public class SpeedJaywayJsonPathTest {
 //
 //        Object tmp2 = JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a.min())]");
 
-        Object tmp30 = JsonPath.read(obj,"$..ary2[0].a");
-        Object tmp3 = JsonPath.read(obj,"$.data.list[?(@ in $..ary2[0].a)]");
+        Object tmp30 = context.read("$..ary2[0].a");
+        Object tmp3 = context.read("$.data.list[?(@ in $..ary2[0].a)]");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a)]");
+            context.read("$.data.list[?(@ == $..ary2[0].a)]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -146,13 +147,13 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
-        Object tmp = JsonPath.read(obj,"data.ary2[1].b.c");;
+        Object tmp = context.read("data.ary2[1].b.c");;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$.data.ary2[1].b.c");
+            context.read("$.data.ary2[1].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -168,11 +169,11 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$.data.ary2[*].b.c"); //不支持*
+            context.read("$.data.ary2[*].b.c"); //不支持*
         }
 
         long times = System.currentTimeMillis() - start;
@@ -188,11 +189,11 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..b[?(@.c == 12)]");//不支持
+            context.read("$..b[?(@.c == 12)]");//不支持
         }
 
         long times = System.currentTimeMillis() - start;
@@ -207,13 +208,13 @@ public class SpeedJaywayJsonPathTest {
         //运行会出错
         //1.加载json
         String text =("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
-        Object tmp = JsonPath.read(obj,"$..c");
+        Object tmp = context.read("$..c");
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$..c.min()");
+            context.read("$..c.min()");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -229,11 +230,11 @@ public class SpeedJaywayJsonPathTest {
         //
         //1.加载json
         String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
-        Object obj = Configuration.defaultConfiguration().jsonProvider().parse(text);
+        ReadContext context = JsonPath.parse(text);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            JsonPath.read(obj,"$[?(@.c =~ /a+/)]");//
+            context.read("$[?(@.c =~ /a+/)]");//
         }
 
         long times = System.currentTimeMillis() - start;
