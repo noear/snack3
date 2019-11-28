@@ -741,14 +741,14 @@ public class ONode {
      */
     @Override
     public String toString() {
-        return toObject(null, DEFAULTS.DEF_STRING_TOER);
+        return to(null, DEFAULTS.DEF_STRING_TOER);
     }
 
     /**
      * 将当前ONode 转为 json string
      */
     public String toJson() {
-        return toObject(null, DEFAULTS.DEF_JSON_TOER);
+        return to(null, DEFAULTS.DEF_JSON_TOER);
     }
 
     /**
@@ -766,10 +766,13 @@ public class ONode {
      * clz = null           => Map or List or Value
      */
     public <T> T toObject(Class<?> clz) {
-        return toObject(clz, DEFAULTS.DEF_OBJECT_TOER);
+        return to(clz, DEFAULTS.DEF_OBJECT_TOER);
     }
 
-    public <T> T toObject(Class<?> clz, Toer toer) {
+    /**
+     * 将当前ONode 通过 toer 进行转换
+     */
+    public <T> T to(Class<?> clz, Toer toer) {
         return (T) (new Context(_c, this, clz).handle(toer).target);
     }
 
