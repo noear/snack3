@@ -88,7 +88,8 @@
 -toData() -> Object 			//转为数据结构体（Map,List,Value）
 -toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
 
--to(clz:Class<T>, toer:Toer) -> T   //将当前节点通过toer进行转换
+-to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
+-to(toer:Toer) -> T                 //将当前节点通过toer进行转换
 
 //填充操作（为当前节点填充数据；source 为 String 或 java object）
 -fill(source:Object)    -> self:ONode               //填充数据
