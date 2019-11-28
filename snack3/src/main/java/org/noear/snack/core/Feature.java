@@ -13,6 +13,7 @@ public enum  Feature {
 
     /** 序列化时，写入类名。反序列化是需用到 */
     WriteClassName,
+    WriteArrayClassName,
     WriteDateUseTicks,
     WriteDateUseFormat,
     WriteBoolUse01,
