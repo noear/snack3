@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.Feature;
 import org.noear.snack.from.ObjectFromer;
 import org.noear.snack.to.ObjectToer;
 
@@ -96,7 +97,7 @@ public class ObjectTest {
 
         System.out.println(((ONode)c.target).toJson());
 
-        assert 1 == ((ONode)c.target).get("users").get(1).get(1).get("id").getInt();
+        assert 1 == ((ONode)c.target).get("users").get(1).get("id").getInt();
 
         UserGroupModel g = ((ONode)c.target).toObject(UserGroupModel.class);
 
