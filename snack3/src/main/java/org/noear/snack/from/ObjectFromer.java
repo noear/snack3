@@ -84,7 +84,7 @@ public class ObjectFromer implements Fromer {
             rst.asArray();
             ONode ary =rst;
             //为序列化添加特性支持
-            if (cfg.hasFeature(Feature.WriteClassName)) {
+            if (cfg.hasFeature(Feature.WriteArrayClassName)) {
                 rst.add(typeSet(cfg,new ONode(cfg), clz));
                 ary = rst.addNew().asArray();
             }
