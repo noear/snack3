@@ -1,6 +1,7 @@
 package speed;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import _models.CModel;
 import _models.OrderModel;
@@ -34,6 +35,7 @@ public class _SerializationFastjsonTest {
             group.names[i] = "李四" + i;
             group.ids[i] = i;
         }
+
 
         String json = JSON.toJSONString(group,
                 SerializerFeature.BrowserCompatible,
