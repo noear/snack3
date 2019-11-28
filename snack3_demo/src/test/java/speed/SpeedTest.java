@@ -42,6 +42,7 @@ public class SpeedTest {
     /** 测试性能（小json） */
     @Test
     public void test0() throws Exception {
+        //100000=>950,931,939
         //
         //1kb
         //
@@ -66,6 +67,9 @@ public class SpeedTest {
 
     @Test
     public void test1() throws Exception {
+        //1000000=>1921,1713,1813
+        //
+        //
         Map<String, Object> obj = new LinkedHashMap<>();
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -94,6 +98,9 @@ public class SpeedTest {
 
     @Test
     public void test2() throws Exception {
+        //100000=>1571,1567,1534
+        //
+        //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
         group.users = new ArrayList<>();
@@ -132,7 +139,7 @@ public class SpeedTest {
         //
         //10000000=>78s,74s,73s
         //1000000=>8.5s
-        //100000=>1.6s
+        //100000=>1.6s,1.6s,1.5s
         //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -243,7 +250,7 @@ public class SpeedTest {
         String json = ONode.serialize(group);
         System.out.println(json);
 
-        ONode tmp = ONode.load(json);
+        ONode tmp = ONode.load(json, Constants.serialize());
 
         tmp.toObject(UserGroupModel.class);
 
