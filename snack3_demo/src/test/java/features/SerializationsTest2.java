@@ -67,7 +67,7 @@ public class SerializationsTest2 {
 
         System.out.println(json0);
         List<UserModel> group0 = ONode.loadStr(json0).get("users")
-                                     .toObject((new ArrayList<UserModel>(){}).getClass());
+                                      .toObject((new ArrayList<UserModel>(){}).getClass());
 
         assert group0.size() == 5;
     }
@@ -78,7 +78,7 @@ public class SerializationsTest2 {
 
         System.out.println(json0);
         List<UserModel> group0 = ONode.loadStr(json0).get("users")
-                .toObject((new TypeRef<List<UserModel>>(){}).getClass());
+                                      .toObject((new TypeRef<List<UserModel>>(){}).getClass());
 
         assert group0.size() == 5;
     }
