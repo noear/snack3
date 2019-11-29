@@ -55,12 +55,12 @@ public class ONode {
      * simple json path
      * 支持属性和索引
      */
-    public ONode select(String jpath, boolean cacheJpath) {
-        return JsonPath.get(this, jpath, cacheJpath);
+    public ONode select(String jpath, boolean cacheJpath, boolean useStandard) {
+        return JsonPath.get(this, jpath, cacheJpath, useStandard);
     }
 
     public ONode select(String jpath) {
-        return select(jpath, true);
+        return select(jpath, true, false);
     }
 
     /**

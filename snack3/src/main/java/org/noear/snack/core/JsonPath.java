@@ -20,12 +20,12 @@ import java.util.regex.Pattern;
 public class JsonPath {
     private static Map<String,List<Segment>> _cmdLib = new HashMap<>(1024);
 
-    public static ONode get(ONode source, String jpath, boolean cacheJpath) {
+    public static ONode get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
         tlCache.get().clear();
-        return do_get(source, jpath, cacheJpath);
+        return do_get(source, jpath, cacheJpath, useStandard);
     }
 
-    public static ONode do_get(ONode source, String jpath, boolean cacheJpath) {
+    public static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
         //解析出指令
         List<Segment> cmds = null;
         if (cacheJpath) {
@@ -45,7 +45,7 @@ public class JsonPath {
 
 
         //执行指令
-        return exec(cmds, source);
+        return exec(cmds, source, useStandard);
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
@@ -132,7 +132,7 @@ public class JsonPath {
     /**
      * 执行jpath指令
      * */
-    private static ONode exec(List<Segment> cmds, ONode source) {
+    private static ONode exec(List<Segment> cmds, ONode source, boolean useStandard) {
         ONode tmp = source;
         boolean branch_do = false;
         for (Segment s: cmds) {
@@ -140,11 +140,11 @@ public class JsonPath {
                 break;
             }
 
-            if (branch_do && s.cmdAry != null) { //..a[x] 下属进行分支处理
+            if (branch_do && (useStandard || s.cmdAry != null)) { //..a[x] 下属进行分支处理 //s.cmdAry != null
                 ONode tmp2 = new ONode().asArray();
 
                 Consumer<ONode> act1 = (n1) -> {
-                    ONode n2 = s.handler.run(s, source, n1);
+                    ONode n2 = s.handler.run(s, source, n1, useStandard);
                     if (n2 != null) {
                         if (s.cmdAry != null) {
                             if (n2.isArray()) {
@@ -165,9 +165,12 @@ public class JsonPath {
                 }
 
                 tmp = tmp2;
-                branch_do = false;
+
+                if(useStandard == false) {
+                    branch_do = false;
+                }
             } else {
-                tmp = s.handler.run(s, source, tmp);
+                tmp = s.handler.run(s, source, tmp, useStandard);
                 branch_do = s.cmdHasUnline;
             }
         }
@@ -225,7 +228,7 @@ public class JsonPath {
     /*
     * ?(left op right)
     * */
-    private static boolean compare(ONode root, ONode parent, ONode leftO, String op, String right) {
+    private static boolean compare(ONode root, ONode parent, ONode leftO, String op, String right, boolean useStandard) {
         if (leftO == null) {
             return false;
         }
@@ -241,13 +244,13 @@ public class JsonPath {
             //全局描扫的数据，进行缓存
             rightO = tlCache.get().get(right);
             if (rightO == null) {
-                rightO = do_get(root, right, true);
+                rightO = do_get(root, right, true, useStandard);
                 tlCache.get().put(right, rightO);
             }
         }
 
         if(right.startsWith("@")){
-            rightO = do_get(parent,right,true);
+            rightO = do_get(parent,right,true, useStandard);
         }
 
         if(rightO != null) {
@@ -405,8 +408,8 @@ public class JsonPath {
         return p;
     }
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_$=(s,root, tmp)->{ return tmp;};
-    public static Fun3<ONode,Segment,ONode,ONode> handler_xx=(s,root, tmp)-> {
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_$=(s, root, tmp, usd)->{ return tmp;};
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_xx=(s, root, tmp, usd)-> {
 
         if (s.name.length() > 0) {
             ONode tmp2 = new ONode().asArray();
@@ -424,7 +427,7 @@ public class JsonPath {
         return null;
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_x=(s,root, tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
@@ -439,7 +442,7 @@ public class JsonPath {
 
         return tmp2;
     };
-    public static Fun3<ONode,Segment,ONode,ONode> handler_prop=(s,root,tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_prop=(s, root, tmp, usd)->{
         //.name 指令
         //
         //name
@@ -463,7 +466,7 @@ public class JsonPath {
         return null;
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_fun=(s,root,tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_fun=(s, root, tmp, usd)->{
         switch (s.cmd) {
             case "size()":{
                 return new ONode(tmp.cfg()).val(tmp.count());
@@ -555,7 +558,7 @@ public class JsonPath {
         }
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_x=(s,root, tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
         if (tmp.isArray()) {
             tmp2 = tmp;
@@ -569,17 +572,17 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_exp=(s,root, tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_exp=(s, root, tmp, usd)->{
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
-                if(do_get(tmp,s.left,true).isNull()){
+                if(do_get(tmp,s.left,true, usd).isNull()){
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
                 for (ONode n1 : tmp.ary()) {
-                    if(do_get(n1,s.left,true).isNull() == false){
+                    if(do_get(n1,s.left,true, usd).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
                 }
@@ -590,30 +593,30 @@ public class JsonPath {
                     return null;
                 }
 
-                ONode leftO = do_get(tmp,s.left,true);
-                if (compare(root, tmp, leftO, s.op, s.right) == false) {
+                ONode leftO = do_get(tmp,s.left,true, usd);
+                if (compare(root, tmp, leftO, s.op, s.right, usd) == false) {
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.cfg()).asArray();
                 if("@".equals(s.left)){
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(root, n1, n1, s.op, s.right)) {
+                        if (compare(root, n1, n1, s.op, s.right, usd)) {
                             tmp2.addNode(n1);
                         }
                     }
                 }else {
                     for (ONode n1 : tmp.ary()) {
-                        ONode leftO = do_get(n1,s.left,true);
+                        ONode leftO = do_get(n1,s.left,true, usd);
 
-                        if (compare(root, n1, leftO, s.op, s.right)) {
+                        if (compare(root, n1, leftO, s.op, s.right, usd)) {
                             tmp2.addNode(n1);
                         }
                     }
                 }
             } else if(tmp.isValue()){
                 if("@".equals(s.left)){
-                    if (compare(root, tmp, tmp, s.op, s.right) == false) {
+                    if (compare(root, tmp, tmp, s.op, s.right, usd) == false) {
                         return null;
                     }
                 }
@@ -623,7 +626,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_multi=(s,root, tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_multi=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if(s.cmdAry.indexOf("'")>=0){
@@ -659,7 +662,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_range=(s,root, tmp)->{
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_range=(s, root, tmp, usd)->{
         if (tmp.isArray()) {
             int count = tmp.count();
             int start = s.start;
@@ -690,7 +693,7 @@ public class JsonPath {
         }
     };
 
-    public static Fun3<ONode,Segment,ONode,ONode> handler_ary_prop=(s,root, tmp)-> {
+    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_prop=(s, root, tmp, usd)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
             return tmp.getOrNull(s.name);
@@ -719,7 +722,7 @@ public class JsonPath {
         public String op;
         public String right;
 
-        public Fun3<ONode,Segment,ONode,ONode> handler;
+        public Fun4<ONode,Segment,ONode,ONode,Boolean> handler;
 
         public Segment(String test) {
             cmd = test.trim();
