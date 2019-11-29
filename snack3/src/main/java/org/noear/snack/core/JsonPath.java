@@ -493,9 +493,9 @@ public class JsonPath {
                     return min_n;
                 }
 
-                if (tmp.isValue()) {
-                    return tmp;
-                }
+//                if (tmp.isValue()) {
+//                    return tmp;
+//                }
 
                 return null;
             }
@@ -515,9 +515,9 @@ public class JsonPath {
                     return max_n;
                 }
 
-                if(tmp.isValue()){
-                    return tmp;
-                }
+//                if(tmp.isValue()){
+//                    return tmp;
+//                }
 
                 return null;
             }

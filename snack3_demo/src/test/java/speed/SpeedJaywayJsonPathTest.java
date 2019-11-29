@@ -3,6 +3,7 @@ package speed;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
+import net.minidev.json.JSONArray;
 import org.junit.Test;
 
 
@@ -16,6 +17,9 @@ public class SpeedJaywayJsonPathTest {
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
+
+        JSONArray rst = context.read("$..a");
+        assert rst.size() ==2;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -36,7 +40,8 @@ public class SpeedJaywayJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
 
-        Object tmp = context.read("$..*");
+        JSONArray rst = context.read("$..*");
+        assert rst.size() == 16;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -56,6 +61,9 @@ public class SpeedJaywayJsonPathTest {
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
+
+        JSONArray rst = context.read("$.data.list[1,4]");
+        assert rst.size() == 2;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -77,6 +85,9 @@ public class SpeedJaywayJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
 
+        JSONArray rst = context.read("$.data.list[1:4]");
+        assert rst.size() == 3;
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
             context.read("$.data.list[1:4]");
@@ -97,7 +108,9 @@ public class SpeedJaywayJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
 
-        Object tmp30 = context.read("$..ary2[0].a");
+        JSONArray rst = context.read("$..ary2[0].a");
+
+        assert rst.size() == 1;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -112,7 +125,7 @@ public class SpeedJaywayJsonPathTest {
     }
 
     @Test
-    public void test42(){
+    public void test42() {
         //1000000=>5494,5326,5483
         //
         //1.加载json
@@ -126,11 +139,15 @@ public class SpeedJaywayJsonPathTest {
 //
 //        Object tmp2 = JsonPath.read(obj,"$.data.list[?(@ == $..ary2[0].a.min())]");
 
-        Object tmp30 = context.read("$..ary2[0].a");
-        Object tmp3 = context.read("$.data.list[?(@ in $..ary2[0].a)]");
+        JSONArray tmp30 = context.read("$..ary2[0].a");
+        assert tmp30.size() == 1;
+
+        JSONArray tmp3 = context.read("$.data.list[?(@ in $..ary2[0].a)]");
+        assert tmp3.size() == 1;
+
 
         long start = System.currentTimeMillis();
-        for(int i=0,len=1000000; i<len; i++) {
+        for (int i = 0, len = 1000000; i < len; i++) {
             context.read("$.data.list[?(@ == $..ary2[0].a)]");
         }
 
@@ -150,6 +167,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         Object tmp = context.read("data.ary2[1].b.c");;
+        assert "ddd".equals(tmp);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -171,9 +189,12 @@ public class SpeedJaywayJsonPathTest {
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         ReadContext context = JsonPath.parse(text);
 
+        JSONArray tmp = context.read("$.data.ary2[*].b.c");
+        assert tmp.size() == 1;
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            context.read("$.data.ary2[*].b.c"); //不支持*
+            context.read("$.data.ary2[*].b.c");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -191,9 +212,12 @@ public class SpeedJaywayJsonPathTest {
         String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
         ReadContext context = JsonPath.parse(text);
 
+        JSONArray tmp = context.read("$..b[?(@.c == 12)]");
+        assert tmp.size() == 0;
+
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
-            context.read("$..b[?(@.c == 12)]");//不支持
+            context.read("$..b[?(@.c == 12)]");
         }
 
         long times = System.currentTimeMillis() - start;
@@ -210,7 +234,8 @@ public class SpeedJaywayJsonPathTest {
         String text =("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
         ReadContext context = JsonPath.parse(text);
 
-        Object tmp = context.read("$..c");
+        JSONArray tmp = context.read("$..c");
+        assert tmp.size() == 3;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -231,6 +256,9 @@ public class SpeedJaywayJsonPathTest {
         //1.加载json
         String text = ("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
         ReadContext context = JsonPath.parse(text);
+
+        JSONArray tmp = context.read("$[?(@.c =~ /.*a+/)]");
+        assert tmp.size() == 2;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
