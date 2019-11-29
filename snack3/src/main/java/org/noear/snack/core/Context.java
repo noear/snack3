@@ -31,35 +31,44 @@ public class Context {
     /**
      * 用于去处的构造
      */
-    public Context(Constants config, ONode node, Class<?> target_type) {
+    public Context(Constants config, ONode node, Class<?> clz) {
         this.config = config;
         this.source = node;
 
-        if (target_type == null) {
+        if (clz == null) {
             return;
         }
 
-        if (target_type.getName().indexOf("$") > 0) {
-            //
-            // 临时类：
-            //      (new ArrayList<UserModel>(){}).getClass()
-            //      (new UserModel(){}).getClass();
-            //
-            Type type = target_type.getGenericSuperclass();
+        if(TypeRef.class.isAssignableFrom(clz)) {
+            Type superClass = clz.getGenericSuperclass();
+            Type type = (((ParameterizedType) superClass).getActualTypeArguments()[0]);
 
-            if (type instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType) type;
-
-                this.target_type = type;
-                this.target_clz = (Class<?>) pType.getRawType();
+            initType(type);
+            return;
+        }else {
+            if (clz.getName().indexOf("$") > 0) {
+                // 临时类：(new ArrayList<UserModel>(){}).getClass(); (new UserModel(){}).getClass();
+                //
+                initType(clz.getGenericSuperclass());
             } else {
-                this.target_type = type;
-                this.target_clz = (Class<?>) type;
+                initType(clz, clz);
             }
-        } else {
-            this.target_type = target_type;
-            this.target_clz = target_type;
         }
+    }
+
+    private void initType(Type type){
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+
+            initType(type, (Class<?>) pType.getRawType());
+        } else {
+            initType(type, (Class<?>) type);
+        }
+    }
+
+    private void initType(Type type, Class<?> clz){
+        target_type = type;
+        target_clz = clz;
     }
 
     /**

@@ -759,7 +759,7 @@ public class ONode {
      * 将当前ONode 转为 数据结构体（Map or List or val）
      */
     public Object toData() {
-        return toObject(null);
+        return to(DEFAULTS.DEF_OBJECT_TOER);
     }
 
     /**
