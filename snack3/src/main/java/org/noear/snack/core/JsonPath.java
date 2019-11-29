@@ -20,12 +20,12 @@ import java.util.regex.Pattern;
 public class JsonPath {
     private static Map<String,List<Segment>> _cmdLib = new HashMap<>(1024);
 
-    public static ONode get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
+    public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath) {
         tlCache.get().clear();
         return do_get(source, jpath, cacheJpath, useStandard);
     }
 
-    public static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
+    private static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
         //解析出指令
         List<Segment> cmds = null;
         if (cacheJpath) {
@@ -408,8 +408,8 @@ public class JsonPath {
         return p;
     }
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_$=(s, root, tmp, usd)->{ return tmp;};
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_xx=(s, root, tmp, usd)-> {
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_$=(s, root, tmp, usd)->{ return tmp;};
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_xx=(s, root, tmp, usd)-> {
 
         if (s.name.length() > 0) {
             ONode tmp2 = new ONode().asArray();
@@ -427,7 +427,7 @@ public class JsonPath {
         return null;
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_x=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
@@ -442,7 +442,7 @@ public class JsonPath {
 
         return tmp2;
     };
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_prop=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_prop=(s, root, tmp, usd)->{
         //.name 指令
         //
         //name
@@ -466,7 +466,7 @@ public class JsonPath {
         return null;
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_fun=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_fun=(s, root, tmp, usd)->{
         switch (s.cmd) {
             case "size()":{
                 return new ONode(tmp.cfg()).val(tmp.count());
@@ -558,7 +558,7 @@ public class JsonPath {
         }
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_x=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
         if (tmp.isArray()) {
             tmp2 = tmp;
@@ -572,7 +572,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_exp=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_exp=(s, root, tmp, usd)->{
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
@@ -626,7 +626,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_multi=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_multi=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if(s.cmdAry.indexOf("'")>=0){
@@ -662,7 +662,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_range=(s, root, tmp, usd)->{
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_range=(s, root, tmp, usd)->{
         if (tmp.isArray()) {
             int count = tmp.count();
             int start = s.start;
@@ -693,7 +693,7 @@ public class JsonPath {
         }
     };
 
-    public static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_prop=(s, root, tmp, usd)-> {
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_prop=(s, root, tmp, usd)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
             return tmp.getOrNull(s.name);
@@ -706,7 +706,7 @@ public class JsonPath {
         }
     };
 
-    public static class Segment {
+    private static class Segment {
         public String cmd;
         public String cmdAry;
         public boolean cmdHasQuote;
