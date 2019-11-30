@@ -111,7 +111,7 @@ XmlFromer xmlFromer = new XmlFromer();
 YmalToer  ymalToer  = new YmalToer();
 
 //加载xml，输出ymal
-String ymal = ONode.load(xml,Constants.def(),xmlFromer).toObject(null,ymalToer);
+String ymal = ONode.load(xml,Constants.def(),xmlFromer).to(ymalToer);
 
 //加载xml，去掉手机号，再转为java object
 ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
@@ -167,7 +167,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
 例：`n.select("$..book.price.min()") //找到最低的价格` 
 
-## Snack3 接口字典
+# Snack3 接口字典
 ```swift
 //初始化操作
 //
@@ -256,7 +256,9 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -toJson() -> String             //转为json string
 -toData() -> Object 			//转为数据结构体（Map,List,Value）
 -toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
--toObject(clz:Class<T>, toer:Toer) -> T   //转为java object，由toer决定处理
+
+-to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
+-to(toer:Toer) -> T                 //将当前节点通过toer进行转换
 
 //填充操作（为当前节点填充数据；source 为 String 或 java object）
 -fill(source:Object)    -> self:ONode               //填充数据
@@ -286,6 +288,5 @@ XxxModel m =tmp.toObject(XxxModel.class);
 +serialize(source:Object) -> String                   //序列化（带@type属性）
 +deserialize(source:String) -> T                      //反序列化
 +deserialize(source:String, clz:Class<?>) -> T        //反序列化
-
 
 ```
