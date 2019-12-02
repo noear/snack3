@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
  *
  * */
 public class JsonPath {
-    public static int CACHE_MAX_SIZE = 1024;
-    private static Map<String,JsonPath> _cmdLib = new HashMap<>(128);
+    private static int _cacheSize = 1024;
+    private static Map<String,JsonPath> _jpathCache = new HashMap<>(128);
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath) {
         tlCache.get().clear();
@@ -30,14 +30,14 @@ public class JsonPath {
         //解析出指令
         JsonPath jsonPath = null;
         if (cacheJpath) {
-            jsonPath = _cmdLib.get(jpath);
+            jsonPath = _jpathCache.get(jpath);
             if (jsonPath == null) {
                 synchronized (jpath.intern()) {
-                    jsonPath = _cmdLib.get(jpath);
+                    jsonPath = _jpathCache.get(jpath);
                     if (jsonPath == null) {
                         jsonPath = compile(jpath);
-                        if(_cmdLib.size() < CACHE_MAX_SIZE) {
-                            _cmdLib.put(jpath, jsonPath);
+                        if(_jpathCache.size() < _cacheSize) {
+                            _jpathCache.put(jpath, jsonPath);
                         }
                     }
                 }
