@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
  *
  * */
 public class JsonPath {
-    private static Map<String,List<Segment>> _cmdLib = new HashMap<>(1024);
+    public static int CACHE_MAX_SIZE = 1024;
+    private static Map<String,JsonPath> _cmdLib = new HashMap<>(128);
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath) {
         tlCache.get().clear();
@@ -27,36 +28,44 @@ public class JsonPath {
 
     private static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
         //解析出指令
-        List<Segment> cmds = null;
+        JsonPath jsonPath = null;
         if (cacheJpath) {
-            cmds = _cmdLib.get(jpath);
-            if (cmds == null) {
+            jsonPath = _cmdLib.get(jpath);
+            if (jsonPath == null) {
                 synchronized (jpath.intern()) {
-                    cmds = _cmdLib.get(jpath);
-                    if (cmds == null) {
-                        cmds = compile(jpath);
-                        _cmdLib.put(jpath, cmds);
+                    jsonPath = _cmdLib.get(jpath);
+                    if (jsonPath == null) {
+                        jsonPath = compile(jpath);
+                        if(_cmdLib.size() < CACHE_MAX_SIZE) {
+                            _cmdLib.put(jpath, jsonPath);
+                        }
                     }
                 }
             }
         } else {
-            cmds = compile(jpath);
+            jsonPath = compile(jpath);
         }
 
 
         //执行指令
-        return exec(cmds, source, useStandard);
+        return exec(jsonPath, source, useStandard);
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
     private static final ThData<TmpCache> tlCache = new ThData<>(()->new TmpCache());
+
     /**
      * 编译jpath指令
      * */
-    private static List<Segment> compile(String jpath) {
+    private List<Segment> segments;
+    private JsonPath(){
+        segments  = new ArrayList<>();
+    }
+
+    private static JsonPath compile(String jpath) {
         //将..替换为._ 方便解析（用_x替代为深度扫描）
         String jpath2 = jpath.replace("..", "._");
-        List<Segment> cmds = new ArrayList<>();
+        JsonPath jsonPath = new JsonPath();
 
         char token = 0;
         char c = 0;
@@ -68,7 +77,7 @@ public class JsonPath {
 
             if (c == IOUtil.EOI) {
                 if (buffer.length() > 0) {
-                    cmds.add(new Segment(buffer.toString()));
+                    jsonPath.segments.add(new Segment(buffer.toString()));
                     buffer.clear();
                 }
                 break;
@@ -80,7 +89,7 @@ public class JsonPath {
                         buffer.append(c);
                     } else {
                         if (buffer.length() > 0) {
-                            cmds.add(new Segment(buffer.toString()));
+                            jsonPath.segments.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     }
@@ -101,7 +110,7 @@ public class JsonPath {
                     if (token == 0) {
                         token = c;
                         if (buffer.length() > 0) {
-                            cmds.add(new Segment(buffer.toString()));
+                            jsonPath.segments.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     } else {
@@ -113,7 +122,7 @@ public class JsonPath {
                         token = 0;
                         buffer.append(c);
                         if (buffer.length() > 0) {
-                            cmds.add(new Segment(buffer.toString()));
+                            jsonPath.segments.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
                     } else {
@@ -126,16 +135,16 @@ public class JsonPath {
             }
         }
 
-        return cmds;
+        return jsonPath;
     }
 
     /**
      * 执行jpath指令
      * */
-    private static ONode exec(List<Segment> cmds, ONode source, boolean useStandard) {
+    private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard) {
         ONode tmp = source;
         boolean branch_do = false;
-        for (Segment s: cmds) {
+        for (Segment s: jsonPath.segments) {
             if (tmp == null) {//多次转换后，可能为null
                 break;
             }
