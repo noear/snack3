@@ -24,7 +24,8 @@
 
 -build(n->..) -> self:ONode     	//节点构建表达式
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
--select(jpath:String, cacheJpath:boolean)-> new:ONode   //使用JsonPath表达式选择节点
+-select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:使用标准模式,默认非标准
+-select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:是否缓存javaPath编译成果，默认缓存
 
 -clear()        //清除子节点，对象或数组有效
 -count() -> int //子节点数量，对象或数组有效
