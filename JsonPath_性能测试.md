@@ -21,7 +21,7 @@ Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 ##### 本案测试用的三个框架及版本：
 * com.alibaba:fastjson:1.2.29
 * com.jayway.jsonpath:json-path:2.2.0
-* org.noear:snack3:3.1.5.3
+* org.noear:snack3:3.1.5.9
 
 ##### 三份测试数据样本：
 * A:`{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}`
