@@ -34,7 +34,8 @@ String json = ONode.serialize(user); //带@type
 //demo2::反序列化
 UserModel user = ONode.deserialize(json); //json已带@type
 UserModel user = ONode.deserialize(json, UserModel.class); //json可以不带@type
-List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).class); //json可以不带@type，泛型方式
+List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); //json可以不带@type，泛型方式
+List<UserModel> list = ONode.deserialize(json, (new TypeRef<T>(){}).getClass()); //json可以不带@type，泛型方式
 
 //demo3::转为ONode
 ONode o = ONode.load(json); //将json String 转为 ONode
