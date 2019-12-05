@@ -1,6 +1,6 @@
 # Snack3 之 Jsonpath使用
 
-### 一、 JSONPath介绍
+### 一、 Snack3 和 JSONPath 介绍
 
 Snack3 是一个支持JSONPath的JSON框架。JSONPath是一个很强大的功能，也可以在Java框架中当作对象查询语言（OQL）来使用。
 
