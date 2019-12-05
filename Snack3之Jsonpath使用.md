@@ -4,6 +4,23 @@
 
 Snack3 是一个支持JSONPath的JSON框架。JSONPath是一个很强大的功能，也可以在Java框架中当作对象查询语言（OQL）来使用。
 
+
+```xml
+<dependency>
+  <groupId>org.noear</groupId>
+  <artifactId>snack3</artifactId>
+  <version>3.1.5.10</version>
+</dependency>
+```
+
+Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
+* 强调文档树的操控和构建能力
+* 做为中间媒体，方便不同格式互转
+* 高性能`Json path`查询（兼容性和性能很赞）
+* 支持`序列化、反序列化`
+
+###### 今天就试一把它的JSONPath。
+
 ### 二、接口
 
 ```java
