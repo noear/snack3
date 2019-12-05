@@ -13,14 +13,22 @@ public class JsonPathTest3 {
         public String name;
         public Object value;
 
-        public Entity(){}
-        public Entity(int id, Object value) { this.id = id; this.value = value; }
-        public Entity(String name) { this.name = name; }
+        public Entity() {
+        }
+
+        public Entity(int id, Object value) {
+            this.id = id;
+            this.value = value;
+        }
+
+        public Entity(String name) {
+            this.name = name;
+        }
     }
 
 
     @Test
-    public void test1(){
+    public void test1() {
         Entity entity = new Entity(123, new Object());
         ONode n = ONode.load(entity);
 
@@ -29,7 +37,7 @@ public class JsonPathTest3 {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         List<Entity> entities = new ArrayList<Entity>();
         entities.add(new Entity("wenshao"));
         entities.add(new Entity("ljw2083"));
@@ -47,24 +55,26 @@ public class JsonPathTest3 {
         entities.add(new Entity("Yako"));
         ONode n = ONode.load(entities);
 
-        List<Entity> result = n.select("$[1,2]").toObject((new ArrayList<Entity>() {}).getClass());
+        List<Entity> result = n.select("$[1,2]").toObject((new ArrayList<Entity>() {
+        }).getClass());
         assert result.size() == 2;
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         List<Entity> entities = new ArrayList<Entity>();
         entities.add(new Entity("wenshao"));
         entities.add(new Entity("ljw2083"));
         entities.add(new Entity("Yako"));
         ONode n = ONode.load(entities);
 
-        List<Entity> result = n.select("$[0:2]").toObject((new ArrayList<Entity>(){}).getClass());
+        List<Entity> result = n.select("$[0:2]").toObject((new ArrayList<Entity>() {
+        }).getClass());
         assert result.size() == 2;
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         List<Entity> entities = new ArrayList<Entity>();
         entities.add(new Entity(1001, "ljw2083"));
         entities.add(new Entity(1002, "wenshao"));
@@ -77,14 +87,14 @@ public class JsonPathTest3 {
     }
 
     @Test
-    public void test6(){
+    public void test6() {
         Entity entity = new Entity(1001, "ljw2083");
         ONode n = ONode.load(entity);
 
-        assert n.select("$[?($.id == 1001)]").isObject();
-        assert n.select("$[?($.id == 1002)]").isNull();
+        assert n.select("$[?(id == 1001)]").isObject();
+        assert n.select("$[?(id == 1002)]").isNull();
 
-        n.select("$").set("id",123456);
+        n.select("$").set("id", 123456);
         assert n.get("id").getInt() == 123456;
 
         n.get("value").add(1).add(2).add(3);
@@ -111,5 +121,70 @@ public class JsonPathTest3 {
         assertEquals(1001l, ids.get(0));
         assertEquals(1002l, ids.get(1));
         assertEquals(1003l, ids.get(2));
+    }
+
+    @Test
+    public void testx() {
+String jsonStr = "{\n" +
+        "    \"store\": {\n" +
+        "        \"bicycle\": {\n" +
+        "            \"color\": \"red\",\n" +
+        "            \"price\": 19.95\n" +
+        "        },\n" +
+        "        \"book\": [\n" +
+        "            {\n" +
+        "                \"author\": \"刘慈欣\",\n" +
+        "                \"price\": 8.95,\n" +
+        "                \"category\": \"科幻\",\n" +
+        "                \"title\": \"三体\"\n" +
+        "            },\n" +
+        "            {\n" +
+        "                \"author\": \"itguang\",\n" +
+        "                \"price\": 12.99,\n" +
+        "                \"category\": \"编程语言\",\n" +
+        "                \"title\": \"go语言实战\"\n" +
+        "            }\n" +
+        "        ]\n" +
+        "    }\n" +
+        "}";
+
+ONode o = ONode.load(jsonStr);
+
+System.out.println(o.toString());
+
+//得到所有的书
+ONode books = o.select("$.store.book");
+System.out.println("books={}::" + books);
+
+//得到所有的书名
+ONode titles = o.select("$.store.book.title");
+System.out.println("titles={}::" + titles);
+
+//第一本书title
+ONode title = o.select("$.store.book[0].title");
+System.out.println("title={}::" + title);
+
+//price大于10元的book
+ONode list = o.select("$.store.book[?(price > 10)]");
+System.out.println("price大于10元的book={}::" + list);
+
+//price大于10元的title
+ONode list2 = o.select("$.store.book[?(price > 10)].title");
+System.out.println("price大于10元的title={}::" + list2);
+
+//category(类别)为科幻的book
+ONode list3 = o.select("$.store.book[?(category == '科幻')]");
+System.out.println("category(类别)为科幻的book={}::" + list3);
+
+
+//bicycle的所有属性值
+ONode values = o.select("$.store.bicycle.*");
+System.out.println("bicycle的所有属性值={}::" + values);
+
+
+//bicycle的color和price属性值
+ONode read = o.select("$.store.bicycle['color','price']");
+System.out.println("bicycle的color和price属性值={}::" + read);
+
     }
 }
