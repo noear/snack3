@@ -29,13 +29,20 @@ Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 String json = ONode.stringify(user); 
 
 //demo1::序列化
-String json = ONode.serialize(user); //带@type
+// -- 输出带@type
+String json = ONode.serialize(user); 
 
 //demo2::反序列化
-UserModel user = ONode.deserialize(json); //json已带@type
-UserModel user = ONode.deserialize(json, UserModel.class); //json可以不带@type
-List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); //json可以不带@type，泛型方式
-List<UserModel> list = ONode.deserialize(json, (new TypeRef<T>(){}).getClass()); //json可以不带@type，泛型方式
+// -- json 有已带@type
+UserModel user = ONode.deserialize(json); 
+// -- json 可以不带@type (clz 申明了)
+UserModel user = ONode.deserialize(json, UserModel.class); 
+// -- json 可以不带@type，泛型方式输出（类型是已知的）
+List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); 
+// -- json 可以不带@type，泛型方式输出（类型是未知的）
+public <T> T getObject(String json){
+    return ONode.deserialize(json, (new TypeRef<T>(){}).getClass()); 
+}
 
 //demo3::转为ONode
 ONode o = ONode.load(json); //将json String 转为 ONode
