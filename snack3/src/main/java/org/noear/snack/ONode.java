@@ -52,8 +52,11 @@ public class ONode {
 
 
     /**
-     * simple json path
-     * 支持属性和索引
+     * Json path select
+     *
+     * @param jpath json path express
+     * @param useStandard use standard mode(default: false)
+     * @param cacheJpath cache json path parsing results
      */
     public ONode select(String jpath,  boolean useStandard, boolean cacheJpath) {
         return JsonPath.eval(this, jpath, useStandard, cacheJpath);

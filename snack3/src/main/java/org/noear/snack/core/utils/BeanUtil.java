@@ -59,6 +59,10 @@ public class BeanUtil {
 
     /** 扫描一个类的所有字段 */
     private static void scanAllFields(Class<?> clz, Map<String,FieldWrap> fields) {
+        if(clz == null){
+            return;
+        }
+
         for (Field f : clz.getDeclaredFields()) {
             int mod = f.getModifiers();
 

@@ -1,0 +1,186 @@
+# Snack3 之 Jsonpath使用
+
+### 一、 JSONPath介绍
+
+Snack3 是一个支持JSONPath的JSON框架。JSONPath是一个很强大的功能，也可以在Java框架中当作对象查询语言（OQL）来使用。
+
+### 二、接口
+
+```java
+public class ONode{
+    //...
+    /**
+     * Json path select
+     *
+     * @param jpath json path express
+     * @param useStandard use standard mode(default: false)
+     * @param cacheJpath cache json path parsing results
+     */
+    public ONode select(String jpath,  boolean useStandard, boolean cacheJpath) {
+        return JsonPath.eval(this, jpath, useStandard, cacheJpath);
+    }
+
+    public ONode select(String jpath,  boolean useStandard) {
+        return select(jpath, useStandard, true);
+    }
+
+    public ONode select(String jpath) {
+        return select(jpath, false);
+    }
+    //...  
+}
+```
+
+默认使用缓存JSONPath解析对象，可提供几倍性能效果。
+
+### 三、支持语法
+
+* 字符串使用单引号，例：\['name']
+* 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
+
+| 支持操作                  | 说明                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| `$`                       | 表示根元素                                           |
+| `@`                       | 当前节点（做为过滤表达式的谓词使用）                 |
+| `*`                       | 通用配配符，可以表示一个名字或数字。                 |
+| `..`                      | 深层扫描。 可以理解为递归搜索。                      |
+| `.<name>`                 | 表示一个子节点                                       |
+| `['<name>' (, '<name>')]` | 表示一个或多个子节点                                 |
+| `[<number> (, <number>)]` | 表示一个或多个数组下标（负号为倒数）                 |
+| `[start:end]`             | 数组片段，区间为\[start,end),不包含end（负号为倒数） |
+| `[?(<expression>)]`       | 过滤表达式。 表达式结果必须是一个布尔值。            |
+
+| 支持过滤操作符 | 说明                                     |
+| -------------- | ---------------------------------------- |
+| `==`           | left等于right（注意1不等于'1'）          |
+| `!=`           | 不等于                                   |
+| `<`            | 小于                                     |
+| `<=`           | 小于等于                                 |
+| `>`            | 大于                                     |
+| `>=`           | 大于等于                                 |
+| `=~`           | 匹配正则表达式[?(@.name =~ /foo.*?/i)]   |
+| `in`           | 左边存在于右边 [?(@.size in ['S', 'M'])] |
+| `nin`          | 左边不存在于右边                         |
+
+| 支持尾部函数 | 说明                           |
+| ------------ | ------------------------------ |
+| `min()`      | 计算数字数组的最小值           |
+| `max()`      | 计算数字数组的最大值           |
+| `avg()`      | 计算数字数组的平均值           |
+| `sum()`      | 计算数字数组的汇总值（新加的） |
+
+像这两种写法的语义是差不多：
+
+
+```java 
+$.store.book[0].title //建议使用这种
+```
+```java
+$['store']['book'][0]['title']
+```
+
+### 四、语法示例说明
+
+| JSONPath | 说明                           |
+| ------------ | ------------------------------ |
+| `$`      | 根对象           |
+| `$[-1]`      | 最后元素           |
+| `$[:-2]`      | 第0个至倒数第2个           |
+| `$[1:]`      | 第1个之后所有元素（0为首个） |
+| `$[1,2,3]`      | 集合中1,2,3个元素（0为首个） |
+
+### 五、接口使用示例
+
+#### 示例1:
+读取对象的属性
+```java
+Entity entity = new Entity(123, new Object());
+ONode n = ONode.load(entity);
+
+assert n.select("$.id").getInt() == 123;
+assert n.select("$.*").count() == 2;
+
+public static class Entity {
+   public int id;
+   public String name;
+   public Object value;
+   public Entity(int id, Object value) { this.id = id; this.value = value; }
+   public Entity(String name) { this.name = name; }
+}
+
+```
+
+#### 示例2
+读取集合多个元素的某个属性
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+ONode n = ONode.load(entities);
+
+List<String> names = n.select("$.name").toObject(List.class); 
+assert names.size() == 2;
+```
+
+#### 示例3
+返回集合中多个元素
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+entities.add(new Entity("Yako"));
+ONode n = ONode.load(entities);
+
+List<Entity> result = n.select("$[1,2]").toObject((new ArrayList<Entity>() {}).getClass());
+assert result.size() == 2;
+```
+
+#### 示例4
+按范围返回集合的子集
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+entities.add(new Entity("Yako"));
+ONode n = ONode.load(entities);
+
+List<Entity> result = n.select("$[0:2]").toObject((new ArrayList<Entity>(){}).getClass());
+assert result.size() == 2;
+```
+
+#### 示例5
+通过条件过滤，返回集合的子集
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity(1001, "ljw2083"));
+entities.add(new Entity(1002, "wenshao"));
+entities.add(new Entity(1003, "yakolee"));
+entities.add(new Entity(1004, null));
+ONode n = ONode.load(entities);
+
+ONode rst = n.select("$[?($.id in [1001,1002])]");
+assert rst.count() == 2;
+```
+
+#### 示例6
+根据属性值过滤条件判断是否返回对象，修改对象，数组属性添加元素
+```java
+Entity entity = new Entity(1001, "ljw2083");
+ONode n = ONode.load(entity);
+
+assert n.select("$[?($.id == 1001)]").isObject();
+assert n.select("$[?($.id == 1002)]").isNull();
+
+n.select("$").set("id",123456);
+assert n.get("id").getInt() == 123456;
+
+n.get("value").add(1).add(2).add(3);
+assert n.get("value").count() == 3;
+
+```
+
+#### 示例7
+```java
+
+```
+
