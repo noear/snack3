@@ -227,51 +227,48 @@ String jsonStr = "{\n" +
 
 ONode o = ONode.load(jsonStr);
 
-System.out.println(o.toString());
-
 //得到所有的书
 ONode books = o.select("$.store.book");
-System.out.println("books={}::" + books);
+System.out.println("books=::" + books);
 
 //得到所有的书名
 ONode titles = o.select("$.store.book.title");
-System.out.println("titles={}::" + titles);
+System.out.println("titles=::" + titles);
 
 //第一本书title
 ONode title = o.select("$.store.book[0].title");
-System.out.println("title={}::" + title);
+System.out.println("title=::" + title);
 
 //price大于10元的book
 ONode list = o.select("$.store.book[?(price > 10)]");
-System.out.println("price大于10元的book={}::" + list);
+System.out.println("price大于10元的book=::" + list);
 
 //price大于10元的title
 ONode list2 = o.select("$.store.book[?(price > 10)].title");
-System.out.println("price大于10元的title={}::" + list2);
+System.out.println("price大于10元的title=::" + list2);
 
 //category(类别)为科幻的book
 ONode list3 = o.select("$.store.book[?(category == '科幻')]");
-System.out.println("category(类别)为科幻的book={}::" + list3);
+System.out.println("category(类别)为科幻的book=::" + list3);
 
 
 //bicycle的所有属性值
 ONode values = o.select("$.store.bicycle.*");
-System.out.println("bicycle的所有属性值={}::" + values);
+System.out.println("bicycle的所有属性值=::" + values);
 
 
 //bicycle的color和price属性值
 ONode read = o.select("$.store.bicycle['color','price']");
-System.out.println("bicycle的color和price属性值={}::" + read);
+System.out.println("bicycle的color和price属性值=::" + read);
 ```
 打印结果
 ```
-{"store":{"bicycle":{"color":"red","price":19.95},"book":[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"},{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]}}
-books={}::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"},{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
-titles={}::["三体","go语言实战"]
-title={}::"三体"
-price大于10元的book={}::[{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
-price大于10元的title={}::["go语言实战"]
-category(类别)为科幻的book={}::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"}]
-bicycle的所有属性值={}::["red",19.95]
-bicycle的color和price属性值={}::["red",19.95]
+books=::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"},{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
+titles=::["三体","go语言实战"]
+title=::"三体"
+price大于10元的book=::[{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
+price大于10元的title=::["go语言实战"]
+category(类别)为科幻的book=::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"}]
+bicycle的所有属性值=::["red",19.95]
+bicycle的color和price属性值=::["red",19.95]
 ```
