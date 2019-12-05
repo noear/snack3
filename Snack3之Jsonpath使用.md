@@ -19,8 +19,6 @@ Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 * 高性能`Json path`查询（兼容性和性能很赞）
 * 支持`序列化、反序列化`
 
-###### 今天就试一把它的JSONPath。
-
 ### 二、接口
 
 ```java
