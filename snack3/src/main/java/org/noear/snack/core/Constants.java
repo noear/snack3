@@ -76,7 +76,7 @@ public class Constants {
     public Locale locale = DEFAULTS.DEF_LOCALE;
     //特性
     public int features = DEFAULTS.DEF_FEATURES;
-    //get时，只读处理
+    //n.get(key)时，只读处理; 即不自动添加新节点
     public boolean get_readonly = false;
 
     //=================
