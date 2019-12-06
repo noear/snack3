@@ -182,7 +182,7 @@ public class SpeedTest {
         //
         //10000000=>6.3s,6.4s
         //1000000=>6.8s
-        //100000=>1s
+        //100000=>958
         //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -270,8 +270,8 @@ public class SpeedTest {
     public void test11_3() throws Exception {
         //
         //10000000=>9.6s,9.7s
-        //1000000=>1.4s
-        //100000=>0.17s
+        //1000000=>1.3s
+        //100000=>183,182,163
         //
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
@@ -314,6 +314,9 @@ public class SpeedTest {
 
     @Test
     public void test12() throws Exception {
+        //100000=>433,403,424
+        //
+        //
         Map<String, Object> obj = new LinkedHashMap<String, Object>();
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -346,6 +349,9 @@ public class SpeedTest {
 
     @Test
     public void test12_1() throws Exception {
+        //100000=>168,163,186
+        //
+        //
         Map<String, Object> obj = new LinkedHashMap<String, Object>();
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
