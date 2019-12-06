@@ -67,7 +67,7 @@ public class SpeedTest {
 
     @Test
     public void test1() throws Exception {
-        //1000000=>1921,1713,1813
+        //1000000=>1695,1713,1738
         //
         //
         Map<String, Object> obj = new LinkedHashMap<>();
@@ -82,6 +82,9 @@ public class SpeedTest {
         list.add(m);
 
         obj.put("list", list);
+
+        String tmp = ONode.serialize(obj);
+        System.out.println(tmp);
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -98,7 +101,7 @@ public class SpeedTest {
 
     @Test
     public void test2() throws Exception {
-        //100000=>1571,1567,1534
+        //100000=>1473,1493,1494
         //
         //
         UserGroupModel group = new UserGroupModel();
@@ -121,6 +124,9 @@ public class SpeedTest {
             group.ids[i] = i;
         }
 
+        String tmp = ONode.serialize(group);
+        System.out.println(tmp);
+
         long start = System.currentTimeMillis();
         for(int i=0,len=100000; i<len; i++) {
             ONode.serialize(group);
@@ -137,8 +143,8 @@ public class SpeedTest {
     @Test
     public void test11() throws Exception {
         //
-        //10000000=>78s,74s,73s
-        //1000000=>8.5s
+        //10000000=>72s,71s,72s
+        //1000000=>7.9s,7.8s
         //100000=>1.6s,1.6s,1.5s
         //
         UserGroupModel group = new UserGroupModel();
@@ -333,6 +339,8 @@ public class SpeedTest {
 
         String json = ONode.serialize(obj);
         System.out.println(json);
+
+        ONode.deserialize(json, obj.getClass());
 
 
         long start = System.currentTimeMillis();
