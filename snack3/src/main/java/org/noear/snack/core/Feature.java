@@ -46,6 +46,11 @@ public enum  Feature {
      * */
     StringFieldInitEmpty,
 
+    /**
+     * 序列化Null
+     * */
+    SerializeNulls,
+
     ;
 
     Feature(){

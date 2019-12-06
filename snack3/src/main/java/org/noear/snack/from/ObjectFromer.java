@@ -24,12 +24,14 @@ public class ObjectFromer implements Fromer {
     }
 
     private ONode analyse(Constants cfg, Object source) {
+
+        ONode rst = new ONode(cfg);
+
         if (source == null) {
-            return new ONode();
+            return rst;
         }
 
         Class<?> clz = source.getClass();
-        ONode rst = new ONode(cfg);
 
         if (source instanceof ONode) {
             rst.val(source);
@@ -184,7 +186,20 @@ public class ObjectFromer implements Fromer {
         Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
         for (FieldWrap f : list) {
             Object val = f.get(obj);
-            if (val != null && val.equals(obj)==false) { //null 和 自引用 不需要处理
+
+            if(val == null) {
+                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                    rst.setNode(f.name(), analyse(cfg, ""));
+                    continue;
+                }
+
+                if (cfg.hasFeature(Feature.SerializeNulls)) {
+                    rst.setNode(f.name(), analyse(cfg, null));
+                }
+                continue;
+            }
+
+            if (val.equals(obj)==false) { //null 和 自引用 不需要处理
                 rst.setNode(f.name(), analyse(cfg, val));
             }
         }
