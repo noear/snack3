@@ -1,9 +1,9 @@
-# Java 中 Snacks3的使用
-> 网上看一篇Java 中 Gson的使用，所以也跟着写篇Java 中 Snacks3的使用
+# Java 中 Snack3的使用
+> 网上看了一篇Java 中 Gson的使用，所以也跟着写篇Java 中 Snack3的使用
 
 JSON 是一种文本形式的数据交换格式，从Ajax的时候开始流行，它比XML更轻量、比二进制容易阅读和编写；解析和生成的方式很多，Java中最常用的类库有：JSON-Java、Gson、Jackson、FastJson、Snack3等。
 
-Snacks3 基于jdk8，60kb大小，非常小巧。
+Snack3 基于jdk8，60kb大小，非常小巧。
 
 ```xml
 <dependency>
@@ -13,7 +13,7 @@ Snacks3 基于jdk8，60kb大小，非常小巧。
 </dependency>
 ```
 
-Snacks3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
+Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
 
 - 强调文档树的操控和构建能力
 - 做为中间媒体，方便不同格式互转
@@ -296,7 +296,7 @@ ONode read = o.select("$.store.bicycle['color','price']");
 System.out.println("bicycle的color和price属性值=::" + read);
 ```
 
-### 七、支持的JSONPath语法
+#### （1）支持的JSONPath语法
 
 * 字符串使用单引号，例：\['name']
 * 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
@@ -340,4 +340,38 @@ $.store.book[0].title //建议使用这种
 ```
 ```java
 $['store']['book'][0]['title']
+```
+
+#### （2）语法示例说明
+
+| JSONPath | 说明                           |
+| ------------ | ------------------------------ |
+| `$`      | 根对象           |
+| `$[-1]`      | 最后元素           |
+| `$[:-2]`      | 第0个至倒数第2个           |
+| `$[1:]`      | 第1个之后所有元素（0为首个） |
+| `$[1,2,3]`      | 集合中1,2,3个元素（0为首个） |
+
+### 七、数据格式互转
+
+Snack3是采用`(Fromer)`->`(ONode)`->`(Toer)`的架构。非常适合格式的转换，开发时只需要完成与ONode的对接即可：
+
+#### （1）将Xml转为Ymal
+```java
+String xml = "<xml>....</xml>";
+XmlFromer xmlFromer = new XmlFromer();
+YmalToer  ymalToer  = new YmalToer();
+
+//加载xml，输出ymal
+String ymal = ONode.load(xml,Constants.def(),xmlFromer).to(ymalToer);
+```
+
+#### （2）加载Xml，去掉手机号，转为java object
+```java
+ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
+
+//找到有手机号的，然后移除手机号
+tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
+
+XxxModel m =tmp.toObject(XxxModel.class);
 ```
