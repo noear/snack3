@@ -5,7 +5,7 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3_demo</artifactId>
-    <version>0.0.1</version>
+    <version>3.1</version>
     <packaging>jar</packaging>
 
     <name>snack3_demo</name>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>snack3</artifactId>
-            <version>3.1.5.10</version>
+            <version>3.1.5.11</version>
             <scope>test</scope>
         </dependency>
 

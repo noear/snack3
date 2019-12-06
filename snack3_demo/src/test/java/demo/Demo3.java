@@ -43,6 +43,11 @@ public class Demo3 {
     public void demo3() {
         User user = new User("张三", 24);
         String json = ONode.stringify(user); // {"name":"张三","age":24}
+
+        String json2 = ONode.serialize(user); // {"@type":"demo.User","name":"\u5F20\u4E09","age":24}
+
+        System.out.println(json);
+        System.out.println(json2);
     }
 
     @Test
@@ -56,7 +61,7 @@ public class Demo3 {
     @Test
     public void demo5() {
         String jsonArray = "[\"Android\",\"Java\",\"PHP\"]";
-        String[] strings = ONode.load(jsonArray).toObject(String[].class);
+        String[] strings = ONode.deserialize(jsonArray,String[].class);
 
         assert strings.length == 3;
     }
@@ -64,10 +69,10 @@ public class Demo3 {
     @Test
     public void demo6() {
         String jsonArray = "[\"Android\",\"Java\",\"PHP\"]";
-        List<String> ary1 = ONode.load(jsonArray).toObject((new ArrayList<String>() {
-        }).getClass());
-        List<String> ary2 = ONode.load(jsonArray).toObject((new TypeRef<List<String>>() {
-        }).getClass());
+
+        ONode ary0 		  = ONode.load(jsonArray);
+        List<String> ary1 = ONode.deserialize(jsonArray,(new ArrayList<String>(){}).getClass());
+        List<String> ary2 = ONode.deserialize(jsonArray,(new TypeRef<List<String>>(){}).getClass());
 
         assert ary1.size() == ary2.size();
     }
@@ -88,8 +93,7 @@ public class Demo3 {
         User user = new User("张三", 24);
         System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
-        Constants cfg = Constants.of(Feature.SerializeNulls,Feature.OrderedField);
-
+        Constants cfg = Constants.of(Feature.SerializeNulls);
         System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
     }
 
@@ -98,9 +102,16 @@ public class Demo3 {
         Date date = new Date();
 
         Constants cfg = Constants.of(Feature.WriteDateUseFormat)
-                .build(c-> c.date_format = new SimpleDateFormat("yyyy-MM-dd",c.locale));
+                .build(c -> c.date_format = new SimpleDateFormat("yyyy-MM-dd", c.locale));
 
-        System.out.println(ONode.load(date, cfg).toJson());
+        System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
+    }
+    @Test
+    public void demo10() {
+        User user = new User("name", 12, "xxx@mail.cn");
+        String json = ONode.load(user).rename("emailAddress", "email").toJson(); // {"name":"name","age":12,"email":"xxx@mail.cn"}
+
+        System.out.println(json);
     }
 
 }

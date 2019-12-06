@@ -384,6 +384,19 @@ public class ONode {
     }
 
     /**
+     * 重命名一个子节点（如果不存在则跳过）
+     * */
+    public ONode rename(String key, String newKey) {
+        _d.tryInitObject();
+        ONode tmp = _d.object.get(key);
+        if (tmp != null) {
+            _d.object.put(newKey, tmp);
+            _d.object.remove(key);
+        }
+        return this;
+    }
+
+    /**
      * 获取对象子节点（不存在，生成新的子节点并返回）
      *
      * @return child:ONode
