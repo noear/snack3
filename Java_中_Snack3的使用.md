@@ -5,6 +5,14 @@ JSON 是一种文本形式的数据交换格式，从Ajax的时候开始流行�
 
 Snacks3 基于jdk8，60kb大小，非常小巧。
 
+```xml
+<dependency>
+  <groupId>org.noear</groupId>
+  <artifactId>snack3</artifactId>
+  <version>3.1.5.11</version>
+</dependency>
+```
+
 Snacks3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
 
 - 强调文档树的操控和构建能力
@@ -118,15 +126,14 @@ List<String> ary2 = ONode.deserialize(jsonArray,(new TypeRef<List<String>>(){}).
 //(new TypeRef<List<String>>(){}).getClass() 	//方式2，通过TypeRef（最终都是产生Class）
 ```
 
-泛型解析对接口POJO的设计影响
-
-泛型的引入可以减少无关的代码：　
+泛型的引入还可以减少无关的代码：　
 ```json　
 {"code":"0","message":"success","data":{}}
 {"code":"0","message":"success","data":[]}
 ```
 
-我们真正需要的data所包含的数据，而code只使用一次，message则几乎不用，如果Snack3不支持泛型或不知道Snack3支持泛型的同学一定会这么定义POJO：
+像上面这段代码，code只使用一次，message则几乎不用；我们真正需要的data所包含的数据，但它可能对象也可能是数组。如果Snack3不支持泛型或不知道Snack3支持泛型的同学一定会这么定义POJO：
+
 ```java
 public class UserResponse {
     public int code;
@@ -135,7 +142,7 @@ public class UserResponse {
 }
 ```
 
-当其它接口的时候又重新定义一个XxxResponse将data的类型改成Xxx，很明显code，和message被重复定义了多次，通过泛型可以将code和message字段抽取到一个Result的类中，这样只需要编写data字段所对应的POJO即可：
+当设计其它接口的时候又重新定义一个XxxResponse将data的类型改成Xxx，很明显code，和message被重复定义了多次，会产大量的POJO。。。通过泛型可以将code和message字段抽取到一个Result的类中，这样只需要编写data字段所对应的POJO即可：
 ```java
 public class Result<T> {
     public int code;
@@ -159,13 +166,16 @@ ONode.deserialize(str,clz); //反序列化
 String json = "{\"name\":\"张三\",\"age\":\"24\"}";
 
 //反序列化
-User user = ONode.load(json).toObject(User.class);
+User user = ONode.load(json,Constants.serialize()).toObject(User.class);
 
 //序列化
-ONode.load(user).toJson();
+ONode.load(user,Constants.serialize()).toJson();
 ```
 
-自动方式最终都是通过`load(obj)`,`toObject(clz)`,`toJson()` 进行操作
+自动方式最终都是通过`load(obj)`,`toObject(clz)`,`toJson()` 进行操作。
+
+内部代码：
+
 ```java
 /**
  * 序列化为 string（由序列化器决定格式）
@@ -219,4 +229,115 @@ Constants cfg = Constants.of(Feature.WriteDateUseFormat) //使用格式化特性
         .build(c-> c.date_format = new SimpleDateFormat("yyyy-MM-dd",c.locale)); //设置格式符（默认为："yyyy-MM-dd'T'HH:mm:ss"）
 
 System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
+```
+
+### 六、使用Snack3进行JSONPath查询
+在网上找了一份经典的JSON样本：
+```json
+{
+    "store": {
+        "bicycle": {
+            "color": "red",
+            "price": 19.95
+        },
+        "book": [
+            {
+                "author": "刘慈欣",
+                "price": 8.95,
+                "category": "科幻",
+                "title": "三体"
+            },
+            {
+                "author": "itguang",
+                "price": 12.99,
+                "category": "编程语言",
+                "title": "go语言实战"
+            }
+        ]
+    }
+}
+```
+Snack3可以提供高速的JSONPath查询，JSONPath更给日常的查询节省了大量代码：
+```java
+ONode o = ONode.load(jsonStr);
+
+//得到所有的书
+ONode books = o.select("$.store.book");
+System.out.println("books=::" + books);
+
+//得到所有的书名
+ONode titles = o.select("$.store.book.title");
+System.out.println("titles=::" + titles);
+
+//第一本书title
+ONode title = o.select("$.store.book[0].title");
+System.out.println("title=::" + title);
+
+//price大于10元的book
+ONode list = o.select("$.store.book[?(price > 10)]");
+System.out.println("price大于10元的book=::" + list);
+
+//price大于10元的title
+ONode list2 = o.select("$.store.book[?(price > 10)].title");
+System.out.println("price大于10元的title=::" + list2);
+
+//category(类别)为科幻的book
+ONode list3 = o.select("$.store.book[?(category == '科幻')]");
+System.out.println("category(类别)为科幻的book=::" + list3);
+
+
+//bicycle的所有属性值
+ONode values = o.select("$.store.bicycle.*");
+System.out.println("bicycle的所有属性值=::" + values);
+
+
+//bicycle的color和price属性值
+ONode read = o.select("$.store.bicycle['color','price']");
+System.out.println("bicycle的color和price属性值=::" + read);
+```
+
+### 七、支持的JSONPath语法
+
+* 字符串使用单引号，例：\['name']
+* 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
+
+| 支持操作                  | 说明                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| `$`                       | 表示根元素                                           |
+| `@`                       | 当前节点（做为过滤表达式的谓词使用）                 |
+| `*`                       | 通用配配符，可以表示一个名字或数字。                 |
+| `..`                      | 深层扫描。 可以理解为递归搜索。                      |
+| `.<name>`                 | 表示一个子节点                                       |
+| `['<name>' (, '<name>')]` | 表示一个或多个子节点                                 |
+| `[<number> (, <number>)]` | 表示一个或多个数组下标（负号为倒数）                 |
+| `[start:end]`             | 数组片段，区间为\[start,end),不包含end（负号为倒数） |
+| `[?(<expression>)]`       | 过滤表达式。 表达式结果必须是一个布尔值。            |
+
+| 支持过滤操作符 | 说明                                     |
+| -------------- | ---------------------------------------- |
+| `==`           | left等于right（注意1不等于'1'）          |
+| `!=`           | 不等于                                   |
+| `<`            | 小于                                     |
+| `<=`           | 小于等于                                 |
+| `>`            | 大于                                     |
+| `>=`           | 大于等于                                 |
+| `=~`           | 匹配正则表达式[?(@.name =~ /foo.*?/i)]   |
+| `in`           | 左边存在于右边 [?(@.size in ['S', 'M'])] |
+| `nin`          | 左边不存在于右边                         |
+
+| 支持尾部函数 | 说明                           |
+| ------------ | ------------------------------ |
+| `min()`      | 计算数字数组的最小值           |
+| `max()`      | 计算数字数组的最大值           |
+| `avg()`      | 计算数字数组的平均值           |
+| `sum()`      | 计算数字数组的汇总值（新加的） |
+
+像这两种写法的语义是差不多：
+
+
+```java 
+$.store.book[0].title //建议使用这种
+```
+```java
+$['store']['book'][0]['title']
 ```
