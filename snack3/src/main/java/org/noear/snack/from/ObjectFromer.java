@@ -188,11 +188,13 @@ public class ObjectFromer implements Fromer {
             Object val = f.get(obj);
 
             if(val == null) {
+                //null string 是否以 空字符处理
                 if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
                     rst.setNode(f.name(), analyse(cfg, ""));
                     continue;
                 }
 
+                //null是否输出
                 if (cfg.hasFeature(Feature.SerializeNulls)) {
                     rst.setNode(f.name(), analyse(cfg, null));
                 }
