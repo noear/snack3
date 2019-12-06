@@ -387,13 +387,25 @@ public class ONode {
      * 重命名一个子节点（如果不存在则跳过）
      * */
     public ONode rename(String key, String newKey) {
-        _d.tryInitObject();
-        ONode tmp = _d.object.get(key);
-        if (tmp != null) {
-            _d.object.put(newKey, tmp);
-            _d.object.remove(key);
+        if (isObject()) {
+            rename_do(this, key, newKey);
+        } else if (isArray()) {
+            for (ONode n : _d.array) {
+                rename_do(n, key, newKey);
+            }
         }
+
         return this;
+    }
+
+    private static void rename_do(ONode n,String key, String newKey) {
+        if (n.isObject()) {
+            ONode tmp = n._d.object.get(key);
+            if (tmp != null) {
+                n._d.object.put(newKey, tmp);
+                n._d.object.remove(key);
+            }
+        }
     }
 
     /**
