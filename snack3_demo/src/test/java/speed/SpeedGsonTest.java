@@ -3,6 +3,7 @@ package speed;
 import _models.UserGroupModel;
 import _models.UserModel;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.Test;
@@ -13,6 +14,21 @@ import java.util.*;
 public class SpeedGsonTest {
     Gson mapper = new Gson();
     JsonParser parser  = new JsonParser();
+
+    Gson mapper2 = new GsonBuilder()
+            .registerTypeAdapter(java.util.Date.class,new GsonDateStringify())
+            .create();//json输出
+
+    Gson mapper1 = new GsonBuilder()
+            .registerTypeAdapter(java.util.Date.class,new GsonDateSerialize())
+            .create();//序列化输出
+
+    @Test
+    public void _test0() throws IOException {
+        System.out.println(mapper1.toJson(new Date()));
+
+        System.out.println(mapper2.toJson(new Date()));
+    }
 
 
     /** 测试性能（大json） */
