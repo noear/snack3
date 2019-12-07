@@ -13,7 +13,7 @@ Snack3 基于jdk8，60kb大小，非常小巧。
 </dependency>
 ```
 
-Snack3 借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
+Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
 
 - 强调文档树的操控和构建能力
 - 做为中间媒体，方便不同格式互转
