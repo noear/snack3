@@ -132,7 +132,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 ```json
 {"@type":"...","a":1,"b":"2"}
 ```
-#### 数组（与fastJson不同；可以精准反序列化类型）
+#### 数组（与fastJson不同，可以精准反序列化类型；需要特性开启）
 ```json
 [{"@type":"..."},[1,2,3]]
 ```
