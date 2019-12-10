@@ -390,4 +390,39 @@ public class SpeedTest {
 
     }
 
+    @Test
+    public void test12_2() throws Exception {
+        //100000=>168,163,186
+        //
+        //
+        Map<String, Object> obj = new LinkedHashMap<String, Object>();
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Map<String, Object> m = new LinkedHashMap<String, Object>();
+        m.put("a", 1);
+        m.put("b", true);
+        m.put("c", 1.2);
+        m.put("d", new Date());
+
+        list.add(m);
+
+        obj.put("list", list);
+
+
+        String json = ONode.serialize(obj);
+        System.out.println(json);
+        ONode n = ONode.load(json);
+
+        long start = System.currentTimeMillis();
+        for(int i=0,len=100000; i<len; i++) {
+            n.toObject(obj.getClass());
+        }
+        long times = System.currentTimeMillis() - start;
+
+        System.out.println(times);
+
+        assert times > 0;
+
+    }
+
 }
