@@ -7,6 +7,7 @@ import org.noear.snack.to.JsonToer;
 import org.noear.snack.to.ObjectToer;
 import org.noear.snack.to.Toer;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -27,7 +28,7 @@ public class DEFAULTS {
     /** 默认时间格式字符串 */
     public static final String DEF_DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss";
     /** 默认时间格式器 */
-    public static SimpleDateFormat DEF_DATE_FORMAT = new SimpleDateFormat(DEF_DATE_FORMAT_STRING, DEF_LOCALE);
+    public static DateFormat DEF_DATE_FORMAT = new SimpleDateFormat(DEF_DATE_FORMAT_STRING, DEF_LOCALE);
 
     /** 默认对象来源器 */
     public static final Fromer DEF_OBJECT_FROMER = new ObjectFromer();

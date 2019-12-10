@@ -2,7 +2,7 @@ package org.noear.snack.core;
 
 import org.noear.snack.core.exts.Act1;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -67,7 +67,7 @@ public class Constants {
     }
 
     //日期格式
-    public SimpleDateFormat date_format = DEFAULTS.DEF_DATE_FORMAT;
+    public DateFormat date_format = DEFAULTS.DEF_DATE_FORMAT;
     //类型key
     public String type_key = DEFAULTS.DEF_TYPE_KEY;
     //时区
