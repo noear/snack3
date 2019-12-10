@@ -1,4 +1,4 @@
-package speed;
+package speed.jsonpath;
 
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;

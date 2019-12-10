@@ -1,4 +1,4 @@
-package speed;
+package speed.jsonpath;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
