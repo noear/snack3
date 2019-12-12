@@ -180,22 +180,22 @@ XxxModel m =tmp.toObject(XxxModel.class);
 ```swift
 //初始化操作
 //
--asObject() -> self:ONode  //将节点切换为对象
--asArray()  -> self:ONode  //将节点切换为数组
--asValue()  -> self:ONode  //将节点切换为值
--asNull()   -> self:ONode  //将节点切换为null
+-asObject() -> self:ONode  //将当前节点切换为对象
+-asArray()  -> self:ONode  //将当前节点切换为数组
+-asValue()  -> self:ONode  //将当前节点切换为值
+-asNull()   -> self:ONode  //将当前节点切换为null
 
 //检测操作
 //
--isObject() -> bool  //检查节点是否为对象
--isArray()  -> bool  //检查节点是否为数组
--isValue()  -> bool  //检查节点是否为值
--isNull()   -> bool  //检查节点是否为null
+-isObject() -> bool  //检查当前节点是否为对象
+-isArray()  -> bool  //检查当前节点是否为数组
+-isValue()  -> bool  //检查当前节点是否为值
+-isNull()   -> bool  //检查当前节点是否为null
 
 //公共
 //
--nodeData() -> ONodeData //获取节点数据
--nodeType() -> ONodeType //获取节点类型
+-nodeData() -> ONodeData //获取当前节点数据
+-nodeType() -> ONodeType //获取当前节点类型
 
 -cfg(cfg:Constants) -> self:ONode   //切换配置
 -cfg() -> Constants 				//获取配置
