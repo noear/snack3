@@ -67,10 +67,12 @@ public class Contains {
 
         assert Long.hashCode(2) == new ONode().val(2).hashCode();
 
-        ONode tmp = ONode.loadStr("[1,2,3,4,5]");
+        ONode tmp = ONode.loadStr("[1,2,3,4,5,true]");
         assert tmp.ary().contains(2l);
 
         assert tmp.ary().contains(2);
+
+        assert tmp.ary().contains(true);
 
         tmp = ONode.loadStr("[1,'2',3,4,5]");
         assert tmp.ary().contains("2");
