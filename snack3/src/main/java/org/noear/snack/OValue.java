@@ -304,10 +304,36 @@ public class OValue {
             OValue o2 = (OValue) o;
             return Objects.equals(getRaw(), o2.getRaw());
         } else {
-            if (_type == OValueType.String) {
-                return _string.equals(o);
-            } else {
-                return hashCode() == o.hashCode();
+
+            switch (_type){
+                case String:return _string.equals(o);
+                case Integer: {
+                    if(o instanceof Number) {
+                        return ((Number) o).longValue() == _integer;
+                    }else{
+                        return false;
+                    }
+                }
+                case DateTime:return _date.equals(o);
+                case Boolean:{
+                    if(o instanceof Boolean){
+                        return _bool == (Boolean)o;
+                    }else{
+                        return false;
+                    }
+                }
+                case Decimal:{
+                    if(o instanceof Number){
+                        return ((Number) o).doubleValue() == _decimal;
+                    }else{
+                        return false;
+                    }
+                }
+                case Bignumber:{
+                    return _bignumber.equals(o);
+                }
+                default:
+                    return false;
             }
         }
     }
