@@ -92,8 +92,8 @@ public class Contains {
     @Test
     public void test3() {
 
-        ONode tmp = ONode.loadStr("{a:[1,2,3,4,5]}");
-        ONode tmp2 = ONode.loadStr("{a:[1,2,3,4,5]}");
+        ONode tmp = ONode.loadStr("{a:[1,2,3,4,5],b:2}");
+        ONode tmp2 = ONode.loadStr("{a:[1,2,3,4,5],b:2}");
 
         assert tmp.equals(tmp2);
 
@@ -109,6 +109,8 @@ public class Contains {
 
         assert  tmp.obj().containsValue(tmp41) == false;
         assert  tmp.obj().containsValue(tmp42) == false;
+
+        assert  tmp.obj().containsValue(2);
     }
 
     @Test
