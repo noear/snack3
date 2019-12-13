@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 
 import java.util.Date;
+import java.util.List;
 
 public class Contains {
     @Test
@@ -92,11 +93,22 @@ public class Contains {
     public void test3() {
 
         ONode tmp = ONode.loadStr("{a:[1,2,3,4,5]}");
-
         ONode tmp2 = ONode.loadStr("{a:[1,2,3,4,5]}");
 
         assert tmp.equals(tmp2);
 
+        ONode tmp3 = ONode.loadStr("[1,2,3,4,5]");
+        List<Integer> tmp4 = ONode.loadStr("[1,2,3,4,5]").toObject(List.class);
+
+        List<Integer> tmp41 = ONode.loadStr("[1,2,3,5,4]").toObject(List.class);
+        List<Integer> tmp42 = ONode.loadStr("[1,2,3,4]").toObject(List.class);
+
+        assert  tmp.obj().containsKey("a");
+        assert  tmp.obj().containsValue(tmp3);
+        assert  tmp.obj().containsValue(tmp4);
+
+        assert  tmp.obj().containsValue(tmp41) == false;
+        assert  tmp.obj().containsValue(tmp42) == false;
     }
 
     @Test

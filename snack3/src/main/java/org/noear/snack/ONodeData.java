@@ -76,9 +76,9 @@ public class ONodeData {
 
             if (object == null) {
                 if(_n._c.hasFeature(Feature.OrderedField)){
-                    object = new LinkedHashMap<>();
+                    object = new ONodeLinkedObject();
                 }else {
-                    object = new HashMap<>();
+                    object = new ONodeObject();
                 }
             }
         }
@@ -167,6 +167,30 @@ public class ONodeData {
                     return i;
 
             return -1;
+        }
+    }
+
+    class ONodeObject extends HashMap<String,ONode> {
+        @Override
+        public boolean containsValue(Object value) {
+            for(ONode n: values()){
+                if(n.equals(value)){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    class ONodeLinkedObject extends LinkedHashMap<String,ONode> {
+        @Override
+        public boolean containsValue(Object value) {
+            for(ONode n: values()){
+                if(n.equals(value)){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
