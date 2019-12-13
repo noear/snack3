@@ -287,4 +287,19 @@ public class OValue {
     public String toString() {
         return getString();
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null){
+            return false;
+        }
+
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(getRaw());
+    }
 }
