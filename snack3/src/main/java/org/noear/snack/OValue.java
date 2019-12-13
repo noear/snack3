@@ -306,10 +306,10 @@ public class OValue {
     public int hashCode() {
         switch (_type){
             case String:return _string.hashCode();
-            case Integer:return System.identityHashCode(_integer);
-            case DateTime:return System.identityHashCode(_date);
-            case Boolean:return System.identityHashCode(_bool);
-            case Decimal:return System.identityHashCode(_decimal);
+            case Integer:return Long.hashCode(_integer);
+            case DateTime:return Long.hashCode(_date.getTime());
+            case Boolean:return Boolean.hashCode(_bool);
+            case Decimal:return Double.hashCode(_decimal);
             case Bignumber:return System.identityHashCode(_bignumber);
             default:return 0;
         }

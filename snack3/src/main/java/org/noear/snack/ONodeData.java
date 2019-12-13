@@ -90,7 +90,7 @@ public class ONodeData {
             nodeType = ONodeType.Array;
 
             if (array == null) {
-                array = new ArrayList<>();
+                array = new ONodeArray();
             }
         }
     }
@@ -145,11 +145,11 @@ public class ONodeData {
     @Override
     public int hashCode() {
         if(nodeType == ONodeType.Object){
-            return System.identityHashCode(object);
+            return object.hashCode();
         }
 
         if(nodeType == ONodeType.Array){
-            return System.identityHashCode(array);
+            return array.hashCode();
         }
 
         if(nodeType == ONodeType.Value){
@@ -157,5 +157,21 @@ public class ONodeData {
         }
 
         return 0;
+    }
+
+    class ONodeArray extends ArrayList<ONode> {
+        @Override
+        public int indexOf(Object o) {
+            if (o == null) {
+                for (int i = 0; i < size(); i++)
+                    if (get(i) == null)
+                        return i;
+            } else {
+                for (int i = 0; i < size(); i++)
+                    if (get(i).equals(o))
+                        return i;
+            }
+            return -1;
+        }
     }
 }
