@@ -101,6 +101,9 @@ List<String> list = o.select("$.data.list[*].mobile").toObject(List.class);
 //找到187手机号的用户，并输出List<UserModel>
 List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
                         .toObject((new ArrayList<UserModel>(){}).getClass());
+//或
+List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
+                        .toObject((new TypeRef<List<UserModel>>(){}).getClass());
 
 
 //demo7:遍历
