@@ -77,6 +77,7 @@ public class JsonFromer implements Fromer {
     public void analyse(Context ctx, CharReader sr, CharBuffer sBuf, ONode p) throws IOException {
         String name = null;
 
+        boolean read_space1=false;
         // 读入字符
         while (sr.read()) {
             char c = sr.value();
@@ -85,37 +86,37 @@ public class JsonFromer implements Fromer {
             switch (c) {
                 case '"':
                     scanString(sr, sBuf, '"');
-                    if (analyse_buf(ctx,p, name, sBuf)) {
+                    if (analyse_buf(ctx, p, name, sBuf)) {
                         name = null;
                     }
                     break;
 
                 case '\'':
                     scanString(sr, sBuf, '\'');
-                    if (analyse_buf(ctx,p, name, sBuf)) {
+                    if (analyse_buf(ctx, p, name, sBuf)) {
                         name = null;
                     }
                     break;
 
                 case '{':
                     if (p.isObject()) {
-                        analyse(ctx,sr, sBuf, p.getNew(name).asObject());
+                        analyse(ctx, sr, sBuf, p.getNew(name).asObject());
                         name = null;
                     } else if (p.isArray()) {
-                        analyse(ctx,sr, sBuf, p.addNew().asObject());
+                        analyse(ctx, sr, sBuf, p.addNew().asObject());
                     } else {
-                        analyse(ctx,sr, sBuf, p.asObject());
+                        analyse(ctx, sr, sBuf, p.asObject());
                     }
                     break;
 
                 case '[':
                     if (p.isObject()) {
-                        analyse(ctx,sr, sBuf, p.getNew(name).asArray());
+                        analyse(ctx, sr, sBuf, p.getNew(name).asArray());
                         name = null;
                     } else if (p.isArray()) {
-                        analyse(ctx,sr, sBuf, p.addNew().asArray());
+                        analyse(ctx, sr, sBuf, p.addNew().asArray());
                     } else {
-                        analyse(ctx,sr, sBuf, p.asArray());
+                        analyse(ctx, sr, sBuf, p.asArray());
                     }
                     break;
 
@@ -127,7 +128,7 @@ public class JsonFromer implements Fromer {
 
                 case ',':
                     if (sBuf.length() > 0) {
-                        if (analyse_buf(ctx,p, name, sBuf)) {
+                        if (analyse_buf(ctx, p, name, sBuf)) {
                             name = null;
                         }
                     }
@@ -135,24 +136,35 @@ public class JsonFromer implements Fromer {
 
                 case '}':
                     if (sBuf.length() > 0) {
-                        analyse_buf(ctx,p, name, sBuf);//都返回了，不需要name=null了
+                        analyse_buf(ctx, p, name, sBuf);//都返回了，不需要name=null了
                     }
                     return;
 
                 case ']':
                     if (sBuf.length() > 0) {
-                        analyse_buf(ctx,p, name, sBuf);//都返回了，不需要name=null了
+                        analyse_buf(ctx, p, name, sBuf);//都返回了，不需要name=null了
                     }
                     return;
 
                 default:
-//                    if (sBuf.length() == 0) { //支持：new Date(xxx) //当中有空隔
+                    if (sBuf.length() == 0) { //支持：new Date(xxx) //当中有空隔
                         if (c > 32) {//无引号的，只添加可见字符(key,no string val)
                             sBuf.append(c);
+
+                            if (c == 'n') { //如果是 n开头, 可以读一次空隔
+                                read_space1 = true;
+                            }
                         }
-//                    } else {
-//                        sBuf.append(c);
-//                    }
+                    } else {
+                        if (c > 32) {
+                            sBuf.append(c);
+                        } else if(c == 32){
+                            if (read_space1) {
+                                read_space1 = false;
+                                sBuf.append(c);
+                            }
+                        }
+                    }
                     break;
             }
         }
