@@ -162,15 +162,10 @@ public class ONodeData {
     class ONodeArray extends ArrayList<ONode> {
         @Override
         public int indexOf(Object o) {
-            if (o == null) {
-                for (int i = 0; i < size(); i++)
-                    if (get(i) == null)
-                        return i;
-            } else {
-                for (int i = 0; i < size(); i++)
-                    if (get(i).equals(o))
-                        return i;
-            }
+            for (int i = 0; i < size(); i++)
+                if (get(i).equals(o))
+                    return i;
+
             return -1;
         }
     }
