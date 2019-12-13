@@ -76,6 +76,8 @@ public class Contains {
 
         assert tmp.ary().contains(null);
 
+        assert tmp.ary().contains(new ONode().asNull());
+
         tmp = ONode.loadStr("[1,'2',3,4,5]");
         assert tmp.ary().contains("2");
 
