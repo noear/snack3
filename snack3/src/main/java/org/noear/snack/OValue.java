@@ -291,7 +291,11 @@ public class OValue {
 
     @Override
     public boolean equals(Object o) {
-        if(o == null){
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null) {
             return false;
         }
 
@@ -300,6 +304,14 @@ public class OValue {
 
     @Override
     public int hashCode() {
-        return System.identityHashCode(getRaw());
+        switch (_type){
+            case String:return _string.hashCode();
+            case Integer:return System.identityHashCode(_integer);
+            case DateTime:return System.identityHashCode(_date);
+            case Boolean:return System.identityHashCode(_bool);
+            case Decimal:return System.identityHashCode(_decimal);
+            case Bignumber:return System.identityHashCode(_bignumber);
+            default:return 0;
+        }
     }
 }

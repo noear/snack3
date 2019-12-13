@@ -127,4 +127,35 @@ public class ONodeData {
 
         attrs.put(key, val);
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        if(nodeType == ONodeType.Object){
+            return System.identityHashCode(object);
+        }
+
+        if(nodeType == ONodeType.Array){
+            return System.identityHashCode(array);
+        }
+
+        if(nodeType == ONodeType.Value){
+            return value.hashCode();
+        }
+
+        return 0;
+    }
 }

@@ -984,4 +984,22 @@ public class ONode {
         //加载String，不需指定Fromer
         return load(source,  Constants.serialize(), null).toObject(clz);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        return this.hashCode() == o.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return _d.hashCode();
+    }
 }
