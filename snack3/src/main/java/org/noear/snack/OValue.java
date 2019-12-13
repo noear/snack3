@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 节点值
@@ -299,7 +300,16 @@ public class OValue {
             return false;
         }
 
-        return this.hashCode() == o.hashCode();
+        if (o instanceof OValue) {
+            OValue o2 = (OValue) o;
+            return Objects.equals(getRaw(), o2.getRaw());
+        } else {
+            if (_type == OValueType.String) {
+                return _string.equals(o);
+            } else {
+                return hashCode() == o.hashCode();
+            }
+        }
     }
 
     @Override

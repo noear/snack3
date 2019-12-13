@@ -1,6 +1,7 @@
 package features;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -32,6 +33,15 @@ public class Contains {
 
         tmp = (JSONArray) JSONArray.parse("[1,'2',3,4,new Date(" + times + ")]");
         assert tmp.contains(time);
+    }
+
+    @Test
+    public void test12() {
+        JSONArray tmp = (JSONArray) JSONArray.parse("[1,2,{c:1,d:2,b:[4]}]");
+
+        JSONObject tmp2 = (JSONObject) JSONObject.parse("{c:1,d:2,b:[4]}");
+
+        assert tmp.contains(tmp2);
     }
 
     @Test

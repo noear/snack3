@@ -10,10 +10,7 @@ import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -965,6 +962,30 @@ public class ONode {
 
         if (o == null) {
             return false;
+        }
+
+        if(isArray()) {
+            if (o instanceof ONode) {
+                return Objects.equals(ary(), ((ONode) o).ary());
+            } else {
+                return Objects.equals(ary(), o);
+            }
+        }
+
+        if(isObject()) {
+            if (o instanceof ONode) {
+                return Objects.equals(obj(), ((ONode) o).obj());
+            } else {
+                return Objects.equals(obj(), o);
+            }
+        }
+
+        if(isValue()){
+            if (o instanceof ONode) {
+                return Objects.equals(val(), ((ONode) o).val());
+            } else {
+                return Objects.equals(val(), o);
+            }
         }
 
         return this.hashCode() == o.hashCode();
