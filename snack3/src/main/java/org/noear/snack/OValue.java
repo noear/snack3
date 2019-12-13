@@ -307,10 +307,10 @@ public class OValue {
         switch (_type){
             case String:return _string.hashCode();
             case Integer:return Long.hashCode(_integer);
-            case DateTime:return Long.hashCode(_date.getTime());
+            case DateTime:return _date.hashCode();
             case Boolean:return Boolean.hashCode(_bool);
             case Decimal:return Double.hashCode(_decimal);
-            case Bignumber:return System.identityHashCode(_bignumber);
+            case Bignumber:return _bignumber.hashCode();
             default:return 0;
         }
     }
