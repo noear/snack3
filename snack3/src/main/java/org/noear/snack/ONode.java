@@ -383,34 +383,6 @@ public class ONode {
         }
     }
 
-    public boolean contains(ONode val) {
-        if (val.isValue() == false) {
-            return false;
-        }
-
-        if (isObject()) {
-            for (ONode n : _d.object.values()) {
-                if (n.isValue()) {
-                    if (val.val().getRaw().equals(n.val().getRaw())) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        if (isArray()) {
-            for (ONode n : _d.array) {
-                if (n.isValue()) {
-                    if (val.val().getRaw().equals(n.val().getRaw())) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     /**
      * 重命名一个子节点（如果不存在则跳过）
      * */
