@@ -961,7 +961,7 @@ public class ONode {
         }
 
         if (o == null) {
-            return false;
+            return isNull();
         }
 
         if(isArray()) {
@@ -988,7 +988,12 @@ public class ONode {
             }
         }
 
-        return this.hashCode() == o.hashCode();
+        //最后是null type
+        if(o instanceof ONode){
+            return ((ONode) o).isNull(); //都是 null
+        }else{
+            return false;
+        }
     }
 
     @Override

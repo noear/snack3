@@ -297,12 +297,20 @@ public class OValue {
         }
 
         if (o == null) {
-            return false;
+            return isNull();
         }
 
         if (o instanceof OValue) {
             OValue o2 = (OValue) o;
-            return Objects.equals(getRaw(), o2.getRaw());
+            switch (_type){
+                case String:return _string.equals(o2._string);
+                case Integer:return _integer == o2._integer;
+                case DateTime:return _date.equals(o2._date);
+                case Boolean:return _bool == o2._bool;
+                case Decimal:return _decimal == o2._decimal;
+                case Bignumber:return _bignumber.equals(o2._bignumber);
+                default:return isNull() && o2.isNull();
+            }
         } else {
 
             switch (_type){
