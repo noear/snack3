@@ -15,6 +15,8 @@ public class Contains {
         assert System.identityHashCode(0) != Integer.hashCode(0);
 
         assert System.identityHashCode(0l) != Long.hashCode(0);
+
+        assert System.identityHashCode(0) != System.identityHashCode(0l);
     }
 
     @Test
@@ -57,6 +59,8 @@ public class Contains {
 
         ONode tmp = ONode.loadStr("[1,2,3,4,5]");
         assert tmp.ary().contains(2l);
+
+        assert tmp.ary().contains(2);
 
         tmp = ONode.loadStr("[1,'2',3,4,5]");
         assert tmp.ary().contains("2");
