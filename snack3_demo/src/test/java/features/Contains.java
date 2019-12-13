@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class Contains {
     @Test
-    public void test0(){
+    public void test0() {
 
         assert System.identityHashCode(null) == 0;
 
@@ -35,7 +35,7 @@ public class Contains {
     @Test
     public void test21() {
 
-        assert  Long.hashCode(2) == new ONode().val(2).hashCode();
+        assert Long.hashCode(2) == new ONode().val(2).hashCode();
 
         ONode tmp = ONode.loadStr("[1,2,3,4,5]");
         assert tmp.ary().contains(new ONode().val(2));
@@ -53,7 +53,7 @@ public class Contains {
     @Test
     public void test22() {
 
-        assert  Long.hashCode(2) == new ONode().val(2).hashCode();
+        assert Long.hashCode(2) == new ONode().val(2).hashCode();
 
         ONode tmp = ONode.loadStr("[1,2,3,4,5]");
         assert tmp.ary().contains(2l);
@@ -66,5 +66,27 @@ public class Contains {
 
         tmp = ONode.loadStr("[1,'2',3,4,new Date(" + times + ")]");
         assert tmp.ary().contains(time);
+    }
+
+    @Test
+    public void test3() {
+
+        ONode tmp = ONode.loadStr("{a:[1,2,3,4,5]}");
+
+        ONode tmp2 = ONode.loadStr("{a:[1,2,3,4,5]}");
+
+        assert tmp.equals(tmp2);
+
+    }
+
+    @Test
+    public void test4() {
+        ONode tmp = ONode.loadStr("[1,2,{c:1,d:2,b:[4]}]");
+
+        ONode tmp2 = ONode.loadStr("{c:1,d:2,b:[4]}");
+
+        assert tmp.ary().contains(tmp2);
+
+        assert tmp.ary().indexOf(tmp2) == 2;
     }
 }
