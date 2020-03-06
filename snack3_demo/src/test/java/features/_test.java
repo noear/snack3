@@ -196,6 +196,9 @@ public class _test {
 
     @Test
     public void test10(){
+        //
+        // 单引号输出
+        //
         String txt = "{id:1,name:'x'}";
         ONode tmp = ONode.load(txt);
 
