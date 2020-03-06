@@ -188,11 +188,8 @@ public class JsonToer implements Toer {
     private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
         boolean useSingleQuotes = cfg.hasFeature(Feature.SerializeUseSingleQuotes);
-        if(useSingleQuotes){
-            sBuf.append("'");
-        }else{
-            sBuf.append("\"");
-        }
+        char quote = (useSingleQuotes ? '\'' : '\"');
+        sBuf.append(quote);
 
 
         //内容
@@ -201,27 +198,13 @@ public class JsonToer implements Toer {
             boolean isSecure = cfg.hasFeature(Feature.BrowserSecure);
             for (int i = 0, len = val.length(); i < len; i++) {
                 char c = val.charAt(i);
-                //特殊字符必须码
-                if (c == '\\' || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b' || (c>='\0' && c<='\7')) {
+
+                //引号转义处理 + 特殊字符必须码
+                if (c == quote || c == '\\' || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b' || (c>='\0' && c<='\7')) {
                     sBuf.append("\\");
                     sBuf.append(IOUtil.CHARS_MARK[(int)c]);
                     continue;
                 }
-
-                if(useSingleQuotes){
-                    if(c == '\''){
-                        sBuf.append("\\");
-                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
-                        continue;
-                    }
-                }else{
-                    if(c == '\"'){
-                        sBuf.append("\\");
-                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
-                        continue;
-                    }
-                }
-
                 if (isSecure) {
                     if (c == '(' || c == ')' || c == '<' || c == '>') {
                         sBuf.append('\\');
@@ -265,10 +248,6 @@ public class JsonToer implements Toer {
         }
 
         //引号结束
-        if(useSingleQuotes){
-            sBuf.append("'");
-        }else{
-            sBuf.append("\"");
-        }
+        sBuf.append(quote);
     }
 }
