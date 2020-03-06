@@ -4,6 +4,7 @@ import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
+import org.noear.snack.core.Feature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,4 +193,17 @@ public class _test {
 //        ONode tmp = ONode.loadStr(text);
 //        assert tmp.count() == 1;
 //    }
+
+    @Test
+    public void test10(){
+        String txt = "{id:1,name:'x'}";
+        ONode tmp = ONode.load(txt);
+
+        tmp.cfg().sub(Feature.QuoteFieldNames) //取消字段引号
+                 .add(Feature.SerializeUseSingleQuotes); //采用单引号
+
+        String txt2 = tmp.toJson();
+
+        assert txt.equals(txt2);
+    }
 }

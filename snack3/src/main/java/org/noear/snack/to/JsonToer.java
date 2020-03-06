@@ -129,7 +129,11 @@ public class JsonToer implements Toer {
 
     private void writeName(Constants cfg, StringBuilder sBuf, String val) {
         if (cfg.hasFeature(Feature.QuoteFieldNames)) {
-            sBuf.append("\"").append(val).append("\"");
+            if(cfg.hasFeature(Feature.SerializeUseSingleQuotes)){
+                sBuf.append("'").append(val).append("'");
+            }else {
+                sBuf.append("\"").append(val).append("\"");
+            }
         } else {
             sBuf.append(val);
         }
@@ -183,7 +187,13 @@ public class JsonToer implements Toer {
 
     private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
-        sBuf.append("\"");
+        boolean useSingleQuotes = cfg.hasFeature(Feature.SerializeUseSingleQuotes);
+        if(useSingleQuotes){
+            sBuf.append("'");
+        }else{
+            sBuf.append("\"");
+        }
+
 
         //内容
         if (isStr) {
@@ -192,10 +202,24 @@ public class JsonToer implements Toer {
             for (int i = 0, len = val.length(); i < len; i++) {
                 char c = val.charAt(i);
                 //特殊字符必须码
-                if (c == '\\' || c == '\"' || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b' || (c>='\0' && c<='\7')) {
+                if (c == '\\' || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b' || (c>='\0' && c<='\7')) {
                     sBuf.append("\\");
                     sBuf.append(IOUtil.CHARS_MARK[(int)c]);
                     continue;
+                }
+
+                if(useSingleQuotes){
+                    if(c == '\''){
+                        sBuf.append("\\");
+                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
+                        continue;
+                    }
+                }else{
+                    if(c == '\"'){
+                        sBuf.append("\\");
+                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
+                        continue;
+                    }
                 }
 
                 if (isSecure) {
@@ -241,6 +265,10 @@ public class JsonToer implements Toer {
         }
 
         //引号结束
-        sBuf.append("\"");
+        if(useSingleQuotes){
+            sBuf.append("'");
+        }else{
+            sBuf.append("\"");
+        }
     }
 }

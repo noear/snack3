@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.Handler;
 import org.noear.snack.from.JsonFromer;
 
@@ -146,6 +147,11 @@ public class _demo {
     }
 
     public void demo40(){
+        String txt = "{id:1,name:'x'}";
+        ONode tmp = ONode.load(txt);
 
+        tmp.cfg().sub(Feature.QuoteFieldNames).add(Feature.SerializeUseSingleQuotes);
+
+        String txt2 = tmp.toJson();
     }
 }

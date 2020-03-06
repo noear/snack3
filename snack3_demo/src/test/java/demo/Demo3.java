@@ -22,10 +22,33 @@ public class Demo3 {
         boolean b = ONode.load("true").getBoolean();     // true
         String str = ONode.load("String").getString();   // String
 
+
+        ONode tmp = new ONode();
+
+        tmp.cfg().add(Feature.QuoteFieldNames);
+
         assert i == 100;
         assert d == 99.99;
         assert b == true;
         assert str == "String";
+    }
+
+    public void foeach_demo(){
+        ONode tmp = new ONode();
+
+        if(tmp.isArray()){
+            tmp.forEach((v)->{
+
+            });
+        }
+
+        if(tmp.isObject()){
+            tmp.forEach((k,v)->{
+
+            });
+        }
+
+
     }
 
     @Test
