@@ -212,8 +212,8 @@ public class _test {
 
     @Test
     public void test11(){
-        ONode tmp = ONode.load("46qh", Constants.serialize().sub(Feature.BrowserCompatible));
+        ONode tmp = ONode.loadObj("46qh", Constants.serialize().sub(Feature.BrowserCompatible));
 
-        assert tmp != null;
+        assert "46qh".equals(tmp.val().getString());
     }
 }
