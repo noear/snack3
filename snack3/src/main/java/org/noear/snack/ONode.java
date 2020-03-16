@@ -872,6 +872,7 @@ public class ONode {
         return loadObj(source, null);
     }
 
+    //loadStr 不需要 cfg
     public static ONode loadObj(Object source, Constants cfg) {
         return doLoad(source, false, cfg, null);
     }
