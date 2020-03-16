@@ -129,7 +129,7 @@ public class JsonToer implements Toer {
 
     private void writeName(Constants cfg, StringBuilder sBuf, String val) {
         if (cfg.hasFeature(Feature.QuoteFieldNames)) {
-            if(cfg.hasFeature(Feature.SerializeUseSingleQuotes)){
+            if(cfg.hasFeature(Feature.UseSingleQuotes)){
                 sBuf.append("'").append(val).append("'");
             }else {
                 sBuf.append("\"").append(val).append("\"");
@@ -187,7 +187,7 @@ public class JsonToer implements Toer {
 
     private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
-        boolean useSingleQuotes = cfg.hasFeature(Feature.SerializeUseSingleQuotes);
+        boolean useSingleQuotes = cfg.hasFeature(Feature.UseSingleQuotes);
         char quote = (useSingleQuotes ? '\'' : '\"');
         sBuf.append(quote);
 

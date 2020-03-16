@@ -869,7 +869,11 @@ public class ONode {
      * 加载java object并生成新节点
      * */
     public static ONode loadObj(Object source) {
-        return doLoad(source, false, null, null);
+        return loadObj(source, null);
+    }
+
+    public static ONode loadObj(Object source, Constants cfg) {
+        return doLoad(source, false, cfg, null);
     }
 
     private static ONode doLoad(Object source, boolean isString, Constants cfg, Fromer fromer) {

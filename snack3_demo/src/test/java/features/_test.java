@@ -203,10 +203,17 @@ public class _test {
         ONode tmp = ONode.load(txt);
 
         tmp.cfg().sub(Feature.QuoteFieldNames) //取消字段引号
-                 .add(Feature.SerializeUseSingleQuotes); //采用单引号
+                 .add(Feature.UseSingleQuotes); //采用单引号
 
         String txt2 = tmp.toJson();
 
         assert txt.equals(txt2);
+    }
+
+    @Test
+    public void test11(){
+        ONode tmp = ONode.load("46qh", Constants.serialize().sub(Feature.BrowserCompatible));
+
+        assert tmp != null;
     }
 }

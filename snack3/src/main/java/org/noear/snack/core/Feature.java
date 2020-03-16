@@ -51,7 +51,7 @@ public enum  Feature {
      * */
     SerializeNulls,
 
-    SerializeUseSingleQuotes,
+    UseSingleQuotes,
 
     ;
 

@@ -4,10 +4,7 @@ import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
-import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
-import org.noear.snack.core.Handler;
-import org.noear.snack.from.JsonFromer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -150,7 +147,7 @@ public class _demo {
         String txt = "{id:1,name:'x'}";
         ONode tmp = ONode.load(txt);
 
-        tmp.cfg().sub(Feature.QuoteFieldNames).add(Feature.SerializeUseSingleQuotes);
+        tmp.cfg().sub(Feature.QuoteFieldNames).add(Feature.UseSingleQuotes);
 
         String txt2 = tmp.toJson();
     }
