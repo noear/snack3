@@ -823,8 +823,8 @@ public class ONode {
     /**
      * @param fromer 来源处理器
      * */
-    public ONode fill(Object source, Constants cfg, Fromer fromer) {
-        val(doLoad(source, source instanceof String, cfg, fromer));
+    public ONode fill(Object source,  Fromer fromer) {
+        val(doLoad(source, source instanceof String, _c, fromer));
         return this;
     }
 
