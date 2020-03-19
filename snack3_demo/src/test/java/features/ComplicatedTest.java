@@ -12,7 +12,6 @@ public class ComplicatedTest {
     @Test
     public void test0(){
         //List<Map<String, List<Map>>>
-
         Map map1 = new HashMap();
         map1.put("k1","v1");
         map1.put("k2","v2");
@@ -69,8 +68,6 @@ public class ComplicatedTest {
     @Test
     public void test2(){
         //Map<String,List>
-
-
         List list1 = new ArrayList();
         list1.add("v1");
         list1.add("v2");
