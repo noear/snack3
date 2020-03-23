@@ -144,7 +144,7 @@ public class JsonPath {
     private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard) {
         ONode tmp = source;
         boolean branch_do = false;
-        for (Segment s: jsonPath.segments) {
+        for (Segment s : jsonPath.segments) {
             if (tmp == null) {//多次转换后，可能为null
                 break;
             }
@@ -167,15 +167,11 @@ public class JsonPath {
                     }
                 };
 
-                if(tmp.count()>5){
-                    tmp.ary().parallelStream().forEach(act1);
-                }else{
-                    tmp.ary().forEach(act1);
-                }
+                tmp.ary().forEach(act1);
 
                 tmp = tmp2;
 
-                if(useStandard == false) {
+                if (useStandard == false) {
                     branch_do = false;
                 }
             } else {
