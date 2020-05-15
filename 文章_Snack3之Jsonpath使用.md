@@ -1,255 +1,289 @@
-# Snack3 一个新的微型JSON框架
-一个作品，一般表达作者的一个想法。因为大家想法不同，所有作品会有区别。就做技术而言，因为有很多有区别的框架，所以大家可以选择的框架很丰富。
+# Snack3 之 Jsonpath使用
 
+### 一、 Snack3 和 JSONPath 介绍
 
+Snack3 是一个支持JSONPath的JSON框架。JSONPath是一个很强大的功能，也可以在Java框架中当作对象查询语言（OQL）来使用。
 
-snack3。基于`jdk8`，`60kb`，无其它依赖，非常小巧。
-* 强调文档树的链式操控和构建能力
-* 强调中间媒体，方便不同格式互转
-* 支持`序列化、反序列化`
-* 支持`Json path`查询
-
-ONode 即 `One node` 之意；借签了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。这应该也是与别的框架不同之处。
-
-
-
-#### 设计思路
-* `ONode`是一个接口界面，内部由`nodeType`和`nodeData`组成。通过`nodeType`进行类型识别，通过`nodeData`容纳所有的类型数据。
-
-* 采用`Fromer`->`ONode`->`Toer`的架构设计。这是重要的一个设计，可使转换具有很强的扩展能力，`Fromer` 和 `Toer` 各做一半工作，也可各自切换（有好处也会有坏处）。
-
-* 强调非null操作，通过o.isNull()进行判断（留意后面`-get(key | idx)`接口的注释；可通过`getOrNull(key | idx)` 获取 `null` ）
-
-  
-
-#### 项目源码
-* github：[https://github.com/noear/snack3](https://github.com/noear/snack3)
-* gitee：[https://gitee.com/noear/snack3](https://gitee.com/noear/snack3)
-
-
-
-#### Meven配置
 
 ```xml
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.5.12</version>
+  <version>3.1.6.3</version>
 </dependency>
 ```
 
+Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
+* 强调文档树的操控和构建能力
+* 做为中间媒体，方便不同格式互转
+* 高性能`Json path`查询（兼容性和性能很赞）
+* 支持`序列化、反序列化`
 
+### 二、接口
 
-#### 一、简单的代码演示
-
-* 简单操控
 ```java
-//1.加载json
-// name支持没有引号
-// 字符串支持单引号（在java里写代码方便点；输出是标准的引号）
-ONode n = ONode.load("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5]}}");
+public class ONode{
+    //...
+    /**
+     * Json path select
+     *
+     * @param jpath json path express
+     * @param useStandard use standard mode(default: false)
+     * @param cacheJpath cache json path parsing results
+     */
+    public ONode select(String jpath,  boolean useStandard, boolean cacheJpath) {
+        return JsonPath.eval(this, jpath, useStandard, cacheJpath);
+    }
 
-//2.1.取一个属性的值
-String msg = n.get("msg").getString();
+    public ONode select(String jpath,  boolean useStandard) {
+        return select(jpath, useStandard, true);
+    }
 
-//2.2.取列表里的一项
-int li2  = n.get("data").get("list").get(2).getInt();
-int li2  = n.select("data.list[2]").getInt(); //使用josn path 
-
-//2.3.获取一个数组
-List<Integer> ary = n.get("data").get("list").toObject(ArrayList.class);
-List<Integer> ary = n.select("data.list").toObject(ArrayList.class); //使用josn path 
-
-//3.1.设置值
-n.set("msg","Hello world2");
-n.get("msg").val("Hello world2"); //另一种设置方式
-
-//3.2.设置列表里的一项值为12
-n.get("data").get("list").get(2).val(12);
-n.select("data.list[2]").val(12); //使用josn path 
-
-//3.3.清掉一个数组
-n.get("data").get("list").clear();
-n.select("data.list").clear(); //使用josn path 
-```
-
-
-
-#### 二、更多代码演示
-
-* 1.字符串化
-```java
-//将 java object 转为 json
-String json = ONode.stringify(user);
-```
-* 2.序列化
-```java
-//1.序列化（通过@type申明类型）
-String json = ONode.serialize(user);
-
-//2.反序列化
-UserModel user = ONode.deserialize(json, UserModel.class);
-```
-* 3.转换
-```java
-//1.1.将json string 转为 ONode
-ONode o = ONode.load(json); 
-
-//1.2.将java bean 转为 ONode
-ONode o = ONode.load(user); 
-
-//2.1.将 ONode 转为 string（由转换器决定，默认转换器为json）
-o.toString();
-
-//2.2.将 ONode 转为 json
-o.toJson();
-
-//2.3.将 ONode 转为XxxModel (例：UserModel)
-o.toObject(UserModel.class);
-
-//>将 ONode 转为 Map 或 List 或 常规值
-o.toObject(null);
-
-//>将 ONode 转为 自动类型的 Java Object
-o.toObject(Object.class);
-
-```
-* 4.填充
-```java
-ONode o = ONode.load("{code:1,msg:'Hello world!'}");
-
-//填充java object
-List<UserModel> list = new ArrayList<>();
-//...
-o.get("data").get("list").fill(list);
-
-//填充string json
-o.get("data").get("list").fill("[{a:1,b:2},{a:2,c:3}]");
-```
-
-* 5.一个应用示例（极光推送的rest api调用）
-```java
-public static void push(Collection<String> alias_ary, String text)  {
-    ONode data = new ONode().build((d)->{
-        d.get("platform").val("all");
-
-        d.get("audience").get("alias").addAll(alias_ary);
-
-        d.get("options")
-                .set("apns_production",false);
-
-        d.get("notification").build(n->{
-            n.get("ios")
-                    .set("alert",text)
-                    .set("badge",0)
-                    .set("sound","happy");
-        });
-    });
-
-    String message = data.toJson();
-    String author = Base64Util.encode(appKey+":"+masterSecret);
-
-    Map<String,String> headers = new HashMap<>();
-    headers.put("Content-Type","application/json");
-    headers.put("Authorization","Basic "+author);
-
-    HttpUtil.postString(apiUrl, message, headers);
-}
-```
-* 5.数据遍历
-```java
-//遍历Object数据 方案1
-o.forEach((k,v)->{
-  //...
-});
-//遍历Object数据 方案2
-for(Map.Entry<String,ONode> kv : n.obj().entrySet()){
-  //...    
-}
-
-//遍历Array数据 方案1
-o.forEach((v)->{
-  //...
-});
-//遍历Array数据 方案2
-for(ONode v : o.ary()){
-  //..
+    public ONode select(String jpath) {
+        return select(jpath, false);
+    }
+    //...  
 }
 ```
 
+默认使用缓存JSONPath解析对象，可提供几倍性能效果。
+
+### 三、支持语法
+
+* 字符串使用单引号，例：\['name']
+* 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
+
+| 支持操作                  | 说明                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| `$`                       | 表示根元素                                           |
+| `@`                       | 当前节点（做为过滤表达式的谓词使用）                 |
+| `*`                       | 通用配配符，可以表示一个名字或数字。                 |
+| `..`                      | 深层扫描。 可以理解为递归搜索。                      |
+| `.<name>`                 | 表示一个子节点                                       |
+| `['<name>' (, '<name>')]` | 表示一个或多个子节点                                 |
+| `[<number> (, <number>)]` | 表示一个或多个数组下标（负号为倒数）                 |
+| `[start:end]`             | 数组片段，区间为\[start,end),不包含end（负号为倒数） |
+| `[?(<expression>)]`       | 过滤表达式。 表达式结果必须是一个布尔值。            |
+
+| 支持过滤操作符 | 说明                                     |
+| -------------- | ---------------------------------------- |
+| `==`           | left等于right（注意1不等于'1'）          |
+| `!=`           | 不等于                                   |
+| `<`            | 小于                                     |
+| `<=`           | 小于等于                                 |
+| `>`            | 大于                                     |
+| `>=`           | 大于等于                                 |
+| `=~`           | 匹配正则表达式[?(@.name =~ /foo.*?/i)]   |
+| `in`           | 左边存在于右边 [?(@.size in ['S', 'M'])] |
+| `nin`          | 左边不存在于右边                         |
+
+| 支持尾部函数 | 说明                           |
+| ------------ | ------------------------------ |
+| `min()`      | 计算数字数组的最小值           |
+| `max()`      | 计算数字数组的最大值           |
+| `avg()`      | 计算数字数组的平均值           |
+| `sum()`      | 计算数字数组的汇总值（新加的） |
+
+像这两种写法的语义是差不多：
 
 
-#### 三、混合加载与转换代码演示
-
+```java 
+$.store.book[0].title //建议使用这种
+```
 ```java
-List<UserModel> list = new ArrayList<>();
-//..
-ONode o = ONode.load("{code:1,msg:'succeed'}");
-o.get("data").get("list").fill(list);
+$['store']['book'][0]['title']
+```
+
+### 四、语法示例说明
+
+| JSONPath | 说明                           |
+| ------------ | ------------------------------ |
+| `$`      | 根对象           |
+| `$[-1]`      | 最后元素           |
+| `$[:-2]`      | 第0个至倒数第2个           |
+| `$[1:]`      | 第1个之后所有元素（0为首个） |
+| `$[1,2,3]`      | 集合中1,2,3个元素（0为首个） |
+
+### 五、接口使用示例
+
+#### 示例1:
+读取对象的属性
+```java
+Entity entity = new Entity(123, new Object());
+ONode n = ONode.load(entity);
+
+assert n.select("$.id").getInt() == 123;
+assert n.select("$.*").count() == 2;
+
+public static class Entity {
+   public int id;
+   public String name;
+   public Object value;
+   public Entity(int id, Object value) { this.id = id; this.value = value; }
+   public Entity(String name) { this.name = name; }
+}
 
 ```
 
+#### 示例2
+读取集合多个元素的某个属性
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+ONode n = ONode.load(entities);
 
-
-#### 关于三组类型接口的设计（Json  object,array,value）
-
-* 关于`json object`的操作
-```swift
--obj() -> Map<String,ONode>             //获取节点对象数据结构体（如果不是对象类型，会自动转换）
--contains(key:String) -> bool           //是否存在对象子节点?
--get(key:String) -> child:ONode         //获取对象子节点（不存在，生成新的子节点并返回）
--getOrNull(key:String) -> child:ONode   //获取对象子节点（不存在，返回null）
--getNew(key:String) -> child:ONode      //生成新的对象子节点，会清除之前的数据
--set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）//val:为常规类型或ONode
--setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
--setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
--setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
--setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //设置对象的子节点，将map的成员搬过来，并交由代理处置
--remove(key:String)     //移除对象的子节点
--forEach((k,v)->..)     //遍历对象的子节点
+List<String> names = n.select("$.name").toObject(List.class); 
+assert names.size() == 2;
 ```
 
-* 关于`json array`的操作
-```swift
--ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
--get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
--getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
--addNew() -> child:ONode                        //生成新的数组子节点
--add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
--addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型
--addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将ary的子节点搬过来
--addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的成员点搬过来
--addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的成员点搬过来，并交由代理处置
--removeAt(index:int)    //移除数组的子节点
--forEach(v->..)         //遍历数组的子节点
+#### 示例3
+返回集合中多个元素
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+entities.add(new Entity("Yako"));
+ONode n = ONode.load(entities);
+
+List<Entity> result = n.select("$[1,2]").toObject((new ArrayList<Entity>() {}).getClass());
+assert result.size() == 2;
 ```
 
-* 关于`json value`的操作
-```swift
--val() -> OValue                //获取节点值数据结构体（如果不是值类型，会自动转换）
--val(val:Object) -> self:ONode  //设置节点值 //val:为常规类型或ONode
--getString()    //获取值并以string输出 //如果节点为对象或数组，则输出json
--getShort()     //获取值并以short输出...(以下同...)
--getInt()
--getBoolean()
--getLong()
--getDate()
--getFloat()
--getDouble()
--getDouble(scale:int)
--getChar()
+#### 示例4
+按范围返回集合的子集
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity("wenshao"));
+entities.add(new Entity("ljw2083"));
+entities.add(new Entity("Yako"));
+ONode n = ONode.load(entities);
+
+List<Entity> result = n.select("$[0:2]").toObject((new ArrayList<Entity>(){}).getClass());
+assert result.size() == 2;
 ```
 
+#### 示例5
+通过条件过滤，返回集合的子集
+```java
+List<Entity> entities = new ArrayList<Entity>();
+entities.add(new Entity(1001, "ljw2083"));
+entities.add(new Entity(1002, "wenshao"));
+entities.add(new Entity(1003, "yakolee"));
+entities.add(new Entity(1004, null));
+ONode n = ONode.load(entities);
 
-
-#### 关于序列化的特点
-
-* 对象
-```json
-{"@type":"...","a":1,"b":"2"}
+ONode rst = n.select("$[?($.id in [1001,1002])]");
+assert rst.count() == 2;
 ```
-* 数组（可以精准反序列化列表类型；需要特性开启）
-```json
-[{"@type":"..."},[1,2,3]]  
+
+#### 示例6
+根据属性值过滤条件判断是否返回对象，修改对象，数组属性添加元素
+```java
+Entity entity = new Entity(1001, "ljw2083");
+ONode n = ONode.load(entity);
+
+assert n.select("$[?(id == 1001)]").isObject();
+assert n.select("$[?(id == 1002)]").isNull();
+
+n.select("$").set("id",123456);
+assert n.get("id").getInt() == 123456;
+
+n.get("value").add(1).add(2).add(3);
+assert n.get("value").count() == 3;
+
 ```
 
+#### 示例7
+```java
+Map root = Collections.singletonMap("company",
+        Collections.singletonMap("departs",
+                Arrays.asList(
+                        Collections.singletonMap("id",
+                                1001),
+                        Collections.singletonMap("id",
+                                1002),
+                        Collections.singletonMap("id", 1003)
+                )
+        ));
+
+ONode n = ONode.load(root);
+
+List<Object> ids = n.select("$..id").toObject(List.class);
+assertEquals(3l, ids.size());
+assertEquals(1001l, ids.get(0));
+assertEquals(1002l, ids.get(1));
+assertEquals(1003l, ids.get(2));
+```
+#### 具体用例测试请看下面:
+```java
+String jsonStr = "{\n" +
+        "    \"store\": {\n" +
+        "        \"bicycle\": {\n" +
+        "            \"color\": \"red\",\n" +
+        "            \"price\": 19.95\n" +
+        "        },\n" +
+        "        \"book\": [\n" +
+        "            {\n" +
+        "                \"author\": \"刘慈欣\",\n" +
+        "                \"price\": 8.95,\n" +
+        "                \"category\": \"科幻\",\n" +
+        "                \"title\": \"三体\"\n" +
+        "            },\n" +
+        "            {\n" +
+        "                \"author\": \"itguang\",\n" +
+        "                \"price\": 12.99,\n" +
+        "                \"category\": \"编程语言\",\n" +
+        "                \"title\": \"go语言实战\"\n" +
+        "            }\n" +
+        "        ]\n" +
+        "    }\n" +
+        "}";
+
+ONode o = ONode.load(jsonStr);
+
+//得到所有的书
+ONode books = o.select("$.store.book");
+System.out.println("books=::" + books);
+
+//得到所有的书名
+ONode titles = o.select("$.store.book.title");
+System.out.println("titles=::" + titles);
+
+//第一本书title
+ONode title = o.select("$.store.book[0].title");
+System.out.println("title=::" + title);
+
+//price大于10元的book
+ONode list = o.select("$.store.book[?(price > 10)]");
+System.out.println("price大于10元的book=::" + list);
+
+//price大于10元的title
+ONode list2 = o.select("$.store.book[?(price > 10)].title");
+System.out.println("price大于10元的title=::" + list2);
+
+//category(类别)为科幻的book
+ONode list3 = o.select("$.store.book[?(category == '科幻')]");
+System.out.println("category(类别)为科幻的book=::" + list3);
+
+
+//bicycle的所有属性值
+ONode values = o.select("$.store.bicycle.*");
+System.out.println("bicycle的所有属性值=::" + values);
+
+
+//bicycle的color和price属性值
+ONode read = o.select("$.store.bicycle['color','price']");
+System.out.println("bicycle的color和price属性值=::" + read);
+```
+打印结果
+```
+books=::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"},{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
+titles=::["三体","go语言实战"]
+title=::"三体"
+price大于10元的book=::[{"author":"itguang","price":12.99,"category":"编程语言","title":"go语言实战"}]
+price大于10元的title=::["go语言实战"]
+category(类别)为科幻的book=::[{"author":"刘慈欣","price":8.95,"category":"科幻","title":"三体"}]
+bicycle的所有属性值=::["red",19.95]
+bicycle的color和price属性值=::["red",19.95]
+```
