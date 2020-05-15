@@ -647,6 +647,22 @@ public class JsonPath {
                     }
                 }
             }
+
+            //不知道，该不访加::??
+            if(tmp.isArray()) {
+                tmp2 = new ONode(tmp.cfg()).asArray();
+
+                for(ONode tmp1 : tmp.ary()){
+                    if(tmp1.isObject()){
+                        for (String k : s.nameS) {
+                            ONode n1 = tmp1.obj().get(k);
+                            if (n1 != null) {
+                                tmp2.addNode(n1);
+                            }
+                        }
+                    }
+                }
+            }
         }else{
             if(tmp.isArray()) {
                 List<ONode> list2 = tmp.nodeData().array;
@@ -701,7 +717,25 @@ public class JsonPath {
     private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_prop=(s, root, tmp, usd)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
-            return tmp.getOrNull(s.name);
+            if(tmp.isObject()) {
+                return tmp.getOrNull(s.name);
+            }
+
+            //不知道，该不访加::??
+            if(tmp.isArray()) {
+                ONode tmp2 = new ONode(tmp.cfg()).asArray();
+                for (ONode n1 : tmp.ary()) {
+                    if (n1.isObject()) {
+                        ONode n2 = n1.nodeData().object.get(s.name);
+                        if (n2 != null) {
+                            tmp2.add(n2);
+                        }
+                    }
+                }
+                return tmp2;
+            }
+
+            return null;
         } else {
             if (s.start < 0) {
                 return tmp.getOrNull(tmp.count() + s.start);//倒数位

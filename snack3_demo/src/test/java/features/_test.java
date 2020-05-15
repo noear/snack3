@@ -216,4 +216,17 @@ public class _test {
 
         assert "46qh".equals(tmp.val().getString());
     }
+
+    @Test
+    public void test12(){
+        ONode n = ONode.load("{code:1,msg:'Hello world!',data:[{a:'b',c:'d'}]}");
+
+        System.out.println(n.select("$.data[*].a"));
+
+        System.out.println(n.select("$.data[*]['a']"));
+        System.out.println(n.select("$.data[*]['a','c']"));
+
+        System.out.println(n.select("$.data[0]['a']",true));
+        System.out.println(n.select("$.data[0]['a','c']",true));
+    }
 }
