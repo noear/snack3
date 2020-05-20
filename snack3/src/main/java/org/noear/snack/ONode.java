@@ -810,9 +810,15 @@ public class ONode {
         return to(DEFAULTS.DEF_OBJECT_TOER, clz);
     }
 
-//    public<T> List<T> toArray(Class<T> clz){
-//
-//    }
+    public<T> List<T> toArray(Class<T> clz){
+        List<T> list = new ArrayList<>();
+
+        for(ONode n: ary()){
+            list.add(n.toObject(clz));
+        }
+
+        return list;
+    }
 
     /**
      * 将当前ONode 通过 toer 进行转换
