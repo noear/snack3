@@ -47,6 +47,18 @@ public class ONode {
         }
     }
 
+    public static ONode newValue(){
+        return new ONode().asValue();
+    }
+
+    public static ONode newObject(){
+        return new ONode().asObject();
+    }
+
+    public static ONode newArray(){
+        return new ONode().asArray();
+    }
+
 
     /**
      * Json path select
@@ -797,6 +809,10 @@ public class ONode {
     public <T> T toObject(Class<?> clz) {
         return to(DEFAULTS.DEF_OBJECT_TOER, clz);
     }
+
+//    public<T> List<T> toArray(Class<T> clz){
+//
+//    }
 
     /**
      * 将当前ONode 通过 toer 进行转换
