@@ -12,7 +12,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.6.4</version>
+  <version>3.1.6.5</version>
 </dependency>
 ```
 
@@ -181,6 +181,12 @@ XxxModel m =tmp.toObject(XxxModel.class);
 
 # Snack3 接口字典
 ```swift
+//快捷构建
+//
++newValue()  -> new:ONode 创建值类型节点
++newObject() -> new:ONode 创建对象类型节点
++newArray()  -> new:ONode 创建数组类型节点
+
 //初始化操作
 //
 -asObject() -> self:ONode  //将当前节点切换为对象
@@ -266,10 +272,11 @@ XxxModel m =tmp.toObject(XxxModel.class);
 
 //转换操作
 //
--toString() -> String           //转为string （由字符串转换器决定，默认为json）
--toJson() -> String             //转为json string
--toData() -> Object 			//转为数据结构体（Map,List,Value）
--toObject(clz:Class<T>) -> T    //转为java object（clz=Object.class：自动输出类型）
+-toString() -> String               //转为string （由字符串转换器决定，默认为json）
+-toJson() -> String                 //转为json string
+-toData() -> Object 			    //转为数据结构体（Map,List,Value）
+-toObject(clz:Class<T>) -> T        //转为java object（clz=Object.class：自动输出类型）
+-toArray（clz:Class<T>）-> List<T>   //转为java list
 
 -to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
 -to(toer:Toer) -> T                 //将当前节点通过toer进行转换
