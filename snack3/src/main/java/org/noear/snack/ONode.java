@@ -462,6 +462,16 @@ public class ONode {
         return tmp;
     }
 
+    private ONode buildVal(Object val) {
+        if (val instanceof Map) {
+            return new ONode(_c).setAll((Map<String, ?>) val);
+        } else if (val instanceof Collection) {
+            return new ONode(_c).addAll((Collection<?>) val);
+        } else {
+            return new ONode(_c).val(val);
+        }
+    }
+
     /**
      * 设置对象的子节点（会自动处理类型）
      *
@@ -474,7 +484,7 @@ public class ONode {
         if (val instanceof ONode) {
             _d.object.put(key, ((ONode) val));
         } else {
-            _d.object.put(key, new ONode(_c).val(val));
+            _d.object.put(key, buildVal(val));
         }
 
         return this;
@@ -625,7 +635,7 @@ public class ONode {
         if (val instanceof ONode) {
             _d.array.add((ONode) val);
         } else {
-            _d.array.add(new ONode(_c).val(val));
+            _d.array.add(buildVal(val));
         }
 
         return this;
