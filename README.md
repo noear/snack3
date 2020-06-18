@@ -1,7 +1,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.noear/snack3.svg)](https://mvnrepository.com/search?q=snack3)
 
 
-` QQ交流群：1047964012 `
+` QQ交流群：22200020 `
 
 # Snack3 for java
 一个微型JSON框架
