@@ -85,4 +85,13 @@ public class _test_base {
 
         assert tmp.indexOf("谢谢")>0;
     }
+    @Test
+    public void test5(){
+        Integer [] a = {1, 2, 3, 4, 5};
+        String json = "{\"list\":[],\"name\":\"nn\"}";
+        ONode node = ONode.load(json);
+        node.get("value").fill(a);
+
+        System.out.println(node.toJson());
+    }
 }
