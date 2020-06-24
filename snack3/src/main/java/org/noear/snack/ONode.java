@@ -468,6 +468,9 @@ public class ONode {
         } else if (val instanceof Collection) {
             return new ONode(_c).addAll((Collection<?>) val);
         } else {
+            if (val != null && val.getClass().isArray()) {
+                return new ONode(_c).addAll(Arrays.asList((Object[]) val));
+            }
             return new ONode(_c).val(val);
         }
     }
