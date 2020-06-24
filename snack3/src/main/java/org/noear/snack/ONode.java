@@ -630,13 +630,17 @@ public class ONode {
 
     public ONode addNew(int index) {
         _d.tryInitArray();
-        ONode n = new ONode(_c);
+
         if (_d.array.size() > index) {
-            _d.array.add(index, n);
+            return _d.array.get(index);
         } else {
-            _d.array.add(n);
+            ONode n = null;
+            for (int i = _d.array.size(); i <= index; i++) {
+                n = new ONode(_c);
+                _d.array.add(n);
+            }
+            return n;
         }
-        return n;
     }
 
     /**
