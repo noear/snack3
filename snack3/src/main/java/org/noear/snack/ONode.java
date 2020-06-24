@@ -470,9 +470,9 @@ public class ONode {
         } else {
             //可能会影响性能...
             //
-//            if (val != null && val.getClass().isArray()) {
-//                return new ONode(_c).addAll(Arrays.asList((Object[]) val));
-//            }
+            if (val != null && val.getClass().isArray()) {
+                return new ONode(_c).addAll(Arrays.asList((Object[]) val));
+            }
             return new ONode(_c).val(val);
         }
     }
@@ -625,6 +625,17 @@ public class ONode {
         _d.tryInitArray();
         ONode n = new ONode(_c);
         _d.array.add(n);
+        return n;
+    }
+
+    public ONode addNew(int index) {
+        _d.tryInitArray();
+        ONode n = new ONode(_c);
+        if (_d.array.size() > index) {
+            _d.array.add(index, n);
+        } else {
+            _d.array.add(n);
+        }
         return n;
     }
 
