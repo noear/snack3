@@ -423,6 +423,10 @@ public class ONode {
      * @return child:ONode
      */
     public ONode get(String key) {
+        return getOrNew(key);
+    }
+
+    public ONode getOrNew(String key) {
         _d.tryInitObject();
 
         ONode tmp = _d.object.get(key);
@@ -592,6 +596,21 @@ public class ONode {
         return new ONode();
     }
 
+    public ONode getOrNew(int index) {
+        _d.tryInitArray();
+
+        if (_d.array.size() > index) {
+            return _d.array.get(index);
+        } else {
+            ONode n = null;
+            for (int i = _d.array.size(); i <= index; i++) {
+                n = new ONode(_c);
+                _d.array.add(n);
+            }
+            return n;
+        }
+    }
+
     /**
      * 获取数组子节点（超界，返回null）
      *
@@ -626,21 +645,6 @@ public class ONode {
         ONode n = new ONode(_c);
         _d.array.add(n);
         return n;
-    }
-
-    public ONode addNew(int index) {
-        _d.tryInitArray();
-
-        if (_d.array.size() > index) {
-            return _d.array.get(index);
-        } else {
-            ONode n = null;
-            for (int i = _d.array.size(); i <= index; i++) {
-                n = new ONode(_c);
-                _d.array.add(n);
-            }
-            return n;
-        }
     }
 
     /**
