@@ -12,7 +12,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.7</version>
+  <version>3.1.7.2</version>
 </dependency>
 ```
 
@@ -276,7 +276,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -toJson() -> String                 //转为json string
 -toData() -> Object 			    //转为数据结构体（Map,List,Value）
 -toObject(clz:Class<T>) -> T        //转为java object（clz=Object.class：自动输出类型）
--toArray（clz:Class<T>）-> List<T>   //转为java list
+-toObjectList（clz:Class<T>）-> List<T>   //转为java list
 
 -to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
 -to(toer:Toer) -> T                 //将当前节点通过toer进行转换
