@@ -844,7 +844,15 @@ public class ONode {
         return to(DEFAULTS.DEF_OBJECT_TOER, clz);
     }
 
-    public<T> List<T> toArray(Class<T> clz){
+
+    /**
+     * 将当前ONode 转为 java list
+     *
+     * clz = XxxModel.class => XxxModel
+     * clz = Object.class   => auto type
+     * clz = null           => Map or List or Value
+     */
+    public<T> List<T> toObjectList(Class<T> clz){
         List<T> list = new ArrayList<>();
 
         for(ONode n: ary()){
@@ -852,6 +860,11 @@ public class ONode {
         }
 
         return list;
+    }
+
+    @Deprecated
+    public<T> List<T> toArray(Class<T> clz){
+        return toObjectList(clz);
     }
 
     /**
