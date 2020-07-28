@@ -17,6 +17,7 @@ public class Constants {
 
     public static int features_serialize = Feature.of(
             Feature.OrderedField,
+            Feature.WriteDateUseTicks,
             Feature.BrowserCompatible,
             Feature.WriteClassName,
             Feature.QuoteFieldNames);
