@@ -9,7 +9,6 @@
     <version>3.1.7.3</version>
     <packaging>jar</packaging>
 
-
     <name>${project.artifactId}</name>
     <description>Java project for snack3</description>
     <url>https://github.com/noear/snack3</url>
