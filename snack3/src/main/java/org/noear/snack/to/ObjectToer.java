@@ -295,6 +295,7 @@ public class ObjectToer implements Toer {
             itemType = TypeUtil.getCollectionItemType(type);
         }
 
+        //解决无法识别的范型
         if("T".equals(itemType.getTypeName())){
             itemType = Map.class;
         }
