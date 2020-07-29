@@ -295,6 +295,10 @@ public class ObjectToer implements Toer {
             itemType = TypeUtil.getCollectionItemType(type);
         }
 
+        if("T".equals(itemType.getTypeName())){
+            itemType = Map.class;
+        }
+
         for (ONode o1 : o.nodeData().array) {
             list.add(analyse(ctx, o1, (Class<?>) itemType, itemType));
         }
