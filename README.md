@@ -138,7 +138,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 //或
 {"@type":"...","a":1,"b":"2"}
 ```
-#### 数组（可以带type；需要特性开启）
+#### 数组（可以带type）
 ```json
 [1,2,3]
 //或
