@@ -45,8 +45,13 @@ public <T> T getObject(String json){
 }
 
 //demo3::转为ONode
-ONode o = ONode.load(json); //将json String 转为 ONode
-ONode o = ONode.load(user); //将java Object 转为 ONode
+ONode o = ONode.loadStr(json); //将json String 转为 ONode
+ONode o = ONode.loadObj(user); //将java Object 转为 ONode
+
+//demo3.1::转为ONode，取子节点进行序列化
+ONode o = ONode.loadStr(json);
+UserModel user = o.get("user").toObject(UserModel.class);
+
 
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
