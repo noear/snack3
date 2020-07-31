@@ -52,14 +52,14 @@ UserModel user = o.get("user").toObject(UserModel.class);
 //demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
     ONode data = new ONode().build((d)->{
-        d.get("platform").val("all");
+        d.getOrNew("platform").val("all");
 
-        d.get("audience").get("alias").addAll(alias_ary);
+        d.getOrNew("audience").getOrNew("alias").addAll(alias_ary);
 
-        d.get("options")
+        d.getOrNew("options")
                 .set("apns_production",false);
 
-        d.get("notification").build(n->{
+        d.getOrNew("notification").build(n->{
             n.get("ios")
                     .set("alert",text)
                     .set("badge",0)
