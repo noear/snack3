@@ -33,9 +33,9 @@
 -select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:使用标准模式,默认非标准
 -select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:是否缓存javaPath编译成果，默认缓存
 
--clear()        //清除子节点，对象或数组有效
--count() -> int //子节点数量，对象或数组有效
-
+-clear()                    //清除子节点，对象或数组有效
+-count() -> int             //子节点数量，对象或数组有效
+-readonly() -> self:ONode   //只读形态（get时，不添加子节点）
 
 //值操作
 //
@@ -55,7 +55,6 @@
 //对象操作
 //
 -obj() -> Map<String,ONode>                     //获取节点对象数据结构体（如果不是对象类型，会自动转换）
--readonly() -> self:ONode                       //只读形态（get时，不添加子节点）
 -contains(key:String) -> bool                   //是否存在对象子节点?
 -rename(key:String,newKey:String) -> self:ONode //重命名子节点并返回自己
 -get(key:String) -> child:ONode                 //获取对象子节点（不存在，生成新的子节点并返回）
