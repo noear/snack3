@@ -1,4 +1,4 @@
-package speed;
+package benchmark;
 
 import _models.UserGroupModel;
 import _models.UserModel;

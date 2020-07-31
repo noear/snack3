@@ -1,4 +1,4 @@
-package speed.jsonpath;
+package benchmark.jsonpath;
 
 import org.junit.Test;
 import org.noear.snack.ONode;

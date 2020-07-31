@@ -1,4 +1,4 @@
-package speed;
+package benchmark;
 
 import org.junit.Test;
 import org.noear.snack.ONode;

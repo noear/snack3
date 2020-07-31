@@ -1,7 +1,6 @@
-package speed;
+package benchmark;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import _models.CModel;
 import _models.OrderModel;

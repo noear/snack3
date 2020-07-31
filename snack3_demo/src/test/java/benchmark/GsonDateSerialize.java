@@ -1,4 +1,4 @@
-package speed;
+package benchmark;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;

@@ -1,9 +1,8 @@
-package speed.jsonpath;
+package benchmark.jsonpath;
 
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
 import org.junit.Test;
-import org.noear.snack.ONode;
 
 import java.util.List;
 
