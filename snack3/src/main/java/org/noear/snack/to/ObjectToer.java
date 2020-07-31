@@ -297,7 +297,7 @@ public class ObjectToer implements Toer {
 
         //解决无法识别的范型
         if(itemType != null && "T".equals(itemType.getTypeName())){
-            itemType = Map.class;
+            itemType = null;
         }
 
         for (ONode o1 : o.nodeData().array) {
