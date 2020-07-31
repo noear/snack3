@@ -60,7 +60,7 @@ public static void push(Collection<String> alias_ary, String text)  {
                 .set("apns_production",false);
 
         d.getOrNew("notification").build(n->{
-            n.get("ios")
+            n.getOrNew("ios")
                     .set("alert",text)
                     .set("badge",0)
                     .set("sound","happy");
