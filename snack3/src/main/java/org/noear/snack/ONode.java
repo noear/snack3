@@ -795,6 +795,10 @@ public class ONode {
         return this;
     }
 
+    public Map<String,String> attrMap(){
+        return _d.attrMap();
+    }
+
     /**
      * 遍历特性
      */

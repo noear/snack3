@@ -115,17 +115,21 @@ public class ONodeData {
     public Map<String,String> attrs = null;
     public String attrGet(String key){
         if(attrs != null){
-            return attrs.get(key);
+            return attrMap().get(key);
         }else{
             return null;
         }
     }
     public void attrSet(String key, String val){
+        attrMap().put(key, val);
+    }
+
+    public Map<String,String> attrMap(){
         if(attrs == null){
             attrs = new LinkedHashMap<>();
         }
 
-        attrs.put(key, val);
+        return attrs;
     }
 
 
