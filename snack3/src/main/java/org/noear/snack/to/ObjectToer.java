@@ -364,7 +364,7 @@ public class ObjectToer implements Toer {
             String key = f.name();
 
             if(o.contains(key)) {
-                f.set(rst, analyse(ctx, o.get(key), f.clz, f.type));
+                f.getValue(rst, analyse(ctx, o.get(key), f.type, f.genericType));
             }
         }
         return rst;

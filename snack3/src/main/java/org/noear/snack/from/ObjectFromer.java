@@ -185,11 +185,11 @@ public class ObjectFromer implements Fromer {
 
         Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
         for (FieldWrap f : list) {
-            Object val = f.get(obj);
+            Object val = f.setValue(obj);
 
             if(val == null) {
                 //null string 是否以 空字符处理
-                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
                     rst.setNode(f.name(), analyse(cfg, ""));
                     continue;
                 }

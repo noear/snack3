@@ -8,6 +8,8 @@ import java.lang.reflect.Modifier;
 import java.sql.Clob;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 /**
  * Bean工具类
@@ -45,7 +47,7 @@ public class BeanUtil {
 
                 if (list == null) {
                     Map<String, FieldWrap> map = new LinkedHashMap<>();
-                    scanAllFields(clz, map);
+                    scanAllFields(clz, map::containsKey, map::put);
 
                     list = map.values();
 
@@ -58,8 +60,8 @@ public class BeanUtil {
     }
 
     /** 扫描一个类的所有字段 */
-    private static void scanAllFields(Class<?> clz, Map<String,FieldWrap> fields) {
-        if(clz == null){
+    private static void scanAllFields(Class<?> clz, Predicate<String> checker, BiConsumer<String,FieldWrap> consumer) {
+        if (clz == null) {
             return;
         }
 
@@ -69,15 +71,15 @@ public class BeanUtil {
             if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod)) {
                 f.setAccessible(true);
 
-                if(fields.containsKey(f.getName()) == false){
-                    fields.put(f.getName(),new FieldWrap(f));
+                if (checker.test(f.getName()) == false) {
+                    consumer.accept(f.getName(), new FieldWrap(clz,f));
                 }
             }
         }
 
         Class<?> sup = clz.getSuperclass();
         if (sup != Object.class) {
-            scanAllFields(sup, fields);
+            scanAllFields(sup, checker, consumer);
         }
     }
 
