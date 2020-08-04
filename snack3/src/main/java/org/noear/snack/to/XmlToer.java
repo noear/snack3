@@ -53,14 +53,19 @@ public class XmlToer implements Toer {
 
         if (o.isObject()) {
             o.forEach((k, v) -> {
-                //如果没有节点名，给它加一个
-                if (v.attrMap().containsKey(attr_name) == false) {
-                    v.attrSet(attr_name, k);
-                }
+                if(v.isArray() || v.isObject()) {
+                    //如果没有节点名，给它加一个
+                    if (v.attrMap().containsKey(attr_name) == false) {
+                        v.attrSet(attr_name, k);
+                    }
 
-                handle_do(v, sb, p_name);
+                    handle_do(v, sb, p_name);
+                }else{
+                    sb.append("<").append(k).append(">");
+                    handle_do(v, sb, p_name);
+                    sb.append("</").append(k).append(">");
+                }
             });
-            return;
         }
 
         //构建结束标签
