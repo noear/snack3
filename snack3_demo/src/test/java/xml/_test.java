@@ -6,8 +6,6 @@ import org.noear.snack.core.Constants;
 import org.noear.snack.from.XmlFromer;
 import org.noear.snack.to.XmlToer;
 
-import java.util.List;
-
 public class _test {
     @Test
     public void test1(){
