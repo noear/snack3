@@ -24,28 +24,31 @@ public class XmlToer implements Toer {
     }
 
     private void handle_do(ONode o, StringBuilder sb, String p_name) {
+        if(o.isValue() || o.isNull()){
+            sb.append(o.getString());
+            return;
+        }
 
-        if (o.isArray()) {
-            String name = o.attrGet(attr_name);
-            if(name == null){
-                name = p_name;
+        //获取节点名
+        String name = o.attrGet(attr_name);
+        if (name == null) {
+            name = p_name;
+        }
+
+        //构建开始标签
+        sb.append("<").append(name);
+        o.attrMap().forEach((k, v) -> {
+            if (k.startsWith("@") == false) {
+                sb.append(" ").append(k).append("=").append("\"").append(v).append("\"");
             }
+        });
+        sb.append(">");
 
-            sb.append("<").append(name);
-            o.attrMap().forEach((k, v) -> {
-                if (attr_name.equals(k) == false) {
-                    sb.append(" ").append(k).append("=").append("\"").append(v).append("\"");
-                }
-            });
-            sb.append(">");
-
-            for(ONode n : o.ary()){
+        //构建内容
+        if (o.isArray()) {
+            for (ONode n : o.ary()) {
                 handle_do(n, sb, name);
             }
-
-            sb.append("</").append(name).append(">");
-
-            return;
         }
 
         if (o.isObject()) {
@@ -60,7 +63,7 @@ public class XmlToer implements Toer {
             return;
         }
 
-        sb.append(o.getString());
-
+        //构建结束标签
+        sb.append("</").append(name).append(">");
     }
 }
