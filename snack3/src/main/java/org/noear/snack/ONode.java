@@ -500,7 +500,7 @@ public class ONode {
     }
 
     /**
-     * 设置对象的子节点，值为ONode类型
+     * 设置对象的子节点，值为ONode类型 (需要在外部初始化类型)
      *
      * @return self:ONode
      */
@@ -666,7 +666,7 @@ public class ONode {
     }
 
     /**
-     * 添加数组子节点，值为ONode类型
+     * 添加数组子节点，值为ONode类型 (需要在外部初始化类型)
      *
      * @return self:ONode
      */
