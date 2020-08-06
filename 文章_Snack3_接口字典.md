@@ -62,7 +62,7 @@
 -getOrNull(key:String) -> child:ONode           //获取对象子节点（不存在，返回null）
 -getNew(key:String) -> child:ONode              //生成新的对象子节点，会清除之前的数据
 -set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）
--setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型
+-setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型（需要在外部提前初始化好类型，建议用set(k,v)）
 -setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
 -setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
 -setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //设置对象的子节点，将map的成员搬过来，并交由代理处置
@@ -77,7 +77,7 @@
 -getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
 -addNew() -> child:ONode                        //生成新的数组子节点
 -add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
--addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型
+-addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型（需要在外部提前初始化好类型，建议用add(v)）
 -addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将ary的子节点搬过来
 -addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的成员点搬过来
 -addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的成员点搬过来，并交由代理处置
