@@ -7,7 +7,9 @@ import org.noear.snack.core.Constants;
 import org.noear.snack.core.Feature;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class _test {
     @Test
@@ -237,5 +239,45 @@ public class _test {
         ONode root = ONode.load(json);
         ONode sub = root.select(path);
         assert sub.isNull() == false;
+    }
+
+    @Test
+    public void test14() {
+        String json = "{\"k1\":1,\"k2\":\"123\",\"k3\":\"az章\",\"k4\":[1, 2],\"k5\":{\"k51\": \"511\", \"k52\":[{\"k521\":\"e\"},{\"k521\":\"F\"}]}}";
+
+        ONode oNode = ONode.load(json);
+        ONode oTmp = oNode.select("$.k1");
+
+        if (oTmp.isValue()) {
+            oTmp.val(2);
+        } else if (oTmp.isArray()) {
+            oTmp.forEach(n -> n.val(2));
+        }
+
+        System.err.println(oNode.toJson());
+    }
+
+    @Test
+    public void test15(){
+        String json = "{\"k1\":1,\"k2\":\"123\",\"k3\":\"az章\",\"k4\":[1, 2],\"k5\":{\"k51\": \"511\", \"k52\":[{\"k521\":\"e\"},{\"k521\":\"F\"}]}}";
+
+        ONode oNode = ONode.load(json);
+
+        oNode.get("k1").val(2);
+
+        System.err.println(oNode.toJson());
+    }
+
+    @Test
+    public void test16(){
+        String json = "{\"k1\":1,\"k2\":\"123\",\"k3\":\"az章\",\"k4\":[1, 2],\"k5\":{\"k51\": \"511\", \"k52\":[{\"k521\":\"e\"},{\"k521\":\"F\"}]}}";
+
+        ONode oNode = ONode.load(json);
+        Map<String, String> map = new HashMap<>();
+        map.put("newK1", "中国");
+        map.put("newK2", "JSON");
+        oNode.select("$.k5.k51").val(map);
+
+        System.err.println(oNode.toJson());
     }
 }
