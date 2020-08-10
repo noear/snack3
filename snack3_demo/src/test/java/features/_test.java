@@ -229,4 +229,13 @@ public class _test {
         System.out.println(n.select("$.data[0]['a']",true));
         System.out.println(n.select("$.data[0]['a','c']",true));
     }
+
+    @Test
+    public void test13(){
+        String path = "$.definitions.Request«List«BookingNoDTO»»";
+        String json = "{\"definitions\":{\"Request«List«BookingNoDTO»»\":{\"type\":\"object\",\"properties\":{\"header\":{\"description\":\"Request header对象\",\"$ref\":\"#/definitions/Request Header\"},\"model\":{\"type\":\"array\",\"description\":\"业务入参对象\",\"items\":{\"$ref\":\"#/definitions/BookingNoDTO\"}}},\"title\":\"Request«List«BookingNoDTO»»\",\"description\":\"Request对象\"}}}";
+        ONode root = ONode.load(json);
+        ONode sub = root.select(path);
+        assert sub.isNull() == false;
+    }
 }
