@@ -263,7 +263,18 @@ public class _test {
 
         ONode oNode = ONode.load(json);
 
-        oNode.get("k1").val(2);
+        oNode.select("$.k1").val(2);
+
+        System.err.println(oNode.toJson());
+    }
+
+    @Test
+    public void test152(){
+        String json = "{\"k1\":1,\"k2\":\"123\",\"k3\":\"az章\",\"k4\":[1, 2],\"k5\":{\"k51\": \"511\", \"k52\":[{\"k521\":\"e\"},{\"k521\":\"F\"}]}}";
+
+        ONode oNode = ONode.load(json);
+
+        oNode.select("$.k5.k52[?(@.k521 == 'e')].k521").forEach(n-> n.val("ee"));
 
         System.err.println(oNode.toJson());
     }
