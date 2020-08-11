@@ -99,6 +99,6 @@ System.out.println(times);
 
 #### 附3：测试代码
 
-* `com.alibaba:fastjson` 测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedFastjsonJsonPathTest.java
-* `com.jayway.jsonpath:json-path`  测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedJaywayJsonPathTest.java
-* `org.noear:snack3`  测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/speed/SpeedJsonPathTest.java
+* `com.alibaba:fastjson` 测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/benchmark/SpeedFastjsonJsonPathTest.java
+* `com.jayway.jsonpath:json-path`  测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/benchmark/SpeedJaywayJsonPathTest.java
+* `org.noear:snack3`  测试代码：https://gitee.com/noear/snack3/blob/master/snack3_demo/src/test/java/benchmark/SpeedJsonPathTest.java
