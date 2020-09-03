@@ -42,7 +42,7 @@ public class SpeedTest {
     /** 测试性能（小json） */
     @Test
     public void test0() throws Exception {
-        //100000=>950,931,939
+        //100000=>950,931,939    //100=>.95
         //
         //1kb
         //
