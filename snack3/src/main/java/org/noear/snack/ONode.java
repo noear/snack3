@@ -1,11 +1,8 @@
 package org.noear.snack;
 
-import org.noear.snack.core.Context;
-import org.noear.snack.core.JsonPath;
+import org.noear.snack.core.*;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
-import org.noear.snack.core.Constants;
-import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 
@@ -918,7 +915,7 @@ public class ONode {
      * @return new:ONode
      */
     public static ONode load(Object source) {
-        return load(source,null);
+        return load(source, null, null);
     }
 
     /**
@@ -926,6 +923,10 @@ public class ONode {
      * */
     public static ONode load(Object source, Constants cfg) {
         return load(source, cfg, null);
+    }
+
+    public static ONode load(Object source, Feature... features) {
+        return load(source, Constants.def().add(features), null);
     }
 
     /**
@@ -942,17 +943,31 @@ public class ONode {
         return doLoad(source, true, null, null);
     }
 
+    public static ONode loadStr(String source, Constants cfg) {
+        return doLoad(source, true, cfg, null);
+    }
+
+    public static ONode loadStr(String source, Feature... features) {
+        return doLoad(source, true, Constants.def().add(features), null);
+    }
+
     /**
      * 加载java object并生成新节点
      * */
     public static ONode loadObj(Object source) {
-        return loadObj(source, null);
+        return doLoad(source, false, null, null);
     }
 
     //loadStr 不需要 cfg
     public static ONode loadObj(Object source, Constants cfg) {
         return doLoad(source, false, cfg, null);
     }
+
+    public static ONode loadObj(Object source, Feature... features) {
+        return doLoad(source, false, Constants.def().add(features), null);
+    }
+
+
 
     private static ONode doLoad(Object source, boolean isString, Constants cfg, Fromer fromer) {
         if (fromer == null) {

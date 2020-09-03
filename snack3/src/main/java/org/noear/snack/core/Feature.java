@@ -5,54 +5,58 @@ package org.noear.snack.core;
  * */
 public enum  Feature {
 
-    /** 为字段名加引号 */
+    /** 输出:为字段名加引号 */
     QuoteFieldNames,
 
-    /** 排序字段 */
+    /** 存储:排序字段 */
     OrderedField,
 
-    /** 序列化时，写入类名。反序列化是需用到 */
+    /** 输出:写入类名。反序列化是需用到 */
     WriteClassName,
+
+    /** 输出:写入数组类名。反序列化是需用到 */
     WriteArrayClassName,
+
+    /** 输出:日期用Ticks */
     WriteDateUseTicks,
+
+    /** 输出:日期用格式符控制 */
     WriteDateUseFormat,
+
+    /** 输出:Bool用0或1替代 */
     WriteBoolUse01,
-    /**
-     * 对斜杠’/’进行转义
-     */
+    /** 输出：对斜杠’/’进行转义 */
     WriteSlashAsSpecial,
 
-    /*
-    * 浏览器安全处理（不输出<>）
-    * */
+    /** 输出:浏览器安全处理（不输出<>） */
     BrowserSecure,
-    /**
-     * 浏览器兼容处理（将中文都会序列化为\\uXXXX格式，字节数会多一些）
-     */
+
+    /** 输出:浏览器兼容处理（将中文都会序列化为\\uXXXX格式，字节数会多一些） */
     BrowserCompatible,
 
-    /**
-     *
-     * */
+    /** 输出:使用Enum的name输出 */
     EnumUsingName,
 
-    /*
-    * 字符串Null时输出为空(get时用)
-    * */
+    /** 输出:字符串Null时输出为空(get时用) */
     StringNullAsEmpty,
 
-    /**
-     * 字符串了段初始化为家
-     * */
+    /** 存储 or 输出:字符串了段初始化为家 */
     StringFieldInitEmpty,
 
     /**
-     * 序列化Null
+     * 输出：序列化Null
      * */
     SerializeNulls,
 
+    /**
+     * 输出：使用单引号输出
+     * */
     UseSingleQuotes,
 
+    /**
+     * 读取：当 value is json string 时，自动转为ONode
+     * */
+    ReadJsonStringToNode,
     ;
 
     Feature(){

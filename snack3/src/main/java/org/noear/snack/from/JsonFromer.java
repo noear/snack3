@@ -3,6 +3,7 @@ package org.noear.snack.from;
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.exts.CharBuffer;
 import org.noear.snack.core.exts.CharReader;
 import org.noear.snack.core.exts.ThData;
@@ -247,12 +248,24 @@ public class JsonFromer implements Fromer {
      * @param isNoterr 不抛出异常
      * */
     private ONode analyse_val(Context ctx,String sval, boolean isString, boolean isNoterr) {
-        ONode orst = new ONode(ctx.config);
-        OValue oval = orst.val();
+        ONode orst = null;
 
         if (isString) {
-            oval.setString(sval);
+            if(ctx.config.hasFeature(Feature.ReadJsonStringToNode)) {
+                if ((sval.startsWith("{") && sval.endsWith("}")) ||
+                        (sval.startsWith("[") && sval.endsWith("]"))) {
+                    orst = ONode.loadStr(sval);
+                }
+            }
+
+            if(orst == null){
+                orst = new ONode(ctx.config);
+                orst.val().setString(sval);
+            }
         } else {
+            orst = new ONode(ctx.config);
+            OValue oval = orst.val();
+
             char c = sval.charAt(0);
             int len = sval.length();
 
