@@ -921,15 +921,20 @@ public class ONode {
     }
 
     /**
+     * @param features 特性
+     * */
+    public static ONode load(Object source, Feature... features) {
+        return load(source, Constants.def().add(features), null);
+    }
+
+    /**
      * @param cfg 常数配置
      * */
     public static ONode load(Object source, Constants cfg) {
         return load(source, cfg, null);
     }
 
-    public static ONode load(Object source, Feature... features) {
-        return load(source, Constants.def().add(features), null);
-    }
+
 
     /**
      * @param fromer 来源处理器
