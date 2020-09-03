@@ -37,10 +37,10 @@ public enum  Feature {
     /** 输出:使用Enum的name输出 */
     EnumUsingName,
 
-    /** 输出:字符串Null时输出为空(get时用) */
+    /** 存储 or 输出:字符串Null时输出为空(get时用) */
     StringNullAsEmpty,
 
-    /** 存储 or 输出:字符串了段初始化为家 */
+    /** 存储 or 输出:字符串字段初始化为空（返序列化时） */
     StringFieldInitEmpty,
 
     /**
@@ -54,9 +54,9 @@ public enum  Feature {
     UseSingleQuotes,
 
     /**
-     * 读取：当 value is json string 时，自动转为ONode
+     * 存储 or 读取：当 value is json string 时，自动转为ONode
      * */
-    ReadJsonStringToNode,
+    StringJsonToNode,
     ;
 
     Feature(){

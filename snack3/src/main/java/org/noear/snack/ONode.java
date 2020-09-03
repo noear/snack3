@@ -889,16 +889,18 @@ public class ONode {
         return this;
     }
 
-    /**
-     * @param fromer 来源处理器
-     * */
-    public ONode fill(Object source,  Fromer fromer) {
-        val(doLoad(source, source instanceof String, _c, fromer));
+    public ONode fill(Object source,  Feature... features) {
+        val(doLoad(source, source instanceof String, Constants.def().add(features), null));
         return this;
     }
 
-    public ONode fillObj(Object source, Constants cfg) {
-        val(doLoad(source, false, cfg, null));
+    public ONode fillObj(Object source, Feature... features) {
+        val(doLoad(source, false, Constants.def().add(features), null));
+        return this;
+    }
+
+    public ONode fillStr(String source, Feature... features) {
+        val(doLoad(source, true, Constants.def().add(features), null));
         return this;
     }
 

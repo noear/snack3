@@ -251,7 +251,7 @@ public class JsonFromer implements Fromer {
         ONode orst = null;
 
         if (isString) {
-            if(ctx.config.hasFeature(Feature.ReadJsonStringToNode)) {
+            if(ctx.config.hasFeature(Feature.StringJsonToNode)) {
                 if ((sval.startsWith("{") && sval.endsWith("}")) ||
                         (sval.startsWith("[") && sval.endsWith("]"))) {
                     orst = ONode.loadStr(sval);

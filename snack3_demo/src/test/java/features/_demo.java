@@ -139,16 +139,38 @@ public class _demo {
         assert json != null;
     }
 
+    @Test
     public void demo32() throws Exception{
         UserModel tmp = ONode.load("{id:1,name:'x'}").toObject(UserModel.class);
+
+        assert tmp.id == 1;
     }
 
+    @Test
     public void demo40(){
         String txt = "{id:1,name:'x'}";
         ONode tmp = ONode.load(txt);
 
+        //事后特性操控::
+        //
+        //去掉QuoteFieldNames特性，添加UseSingleQuotes特性
+        //
         tmp.cfg().sub(Feature.QuoteFieldNames).add(Feature.UseSingleQuotes);
 
         String txt2 = tmp.toJson();
+
+        System.out.println(txt2);
+
+        assert txt.equals(txt2);
+    }
+
+    @Test
+    public void demo5(){
+        String txt = "{id:1,name:'x', data:'[1,2,3,4,5]'}";
+        assert  ONode.loadStr(txt).get("data").isValue();
+
+        assert  ONode.loadStr(txt, Feature.StringJsonToNode).get("data").isArray();
+
+        assert  ONode.loadStr(txt, Feature.StringJsonToNode).get("data").count() == 5;
     }
 }
