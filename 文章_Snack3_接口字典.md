@@ -102,8 +102,10 @@
 -to(toer:Toer) -> T                 //将当前节点通过toer进行转换
 
 //填充操作（为当前节点填充数据；source 为 String 或 java object）
--fill(source:Object)    -> self:ONode               //填充数据
--fill(source:Object, fromer:Fromer) -> self:ONode   //填充数据，由fromer决定处理
+-fill(source:Object)    -> self:ONode  //填充数据
+-fill(source:Object, Feature... features)    -> self:ONode //填充数据
+-fillObj(source:Object, Feature... features)    -> self:ONode //填充数据
+-fillStr(source:String, Feature... features)    -> self:ONode //填充数据
 
 /**
  * 以下为静态操作
@@ -112,13 +114,16 @@
 //加载操作（source 为 String 或 java object）
 //
 +load(source:Object) -> new:ONode    //加载数据
++load(source:Object, Feature... features) -> new:ONode
 +load(source:Object, cfg:Constants) -> new:ONode
 +load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
 
 //加载 string
 +loadStr(source:String) -> new:ONode	//仅String
++loadStr(source:String, Feature... features) -> new:ONode	//仅String
 //加载 java object
 +loadObj(source:Object) -> new:ONode	//仅java object
++loadObj(source:Object, Feature... features) -> new:ONode	//仅java object
 
 //字符串化操作
 //
