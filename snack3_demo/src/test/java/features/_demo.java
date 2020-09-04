@@ -6,10 +6,7 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Feature;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class _demo {
 
@@ -188,5 +185,50 @@ public class _demo {
         assert oNode.get("data").isArray();
 
         assert oNode.get("data").count() == 5;
+    }
+
+    @Test
+    public void demo51() {
+        //注意：data 的值是个 string
+        String json = "{id:1,name:'x', data:'{user_id:6}'}";
+
+        ONode oNode = ONode.loadStr(json, Feature.StringJsonToNode);
+
+        int user_id = oNode.get("data").get("user_id").getInt();
+        //或用Jsonpath: int user_id = oNode.select("data.user_id").getInt();
+
+        assert user_id == 6;
+    }
+
+    @Test
+    public void demo52() {
+        String json = "{id:1,name:'x', data:{user_id:6,icon:'fa1',type:2}}";
+
+        ONode oNode = ONode.loadStr(json);
+
+        //新数据填充 data 的内容
+        oNode.get("data").fillStr("{user_id:8,mobile:'123'}");
+
+        int user_id = oNode.get("data").get("user_id").getInt();
+
+        assert user_id == 8;
+    }
+
+    @Test
+    public void demo6() {
+        List<Object> list = new ArrayList<>();
+        list.add(1);
+        list.add("a");
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("k1", 1);
+        map.put("k2", "a");
+
+        ONode oNode = new ONode();
+
+        oNode.set("map", map);
+        oNode.set("list", list);
+
+        oNode.get("list2").val(list);
     }
 }
