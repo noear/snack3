@@ -75,4 +75,69 @@ public class _test2 {
          assert tmp instanceof List;
     }
 
+    @Test
+    public void test3(){
+        String json = test_json();
+
+        ONode oNode = ONode.loadStr(json);
+
+        //$.content.amount_detail.amount_units[?(@.name == "C_score")].amount
+
+        ONode tmp = oNode.select("$.content.amount_detail.amount_units[?(@.name == 'C_score')].amount");
+
+        System.out.println(tmp.toJson());
+    }
+
+    private String test_json(){
+        return "{\n" +
+                "\t\"message\": \"ok\",\n" +
+                "\t\"content\": {\n" +
+                "\t\t\"result\": 100,\n" +
+                "\t\t\"amount\": 3,\n" +
+                "\t\t\"rule_detail\": {\n" +
+                "\t\t\t\"app_id\": \"\",\n" +
+                "\t\t\t\"app_name\": \"\",\n" +
+                "\t\t\t\"ext_data\": 0,\n" +
+                "\t\t\t\"factor_list\": [],\n" +
+                "\t\t\t\"policy_id\": \"5f180d0d28f6eb6cd10df87e\",\n" +
+                "\t\t\t\"policy_mode\": 1,\n" +
+                "\t\t\t\"policy_name\": \"综合信用评分A\",\n" +
+                "\t\t\t\"policy_name_e\": \"XYD_CL_0001\"\n" +
+                "\t\t},\n" +
+                "\t\t\"credit_id\": \"zxxf_d145105c-2407-436c-b786-a1d3ba0b2c5f\",\n" +
+                "\t\t\"amount_detail\": {\n" +
+                "\t\t\t\"amount_units\": [\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 803,\n" +
+                "\t\t\t\t\t\"name\": \"C_score\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 6,\n" +
+                "\t\t\t\t\t\"name\": \"S_health\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 6,\n" +
+                "\t\t\t\t\t\"name\": \"C_stability\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 7,\n" +
+                "\t\t\t\t\t\"name\": \"I_variety\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 3,\n" +
+                "\t\t\t\t\t\"name\": \"L_index\"\n" +
+                "\t\t\t\t},\n" +
+                "\t\t\t\t{\n" +
+                "\t\t\t\t\t\"amount\": 3,\n" +
+                "\t\t\t\t\t\"name\": \"P_index\"\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t]\n" +
+                "\t\t},\n" +
+                "\t\t\"rule_result\": {},\n" +
+                "\t\t\"message\": \"accepted\"\n" +
+                "\t},\n" +
+                "\t\"status\": \"1000\"\n" +
+                "}";
+    }
+
 }
