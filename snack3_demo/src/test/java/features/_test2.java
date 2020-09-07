@@ -83,9 +83,9 @@ public class _test2 {
 
         //$.content.amount_detail.amount_units[?(@.name == "C_score")].amount
 
-        ONode tmp = oNode.select("$.content.amount_detail.amount_units[?(@.name == 'C_score')].amount");
+        ONode tmp = oNode.select("$.content.amount_detail.amount_units[?(@.name == 'C_score')].amount.min()");
 
-        System.out.println(tmp.toJson());
+        assert tmp.getInt() == 803;
     }
 
     private String test_json(){
