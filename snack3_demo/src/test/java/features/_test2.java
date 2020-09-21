@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class _test2 {
     @Test
@@ -86,6 +87,11 @@ public class _test2 {
         ONode tmp = oNode.select("$.content.amount_detail.amount_units[?(@.name == 'C_score')].amount.min()");
 
         assert tmp.getInt() == 803;
+
+
+        String x = oNode.select("$.content.amount_detail.amount_units.name").ary().stream().map(n->n.getString()).collect(Collectors.joining(","));
+
+        System.out.println(x);
     }
 
     private String test_json(){
@@ -139,5 +145,6 @@ public class _test2 {
                 "\t\"status\": \"1000\"\n" +
                 "}";
     }
+
 
 }
