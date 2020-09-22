@@ -51,8 +51,9 @@ public class _test3 {
 
         ONode oNode = ONode.loadStr(json);
 
-        ONode tmp = oNode.select("$[?(@.keyword == 'key1')].fromBranch.key1");
+        ONode tmp = oNode.select("$.fromBranch[$.keyword]");
 
         System.out.print(tmp.toJson());
+        assert "{\"a\":\"a\"}".equals(tmp.toJson());
     }
 }

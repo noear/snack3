@@ -5,6 +5,7 @@ import org.noear.snack.OValue;
 import org.noear.snack.OValueType;
 import org.noear.snack.core.exts.*;
 import org.noear.snack.core.utils.IOUtil;
+import org.noear.snack.core.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -631,6 +632,24 @@ public class JsonPath {
         return tmp2;
     };
 
+    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_ref=(s, root, tmp, usd)-> {
+        ONode tmp2 = null;
+
+        if(tmp.isObject()) {
+            if (s.cmdAry.startsWith("$")) {
+                tmp2 = do_get(root, s.cmdAry, true, usd);
+            } else {
+                tmp2 = do_get(tmp, s.cmdAry, true, usd);
+            }
+
+            if (tmp2.isValue()) {
+                tmp2 = tmp.get(tmp2.getString());
+            }
+        }
+
+        return tmp2;
+    };
+
     private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_multi=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
@@ -814,7 +833,7 @@ public class JsonPath {
                 } else {
                     if (cmdAry.indexOf("'") >= 0) {
                         name = cmdAry.substring(1, cmdAry.length() - 1);
-                    } else if (cmdAry.equals("*") == false) {
+                    } else if (StringUtil.isInteger(cmdAry)) {
                         start = Integer.parseInt(cmdAry);
                     }
                 }
@@ -862,6 +881,9 @@ public class JsonPath {
                     //[2:4]
                     handler = handler_ary_range;
 
+                } else if(this.cmdAry.startsWith("$.") || this.cmdAry.startsWith("@.")){
+                    //[$.xxx] [@.xxx]
+                    handler = handler_ary_ref;
                 } else {
                     //[x]指令
                     //
