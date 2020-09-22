@@ -644,6 +644,8 @@ public class JsonPath {
 
             if (tmp2.isValue()) {
                 tmp2 = tmp.get(tmp2.getString());
+            }else{
+                tmp2 = null;
             }
         }
 
