@@ -5,6 +5,9 @@ import _models.ShanYunResModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class _test3 {
     @Test
     public void test() {
@@ -55,5 +58,34 @@ public class _test3 {
 
         System.out.print(tmp.toJson());
         assert "{\"a\":\"a\"}".equals(tmp.toJson());
+    }
+
+    @Test
+    public void test4(){
+        String json = "['1','2']";
+
+        //用静态函数反序列化（基础类型，不需要指明类型）
+        List<String> list = ONode.deserialize(json);
+        assert list.size() == 2;
+
+        //用静态函数反序列化（也可以指下类型）
+        List<String> list2 = ONode.deserialize(json, (new ArrayList<String>()).getClass());
+        assert list2.size() == 2;
+    }
+
+    @Test
+    public void test5(){
+        String json = "['1','2']";
+
+        ONode oNode = ONode.loadStr(json);
+
+        List<String> list = oNode.toObject(null);
+        assert list.size() == 2;
+
+        list = oNode.toObject((new ArrayList<String>()).getClass());
+        assert list.size() == 2;
+
+        List<String> list2 = oNode.toObjectList(String.class);
+        assert list2.size() == 2;
     }
 }
