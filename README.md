@@ -4,7 +4,7 @@
 ` QQ交流群：22200020 `
 
 # Snack3 for java
-一个微型JSON框架
+一个微型JSON + Jsonpath框架
 
 基于jdk8，70kb。有序列化反序列化、解析和转换、支持 Json path 查询。
 
