@@ -78,7 +78,7 @@ public class _test2 {
 
     @Test
     public void test3(){
-        String json = test_json();
+        String json = test3_json();
 
         ONode oNode = ONode.loadStr(json);
 
@@ -94,7 +94,64 @@ public class _test2 {
         System.out.println(x);
     }
 
-    private String test_json(){
+    @Test
+    public void test4(){
+        String json = test4_json();
+
+        ONode oNode = ONode.loadStr(json);
+
+        assert oNode != null;
+    }
+
+    private String test4_json(){
+        return "{\n" +
+                "  \"catalogMappings\": [\n" +
+                "    { \"index\":0,\n" +
+                "      \"left\": {\"name\": \"water2\"},\n" +
+                "      \"right\": {\"name\": \"water2\"},\n" +
+                "      \"entityMappings\": [\n" +
+                "        {\n" +
+                "          \"index\":0,\n" +
+                "          \"left\": {\"name\": \"test\"},\n" +
+                "          \"right\": {\"name\": \"test\"},\n" +
+                "          \"filterInsert\": true,\n" +
+                "          \"filterUpdate\": true,\n" +
+                "          \"filterDelete\": true,\n" +
+                "          \"memberMappings\": [\n" +
+                "            {\n" +
+                "              \"index\":0,\n" +
+                "              \"left\": {\"name\": \"n1\", \"type\": \"varchar(40)\" },\n" +
+                "              \"right\": {\"name\": \"n1\", \"type\": \"varchar(40)\"}\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"index\":1,\n" +
+                "              \"left\": {\"name\": \"n2\", \"type\": \"varchar(100)\"},\n" +
+                "              \"right\": {\"name\": \"n2\", \"type\": \"varchar(100)\"}\n" +
+                "            }\n" +
+                "          ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"index\":1,\n" +
+                "          \"left\": {\"name\": \"test2\"},\n" +
+                "          \"right\": {\"name\": \"test2\"},\n" +
+                "          \"filterInsert\": true,\n" +
+                "          \"filterUpdate\": true,\n" +
+                "          \"filterDelete\": true,\n" +
+                "          \"memberMappings\": [\n" +
+                "            {\n" +
+                "              \"index\":0,\n" +
+                "              \"left\": {\"name\": \"t1\", \"type\": \"varchar(40)\" },\n" +
+                "              \"right\": {\"name\": \"t1\", \"type\": \"varchar(40)\"}\n" +
+                "            }\n" +
+                "          ]\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+    }
+
+    private String test3_json(){
         return "{\n" +
                 "\t\"message\": \"ok\",\n" +
                 "\t\"content\": {\n" +
