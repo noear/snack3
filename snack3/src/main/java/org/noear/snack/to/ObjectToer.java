@@ -102,6 +102,12 @@ public class ObjectToer implements Toer {
             if (ONode.class.isAssignableFrom(clz)) {
                 return o;
             }
+
+            if (is(Jsonable.class, clz)) {
+                Jsonable b = (Jsonable) BeanUtil.newInstance(clz);
+                b.fromJsonNode(o);
+                return b;
+            }
         }
 
 

@@ -32,6 +32,10 @@ public class ObjectFromer implements Fromer {
             return rst;
         }
 
+        if(source instanceof Jsonable){
+            return ((Jsonable)source).toJsonNode();
+        }
+
         Class<?> clz = source.getClass();
 
         if (source instanceof ONode) {

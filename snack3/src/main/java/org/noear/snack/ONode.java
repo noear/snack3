@@ -978,12 +978,6 @@ public class ONode {
 
 
     private static ONode doLoad(Object source, boolean isString, Constants cfg, Fromer fromer) {
-        if (isString == false && source != null) {
-            if (source instanceof Jsonable) {
-                return ((Jsonable) source).toJsonNode();
-            }
-        }
-
         if (fromer == null) {
             if (isString) {
                 fromer = DEFAULTS.DEF_STRING_FROMER;
@@ -1061,11 +1055,6 @@ public class ONode {
      * @throws Exception
      */
     public static <T> T deserialize(String source, Class<?> clz) {
-        if(clz != null && Jsonable.class.isAssignableFrom(clz)){
-            Jsonable b = (Jsonable)BeanUtil.newInstance(clz);
-            b.fromJson(source);
-            return (T)b;
-        }
         //加载String，不需指定Fromer
         return load(source,  Constants.serialize(), null).toObject(clz);
     }
