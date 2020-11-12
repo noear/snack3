@@ -116,4 +116,12 @@ public class BeanUtil {
 
         return text;
     }
+
+    public static Object newInstance(Class<?> clz) {
+        try {
+            return clz.newInstance();
+        } catch (Exception ex) {
+            throw new RuntimeException("create instance error, class " + clz.getName());
+        }
+    }
 }

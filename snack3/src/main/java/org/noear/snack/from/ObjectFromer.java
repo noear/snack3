@@ -4,6 +4,7 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
+import org.noear.snack.core.Jsonable;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
 
@@ -176,33 +177,38 @@ public class ObjectFromer implements Fromer {
     }
 
     private boolean analyseBean(Constants cfg, ONode rst, Class<?> clz, Object obj) {
-        rst.asObject();
+        if (obj instanceof Jsonable) {
+            rst.val(((Jsonable) obj).toJsonNode());
+        } else {
 
-        //为序列化添加特性支持
-        if (cfg.hasFeature(Feature.WriteClassName)) {
-            rst.set(cfg.type_key, clz.getName());
-        }
+            rst.asObject();
 
-        Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
-        for (FieldWrap f : list) {
-            Object val = f.setValue(obj);
+            //为序列化添加特性支持
+            if (cfg.hasFeature(Feature.WriteClassName)) {
+                rst.set(cfg.type_key, clz.getName());
+            }
 
-            if(val == null) {
-                //null string 是否以 空字符处理
-                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
-                    rst.setNode(f.name(), analyse(cfg, ""));
+            Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
+            for (FieldWrap f : list) {
+                Object val = f.setValue(obj);
+
+                if (val == null) {
+                    //null string 是否以 空字符处理
+                    if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
+                        rst.setNode(f.name(), analyse(cfg, ""));
+                        continue;
+                    }
+
+                    //null是否输出
+                    if (cfg.hasFeature(Feature.SerializeNulls)) {
+                        rst.setNode(f.name(), analyse(cfg, null));
+                    }
                     continue;
                 }
 
-                //null是否输出
-                if (cfg.hasFeature(Feature.SerializeNulls)) {
-                    rst.setNode(f.name(), analyse(cfg, null));
+                if (val.equals(obj) == false) { //null 和 自引用 不需要处理
+                    rst.setNode(f.name(), analyse(cfg, val));
                 }
-                continue;
-            }
-
-            if (val.equals(obj)==false) { //null 和 自引用 不需要处理
-                rst.setNode(f.name(), analyse(cfg, val));
             }
         }
 

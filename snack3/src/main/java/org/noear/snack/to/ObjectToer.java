@@ -5,6 +5,7 @@ import org.noear.snack.ONodeData;
 import org.noear.snack.OValue;
 import org.noear.snack.OValueType;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.Jsonable;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
@@ -39,7 +40,7 @@ public class ObjectToer implements Toer {
         //
         // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
         //
-        if(ctx.target_type == null){
+        if (ctx.target_type == null) {
             if (o.isObject()) {
                 return HashMap.class;
             }
@@ -97,9 +98,12 @@ public class ObjectToer implements Toer {
             return null;
         }
 
-        if (clz != null && ONode.class.isAssignableFrom(clz)) {
-            return o;
+        if (clz != null) {
+            if (ONode.class.isAssignableFrom(clz)) {
+                return o;
+            }
         }
+
 
         switch (o.nodeType()) {
             case Value:
@@ -110,7 +114,7 @@ public class ObjectToer implements Toer {
 
                 if (Map.class.isAssignableFrom(clz)) {
                     return analyseMap(ctx, o, clz, type);
-                } else if(StackTraceElement.class.isAssignableFrom(clz)){
+                } else if (StackTraceElement.class.isAssignableFrom(clz)) {
                     return new StackTraceElement(
                             o.get("declaringClass").getString(),
                             o.get("methodName").getString(),
@@ -132,7 +136,7 @@ public class ObjectToer implements Toer {
         }
     }
 
-    private boolean is(Class<?> s, Class<?> t){
+    private boolean is(Class<?> s, Class<?> t) {
         return s.isAssignableFrom(t);
     }
 
@@ -140,11 +144,11 @@ public class ObjectToer implements Toer {
 
         OValue v = d.value;
 
-        if(v.type() == OValueType.Null){
+        if (v.type() == OValueType.Null) {
             return null;
         }
 
-        if(clz == null){
+        if (clz == null) {
             return v.getRaw();
         }
 
@@ -175,15 +179,15 @@ public class ObjectToer implements Toer {
         } else if (is(Date.class, clz)) {
             return v.getDate();
         } else if (is(BigDecimal.class, clz)) {
-            if(v.type() == OValueType.Bignumber){
+            if (v.type() == OValueType.Bignumber) {
                 return v.getRawBignumber();
-            }else {
+            } else {
                 return new BigDecimal(v.getString());
             }
         } else if (is(BigInteger.class, clz)) {
-            if(v.type() == OValueType.Bignumber){
+            if (v.type() == OValueType.Bignumber) {
                 return v.getRawBignumber();
-            }else {
+            } else {
                 return new BigInteger(v.getString());
             }
         } else if (clz.isEnum()) {
@@ -193,15 +197,15 @@ public class ObjectToer implements Toer {
         } else if (is(Object.class, clz)) {
             return v.getRaw();
         } else {
-            throw new RuntimeException("unsupport type "+ clz.getName());
+            throw new RuntimeException("unsupport type " + clz.getName());
         }
     }
 
-    public Object analyseEnum(Context ctx, ONodeData d, Class<?> target){
+    public Object analyseEnum(Context ctx, ONodeData d, Class<?> target) {
         EnumWrap ew = TypeUtil.createEnum(target);
-        if(d.value.type() == OValueType.String){
+        if (d.value.type() == OValueType.String) {
             return ew.get(d.value.getString());
-        }else{
+        } else {
             return ew.get(d.value.getInt());
         }
     }
@@ -221,7 +225,7 @@ public class ObjectToer implements Toer {
                 val[i] = d.array.get(i).getShort();
             }
             return val;
-        } else if (is(int[].class, target) ) {
+        } else if (is(int[].class, target)) {
             int[] val = new int[len];
             for (int i = 0; i < len; i++) {
                 val[i] = d.array.get(i).getInt();
@@ -233,7 +237,7 @@ public class ObjectToer implements Toer {
                 val[i] = d.array.get(i).getLong();
             }
             return val;
-        }  else if (is(float[].class, target) ) {
+        } else if (is(float[].class, target)) {
             float[] val = new float[len];
             for (int i = 0; i < len; i++) {
                 val[i] = d.array.get(i).getFloat();
@@ -265,9 +269,9 @@ public class ObjectToer implements Toer {
             return val;
         } else if (is(Object[].class, target)) {
             Class<?> c = target.getComponentType();
-            Object[] val = (Object[])Array.newInstance(c,len);
+            Object[] val = (Object[]) Array.newInstance(c, len);
             for (int i = 0; i < len; i++) {
-                val[i] = analyse(ctx, d.array.get(i), c,c);
+                val[i] = analyse(ctx, d.array.get(i), c, c);
             }
             return val;
         } else {
@@ -296,7 +300,7 @@ public class ObjectToer implements Toer {
         }
 
         //解决无法识别的范型
-        if(itemType != null && "T".equals(itemType.getTypeName())){
+        if (itemType != null && "T".equals(itemType.getTypeName())) {
             itemType = null;
         }
 
@@ -312,16 +316,16 @@ public class ObjectToer implements Toer {
         Map<Object, Object> map = TypeUtil.createMap(clz);
 
         if (type instanceof ParameterizedType) { //这里还要再研究下
-            ParameterizedType ptt = ((ParameterizedType)type);
+            ParameterizedType ptt = ((ParameterizedType) type);
             Type kType = ptt.getActualTypeArguments()[0];
             Type vType = ptt.getActualTypeArguments()[1];
 
-            if(kType instanceof ParameterizedType){
-                kType = ((ParameterizedType)kType).getRawType();
+            if (kType instanceof ParameterizedType) {
+                kType = ((ParameterizedType) kType).getRawType();
             }
 
-            if(vType instanceof ParameterizedType){
-                vType = ((ParameterizedType)vType).getRawType();
+            if (vType instanceof ParameterizedType) {
+                vType = ((ParameterizedType) vType).getRawType();
             }
 
             if (kType == String.class) {
@@ -330,7 +334,7 @@ public class ObjectToer implements Toer {
                 }
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), (Class<?>) vType,vType));
+                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), (Class<?>) vType, vType));
                 }
             }
         } else {
@@ -343,27 +347,28 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseBean(Context ctx, ONode o, Class<?> target) throws Exception{
-        if(is(SimpleDateFormat.class,target)){
+    public Object analyseBean(Context ctx, ONode o, Class<?> target) throws Exception {
+        if (is(Jsonable.class, target)) {
+            Jsonable b = (Jsonable) BeanUtil.newInstance(target);
+            b.fromJsonNode(o);
+            return b;
+        }
+
+        if (is(SimpleDateFormat.class, target)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
 
-        if(is(InetSocketAddress.class,target)){
-            return new InetSocketAddress(o.get("address").getString(),o.get("port").getInt());
+        if (is(InetSocketAddress.class, target)) {
+            return new InetSocketAddress(o.get("address").getString(), o.get("port").getInt());
         }
 
-        Object rst = null;
-        try {
-            rst = target.newInstance();
-        }catch (Exception ex){
-            throw new Exception("create instance error, class "+ target.getName());
-        }
+        Object rst = BeanUtil.newInstance(target);
 
         // 遍历每个字段
         for (FieldWrap f : BeanUtil.getAllFields(target)) {
             String key = f.name();
 
-            if(o.contains(key)) {
+            if (o.contains(key)) {
                 f.getValue(rst, analyse(ctx, o.get(key), f.type, f.genericType));
             }
         }
