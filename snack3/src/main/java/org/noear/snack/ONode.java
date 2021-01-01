@@ -27,7 +27,7 @@ public class ONode {
      * @return 版本信息
      */
     public static String version() {
-        return "3.1.6";
+        return "3.1.12";
     }
 
     public ONode() {
