@@ -4,7 +4,7 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
-import org.noear.snack.core.Jsonable;
+import org.noear.snack.core.NodeEncoder;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
@@ -33,8 +33,8 @@ public class ObjectFromer implements Fromer {
             return rst;
         }
 
-        if(source instanceof Jsonable){
-            return ((Jsonable)source).toJsonNode();
+        if(source instanceof NodeEncoder){
+            return ((NodeEncoder)source).toNode();
         }
 
         Class<?> clz = source.getClass();
@@ -182,8 +182,8 @@ public class ObjectFromer implements Fromer {
     }
 
     private boolean analyseBean(Constants cfg, ONode rst, Class<?> clz, Object obj) {
-        if (obj instanceof Jsonable) {
-            rst.val(((Jsonable) obj).toJsonNode());
+        if (obj instanceof NodeEncoder) {
+            rst.val(((NodeEncoder) obj).toNode());
         } else {
 
             rst.asObject();
