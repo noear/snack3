@@ -5,6 +5,8 @@ import _models.BookViewModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
+import java.util.ArrayList;
+
 /**
  * @author noear 2021/1/1 created
  */
@@ -32,6 +34,8 @@ public class NameTest {
     @Test
     public void test2() {
         BookViewModel vm = new BookViewModel();
+        vm.list = new ArrayList<>();
+
         BookModel user = new BookModel();
         user.id = 12;
         user.bookname = "noear";
