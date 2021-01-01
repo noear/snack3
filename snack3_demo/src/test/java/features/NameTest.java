@@ -1,12 +1,9 @@
 package features;
 
-import _models.UserModel2;
+import _models.BookModel;
+import _models.BookViewModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.TypeRef;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author noear 2021/1/1 created
@@ -14,9 +11,9 @@ import java.util.List;
 public class NameTest {
     @Test
     public void test() {
-        UserModel2 user = new UserModel2();
+        BookModel user = new BookModel();
         user.id = 12;
-        user.nickname = "noear";
+        user.bookname = "noear";
         user.note = "test";
 
         String json = ONode.stringify(user);
@@ -25,40 +22,40 @@ public class NameTest {
         assert json.contains("name");
 
 
-        UserModel2 user2 = ONode.deserialize(json, UserModel2.class);
-        System.out.println(user2.nickname);
+        BookModel user2 = ONode.deserialize(json, BookModel.class);
+        System.out.println(user2.bookname);
 
-        assert "noear".equals(user2.nickname);
+        assert "noear".equals(user2.bookname);
     }
 
 
     @Test
     public void test2() {
-        List<UserModel2> list = new ArrayList<>();
-        UserModel2 user = new UserModel2();
+        BookViewModel vm = new BookViewModel();
+        BookModel user = new BookModel();
         user.id = 12;
-        user.nickname = "noear";
+        user.bookname = "noear";
         user.note = "test";
 
-        list.add(user);
+        vm.list.add(user);
 
 
-        user = new UserModel2();
+        user = new BookModel();
         user.id = 13;
-        user.nickname = "ddd";
+        user.bookname = "ddd";
         user.note = "test";
 
-        list.add(user);
+        vm.list.add(user);
 
-        String json = ONode.stringify(list);
+        String json = ONode.stringify(vm);
         System.out.println(json);
 
         assert json.contains("name");
 
 
-        List<UserModel2> list2 = ONode.deserialize(json, new TypeRef<List<UserModel2>>(){}.getClass());
-        System.out.println(list2.get(0).nickname);
+        BookViewModel vm2 = ONode.deserialize(json, BookViewModel.class);
+        System.out.println(vm2.list.get(0).bookname);
 
-        assert "noear".equals(list2.get(0).nickname);
+        assert "noear".equals(vm2.list.get(0).bookname);
     }
 }
