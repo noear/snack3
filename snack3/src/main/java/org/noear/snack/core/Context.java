@@ -1,6 +1,7 @@
 package org.noear.snack.core;
 
 import org.noear.snack.ONode;
+import org.noear.snack.core.exts.ParameterizedTypeImpl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,21 +32,27 @@ public class Context {
     /**
      * 用于去处的构造
      */
-    public Context(Constants config, ONode node, Class<?> clz) {
+    public Context(Constants config, ONode node, Type type0) {
         this.config = config;
         this.source = node;
 
-        if (clz == null) {
+        if (type0 == null) {
             return;
         }
 
-        if(TypeRef.class.isAssignableFrom(clz)) {
-            Type superClass = clz.getGenericSuperclass();
-            Type type = (((ParameterizedType) superClass).getActualTypeArguments()[0]);
+        if(type0 instanceof Class){
+            //for class
+            //
+            Class<?> clz = (Class<?>) type0;
 
-            initType(type);
-            return;
-        }else {
+            if (TypeRef.class.isAssignableFrom(clz)) {
+                Type superClass = clz.getGenericSuperclass();
+                Type type = (((ParameterizedType) superClass).getActualTypeArguments()[0]);
+
+                initType(type);
+                return;
+            }
+
             if (clz.getName().indexOf("$") > 0) {
                 // 临时类：(new ArrayList<UserModel>(){}).getClass(); (new UserModel(){}).getClass();
                 //
@@ -53,6 +60,10 @@ public class Context {
             } else {
                 initType(clz, clz);
             }
+        }else{
+            //for type
+            //
+            initType(type0);
         }
     }
 

@@ -7,6 +7,7 @@ import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -841,7 +842,7 @@ public class ONode {
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
      */
-    public <T> T toObject(Class<?> clz) {
+    public <T> T toObject(Type clz) {
         return to(DEFAULTS.DEF_OBJECT_TOER, clz);
     }
 
@@ -871,7 +872,7 @@ public class ONode {
     /**
      * 将当前ONode 通过 toer 进行转换
      */
-    public <T> T to(Toer toer, Class<?> clz) {
+    public <T> T to(Toer toer, Type clz) {
         return (T) (new Context(_c, this, clz).handle(toer).target);
     }
     public <T> T to(Toer toer) {
@@ -1054,7 +1055,7 @@ public class ONode {
      * @param source string
      * @throws Exception
      */
-    public static <T> T deserialize(String source, Class<?> clz) {
+    public static <T> T deserialize(String source, Type clz) {
         //加载String，不需指定Fromer
         return load(source,  Constants.serialize(), null).toObject(clz);
     }
