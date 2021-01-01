@@ -1060,6 +1060,7 @@ public class ONode {
         return load(source,  Constants.serialize(), null).toObject(clz);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

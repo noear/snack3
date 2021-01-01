@@ -5,6 +5,7 @@ import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Jsonable;
+import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
 
@@ -63,7 +64,7 @@ public class ObjectFromer implements Fromer {
         } else if (source instanceof Number) {
             rst.val().setBignumber((Number) source);
         } else if (source instanceof Throwable) { //新补充的类型
-            analyseBean(cfg, rst, clz, source);
+            analyseBean(cfg, rst, ClassWrap.get(clz), source);
         } else if (analyseArray(cfg, rst, clz, source)) { //新补充的类型::可适用任何数组
 
         } else if (clz.isEnum()) { //新补充的类型
@@ -113,7 +114,7 @@ public class ObjectFromer implements Fromer {
             }else {
                 if (analyseOther(cfg, rst, clz, source) == false) {
                     if (clzName.startsWith("jdk.") == false) {
-                        analyseBean(cfg, rst, clz, source);
+                        analyseBean(cfg, rst, ClassWrap.get(clz), source);
                     }
                 }
             }
@@ -180,7 +181,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseBean(Constants cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseBean(Constants cfg, ONode rst, ClassWrap clzWrap, Object obj) {
         if (obj instanceof Jsonable) {
             rst.val(((Jsonable) obj).toJsonNode());
         } else {
@@ -189,10 +190,11 @@ public class ObjectFromer implements Fromer {
 
             //为序列化添加特性支持
             if (cfg.hasFeature(Feature.WriteClassName)) {
-                rst.set(cfg.type_key, clz.getName());
+                rst.set(cfg.type_key, clzWrap.name());
             }
 
-            Collection<FieldWrap> list = BeanUtil.getAllFields(clz);
+            Collection<FieldWrap> list = clzWrap.fieldAllWraps();
+
             for (FieldWrap f : list) {
                 Object val = f.setValue(obj);
 

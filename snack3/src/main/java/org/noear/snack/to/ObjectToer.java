@@ -6,6 +6,7 @@ import org.noear.snack.OValue;
 import org.noear.snack.OValueType;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Jsonable;
+import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
@@ -370,8 +371,10 @@ public class ObjectToer implements Toer {
 
         Object rst = BeanUtil.newInstance(target);
 
+
+
         // 遍历每个字段
-        for (FieldWrap f : BeanUtil.getAllFields(target)) {
+        for (FieldWrap f : ClassWrap.get(target).fieldAllWraps()) {
             String key = f.name();
 
             if (o.contains(key)) {

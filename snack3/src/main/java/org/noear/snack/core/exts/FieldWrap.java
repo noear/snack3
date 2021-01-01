@@ -1,5 +1,8 @@
 package org.noear.snack.core.exts;
 
+import org.noear.snack.annotation.NodeName;
+import org.noear.snack.core.utils.StringUtil;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -15,6 +18,8 @@ public class FieldWrap {
     private Method _getter;
     private Method _setter;
 
+    private String _name;
+
     public FieldWrap(Class<?> clz, Field f) {
         field = f;
         type = f.getType();
@@ -22,10 +27,19 @@ public class FieldWrap {
 
         _getter = findGetter(clz, f);
         _setter = findSetter(clz, f);
+
+        NodeName anno = f.getAnnotation(NodeName.class);
+        if (anno != null) {
+            _name = anno.value();
+        }
+
+        if (StringUtil.isEmpty(_name)) {
+            _name = field.getName();
+        }
     }
 
     public String name(){
-        return field.getName();
+        return _name;
     }
 
     public void getValue(Object tObj, Object val){

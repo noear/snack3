@@ -33,55 +33,6 @@ public class BeanUtil {
 
     /////////////////
 
-    /**  */
-    private static transient final Map<String,Collection<FieldWrap>> fieldsCached = new HashMap<>();
-
-    /** 获取一个类的所有字段 （已实现缓存） */
-    public static Collection<FieldWrap> getAllFields(Class<?> clz) {
-        String key = clz.getName();
-
-        Collection<FieldWrap> list = fieldsCached.get(key);
-        if (list == null) {
-            synchronized (key.intern()) {
-                list = fieldsCached.get(key);
-
-                if (list == null) {
-                    Map<String, FieldWrap> map = new LinkedHashMap<>();
-                    scanAllFields(clz, map::containsKey, map::put);
-
-                    list = map.values();
-
-                    fieldsCached.put(key, list);
-                }
-            }
-        }
-
-        return list;
-    }
-
-    /** 扫描一个类的所有字段 */
-    private static void scanAllFields(Class<?> clz, Predicate<String> checker, BiConsumer<String,FieldWrap> consumer) {
-        if (clz == null) {
-            return;
-        }
-
-        for (Field f : clz.getDeclaredFields()) {
-            int mod = f.getModifiers();
-
-            if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod)) {
-                f.setAccessible(true);
-
-                if (checker.test(f.getName()) == false) {
-                    consumer.accept(f.getName(), new FieldWrap(clz,f));
-                }
-            }
-        }
-
-        Class<?> sup = clz.getSuperclass();
-        if (sup != Object.class) {
-            scanAllFields(sup, checker, consumer);
-        }
-    }
 
     /** 将 Clob 转为 String */
     public static String clobToString(Clob clob) {
