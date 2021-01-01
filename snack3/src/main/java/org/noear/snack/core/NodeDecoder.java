@@ -3,6 +3,8 @@ package org.noear.snack.core;
 import org.noear.snack.ONode;
 
 /**
+ * ONode 解码
+ *
  * @author noear 2021/1/1 created
  */
 public interface NodeDecoder {
