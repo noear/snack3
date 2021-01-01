@@ -37,35 +37,21 @@ public class ClassWrap {
     private final Class<?> _clz;
     //clz.all_fieldS
     private final Collection<FieldWrap> _fieldAllWraps;
-    private String _name;
 
 
     protected ClassWrap(Class<?> clz) {
         _clz = clz;
 
-
         Map<String, FieldWrap> map = new LinkedHashMap<>();
         scanAllFields(clz, map::containsKey, map::put);
 
         _fieldAllWraps = map.values();
-
-        NodeName anno = clz.getAnnotation(NodeName.class);
-        if (anno != null) {
-            _name = anno.value();
-        }
-
-        if (StringUtil.isEmpty(_name)) {
-            _name = clz.getName();
-        }
     }
 
     public Class<?> clz() {
         return _clz;
     }
 
-    public String name(){
-        return _name;
-    }
 
     public Collection<FieldWrap> fieldAllWraps(){
         return _fieldAllWraps;
