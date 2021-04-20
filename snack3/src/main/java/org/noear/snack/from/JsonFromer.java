@@ -292,7 +292,7 @@ public class JsonFromer implements Fromer {
                         oval.setBignumber(new BigInteger(sval));
                     }
                 } else { //小于16位长度；采用常规数字处理
-                    if (sval.indexOf('.') > 0) {
+                    if (sval.indexOf('.') > 0 ) {
                         oval.setDecimal(Double.parseDouble(sval));
                     } else {
                         oval.setInteger(Long.parseLong(sval));
