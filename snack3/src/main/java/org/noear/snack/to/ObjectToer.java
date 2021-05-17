@@ -376,7 +376,6 @@ public class ObjectToer implements Toer {
         Object rst = BeanUtil.newInstance(target);
 
 
-
         // 遍历每个字段
         for (FieldWrap f : ClassWrap.get(target).fieldAllWraps()) {
             String key = f.name();
