@@ -150,10 +150,11 @@ public class JsonToer implements Toer {
     }
 
     private void writeValNumber(Constants cfg, StringBuilder sBuf, Number val){
-        String sVal = val.toString();
 
         if(val instanceof BigInteger){
             BigInteger v = (BigInteger) val;
+            String sVal = v.toString();
+
             //数字太大时，可用string来表示；
             if(sVal.length()>16 && ( v.compareTo(TypeUtil.INT_LOW)<0 || v.compareTo(TypeUtil.INT_HIGH)>0) && cfg.hasFeature(Feature.BrowserCompatible)) {
                 writeValString(cfg, sBuf, sVal, false);
@@ -165,6 +166,8 @@ public class JsonToer implements Toer {
 
         if(val instanceof BigDecimal){
             BigDecimal v = (BigDecimal) val;
+            String sVal = v.toPlainString();
+
             //数字太大时，可用string来表示；
             if(sVal.length()>16 && ( v.compareTo(TypeUtil.DEC_LOW)<0 || v.compareTo(TypeUtil.DEC_HIGH)>0) && cfg.hasFeature(Feature.BrowserCompatible)) {
                 writeValString(cfg, sBuf, sVal, false);
@@ -174,7 +177,7 @@ public class JsonToer implements Toer {
             return;
         }
 
-        sBuf.append(sVal);
+        sBuf.append(val.toString());
     }
 
     private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {

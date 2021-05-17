@@ -257,6 +257,13 @@ public class ONode {
             return false;
     }
 
+    public Number getNumber() {
+        if (isValue())
+            return _d.value.getRawNumber();
+        else
+            return null;
+    }
+
     /**
      * 获取节点值并以 long 输出
      */
