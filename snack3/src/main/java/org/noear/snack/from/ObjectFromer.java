@@ -45,24 +45,10 @@ public class ObjectFromer implements Fromer {
             rst.val().setString((String) source);
         } else if (source instanceof Date) {
             rst.val().setDate((Date) source);
-        } else if (source instanceof Integer) {
-            rst.val().setInteger((Integer) source);
-        } else if (source instanceof Long) {
-            rst.val().setInteger((Long) source);
-        } else if (source instanceof Float) {
-            rst.val().setDecimal((Float) source);
-        } else if (source instanceof Double) {
-            rst.val().setDecimal((Double) source);
-        } else if (source instanceof Short) { //新补充的类型
-            rst.val().setInteger((Short) source);
-        } else if (source instanceof Character) { //新补充的类型
-            rst.val().setInteger((Character) source);
-        } else if (source instanceof Byte) { //新补充的类型
-            rst.val().setInteger((Byte) source);
         } else if (source instanceof Boolean) {
             rst.val().setBool((boolean) source);
         } else if (source instanceof Number) {
-            rst.val().setBignumber((Number) source);
+            rst.val().setNumber((Number) source);
         } else if (source instanceof Throwable) { //新补充的类型
             analyseBean(cfg, rst, clz, source);
         } else if (analyseArray(cfg, rst, clz, source)) { //新补充的类型::可适用任何数组
@@ -73,7 +59,7 @@ public class ObjectFromer implements Fromer {
             if (cfg.hasFeature(Feature.EnumUsingName)) {
                 rst.val().setString(em.name());
             } else {
-                rst.val().setInteger(em.ordinal());
+                rst.val().setNumber(em.ordinal());
             }
         } else if (source instanceof Map) {
             //为序列化添加特性支持

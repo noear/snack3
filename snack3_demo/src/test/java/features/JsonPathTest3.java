@@ -117,10 +117,10 @@ public class JsonPathTest3 {
         ONode n = ONode.load(root);
 
         List<Object> ids = n.select("$..id").toObject(List.class);
-        assertEquals(3l, ids.size());
-        assertEquals(1001l, ids.get(0));
-        assertEquals(1002l, ids.get(1));
-        assertEquals(1003l, ids.get(2));
+        assertEquals(3, ids.size());
+        assertEquals(1001, ids.get(0));
+        assertEquals(1002, ids.get(1));
+        assertEquals(1003, ids.get(2));
     }
 
     @Test

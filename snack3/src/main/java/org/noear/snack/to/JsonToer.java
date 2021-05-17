@@ -109,16 +109,8 @@ public class JsonToer implements Toer {
                 writeValBool(cfg,sBuf,v.getRawBoolean());
                 break;
 
-            case Bignumber:
-                writeValBignum(cfg,sBuf,v.getRawBignumber());//添加对大数字的处理
-                break;
-
-            case Integer:
-                sBuf.append(v.getRawInteger());
-                break;
-
-            case Decimal:
-                sBuf.append(v.getRawDecimal());
+            case Number:
+                writeValNumber(cfg,sBuf,v.getRawNumber());
                 break;
 
             default:
@@ -157,7 +149,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeValBignum(Constants cfg, StringBuilder sBuf, Number val){
+    private void writeValNumber(Constants cfg, StringBuilder sBuf, Number val){
         String sVal = val.toString();
 
         if(val instanceof BigInteger){

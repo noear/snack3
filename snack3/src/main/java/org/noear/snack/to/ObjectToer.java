@@ -186,17 +186,21 @@ public class ObjectToer implements Toer {
         } else if (is(Date.class, clz)) {
             return v.getDate();
         } else if (is(BigDecimal.class, clz)) {
-            if (v.type() == OValueType.Bignumber) {
-                return v.getRawBignumber();
-            } else {
-                return new BigDecimal(v.getString());
+            if (v.type() == OValueType.Number) {
+                if (v.getRawNumber() instanceof BigDecimal) {
+                    return v.getRawNumber();
+                }
             }
+
+            return new BigDecimal(v.getString());
         } else if (is(BigInteger.class, clz)) {
-            if (v.type() == OValueType.Bignumber) {
-                return v.getRawBignumber();
-            } else {
-                return new BigInteger(v.getString());
+            if (v.type() == OValueType.Number) {
+                if (v.getRawNumber() instanceof BigInteger) {
+                    return v.getRawNumber();
+                }
             }
+
+            return new BigInteger(v.getString());
         } else if (clz.isEnum()) {
             return analyseEnum(ctx, d, clz);
         } else if (is(Class.class, clz)) {

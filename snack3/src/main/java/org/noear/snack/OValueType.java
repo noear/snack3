@@ -8,14 +8,10 @@ public enum OValueType {
     Null,
     /** string 类型 */
     String,
-    /** 整数 类型 */
-    Integer,
-    /** 小数 类型 */
-    Decimal,
+    /** number 类型 */
+    Number,
     /** boolean 类型 */
     Boolean,
     /** datetime 类型 */
     DateTime,
-    /** 大数字（为序列化做准备） */
-    Bignumber,
 }
