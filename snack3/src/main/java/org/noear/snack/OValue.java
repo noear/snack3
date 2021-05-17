@@ -352,8 +352,23 @@ public class OValue {
                         return false;
                     }
                 }
-                case Number:
-                    return _number.toString().equals(o.toString());
+                case Number: {
+                    if (o instanceof Number) {
+                        Number o2 = (Number) o;
+
+                        if (_number instanceof BigInteger) {
+                            return toString().equals(o2.toString());
+                        } else if (_number instanceof BigDecimal) {
+                            return toString().equals(o2.toString());
+                        } else if (_number instanceof Double || _number instanceof Float) {
+                            return _number.doubleValue() == o2.doubleValue();
+                        } else {
+                            return _number.longValue() == o2.longValue();
+                        }
+                    } else {
+                        return false;
+                    }
+                }
                 default:
                     return false;
             }
