@@ -196,7 +196,7 @@ public class ObjectFromer implements Fromer {
             Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
 
             for (FieldWrap f : list) {
-                Object val = f.setValue(obj);
+                Object val = f.getValue(obj);
 
                 if (val == null) {
                     //null string 是否以 空字符处理

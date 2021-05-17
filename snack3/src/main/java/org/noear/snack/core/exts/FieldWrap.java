@@ -42,7 +42,7 @@ public class FieldWrap {
         return _name;
     }
 
-    public void getValue(Object tObj, Object val){
+    public void setValue(Object tObj, Object val){
         try {
             if (_setter == null) {
                 field.set(tObj, val);
@@ -54,7 +54,7 @@ public class FieldWrap {
         }
     }
 
-    public Object setValue(Object tObj) {
+    public Object getValue(Object tObj) {
         try {
             if(_getter == null){
                 return field.get(tObj);
