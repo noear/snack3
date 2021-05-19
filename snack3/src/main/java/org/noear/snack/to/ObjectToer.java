@@ -14,6 +14,7 @@ import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.core.utils.TypeUtil;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -122,8 +123,13 @@ public class ObjectToer implements Toer {
                 if (Map.class.isAssignableFrom(clz)) {
                     return analyseMap(ctx, o, clz, type);
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
+                    String declaringClass = o.get("declaringClass").getString();
+                    if(declaringClass == null){
+                        declaringClass = o.get("className").getString();
+                    }
+
                     return new StackTraceElement(
-                            o.get("declaringClass").getString(),
+                            declaringClass,
                             o.get("methodName").getString(),
                             o.get("fileName").getString(),
                             o.get("lineNumber").getInt());
@@ -373,7 +379,22 @@ public class ObjectToer implements Toer {
             return new InetSocketAddress(o.get("address").getString(), o.get("port").getInt());
         }
 
-        Object rst = BeanUtil.newInstance(target);
+        Object rst = null;
+        if(is(Throwable.class, target)) {
+            String message = o.get("message").getString();
+            if (StringUtil.isEmpty(message) == false) {
+                try {
+                    Constructor fun = target.getConstructor(String.class);
+                    rst = fun.newInstance(message);
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
+        if(rst == null){
+            rst = BeanUtil.newInstance(target);
+        }
 
 
         // 遍历每个字段
