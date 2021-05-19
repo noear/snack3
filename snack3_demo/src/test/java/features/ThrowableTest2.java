@@ -16,5 +16,28 @@ public class ThrowableTest2 {
         assert tmp instanceof Throwable;
 
         ((Throwable) tmp).printStackTrace();
+
+        System.out.println("---------------------------");
+
+        String json2 = ONode.serialize(tmp);
+
+        System.out.println(json2);
+
+
+        tmp = ONode.deserialize(json2);
+
+        assert tmp instanceof Throwable;
+
+        ((Throwable) tmp).printStackTrace();
+
+
+
+        System.out.println("---------------------------");
+
+
+
+        json2 = ONode.serialize(tmp);
+
+        System.out.println(json2);
     }
 }
