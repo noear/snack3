@@ -1,6 +1,10 @@
 package demo;
 
+import _models.BookModel;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.util.TypeUtils;
+import com.sun.rowset.JdbcRowSetImpl;
 import org.junit.Test;
 
 /**
@@ -11,7 +15,37 @@ public class ThrowableTest2 {
 
     @Test
     public void test() {
-        Object tmp = JSON.parseObject(json, Throwable.class);
+        Object tmp = JSON.parse(json);
+
+        assert tmp instanceof Throwable;
+
+        ((Throwable) tmp).printStackTrace();
+    }
+
+    @Test
+    public void test2() {
+        ParserConfig config = ParserConfig.getGlobalInstance();
+        config.setAutoTypeSupport(true);
+        config.addAutoTypeCheckHandler(new ParserConfig.AutoTypeCheckHandler() {
+            @Override
+            public Class<?> handler(String s, Class<?> aClass, int i) {
+                 Class<?> clz =   TypeUtils.loadClass(s);
+                 if(clz.isAssignableFrom(Throwable.class)){
+                     return clz;
+                 }else{
+                     return null;
+                 }
+            }
+        });
+
+
+
+        Object tmp ;
+        if(json.contains("\"@type\"") && json.contains("Exception")){
+            tmp = JSON.parseObject(json, Throwable.class);
+        }else {
+            tmp = JSON.parseObject(json, BookModel.class);
+        }
 
         assert tmp instanceof Throwable;
 
