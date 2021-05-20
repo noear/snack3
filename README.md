@@ -6,7 +6,7 @@
 # Snack3 for java
 一个微型JSON + Jsonpath框架
 
-基于jdk8，70kb。有序列化反序列化、解析和转换、支持 Json path 查询。
+基于jdk8，70kb。支持：序列化反序列化、解析和转换、Json path 查询。
 
 ```xml
 <dependency>
