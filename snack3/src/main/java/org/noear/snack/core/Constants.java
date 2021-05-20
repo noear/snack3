@@ -57,6 +57,10 @@ public class Constants {
     public Constants(int features){
         this.features = features;
     }
+    public Constants(Feature... features){
+        this(Feature.of(features));
+    }
+
 
 
     /**
