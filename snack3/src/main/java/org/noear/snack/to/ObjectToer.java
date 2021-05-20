@@ -125,6 +125,7 @@ public class ObjectToer implements Toer {
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
                     String declaringClass = o.get("declaringClass").getString();
                     if(declaringClass == null){
+                        //todo: 兼容fastjson的序列化
                         declaringClass = o.get("className").getString();
                     }
 
@@ -381,6 +382,7 @@ public class ObjectToer implements Toer {
 
         Object rst = null;
         if(is(Throwable.class, target)) {
+            //todo: 兼容fastjson的异常序列化
             String message = o.get("message").getString();
             if (StringUtil.isEmpty(message) == false) {
                 try {
