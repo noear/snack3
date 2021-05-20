@@ -12,7 +12,6 @@ public class Constants {
     public static int features_def = Feature.of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
-            Feature.BrowserCompatible,
             Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
 
