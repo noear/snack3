@@ -1013,6 +1013,10 @@ public class ONode {
      * @param source java object
      * @throws Exception
      */
+    public static String stringify(Object source) {
+        return stringify(source, Constants.def());
+    }
+
     public static String stringify(Object source, Feature... features) {
         if (features.length > 0) {
             return stringify(source, new Constants(Feature.of(features)));
