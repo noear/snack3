@@ -142,6 +142,8 @@ XxxModel m =tmp.toObject(XxxModel.class);
 #### 数组
 ```json
 [1,2,3]
+//或
+[{"@type":"...","a":1,"b":"2"},{"@type":"...","a":2,"b":"10"}]
 ```
 
 ## 关于Json path的支持
