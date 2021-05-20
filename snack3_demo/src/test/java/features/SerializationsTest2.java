@@ -12,7 +12,7 @@ import java.util.*;
 
 public class SerializationsTest2 {
 
-    public String buildJson(){
+    public Object buildObj(){
         UserGroupModel group = new UserGroupModel();
         group.id = 9999;
         group.users = new ArrayList<>();
@@ -36,7 +36,17 @@ public class SerializationsTest2 {
             group.ids[i] = i;
         }
 
-        return ONode.loadObj(group).toJson();
+        return group;
+    }
+
+    public String buildJson(){
+        return ONode.loadObj(buildObj()).toJson();
+    }
+
+    @Test
+    public void test01(){
+        String tmp = ONode.serialize(buildObj());
+        System.out.println(tmp);
     }
 
     @Test
