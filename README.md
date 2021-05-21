@@ -4,9 +4,9 @@
 ` QQ交流群：22200020 `
 
 # Snack3 for java
-一个微型JSON + Jsonpath框架
+A miniature JSON + JSONPath framework
 
-基于jdk8，70kb。支持：序列化反序列化、解析和转换、Json path 查询。
+Based on JDK8, 70Kb. Support: serialization and deserialization, parsing and transformation, JSON PATH query.
 
 ```xml
 <dependency>
@@ -16,41 +16,41 @@
 </dependency>
 ```
 
-Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
-* 强调文档树的操控和构建能力
-* 做为中间媒体，方便不同格式互转
-* 高性能`Json path`查询（兼容性和性能很赞）
-* 支持`序列化、反序列化`
-* 基于 无参构造函数 + 字段 操作实现（因注入而触发动作的风险，不会有）
+Snack3 borrows from 'JavaScript' where all variables are declared by 'var' and 'XML DOM' where everything is' Node '. All data under it is represented by 'ONode'. 'ONode', which means' One node ', represents any type and can be converted to any type。
+* Emphasize the ability to manipulate and build the document tree
+* As an intermediate medium, it is convenient to transfer between different formats
+* High performance 'JSON path' queries (compatibility and performance are good)
+* Support for serialization and deserialization
+* Implementation based on no-argument constructors + field operations (risk of triggering an action due to injection, no)
 
-## 随便放几个示例
+## Just a couple of random examples
 
 ```java
-//demo0::字符串化
+//demo0::
 String json = ONode.stringify(user); 
 
-//demo1::序列化
-// -- 输出带@type
+//demo1::
+// -- Output with @ type
 String json = ONode.serialize(user); 
 
-//demo2::反序列化
-// -- json 有已带@type
+//demo2::
+// -- json Have already take @ type
 UserModel user = ONode.deserialize(json); 
-// -- json 可以不带@type (clz 申明了)
+// -- json You can do without @type (CLZ declared)
 UserModel user = ONode.deserialize(json, UserModel.class); 
-// -- json 可以不带@type，泛型方式输出（类型是已知的）
+// -- json You can print it generically without @type (the type is known)
 List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); 
 
-//demo3::转为ONode
+//demo3::
 ONode o = ONode.loadStr(json); //将json String 转为 ONode
 ONode o = ONode.loadObj(user); //将java Object 转为 ONode
 
-//demo3.1::转为ONode，取子节点进行序列化
+//demo3.1::
 ONode o = ONode.loadStr(json);
 UserModel user = o.get("user").toObject(UserModel.class);
 
 
-//demo4:构建json数据(极光推送的rest api调用)
+//demo4:Building JSON data (REST API calls for Aurora push)
 public static void push(Collection<String> alias_ary, String text)  {
     ONode data = new ONode().build((d)->{
         d.getOrNew("platform").val("all");
@@ -78,136 +78,136 @@ public static void push(Collection<String> alias_ary, String text)  {
     HttpUtil.postString(apiUrl, message, headers);
 }
 
-//demo5:取值
+//demo5:
 o.get("name").getString();
 o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
 
-//demo5.1::取值并转换
+//demo5.1::
 UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并转为UserModel
 
-//demo5.2::取值并填充
+//demo5.2::
 o.get("list2").fill("[1,2,3,4,5,5,6]");
 
 
-//demo6::json path //不确定返回数量的，者会返回array类型
-//找到所有的187开头的手机号，改为186，最后输出修改后的json
+//demo6::json path //If the number is not certain, the array type is returned
+//
 o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
-//找到data.list[1]下的的mobile字段，并转为long
+//
 o.select("$.data.list[1].mobile").getLong();
 
-//查找所有手机号，并转为List<String> 
+//
 List<String> list = o.select("$..mobile").toObject(List.class);
-//查询data.list下的所有mobile，并转为List<String>
+
 List<String> list = o.select("$.data.list[*].mobile").toObject(List.class);
-//找到187手机号的用户，并输出List<UserModel>
+//
 List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
                         .toObjectList(UserModel.class);
-//或
+//
 List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
                         .toObjectList(UserModel.class);
 
 
-//demo7:遍历
-//如果是个Object
+//demo7:traverse
+//If it's an Object
 o.forEach((k,v)->{
   //...
 });
-//如果是个Array
+//If it's an Array
 o.forEach((v)->{
   //...
 });
 
-//demo8:互转
+//demo8:Transfers between
 String xml = "<xml>....</xml>";
 XmlFromer xmlFromer = new XmlFromer();
 YmalToer  ymalToer  = new YmalToer();
 
-//加载xml，输出ymal
+//Load the XML and print YMAL
 String ymal = ONode.load(xml,Constants.def(),xmlFromer).to(ymalToer);
 
-//加载xml，去掉手机号，再转为java object
+//Load the XML, remove the phone number, and turn it into a Java Object
 ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
 tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
 XxxModel m =tmp.toObject(XxxModel.class);
 ```
 
-## 关于序列化的特点
-#### 对象（可以带type）
+## Features about serialization
+#### Object (with type possible)
 ```json
 {"a":1,"b":"2"}
-//或
+//or
 {"@type":"...","a":1,"b":"2"}
 ```
-#### 数组
+#### Array
 ```json
 [1,2,3]
-//或
+//fo
 [{"@type":"...","a":1,"b":"2"},{"@type":"...","a":2,"b":"10"}]
 ```
 
-## 关于Json path的支持
-* 字符串使用单引号，例：\['name']
-* 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
+## About JSON Path support
+* String using single quotes, for example：\['name']
+* Filtering operations are separated by a space mark, for example：\[?(@.type == 1)]
 
-| 支持操作 |	说明 |
+| Support the operation |	description |
 | --- | --- |
-| `$`	| 表示根元素 |
-| `@`	| 当前节点（做为过滤表达式的谓词使用） |
-| `*`	| 通用配配符，可以表示一个名字或数字。 |
-| `..`	| 深层扫描。 可以理解为递归搜索。 |
-| `.<name>`	| 表示一个子节点 |
-| `['<name>' (, '<name>')]` | 表示一个或多个子节点 |
-| `[<number> (, <number>)]`	| 表示一个或多个数组下标（负号为倒数） |
-| `[start:end]`	| 数组片段，区间为\[start,end),不包含end（负号为倒数） |
-| `[?(<expression>)]`	| 过滤表达式。 表达式结果必须是一个布尔值。 |
+| `$`	| Represents the root element |
+| `@`	| Current node (used as a predicate for a filter expression) |
+| `*`	| Generic card character that can represent a name or number. |
+| `..`	| Deep scanning. Think of it as a recursive search. |
+| `.<name>`	| Represents a child node |
+| `['<name>' (, '<name>')]` | Represents one or more child nodes |
+| `[<number> (, <number>)]`	| Represents one or more array subscripts (the negative sign is the inverse)|
+| `[start:end]`	| Array fragment, interval \[start,end), without end (negative sign is reciprocal) |
+| `[?(<expression>)]`	| Filter expressions. The result of the expression must be a Boolean value. |
 
-| 支持过滤操作符(`操作符两边要加空隔`) |	说明 |
+| Support for filtering operators (' Space between operators')|	description |
 | --- | --- |
-| `==`	| left等于right（注意1不等于'1'） |
-| `!=`	| 不等于 |
-| `<`	| 小于 |
-| `<=`	| 小于等于 |
-| `>`	| 大于 |
-| `>=`	| 大于等于 |
-| `=~`	| 匹配正则表达式[?(@.name =~ /foo.*?/i)] |
-| `in`	| 左边存在于右边 [?(@.size in ['S', 'M'])] |
-| `nin`	| 左边不存在于右边 |
+| `==`	| Left equals right (note that 1 does not equal '1') |
+| `!=`	| Is not equal to |
+| `<`	| Less than |
+| `<=`	| Less than or equal to |
+| `>`	| Is greater than |
+| `>=`	| Greater than or equal to |
+| `=~`	| Matching regular expressions [?(@.name =~ /foo.*?/i)] |
+| `in`	| The left exists on the right [?(@.size in ['S', 'M'])] |
+| `nin`	| The left does not exist on the right |
 
-| 支持尾部函数 |	说明 |
+| Support for tail functions |	description |
 | --- | --- |
-| `min()`	| 计算数字数组的最小值 |
-| `max()`	| 计算数字数组的最大值 |
-| `avg()`	| 计算数字数组的平均值 |
-| `sum()`	| 计算数字数组的汇总值（新加的） |
+| `min()`	| Calculates the minimum value of an array of numbers |
+| `max()`	| Computes the maximum value of an array of numbers |
+| `avg()`	| Calculates the average value of an array of numbers |
+| `sum()`	| Computes the summary value of an array of numbers |
 
-例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
+case：`n.select("$.store.book[0].title")` or `n.select("$['store']['book'][0]['title']")`
 
-例：`n.select("$..book.price.min()") //找到最低的价格` 
+case：`n.select("$..book.price.min()") //Find the lowest price` 
 
-# Snack3 接口字典
+# Snack3 Interface dictionary
 ```swift
-//快捷构建
+//Quickly build
 //
 +newValue()  -> new:ONode 创建值类型节点
 +newObject() -> new:ONode 创建对象类型节点
 +newArray()  -> new:ONode 创建数组类型节点
 
-//初始化操作
+//Initialization operation
 //
 -asObject() -> self:ONode  //将当前节点切换为对象
 -asArray()  -> self:ONode  //将当前节点切换为数组
 -asValue()  -> self:ONode  //将当前节点切换为值
 -asNull()   -> self:ONode  //将当前节点切换为null
 
-//检测操作
+//Test operation
 //
 -isObject() -> bool  //检查当前节点是否为对象
 -isArray()  -> bool  //检查当前节点是否为数组
 -isValue()  -> bool  //检查当前节点是否为值
 -isNull()   -> bool  //检查当前节点是否为null
 
-//公共
+//common
 //
 -nodeData() -> ONodeData //获取当前节点数据
 -nodeType() -> ONodeType //获取当前节点类型
@@ -224,7 +224,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -count() -> int             //子节点数量，对象或数组有效
 -readonly() -> self:ONode   //只读形态（get时，不添加子节点）
 
-//值操作
+//Value operation
 //
 -val() -> OValue                //获取节点值数据结构体（如果不是值类型，会自动转换）
 -val(val:Object) -> self:ONode  //设置节点值 //val:为常规类型或ONode
@@ -239,7 +239,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -getDouble(scale:int)
 -getChar()
 
-//对象操作
+//Object operation
 //
 -obj() -> Map<String,ONode>                     //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool                   //是否存在对象子节点?
@@ -256,7 +256,7 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -remove(key:String)                   //移除对象的子节点
 -forEach((k,v)->..) -> self:ONode     //遍历对象的子节点
 
-//数组操作
+//Array operation
 //
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
 -get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
@@ -271,13 +271,13 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -removeAt(index:int)                 //移除数组的子节点
 -forEach(v->..) -> self:ONode        //遍历数组的子节点
 
-//特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
+//Attrs operation（不破坏数据的情况上，添加数据；或用于构建xml dom）
 //
 -attrGet(key:String) -> String                  //获取特性
 -attrSet(key:String,val:String) -> self:ONode   //设置特性
 -attrForeach((k,v)->..) -> self:ONode           //遍历特性
 
-//转换操作
+//Conversion operations
 //
 -toString() -> String               //转为string （由字符串转换器决定，默认为json）
 -toJson() -> String                 //转为json string
@@ -288,35 +288,35 @@ XxxModel m =tmp.toObject(XxxModel.class);
 -to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
 -to(toer:Toer) -> T                 //将当前节点通过toer进行转换
 
-//填充操作（为当前节点填充数据；source 为 String 或 java object）
+//Filling operation（为当前节点填充数据；source 为 String 或 java object）
 -fill(source:Object)    -> self:ONode  //填充数据
 -fill(source:Object, Feature... features)    -> self:ONode //填充数据
 -fillObj(source:Object, Feature... features)    -> self:ONode //填充数据
 -fillStr(source:String, Feature... features)    -> self:ONode //填充数据
 
 /**
- * 以下为静态操作
+ * The following is a static operation
 **/
 
-//加载操作（source 为 String 或 java object）
+//Load operation（source 为 String 或 java object）
 //
 +load(source:Object) -> new:ONode    //加载数据
 +load(source:Object, Feature... features) -> new:ONode
 +load(source:Object, cfg:Constants) -> new:ONode
 +load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
 
-//加载 string
+//Load string
 +loadStr(source:String) -> new:ONode	//仅String
 +loadStr(source:String, Feature... features) -> new:ONode	//仅String
 //加载 java object
 +loadObj(source:Object) -> new:ONode	//仅java object
 +loadObj(source:Object, Feature... features) -> new:ONode	//仅java object
 
-//字符串化操作
+//Stringing operation
 //
 +stringify(source:Object) -> String                   //字符串化；
 
-//序列化操作
+//Serialization operation
 //
 +serialize(source:Object) -> String                   //序列化（带@type属性）
 +deserialize(source:String) -> T                      //反序列化
