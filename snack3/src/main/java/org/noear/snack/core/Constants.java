@@ -1,8 +1,8 @@
 package org.noear.snack.core;
 
 import org.noear.snack.core.exts.Act1;
+import org.noear.snack.core.utils.DateUtil;
 
-import javax.xml.crypto.Data;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -90,7 +90,7 @@ public class Constants {
     }
 
     public Date stringToDate(String date) throws ParseException {
-        return date_format.parse(date);
+        return DateUtil.parse(date);
     }
 
     /**
