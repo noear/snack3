@@ -2,7 +2,9 @@ package org.noear.snack.core;
 
 import org.noear.snack.core.exts.Act1;
 
+import javax.xml.crypto.Data;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -68,7 +70,7 @@ public class Constants {
     }
 
     //日期格式
-    public DateFormat date_format = DEFAULTS.DEF_DATE_FORMAT;
+    public DateFormat date_format = DEFAULTS.DEF_DATETIME_FORMAT;
     //类型key
     public String type_key = DEFAULTS.DEF_TYPE_KEY;
     //时区
@@ -83,8 +85,28 @@ public class Constants {
     //=================
 
 
-    public final String dateToString(Date date) {
+    public String dateToString(Date date) {
         return date_format.format(date);
+    }
+
+    public Date stringToDate(String date) throws ParseException {
+        //yyyy-MM-dd'T'HH:mm:ss
+        //yyyy-MM-dd HH:mm:ss
+        //yyyy-MM-dd
+        //
+        if (date.length() == 19) {
+            if (date.charAt(11) == 'T') {
+                return DEFAULTS.DEF_DATETIME_FORMAT.parse(date);
+            } else {
+                return DEFAULTS.DEF_DATETIME_FORMAT2.parse(date);
+            }
+        }
+
+        if (date.length() == 10) {
+            return DEFAULTS.DEF_DATE_FORMAT.parse(date);
+        }
+
+        return date_format.parse(date);
     }
 
     /**

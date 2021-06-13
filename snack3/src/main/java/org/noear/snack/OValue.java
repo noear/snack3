@@ -291,9 +291,9 @@ public class OValue {
     /**
      * 尝试解析时间
      */
-    private static Date parseDate(String dateString) {
+    private Date parseDate(String dateString) {
         try {
-            return DEFAULTS.DEF_DATE_FORMAT.parse(dateString);
+            return _n._c.stringToDate(dateString);
         } catch (ParseException ex) {
             return null;
         }

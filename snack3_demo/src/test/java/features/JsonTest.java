@@ -141,7 +141,7 @@ public class JsonTest {
         assert 123 == ((ONode)c.target).get(0).getInt();
         assert 123.45 == ((ONode)c.target).get(1).getDouble();
         assert "123.45".equals(((ONode)c.target).get(2).getString());
-        assert "2019-01-02T03:04:05".equals(DEFAULTS.DEF_DATE_FORMAT.format(((ONode)c.target).get(3).getDate()));
+        assert "2019-01-02T03:04:05".equals(DEFAULTS.DEF_DATETIME_FORMAT.format(((ONode)c.target).get(3).getDate()));
         assert ((ONode)c.target).get(4).getBoolean();
         assert !((ONode)c.target).get(5).getBoolean();
 
