@@ -27,8 +27,6 @@ public class DEFAULTS {
     public static final Locale    DEF_LOCALE    = Locale.getDefault();
     /** 默认时间格式器 */
     public static DateFormat DEF_DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", DEF_LOCALE);
-    public static DateFormat DEF_DATETIME_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEF_LOCALE);
-    public static DateFormat DEF_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", DEF_LOCALE);
 
     /** 默认对象来源器 */
     public static final Fromer DEF_OBJECT_FROMER = new ObjectFromer();

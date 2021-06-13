@@ -90,22 +90,6 @@ public class Constants {
     }
 
     public Date stringToDate(String date) throws ParseException {
-        //yyyy-MM-dd'T'HH:mm:ss
-        //yyyy-MM-dd HH:mm:ss
-        //yyyy-MM-dd
-        //
-        if (date.length() == 19) {
-            if (date.charAt(10) == 'T') {
-                return DEFAULTS.DEF_DATETIME_FORMAT.parse(date);
-            } else {
-                return DEFAULTS.DEF_DATETIME_FORMAT2.parse(date);
-            }
-        }
-
-        if (date.length() == 10) {
-            return DEFAULTS.DEF_DATE_FORMAT.parse(date);
-        }
-
         return date_format.parse(date);
     }
 
