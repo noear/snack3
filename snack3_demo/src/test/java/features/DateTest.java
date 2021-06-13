@@ -4,40 +4,11 @@ import _models.DateModel;
 import _models.DateModel2;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.utils.DateUtil;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
 
 /**
  * @author noear 2021/6/13 created
  */
 public class DateTest {
-    @Test
-    public void test1() throws ParseException {
-        Date date = new Date();
-
-        test1One(date, DateUtil.FORMAT_24_ISO08601);
-        test1One(date, DateUtil.FORMAT_19_ISO);
-        test1One(date, DateUtil.FORMAT_19);
-        test1One(date, DateUtil.FORMAT_22);
-        test1One(date, DateUtil.FORMAT_10);
-        test1One(date, DateUtil.FORMAT_29);
-        test1One(date, DateUtil.FORMAT_23_a);
-        test1One(date, DateUtil.FORMAT_23_b);
-    }
-
-    private void test1One(Date date, DateFormat format) throws ParseException {
-        String str = format.format(date);
-
-        System.out.println(str + " == " + str.length());
-
-        System.out.println(format.parse(str).getTime());
-    }
 
     @Test
     public void test2() {
