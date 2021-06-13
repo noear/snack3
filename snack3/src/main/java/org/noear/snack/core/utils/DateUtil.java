@@ -22,43 +22,43 @@ public class DateUtil {
 
     public static final String FORMAT_8 = "HH:mm:ss";
 
-    public static Date parse(String strVal) throws ParseException {
-        final int len = strVal.length();
-        String format = null;
+    public static Date parse(String val) throws ParseException {
+        final int len = val.length();
+        String ft = null;
 
 
         if (len == 29) {
-            if (strVal.charAt(26) == ':' && strVal.charAt(28) == '0') {
-                format = FORMAT_29;
+            if (val.charAt(26) == ':' && val.charAt(28) == '0') {
+                ft = FORMAT_29;
             }
         } else if (len == 24) {
-            if (strVal.charAt(10) == 'T') {
-                format = FORMAT_24_ISO08601;
+            if (val.charAt(10) == 'T') {
+                ft = FORMAT_24_ISO08601;
             }
         } else if (len == 23) {
-            if (strVal.charAt(19) == ',') {
-                format = FORMAT_23_a;
+            if (val.charAt(19) == ',') {
+                ft = FORMAT_23_a;
             } else {
-                format = FORMAT_23_b;
+                ft = FORMAT_23_b;
             }
         } else if (len == 22) {
-            format = FORMAT_22;
+            ft = FORMAT_22;
         } else if (len == 19) {
-            if (strVal.charAt(10) == 'T') {
-                format = FORMAT_19_ISO;
+            if (val.charAt(10) == 'T') {
+                ft = FORMAT_19_ISO;
             } else {
-                format = FORMAT_19;
+                ft = FORMAT_19;
             }
         } else if (len == 10) {
-            format = FORMAT_10;
+            ft = FORMAT_10;
         } else if (len == 8) {
-            format = FORMAT_8;
+            ft = FORMAT_8;
         }
 
-        if (format != null) {
-            DateFormat df = new SimpleDateFormat(format, DEFAULTS.DEF_LOCALE);
+        if (ft != null) {
+            DateFormat df = new SimpleDateFormat(ft, DEFAULTS.DEF_LOCALE);
             df.setTimeZone(DEFAULTS.DEF_TIME_ZONE);
-            return df.parse(strVal);
+            return df.parse(val);
         } else {
             return null;
         }
