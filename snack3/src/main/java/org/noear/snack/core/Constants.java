@@ -6,6 +6,7 @@ import org.noear.snack.core.utils.DateUtil;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -72,7 +73,7 @@ public class Constants {
     }
 
     //日期格式
-    public DateFormat date_format = DEFAULTS.DEF_DATETIME_FORMAT;
+    public String date_format = DEFAULTS.DEF_DATETIME_FORMAT;
     //类型key
     public String type_key = DEFAULTS.DEF_TYPE_KEY;
     //时区
@@ -88,7 +89,10 @@ public class Constants {
 
 
     public String dateToString(Date date) {
-        return date_format.format(date);
+        DateFormat df = new SimpleDateFormat(date_format, DEFAULTS.DEF_LOCALE);
+        df.setTimeZone(time_zone);
+
+        return df.format(date);
     }
 
     public Date stringToDate(String date) throws ParseException {

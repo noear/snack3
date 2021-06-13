@@ -125,7 +125,7 @@ public class Demo3 {
         Date date = new Date();
 
         Constants cfg = Constants.of(Feature.WriteDateUseFormat)
-                .build(c -> c.date_format = new SimpleDateFormat("yyyy-MM-dd", c.locale));
+                .build(c -> c.date_format = "yyyy-MM-dd");
 
         System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
     }
