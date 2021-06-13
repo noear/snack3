@@ -95,7 +95,7 @@ public class Constants {
         //yyyy-MM-dd
         //
         if (date.length() == 19) {
-            if (date.charAt(11) == 'T') {
+            if (date.charAt(10) == 'T') {
                 return DEFAULTS.DEF_DATETIME_FORMAT.parse(date);
             } else {
                 return DEFAULTS.DEF_DATETIME_FORMAT2.parse(date);
