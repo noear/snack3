@@ -17,4 +17,5 @@ public class DateModel2 {
     public Date date6;
     public Date date7;
     public Date date8;
+    public LocalTime date9;
 }
