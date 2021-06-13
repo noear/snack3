@@ -10,6 +10,7 @@ import org.noear.snack.from.JsonFromer;
 import org.noear.snack.to.JsonToer;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -138,10 +139,13 @@ public class JsonTest {
 
         new JsonFromer().handle(c);
 
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+
         assert 123 == ((ONode)c.target).get(0).getInt();
         assert 123.45 == ((ONode)c.target).get(1).getDouble();
         assert "123.45".equals(((ONode)c.target).get(2).getString());
-        assert "2019-01-02T03:04:05".equals(DEFAULTS.DEF_DATETIME_FORMAT.format(((ONode)c.target).get(3).getDate()));
+        assert "2019-01-02T03:04:05".equals(format.format(((ONode)c.target).get(3).getDate()));
         assert ((ONode)c.target).get(4).getBoolean();
         assert !((ONode)c.target).get(5).getBoolean();
 
