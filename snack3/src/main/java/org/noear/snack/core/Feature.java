@@ -28,6 +28,11 @@ public enum  Feature {
     /** 输出：对斜杠’/’进行转义 */
     WriteSlashAsSpecial,
 
+    /**
+     * 输出：数字用字符串
+     * */
+    WriteNumberUseString,
+
     /** 输出:浏览器安全处理（不输出<>） */
     BrowserSecure,
 

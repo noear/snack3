@@ -149,37 +149,52 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeValNumber(Constants cfg, StringBuilder sBuf, Number val){
+    private void writeValNumber(Constants cfg, StringBuilder sBuf, Number val) {
 
-        if(val instanceof BigInteger){
+        if (val instanceof BigInteger) {
             BigInteger v = (BigInteger) val;
             String sVal = v.toString();
 
-            //数字太大时，可用string来表示；
-            if(sVal.length()>16 && ( v.compareTo(TypeUtil.INT_LOW)<0 || v.compareTo(TypeUtil.INT_HIGH)>0) && cfg.hasFeature(Feature.BrowserCompatible)) {
+            if (cfg.hasFeature(Feature.WriteNumberUseString)) {
                 writeValString(cfg, sBuf, sVal, false);
-            }else{
-                sBuf.append(sVal);
+            } else {
+                //数字太大时，可用string来表示；
+                if (sVal.length() > 16 && (v.compareTo(TypeUtil.INT_LOW) < 0 || v.compareTo(TypeUtil.INT_HIGH) > 0) && cfg.hasFeature(Feature.BrowserCompatible)) {
+                    writeValString(cfg, sBuf, sVal, false);
+                } else {
+                    sBuf.append(sVal);
+                }
             }
             return;
         }
 
-        if(val instanceof BigDecimal){
+        if (val instanceof BigDecimal) {
             BigDecimal v = (BigDecimal) val;
             String sVal = v.toPlainString();
 
-            //数字太大时，可用string来表示；
-            if(sVal.length()>16 && ( v.compareTo(TypeUtil.DEC_LOW)<0 || v.compareTo(TypeUtil.DEC_HIGH)>0) && cfg.hasFeature(Feature.BrowserCompatible)) {
+            if (cfg.hasFeature(Feature.WriteNumberUseString)) {
                 writeValString(cfg, sBuf, sVal, false);
-            }else{
-                sBuf.append(sVal);
+            } else {
+                //数字太大时，可用string来表示；
+                if (sVal.length() > 16 && (v.compareTo(TypeUtil.DEC_LOW) < 0 || v.compareTo(TypeUtil.DEC_HIGH) > 0) && cfg.hasFeature(Feature.BrowserCompatible)) {
+                    writeValString(cfg, sBuf, sVal, false);
+                } else {
+                    sBuf.append(sVal);
+                }
             }
             return;
         }
 
-        sBuf.append(val.toString());
+        if (cfg.hasFeature(Feature.WriteNumberUseString)) {
+            writeValString(cfg, sBuf, val.toString(), false);
+        } else {
+            sBuf.append(val.toString());
+        }
     }
 
+    /**
+     * @param isStr 是否为真实字符串
+     * */
     private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
         boolean useSingleQuotes = cfg.hasFeature(Feature.UseSingleQuotes);
