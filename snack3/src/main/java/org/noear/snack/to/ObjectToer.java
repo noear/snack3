@@ -5,6 +5,7 @@ import org.noear.snack.ONodeData;
 import org.noear.snack.OValue;
 import org.noear.snack.OValueType;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.core.NodeDecoder;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
@@ -20,7 +21,11 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -192,6 +197,12 @@ public class ObjectToer implements Toer {
             return new java.sql.Time(v.getLong());
         } else if (is(Date.class, clz)) {
             return v.getDate();
+        } else if (is(LocalDateTime.class, clz)) {
+            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
+        } else if (is(LocalDate.class, clz)) {
+            return  v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
+        } else if (is(LocalTime.class, clz)) {
+            return  v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
         } else if (is(BigDecimal.class, clz)) {
             if (v.type() == OValueType.Number) {
                 if (v.getRawNumber() instanceof BigDecimal) {

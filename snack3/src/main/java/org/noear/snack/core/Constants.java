@@ -3,6 +3,7 @@ package org.noear.snack.core;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.utils.DateUtil;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
@@ -90,7 +91,7 @@ public class Constants {
     }
 
     public Date stringToDate(String date) throws ParseException {
-        return DateUtil.parse(date);
+        return Timestamp.valueOf(date); //DateUtil.parse(date);
     }
 
     /**

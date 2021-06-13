@@ -11,14 +11,14 @@ import java.util.Date;
  * @author noear 2021/6/13 created
  */
 public class DateUtil {
-    public static DateFormat FORMAT_24_ISO08601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_19_ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_19 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_22 = new SimpleDateFormat("yyyyMMddHHmmssSSSZ", DEFAULTS.DEF_LOCALE);//z: +0000
-    public static DateFormat FORMAT_10 = new SimpleDateFormat("yyyy-MM-dd", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_29 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_23_a = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", DEFAULTS.DEF_LOCALE);
-    public static DateFormat FORMAT_23_b = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_24_ISO08601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_19_ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_19 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_22 = new SimpleDateFormat("yyyyMMddHHmmssSSSZ", DEFAULTS.DEF_LOCALE);//z: +0000
+    public static final DateFormat FORMAT_10 = new SimpleDateFormat("yyyy-MM-dd", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_29 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_23_a = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS", DEFAULTS.DEF_LOCALE);
+    public static final DateFormat FORMAT_23_b = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", DEFAULTS.DEF_LOCALE);
 
     public static Date parse(String strVal) throws ParseException {
         final int len = strVal.length();
