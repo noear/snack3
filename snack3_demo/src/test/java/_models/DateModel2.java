@@ -10,10 +10,10 @@ import java.util.Date;
  */
 public class DateModel2 {
     public LocalDateTime date1;
-    public LocalDate date2;
-    public LocalTime date3;
+    public LocalDateTime date2;
+    public LocalDateTime date3;
     public Date date4;
-    public Date date5;
+    public LocalDate date5;
     public Date date6;
     public Date date7;
     public Date date8;

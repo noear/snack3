@@ -8,6 +8,9 @@ import org.noear.snack.core.utils.DateUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 /**
@@ -15,7 +18,7 @@ import java.util.Date;
  */
 public class DateTest {
     @Test
-    public void test1() throws ParseException{
+    public void test1() throws ParseException {
         Date date = new Date();
 
         test1One(date, DateUtil.FORMAT_24_ISO08601);
@@ -37,9 +40,9 @@ public class DateTest {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         String json = "{date1:'2021-06-13T20:54:51.566Z', date2:'2021-06-13T20:54:51', date3:'2021-06-13 20:54:51', date4:'20210613205451566+0800', date5:'2021-06-13', date6:'2021-06-13T20:54:51.566+08:00', date7:'2021-06-13 20:54:51,566', date8:'2021-06-13 20:54:51.566'}";
-        DateModel dateModel = ONode.deserialize(json,DateModel.class);
+        DateModel dateModel = ONode.deserialize(json, DateModel.class);
 
         assert dateModel.date1.getTime() == 1623588891566L;
         assert dateModel.date2.getTime() == 1623588891000L;
@@ -53,10 +56,25 @@ public class DateTest {
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         String json = "{date1:'2021-06-13T20:54:51.566Z', date2:'2021-06-13T20:54:51', date3:'2021-06-13 20:54:51', date4:'20210613205451566+0800', date5:'2021-06-13', date6:'2021-06-13T20:54:51.566+08:00', date7:'2021-06-13 20:54:51,566', date8:'2021-06-13 20:54:51.566'}";
-        DateModel2 dateModel = ONode.deserialize(json,DateModel2.class);
 
-        System.out.println(ONode.stringify(dateModel));
+        DateModel dateModel0 = ONode.deserialize(json, DateModel.class);
+        DateModel2 dateModel = ONode.deserialize(json, DateModel2.class);
+
+        String json2 = ONode.stringify(dateModel);
+        System.out.println(json2);
+
+        DateModel2 dateModel2 = ONode.deserialize(json2, DateModel2.class);
+
+
+        assert dateModel.date1.equals(dateModel2.date1);
+        assert dateModel.date2.equals(dateModel2.date2);
+        assert dateModel.date3.equals(dateModel2.date3);
+        assert dateModel.date4.equals(dateModel2.date4);
+        assert dateModel.date5.equals(dateModel2.date5);
+        assert dateModel.date6.equals(dateModel2.date6);
+        assert dateModel.date7.equals(dateModel2.date7);
+        assert dateModel.date8.equals(dateModel2.date8);
     }
 }

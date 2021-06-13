@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -45,6 +46,12 @@ public class ObjectFromer implements Fromer {
             rst.val().setString((String) source);
         } else if (source instanceof Date) {
             rst.val().setDate((Date) source);
+        } else if(source instanceof LocalDateTime){
+            Instant instant = ((LocalDateTime)source).toInstant(ZoneOffset.UTC);
+            rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
+        } else if(source instanceof LocalDate){
+            Instant instant = ((LocalDate)source).atTime(LocalTime.MIN).toInstant(ZoneOffset.UTC);
+            rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
         } else if (source instanceof Boolean) {
             rst.val().setBool((boolean) source);
         } else if (source instanceof Number) {

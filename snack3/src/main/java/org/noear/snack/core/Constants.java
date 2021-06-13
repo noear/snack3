@@ -6,6 +6,7 @@ import org.noear.snack.core.utils.DateUtil;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class Constants {
     }
 
     public Date stringToDate(String date) throws ParseException {
-        return Timestamp.valueOf(date); //DateUtil.parse(date);
+        return DateUtil.parse(date);
     }
 
     /**
