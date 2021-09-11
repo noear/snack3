@@ -2,6 +2,7 @@ package org.noear.snack.from;
 
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
+import org.noear.snack.SnackException;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.exts.CharBuffer;
@@ -302,7 +303,7 @@ public class JsonFromer implements Fromer {
                 if(isNoterr){
                     oval.setString(sval);
                 }else {
-                    throw new RuntimeException("Format error!");
+                    throw new SnackException("Format error!");
                 }
             }
         }

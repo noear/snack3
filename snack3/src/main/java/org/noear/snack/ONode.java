@@ -3,7 +3,6 @@ package org.noear.snack;
 import org.noear.snack.core.*;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.exts.Act2;
-import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 

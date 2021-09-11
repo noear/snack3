@@ -9,7 +9,7 @@ Snack3 是一个支持JSONPath的JSON框架。JSONPath是一个很强大的功�
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.1.18</version>
+  <version>3.1.19</version>
 </dependency>
 ```
 

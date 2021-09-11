@@ -60,7 +60,7 @@ public class OValue {
             return;
         }
 
-        throw new RuntimeException("不支持类型:" + val.getClass().getName());
+        throw new SnackException("unsupport type class" + val.getClass().getName());
     }
 
     public void setNull() {

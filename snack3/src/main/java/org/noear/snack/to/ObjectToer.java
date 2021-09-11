@@ -1,9 +1,6 @@
 package org.noear.snack.to;
 
-import org.noear.snack.ONode;
-import org.noear.snack.ONodeData;
-import org.noear.snack.OValue;
-import org.noear.snack.OValueType;
+import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.core.NodeDecoder;
@@ -82,7 +79,7 @@ public class ObjectToer implements Toer {
         if (StringUtil.isEmpty(typeStr) == false) {
             Class<?> clz = BeanUtil.loadClass(typeStr);
             if (clz == null) {
-                throw new RuntimeException("unsupport type " + typeStr);
+                throw new SnackException("unsupport type " + typeStr);
             } else {
                 return clz;
             }
@@ -227,7 +224,7 @@ public class ObjectToer implements Toer {
         } else if (is(Object.class, clz)) {
             return v.getRaw();
         } else {
-            throw new RuntimeException("unsupport type " + clz.getName());
+            throw new SnackException("unsupport type " + clz.getName());
         }
     }
 
@@ -305,7 +302,7 @@ public class ObjectToer implements Toer {
             }
             return val;
         } else {
-            throw new RuntimeException("unsupport type " + target.getName());
+            throw new SnackException("unsupport type " + target.getName());
         }
     }
 

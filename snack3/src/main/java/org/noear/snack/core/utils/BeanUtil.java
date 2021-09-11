@@ -1,5 +1,6 @@
 package org.noear.snack.core.utils;
 
+import org.noear.snack.SnackException;
 import org.noear.snack.core.exts.FieldWrap;
 
 import java.io.Reader;
@@ -27,7 +28,7 @@ public class BeanUtil {
 
             return clz;
         }catch (Exception ex){
-            throw new RuntimeException(ex);
+            throw new SnackException(ex);
         }
     }
 
@@ -52,7 +53,7 @@ public class BeanUtil {
                 buf.append(chars, 0, len);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("read string from reader error", ex);
+            throw new SnackException("read string from reader error", ex);
         }
 
         String text = buf.toString();
@@ -61,7 +62,7 @@ public class BeanUtil {
             try {
                 reader.close();
             }catch (Exception ex){
-                throw new RuntimeException("read string from reader error", ex);
+                throw new SnackException("read string from reader error", ex);
             }
         }
 
@@ -72,7 +73,7 @@ public class BeanUtil {
         try {
             return clz.newInstance();
         } catch (Exception ex) {
-            throw new RuntimeException("create instance error, class " + clz.getName());
+            throw new SnackException("create instance error, class " + clz.getName());
         }
     }
 }

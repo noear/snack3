@@ -1,5 +1,6 @@
 package org.noear.snack.core.utils;
 
+import org.noear.snack.SnackException;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.ParameterizedTypeImpl;
 
@@ -29,7 +30,7 @@ public class TypeUtil {
         }else if(Long.class.isAssignableFrom(clz) ||  Long.TYPE == clz){
             return Long.parseLong(str);
         }else {
-            throw new RuntimeException("unsupport type "+ str);
+            throw new SnackException("unsupport type "+ str);
         }
     }
 
@@ -164,7 +165,7 @@ public class TypeUtil {
                 list = (Collection) rawClass.newInstance();
             } catch(Exception e){
                 if(isThrow) {
-                    throw new RuntimeException("create instance error, class " + rawClass.getName());
+                    throw new SnackException("create instance error, class " + rawClass.getName());
                 }else{
                     return null;
                 }
@@ -226,13 +227,13 @@ public class TypeUtil {
 
         Class<?> clazz = (Class<?>) type;
         if (clazz.isInterface()) {
-            throw new RuntimeException("unsupport type " + type);
+            throw new SnackException("unsupport type " + type);
         }
 
         try {
             return (Map) clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("unsupport type " + type, e);
+            throw new SnackException("unsupport type " + type, e);
         }
     }
 
@@ -242,7 +243,7 @@ public class TypeUtil {
         } else if(type instanceof ParameterizedType){
             return getRawClass(((ParameterizedType) type).getRawType());
         } else{
-            throw new RuntimeException("TODO");
+            throw new SnackException("TODO");
         }
     }
 }

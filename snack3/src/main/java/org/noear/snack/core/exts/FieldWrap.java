@@ -1,5 +1,6 @@
 package org.noear.snack.core.exts;
 
+import org.noear.snack.SnackException;
 import org.noear.snack.annotation.NodeName;
 import org.noear.snack.core.utils.StringUtil;
 
@@ -50,7 +51,7 @@ public class FieldWrap {
 //                _setter.invoke(tObj, new Object[]{val});
 //            }
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new SnackException(ex);
         }
     }
 
@@ -62,7 +63,7 @@ public class FieldWrap {
 //                return _getter.invoke(tObj);
 //            }
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new SnackException(ex);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.noear.snack.core;
 
 import org.noear.snack.ONode;
+import org.noear.snack.SnackException;
 import org.noear.snack.core.exts.ParameterizedTypeImpl;
 
 import java.lang.reflect.ParameterizedType;
@@ -90,7 +91,7 @@ public class Context {
             handler.handle(this);
             return this;
         }catch (Exception ex){
-            throw new RuntimeException(ex);
+            throw new SnackException(ex);
         }
     }
 }
