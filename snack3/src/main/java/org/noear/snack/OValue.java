@@ -1,7 +1,5 @@
 package org.noear.snack;
 
-import org.noear.snack.core.DEFAULTS;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -9,6 +7,8 @@ import java.util.Date;
 
 /**
  * 节点值
+ *
+ * @author noear
  * */
 public class OValue {
     protected String _string; //字符串

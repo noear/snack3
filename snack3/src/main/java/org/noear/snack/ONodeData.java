@@ -6,6 +6,8 @@ import java.util.*;
 
 /**
  * 节点数据
+ *
+ * @author noear
  * */
 public class ONodeData {
     /** 节点数据的 value */

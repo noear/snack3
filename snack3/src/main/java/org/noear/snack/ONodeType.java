@@ -2,6 +2,8 @@ package org.noear.snack;
 
 /**
  * 节点类型
+ *
+ * @author noear
  * */
 public enum ONodeType {
     /** null 类型 */
