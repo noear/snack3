@@ -1,7 +1,10 @@
 package org.noear.snack;
 
 /**
- * @author noear 2021/9/11 created
+ * Snack 异常
+ *
+ * @author noear
+ * @since 3.1
  */
 public class SnackException extends RuntimeException {
     public SnackException(String message) {

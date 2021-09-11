@@ -1,3 +1,6 @@
+##### 3.1.19::
+1. 增加类型 SnackException
+
 ##### 3.1.18::
 1. 增加特性 WriteNumberUseString
 2. 增加注解：Node

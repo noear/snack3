@@ -2,6 +2,8 @@ package org.noear.snack;
 
 /**
  * 节点值类型（7个）
+ *
+ * @author noear
  * */
 public enum OValueType {
     /** null 类型 */
