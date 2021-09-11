@@ -18,17 +18,19 @@ import java.util.function.Predicate;
 public class BeanUtil {
 
     public static final Map<String,Class<?>> clzCached = new ConcurrentHashMap<>();
-    public static Class<?> loadClass(String clzName){
+    public static Class<?> loadClass(String clzName) {
         try {
             Class<?> clz = clzCached.get(clzName);
-            if(clz == null) {
+            if (clz == null) {
                 clz = Class.forName(clzName);
-                clzCached.put(clzName,clz);
+                clzCached.put(clzName, clz);
             }
 
             return clz;
-        }catch (Exception ex){
-            throw new SnackException(ex);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SnackException(e);
         }
     }
 

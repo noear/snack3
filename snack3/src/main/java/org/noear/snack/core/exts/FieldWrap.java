@@ -50,8 +50,8 @@ public class FieldWrap {
 //            } else {
 //                _setter.invoke(tObj, new Object[]{val});
 //            }
-        } catch (IllegalAccessException ex) {
-            throw new SnackException(ex);
+        } catch (IllegalAccessException e) {
+            throw new SnackException(e);
         }
     }
 

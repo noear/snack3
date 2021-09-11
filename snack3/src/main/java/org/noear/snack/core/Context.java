@@ -11,16 +11,22 @@ import java.lang.reflect.Type;
  * 处理上下文对象
  * */
 public class Context {
-    /** 常量配置 */
+    /**
+     * 常量配置
+     */
     public final Constants config;
 
-    /** 来源 */
+    /**
+     * 来源
+     */
     public Object source;
 
-    /** 目标 */
+    /**
+     * 目标
+     */
     public Object target;
     public Class<?> target_clz;
-    public Type     target_type;
+    public Type target_type;
 
     /**
      * 用于来源处理的构造
@@ -41,7 +47,7 @@ public class Context {
             return;
         }
 
-        if(type0 instanceof Class){
+        if (type0 instanceof Class) {
             //for class
             //
             Class<?> clz = (Class<?>) type0;
@@ -61,14 +67,14 @@ public class Context {
             } else {
                 initType(clz, clz);
             }
-        }else{
+        } else {
             //for type
             //
             initType(type0);
         }
     }
 
-    private void initType(Type type){
+    private void initType(Type type) {
         if (type instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) type;
 
@@ -78,7 +84,7 @@ public class Context {
         }
     }
 
-    private void initType(Type type, Class<?> clz){
+    private void initType(Type type, Class<?> clz) {
         target_type = type;
         target_clz = clz;
     }
@@ -86,12 +92,14 @@ public class Context {
     /**
      * 使用代理对当前上下文进行处理
      */
-    public Context handle(Handler handler)  {
+    public Context handle(Handler handler) {
         try {
             handler.handle(this);
             return this;
-        }catch (Exception ex){
-            throw new SnackException(ex);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SnackException(e);
         }
     }
 }
