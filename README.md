@@ -117,19 +117,6 @@ o.forEach((k,v)->{
 o.forEach((v)->{
   //...
 });
-
-//demo8:Transfers between
-String xml = "<xml>....</xml>";
-XmlFromer xmlFromer = new XmlFromer();
-YmalToer  ymalToer  = new YmalToer();
-
-//Load the XML and print YMAL
-String ymal = ONode.load(xml,Constants.def(),xmlFromer).to(ymalToer);
-
-//Load the XML, remove the phone number, and turn it into a Java Object
-ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
-tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
-XxxModel m =tmp.toObject(XxxModel.class);
 ```
 
 ## Features about serialization
