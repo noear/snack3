@@ -1,8 +1,7 @@
 package org.noear.snack.core;
 
 import org.noear.snack.ONode;
-import org.noear.snack.SnackException;
-import org.noear.snack.core.exts.ParameterizedTypeImpl;
+import org.noear.snack.exception.SnackException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

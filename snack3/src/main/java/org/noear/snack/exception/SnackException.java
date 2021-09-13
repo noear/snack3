@@ -1,4 +1,4 @@
-package org.noear.snack;
+package org.noear.snack.exception;
 
 /**
  * Snack 异常

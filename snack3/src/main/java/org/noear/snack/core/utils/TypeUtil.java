@@ -1,6 +1,6 @@
 package org.noear.snack.core.utils;
 
-import org.noear.snack.SnackException;
+import org.noear.snack.exception.SnackException;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.ParameterizedTypeImpl;
 

@@ -2,7 +2,7 @@ package org.noear.snack.from;
 
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
-import org.noear.snack.SnackException;
+import org.noear.snack.exception.SnackException;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.exts.CharBuffer;

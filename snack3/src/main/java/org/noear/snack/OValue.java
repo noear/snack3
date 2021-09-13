@@ -1,5 +1,7 @@
 package org.noear.snack;
 
+import org.noear.snack.exception.SnackException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
