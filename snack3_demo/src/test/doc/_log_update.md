@@ -1,4 +1,7 @@
 ##### 3.1.20::
+1. ObjectToer，Map 实例类型改为 LinkedHashMap 
+
+##### 3.1.19::
 1. 增加类型 SnackException
 
 ##### 3.1.18::
