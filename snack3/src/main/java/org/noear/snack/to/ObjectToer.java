@@ -46,7 +46,7 @@ public class ObjectToer implements Toer {
         //
         if (ctx.target_type == null) {
             if (o.isObject()) {
-                return HashMap.class;
+                return LinkedHashMap.class;
             }
 
             if (o.isArray()) {
@@ -85,7 +85,7 @@ public class ObjectToer implements Toer {
         } else {
             if (def == null || def == Object.class) {
                 if (o.isObject()) {
-                    return HashMap.class;
+                    return LinkedHashMap.class;
                 }
 
                 if (o.isArray()) {
