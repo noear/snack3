@@ -1,6 +1,7 @@
 package features;
 
 import _models.UserGroupModel;
+import _models.UserGroupModel2;
 import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
@@ -47,6 +48,17 @@ public class SerializationsTest2 {
     public void test01(){
         String tmp = ONode.serialize(buildObj());
         System.out.println(tmp);
+    }
+
+    @Test
+    public void test02(){
+        String tmp = ONode.serialize(buildObj());
+        tmp = tmp.replaceAll("UserGroupModel", "UserGroupModel2");
+        UserGroupModel2 tmp2 = ONode.deserialize(tmp, UserGroupModel2.class);
+
+        assert tmp2.users != null;
+        assert tmp2.users.length > 2;
+        System.out.println(tmp2);
     }
 
     @Test
