@@ -204,7 +204,7 @@ public class _test {
         String txt = "{id:1,name:'x'}";
         ONode tmp = ONode.load(txt);
 
-        tmp.options().sub(Feature.QuoteFieldNames) //取消字段引号
+        tmp.options().remove(Feature.QuoteFieldNames) //取消字段引号
                  .add(Feature.UseSingleQuotes); //采用单引号
 
         String txt2 = tmp.toJson();
@@ -214,7 +214,7 @@ public class _test {
 
     @Test
     public void test11(){
-        ONode tmp = ONode.loadObj("46qh", Options.serialize().sub(Feature.BrowserCompatible));
+        ONode tmp = ONode.loadObj("46qh", Options.serialize().remove(Feature.BrowserCompatible));
 
         assert "46qh".equals(tmp.val().getString());
     }

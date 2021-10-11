@@ -155,7 +155,7 @@ public class _demo {
         //
         //去掉QuoteFieldNames特性，添加UseSingleQuotes特性
         //
-        tmp.options().sub(Feature.QuoteFieldNames).add(Feature.UseSingleQuotes);
+        tmp.options().remove(Feature.QuoteFieldNames).add(Feature.UseSingleQuotes);
 
         String txt2 = tmp.toJson();
 
