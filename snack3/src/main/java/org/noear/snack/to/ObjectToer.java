@@ -49,7 +49,14 @@ public class ObjectToer implements Toer {
             if (ONode.class.isAssignableFrom(clz)) {
                 return o;
             }
+        }
 
+        //提前找到@type类型，便于自定义解码器定位
+        if(o.isObject() ||  o.isArray()) {
+            clz = getTypeByNode(ctx, o, clz);
+        }
+
+        if (clz != null) {
             //自定义解析
             for(NodeDecoderEntity decoder: ctx.config.decoders()) {
                 if (decoder.isDecodable(clz)) {
@@ -69,7 +76,7 @@ public class ObjectToer implements Toer {
             case Value:
                 return analyseVal(ctx, o.nodeData(), clz);
             case Object:
-                clz = getTypeByNode(ctx, o, clz);
+                //clz = getTypeByNode(ctx, o, clz);
                 o.remove(ctx.config.type_key);//尝试移除类型内容
 
                 if (Map.class.isAssignableFrom(clz)) {
@@ -90,7 +97,7 @@ public class ObjectToer implements Toer {
                     return analyseBean(ctx, o, clz);
                 }
             case Array:
-                clz = getTypeByNode(ctx, o, clz);
+                //clz = getTypeByNode(ctx, o, clz);
 
                 if (clz.isArray()) {
                     return analyseArray(ctx, o.nodeData(), clz);
