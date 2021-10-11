@@ -25,8 +25,8 @@
 -nodeData() -> ONodeData //获取当前节点数据
 -nodeType() -> ONodeType //获取当前节点类型
 
--cfg(cfg:Constants) -> self:ONode   //切换配置
--cfg() -> Constants 				//获取配置
+-options(opts:Options) -> self:ONode    //切换选项
+-options() -> Options 				    //获取选项
 
 -build(n->..) -> self:ONode     	//节点构建表达式
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
@@ -57,7 +57,7 @@
 -obj() -> Map<String,ONode>                     //获取节点对象数据结构体（如果不是对象类型，会自动转换）
 -contains(key:String) -> bool                   //是否存在对象子节点?
 -rename(key:String,newKey:String) -> self:ONode //重命名子节点并返回自己
--get(key:String) -> child:ONode                 //获取对象子节点（不存在，生成新的子节点并返回）
+-get(key:String) -> child:ONode                 //获取对象子节点（不存在，返回空节点）***
 -getOrNew(key:String) -> child:ONode            //获取对象子节点（不存在，生成新的子节点并返回）
 -getOrNull(key:String) -> child:ONode           //获取对象子节点（不存在，返回null）
 -getNew(key:String) -> child:ONode              //生成新的对象子节点，会清除之前的数据
@@ -72,9 +72,9 @@
 //数组操作
 //
 -ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
--get(index:int)  -> child:ONode                 //获取数组子节点（超界，返回空节点）
+-get(index:int)  -> child:ONode                 //获取数组子节点（不存在，返回空节点）
 -getOrNew(index:int)  -> child:ONode            //获取数组子节点（不存在，生成新的子节点并返回）
--getOrNull(index:int)  -> child:ONode           //获取数组子节点（超界，返回null）
+-getOrNull(index:int)  -> child:ONode           //获取数组子节点（不存在，返回null）
 -addNew() -> child:ONode                        //生成新的数组子节点
 -add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
 -addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型（需要在外部初始化类型，建议用add(v)）

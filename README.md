@@ -4,9 +4,9 @@
 ` QQ交流群：22200020 `
 
 # Snack3 for java
-A miniature JSON + JSONPath framework
+一个微型JSON + Jsonpath框架
 
-Based on JDK8, 70Kb. Support: serialization and deserialization, parsing and transformation, JSON PATH query.
+基于jdk8，70kb。支持：序列化反序列化、解析和转换、Json path 查询。
 
 ```xml
 <dependency>
@@ -16,41 +16,41 @@ Based on JDK8, 70Kb. Support: serialization and deserialization, parsing and tra
 </dependency>
 ```
 
-Snack3 borrows from 'JavaScript' where all variables are declared by 'var' and 'XML DOM' where everything is' Node '. All data under it is represented by 'ONode'. 'ONode', which means' One node ', represents any type and can be converted to any type。
-* Emphasize the ability to manipulate and build the document tree
-* As an intermediate medium, it is convenient to transfer between different formats
-* High performance 'JSON path' queries (compatibility and performance are good)
-* Support for serialization and deserialization
-* Implementation based on no-argument constructors + field operations (risk of triggering an action due to injection, no)
+Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一切都是 `Node` 的设计。其下一切数据都以`ONode`表示，`ONode`也即 `One node` 之意，代表任何类型，也可以转换为任何类型。
+* 强调文档树的操控和构建能力
+* 做为中间媒体，方便不同格式互转
+* 高性能`Json path`查询（兼容性和性能很赞）
+* 支持`序列化、反序列化`
+* 基于 无参构造函数 + 字段 操作实现（因注入而触发动作的风险，不会有）
 
-## Just a couple of random examples
+## 随便放几个示例
 
 ```java
-//demo0::
+//demo0::字符串化
 String json = ONode.stringify(user); 
 
-//demo1::
-// -- Output with @ type
+//demo1::序列化
+// -- 输出带@type
 String json = ONode.serialize(user); 
 
-//demo2::
-// -- json Have already take @ type
+//demo2::反序列化
+// -- json 有已带@type
 UserModel user = ONode.deserialize(json); 
-// -- json You can do without @type (CLZ declared)
+// -- json 可以不带@type (clz 申明了)
 UserModel user = ONode.deserialize(json, UserModel.class); 
-// -- json You can print it generically without @type (the type is known)
+// -- json 可以不带@type，泛型方式输出（类型是已知的）
 List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); 
 
-//demo3::
+//demo3::转为ONode
 ONode o = ONode.loadStr(json); //将json String 转为 ONode
 ONode o = ONode.loadObj(user); //将java Object 转为 ONode
 
-//demo3.1::
+//demo3.1::转为ONode，取子节点进行序列化
 ONode o = ONode.loadStr(json);
 UserModel user = o.get("user").toObject(UserModel.class);
 
 
-//demo4:Building JSON data (REST API calls for Aurora push)
+//demo4:构建json数据(极光推送的rest api调用)
 public static void push(Collection<String> alias_ary, String text)  {
     ONode data = new ONode().build((d)->{
         d.getOrNew("platform").val("all");
@@ -78,145 +78,145 @@ public static void push(Collection<String> alias_ary, String text)  {
     HttpUtil.postString(apiUrl, message, headers);
 }
 
-//demo5:
+//demo5:取值
 o.get("name").getString();
 o.get("num").getInt();
 o.get("list").get(0).get("lev").getInt();
 
-//demo5.1::
+//demo5.1::取值并转换
 UserModel user = o.get("user").toObject(UserModel.class); //取user节点，并转为UserModel
 
-//demo5.2::
-o.get("list2").fill("[1,2,3,4,5,5,6]");
+//demo5.2::取值或新建并填充
+o.getOrNew("list2").fill("[1,2,3,4,5,5,6]");
 
 
-//demo6::json path //If the number is not certain, the array type is returned
-//
+//demo6::json path //不确定返回数量的，者会返回array类型
+//找到所有的187开头的手机号，改为186，最后输出修改后的json
 o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
-//
+//找到data.list[1]下的的mobile字段，并转为long
 o.select("$.data.list[1].mobile").getLong();
 
-//
+//查找所有手机号，并转为List<String> 
 List<String> list = o.select("$..mobile").toObject(List.class);
-
+//查询data.list下的所有mobile，并转为List<String>
 List<String> list = o.select("$.data.list[*].mobile").toObject(List.class);
-//
+//找到187手机号的用户，并输出List<UserModel>
 List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
                         .toObjectList(UserModel.class);
-//
+//或
 List<UserModel> list = o.select("$.data.list[?(@.mobile =~ /^187/)]")
                         .toObjectList(UserModel.class);
 
 
-//demo7:traverse
-//If it's an Object
+//demo7:遍历
+//如果是个Object
 o.forEach((k,v)->{
   //...
 });
-//If it's an Array
+//如果是个Array
 o.forEach((v)->{
   //...
 });
 ```
 
-## Features about serialization
-#### Object (with type possible)
+## 关于序列化的特点
+#### 对象（可以带type）
 ```json
 {"a":1,"b":"2"}
-//or
+//或
 {"@type":"...","a":1,"b":"2"}
 ```
-#### Array
+#### 数组
 ```json
 [1,2,3]
-//fo
+//或
 [{"@type":"...","a":1,"b":"2"},{"@type":"...","a":2,"b":"10"}]
 ```
 
-## About JSON Path support
-* String using single quotes, for example：\['name']
-* Filtering operations are separated by a space mark, for example：\[?(@.type == 1)]
+## 关于Json path的支持
+* 字符串使用单引号，例：\['name']
+* 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
 
-| Support the operation |	description |
+| 支持操作 |	说明 |
 | --- | --- |
-| `$`	| Represents the root element |
-| `@`	| Current node (used as a predicate for a filter expression) |
-| `*`	| Generic card character that can represent a name or number. |
-| `..`	| Deep scanning. Think of it as a recursive search. |
-| `.<name>`	| Represents a child node |
-| `['<name>' (, '<name>')]` | Represents one or more child nodes |
-| `[<number> (, <number>)]`	| Represents one or more array subscripts (the negative sign is the inverse)|
-| `[start:end]`	| Array fragment, interval \[start,end), without end (negative sign is reciprocal) |
-| `[?(<expression>)]`	| Filter expressions. The result of the expression must be a Boolean value. |
+| `$`	| 表示根元素 |
+| `@`	| 当前节点（做为过滤表达式的谓词使用） |
+| `*`	| 通用配配符，可以表示一个名字或数字。 |
+| `..`	| 深层扫描。 可以理解为递归搜索。 |
+| `.<name>`	| 表示一个子节点 |
+| `['<name>' (, '<name>')]` | 表示一个或多个子节点 |
+| `[<number> (, <number>)]`	| 表示一个或多个数组下标（负号为倒数） |
+| `[start:end]`	| 数组片段，区间为\[start,end),不包含end（负号为倒数） |
+| `[?(<expression>)]`	| 过滤表达式。 表达式结果必须是一个布尔值。 |
 
-| Support for filtering operators (' Space between operators')|	description |
+| 支持过滤操作符(`操作符两边要加空隔`) |	说明 |
 | --- | --- |
-| `==`	| Left equals right (note that 1 does not equal '1') |
-| `!=`	| Is not equal to |
-| `<`	| Less than |
-| `<=`	| Less than or equal to |
-| `>`	| Is greater than |
-| `>=`	| Greater than or equal to |
-| `=~`	| Matching regular expressions [?(@.name =~ /foo.*?/i)] |
-| `in`	| The left exists on the right [?(@.size in ['S', 'M'])] |
-| `nin`	| The left does not exist on the right |
+| `==`	| left等于right（注意1不等于'1'） |
+| `!=`	| 不等于 |
+| `<`	| 小于 |
+| `<=`	| 小于等于 |
+| `>`	| 大于 |
+| `>=`	| 大于等于 |
+| `=~`	| 匹配正则表达式[?(@.name =~ /foo.*?/i)] |
+| `in`	| 左边存在于右边 [?(@.size in ['S', 'M'])] |
+| `nin`	| 左边不存在于右边 |
 
-| Support for tail functions |	description |
+| 支持尾部函数 |	说明 |
 | --- | --- |
-| `min()`	| Calculates the minimum value of an array of numbers |
-| `max()`	| Computes the maximum value of an array of numbers |
-| `avg()`	| Calculates the average value of an array of numbers |
-| `sum()`	| Computes the summary value of an array of numbers |
+| `min()`	| 计算数字数组的最小值 |
+| `max()`	| 计算数字数组的最大值 |
+| `avg()`	| 计算数字数组的平均值 |
+| `sum()`	| 计算数字数组的汇总值（新加的） |
 
-case：`n.select("$.store.book[0].title")` or `n.select("$['store']['book'][0]['title']")`
+例：`n.select("$.store.book[0].title")` 或 `n.select("$['store']['book'][0]['title']")`
 
-case：`n.select("$..book.price.min()") //Find the lowest price` 
+例：`n.select("$..book.price.min()") //找到最低的价格`
 
-# Snack3 Interface dictionary
+# Snack3 接口字典
 ```swift
-//Quickly build
+//快捷构建
 //
-+newValue()  -> new:ONode //Create a value type node
-+newObject() -> new:ONode //Create an object type node
-+newArray()  -> new:ONode //Creates a node of array type
++newValue()  -> new:ONode 创建值类型节点
++newObject() -> new:ONode 创建对象类型节点
++newArray()  -> new:ONode 创建数组类型节点
 
-//Initialization operation
+//初始化操作
 //
--asObject() -> self:ONode  //Switches the current node to an object
--asArray()  -> self:ONode  //Switches the current node to an array
--asValue()  -> self:ONode  //Switches the current node to a value
--asNull()   -> self:ONode  //Switch the current node to NULL
+-asObject() -> self:ONode  //将当前节点切换为对象
+-asArray()  -> self:ONode  //将当前节点切换为数组
+-asValue()  -> self:ONode  //将当前节点切换为值
+-asNull()   -> self:ONode  //将当前节点切换为null
 
-//Test operation
+//检测操作
 //
--isObject() -> bool  //Checks whether the current node is an object
--isArray()  -> bool  //Checks whether the current node is an array
--isValue()  -> bool  //Check whether the current node is a value
--isNull()   -> bool  //Check whether the current node is NULL
+-isObject() -> bool  //检查当前节点是否为对象
+-isArray()  -> bool  //检查当前节点是否为数组
+-isValue()  -> bool  //检查当前节点是否为值
+-isNull()   -> bool  //检查当前节点是否为null
 
-//common
+//公共
 //
--nodeData() -> ONodeData //Gets the current node data
--nodeType() -> ONodeType //Gets the current node type
+-nodeData() -> ONodeData //获取当前节点数据
+-nodeType() -> ONodeType //获取当前节点类型
 
--options(opts:Constants) -> self:ONode   //Switch configuration
--options() -> Constants 				//Access to the configuration
+-options(opts:Options) -> self:ONode    //切换选项
+-options() -> Options 				    //获取选项
 
--build(n->..) -> self:ONode     	//Node build expression
--select(jpath:String) -> new:ONode 	                    //Select nodes using JSONPATH expressions (default cache path compilation)
--select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:Use standard mode, default non-standard
--select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:Whether to cache javaPath compilation results, the default cache
+-build(n->..) -> self:ONode     	//节点构建表达式
+-select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
+-select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:使用标准模式,默认非标准
+-select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:是否缓存javaPath编译成果，默认缓存
 
--clear()                    //Clear child node, object or array valid
--count() -> int             //Number of child nodes, object or array valid
--readonly() -> self:ONode   //Read-only mode (when GET, no child nodes are added)
+-clear()                    //清除子节点，对象或数组有效
+-count() -> int             //子节点数量，对象或数组有效
+-readonly() -> self:ONode   //只读形态（get时，不添加子节点）
 
-//Value operation
+//值操作
 //
--val() -> OValue                //Gets the node value data structure (automatically converted if it is not a value type)
--val(val:Object) -> self:ONode  //Set the node value //val: to a regular type or ONode
--getString()    //Gets the value and prints it as a String //If the node is an object or an array, JSON is printed
--getShort()     //Get the value and print it as short... (The following is the same as...)
+-val() -> OValue                //获取节点值数据结构体（如果不是值类型，会自动转换）
+-val(val:Object) -> self:ONode  //设置节点值 //val:为常规类型或ONode
+-getString()    //获取值并以string输出 //如果节点为对象或数组，则输出json
+-getShort()     //获取值并以short输出...(以下同...)
 -getInt()
 -getBoolean()
 -getLong()
@@ -226,87 +226,86 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 -getDouble(scale:int)
 -getChar()
 
-//Object operation
+//对象操作
 //
--obj() -> Map<String,ONode>                     //Gets the data structure of the node object (automatically converted if it is not the object type)
--contains(key:String) -> bool                   //Is there an object child node?
--rename(key:String,newKey:String) -> self:ONode //Rename the child node and return itself
--get(key:String) -> child:ONode                 //Gets object child node (does not exist, generates new child node and returns)
--getOrNew(key:String) -> child:ONode            //Gets object child node (does not exist, generates new child node and returns)
--getOrNull(key:String) -> child:ONode           //Gets the child node of the object (does not exist, returns null)
--getNew(key:String) -> child:ONode              //Generating a new child node of the object clears the previous data
--set(key:String,val:Object) -> self:ONode           //Sets the child nodes of the object (the type is handled automatically)
--setNode(key:String,val:ONode) -> self:ONode        //Set the child nodes of the object to type ONode (need to initialize the type externally, recommend set(k,v)).
--setAll(obj:ONode) -> self:ONode                    //Set the child node of the object, and move the child node of obj over
--setAll(map:Map<String,T>) ->self:ONode             //Set the child nodes of the object and move the members of the Map over
--setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //Set the child nodes of the object, move the members of the Map over, and hand them over to the proxy
--remove(key:String)                   //Removes the child nodes of the object
--forEach((k,v)->..) -> self:ONode     //Iterate through the child nodes of the object
+-obj() -> Map<String,ONode>                     //获取节点对象数据结构体（如果不是对象类型，会自动转换）
+-contains(key:String) -> bool                   //是否存在对象子节点?
+-rename(key:String,newKey:String) -> self:ONode //重命名子节点并返回自己
+-get(key:String) -> child:ONode                 //获取对象子节点（不存在，返回空节点）***
+-getOrNew(key:String) -> child:ONode            //获取对象子节点（不存在，生成新的子节点并返回）
+-getOrNull(key:String) -> child:ONode           //获取对象子节点（不存在，返回null）
+-getNew(key:String) -> child:ONode              //生成新的对象子节点，会清除之前的数据
+-set(key:String,val:Object) -> self:ONode           //设置对象的子节点（会自动处理类型）
+-setNode(key:String,val:ONode) -> self:ONode        //设置对象的子节点，值为ONode类型（需要在外部初始化类型，建议用set(k,v)）
+-setAll(obj:ONode) -> self:ONode                    //设置对象的子节点，将obj的子节点搬过来
+-setAll(map:Map<String,T>) ->self:ONode             //设置对象的子节点，将map的成员搬过来
+-setAll(map:Map<String,T>, (n,t)->..) ->self:ONode  //设置对象的子节点，将map的成员搬过来，并交由代理处置
+-remove(key:String)                   //移除对象的子节点
+-forEach((k,v)->..) -> self:ONode     //遍历对象的子节点
 
-//Array operation
+//数组操作
 //
--ary() -> List<ONode>                   //Gets the node array data structure (automatically converted if it is not an array)
--get(index:int)  -> child:ONode                 //Gets the array child node (overbound, returns empty node)
--getOrNew(index:int)  -> child:ONode            //Gets array child node (does not exist, generates new child node and returns)
--getOrNull(index:int)  -> child:ONode           //Gets array child nodes (overbound, returns null)
--addNew() -> child:ONode                        //Generates a new array child node
--add(val) -> self:ONode                         //Add array child node //val: for regular type or ONode
--addNode(val:ONode) -> self:ONode               //Add array child node with value of type ONode (need to initialize type externally, recommend add(v))
--addAll(ary:ONode)  -> self:ONode               //Add an array child node and move the children of ary
--addAll(ary:Collection<T>) -> self:ONode                //Add an array child node and move the member points of ARY
--addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //Add a child node of the array, and move the member points of ARY to the agent
--removeAt(index:int)                 //Removes the children of the array
--forEach(v->..) -> self:ONode        //Ignore the children of the array
+-ary() -> List<ONode>                   //获取节点数组数据结构体（如果不是数组，会自动转换）
+-get(index:int)  -> child:ONode                 //获取数组子节点（不存在，返回空节点）
+-getOrNew(index:int)  -> child:ONode            //获取数组子节点（不存在，生成新的子节点并返回）
+-getOrNull(index:int)  -> child:ONode           //获取数组子节点（不存在，返回null）
+-addNew() -> child:ONode                        //生成新的数组子节点
+-add(val) -> self:ONode                         //添加数组子节点 //val:为常规类型或ONode
+-addNode(val:ONode) -> self:ONode               //添加数组子节点，值为ONode类型（需要在外部初始化类型，建议用add(v)）
+-addAll(ary:ONode)  -> self:ONode               //添加数组子节点，将ary的子节点搬过来
+-addAll(ary:Collection<T>) -> self:ONode                //添加数组子节点，将ary的成员点搬过来
+-addAll(ary:Collection<T>,(n,t)->..) -> self:ONode      //添加数组子节点，将ary的成员点搬过来，并交由代理处置
+-removeAt(index:int)                 //移除数组的子节点
+-forEach(v->..) -> self:ONode        //遍历数组的子节点
 
-//Attrs operation（Add data without damaging the data; Or it can be used to build the XML DOM）
+//特性操作（不破坏数据的情况上，添加数据；或用于构建xml dom）
 //
--attrGet(key:String) -> String                  //Access to attr
--attrSet(key:String,val:String) -> self:ONode   //Set the attr
--attrForeach((k,v)->..) -> self:ONode           //Traversal attr
+-attrGet(key:String) -> String                  //获取特性
+-attrSet(key:String,val:String) -> self:ONode   //设置特性
+-attrForeach((k,v)->..) -> self:ONode           //遍历特性
 
-//Conversion operations
+//转换操作
 //
--toString() -> String               //To string (determined by a string converter, default is JSON)
--toJson() -> String                 //To json string
--toData() -> Object 			    //To a data structure（Map,List,Value）
--toObject(clz:Class<T>) -> T        //To java object（clz=Object.class：Automatic output type）
--toObjectList(clz:Class<T>) -> List<T>   //To java object list
+-toString() -> String               //转为string （由字符串转换器决定，默认为json）
+-toJson() -> String                 //转为json string
+-toData() -> Object 			    //转为数据结构体（Map,List,Value）
+-toObject(clz:Class<T>) -> T        //转为java object（clz=Object.class：自动输出类型）
+-toObjectList(clz:Class<T>) -> List<T>   //转为java list，用于简化：toObject((new ArrayList<User>()).getClass()) 这种写法
 
--to(toer:Toer, clz:Class<T>) -> T   //Convert the current node through TOER
--to(toer:Toer) -> T                 //Convert the current node through TOER
+-to(toer:Toer, clz:Class<T>) -> T   //将当前节点通过toer进行转换
+-to(toer:Toer) -> T                 //将当前节点通过toer进行转换
 
-//Filling operation（Populate the current node with data；source 为 String 或 java object）
--fill(source:Object)    -> self:ONode  //Fill in the data
--fill(source:Object, Feature... features)    -> self:ONode //Fill in the data
--fillObj(source:Object, Feature... features)    -> self:ONode //Fill in the data
--fillStr(source:String, Feature... features)    -> self:ONode //Fill in the data
+//填充操作（为当前节点填充数据；source 为 String 或 java object）
+-fill(source:Object)    -> self:ONode  //填充数据
+-fill(source:Object, Feature... features)    -> self:ONode //填充数据
+-fillObj(source:Object, Feature... features)    -> self:ONode //填充数据
+-fillStr(source:String, Feature... features)    -> self:ONode //填充数据
 
 /**
- * The following is a static operation
+ * 以下为静态操作
 **/
 
-//Load operation（source 为 String 或 java object）
+//加载操作（source 为 String 或 java object）
 //
-+load(source:Object) -> new:ONode    //Load the data
++load(source:Object) -> new:ONode    //加载数据
 +load(source:Object, Feature... features) -> new:ONode
-+load(source:Object, opts:Constants) -> new:ONode
-+load(source:Object, opts:Constants, fromer:Fromer) -> new:ONode
++load(source:Object, cfg:Constants) -> new:ONode
++load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
 
-//Load string
-+loadStr(source:String) -> new:ONode	//Only string
-+loadStr(source:String, Feature... features) -> new:ONode	//Only string
+//加载 string
++loadStr(source:String) -> new:ONode	//仅String
++loadStr(source:String, Feature... features) -> new:ONode	//仅String
 //加载 java object
-+loadObj(source:Object) -> new:ONode	//Only java object
-+loadObj(source:Object, Feature... features) -> new:ONode	//Only java object
++loadObj(source:Object) -> new:ONode	//仅java object
++loadObj(source:Object, Feature... features) -> new:ONode	//仅java object
 
-//Stringing operation
+//字符串化操作
 //
-+stringify(source:Object) -> String                   //stringify；
++stringify(source:Object) -> String                   //字符串化；
 
-//Serialization operation
+//序列化操作
 //
-+serialize(source:Object) -> String                   //serialize（@the type attribute）
-+deserialize(source:String) -> T                      //deserialize
-+deserialize(source:String, clz:Class<?>) -> T        //deserialize
-
++serialize(source:Object) -> String                   //序列化（带@type属性）
++deserialize(source:String) -> T                      //反序列化
++deserialize(source:String, clz:Class<?>) -> T        //反序列化
 ```
