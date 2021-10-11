@@ -384,7 +384,7 @@ public class ONode {
      * get(key) 不会自动产生新节点
      */
     public ONode readonly(boolean readonly) {
-        _c.get_readonly = readonly;
+        _c.setReadonly(readonly);
         return this;
     }
 
@@ -444,7 +444,7 @@ public class ONode {
         if (tmp == null) {
             tmp = new ONode(_c);
 
-            if (_c.get_readonly == false) {
+            if (_c.getReadonly() == false) {
                 _d.object.put(key, tmp);
             }
         }

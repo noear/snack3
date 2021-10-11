@@ -190,8 +190,15 @@ public class Options {
     }
 
     //n.get(key)时，只读处理; 即不自动添加新节点
-    public boolean get_readonly = false;
+    private boolean readonly = false;
 
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
+
+    public boolean getReadonly() {
+        return readonly;
+    }
     //=================
 
 
