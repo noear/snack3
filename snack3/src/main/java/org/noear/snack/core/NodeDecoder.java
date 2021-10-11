@@ -9,6 +9,6 @@ import java.lang.reflect.Type;
  *
  * @author noear 2021/1/1 created
  */
-public interface NodeDecoder {
-    Object decode(ONode source, Type type);
+public interface NodeDecoder<T> {
+    T decode(ONode source, Type type);
 }

@@ -3,6 +3,8 @@ package org.noear.snack.to;
 import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
+import org.noear.snack.core.NodeDecoderEntity;
+import org.noear.snack.core.NodeEncoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
@@ -39,63 +41,6 @@ public class ObjectToer implements Toer {
         }
     }
 
-    private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
-        //
-        // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
-        //
-        if (ctx.target_type == null) {
-            if (o.isObject()) {
-                return LinkedHashMap.class;
-            }
-
-            if (o.isArray()) {
-                return ArrayList.class;
-            }
-        }
-
-        String typeStr = null;
-        if (o.isArray() && o.ary().size() == 2) {
-            ONode o1 = o.ary().get(0);
-            if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
-                //
-                // 这段，不能与下面的 o.isObject() 复用
-                //
-                ONode n1 = o1.obj().get(ctx.config.type_key);
-                if (n1 != null) {
-                    typeStr = n1.val().getString();
-                }
-            }
-        }
-
-        if (o.isObject()) {
-            ONode n1 = o.obj().get(ctx.config.type_key);
-            if (n1 != null) {
-                typeStr = n1.val().getString();
-            }
-        }
-
-        if (StringUtil.isEmpty(typeStr) == false) {
-            Class<?> clz = BeanUtil.loadClass(typeStr);
-            if (clz == null) {
-                throw new SnackException("unsupport type " + typeStr);
-            } else {
-                return clz;
-            }
-        } else {
-            if (def == null || def == Object.class) {
-                if (o.isObject()) {
-                    return LinkedHashMap.class;
-                }
-
-                if (o.isArray()) {
-                    return ArrayList.class;
-                }
-            }
-
-            return def;
-        }
-    }
-
     private Object analyse(Context ctx, ONode o, Class<?> clz, Type type) throws Exception {
         if (o == null) {
             return null;
@@ -104,6 +49,13 @@ public class ObjectToer implements Toer {
         if (clz != null) {
             if (ONode.class.isAssignableFrom(clz)) {
                 return o;
+            }
+
+            //自定义解码
+            for(NodeDecoderEntity decoder: ctx.config.decoders()) {
+                if (decoder.isDecodable(clz)) {
+                    return decoder.decode(o, clz);
+                }
             }
 
 //            if (is(NodeDecoder.class, clz)) {
@@ -415,5 +367,63 @@ public class ObjectToer implements Toer {
             }
         }
         return rst;
+    }
+
+
+    private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
+        //
+        // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
+        //
+        if (ctx.target_type == null) {
+            if (o.isObject()) {
+                return LinkedHashMap.class;
+            }
+
+            if (o.isArray()) {
+                return ArrayList.class;
+            }
+        }
+
+        String typeStr = null;
+        if (o.isArray() && o.ary().size() == 2) {
+            ONode o1 = o.ary().get(0);
+            if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
+                //
+                // 这段，不能与下面的 o.isObject() 复用
+                //
+                ONode n1 = o1.obj().get(ctx.config.type_key);
+                if (n1 != null) {
+                    typeStr = n1.val().getString();
+                }
+            }
+        }
+
+        if (o.isObject()) {
+            ONode n1 = o.obj().get(ctx.config.type_key);
+            if (n1 != null) {
+                typeStr = n1.val().getString();
+            }
+        }
+
+        if (StringUtil.isEmpty(typeStr) == false) {
+            Class<?> clz = BeanUtil.loadClass(typeStr);
+            if (clz == null) {
+                throw new SnackException("unsupport type " + typeStr);
+            } else {
+                return clz;
+            }
+        } else {
+            if (def == null || def == Object.class) {
+                if (o.isObject()) {
+                    return LinkedHashMap.class;
+                }
+
+                if (o.isArray()) {
+                    return ArrayList.class;
+                }
+            }
+
+            return def;
+        }
     }
 }

@@ -2,14 +2,10 @@ package org.noear.snack.core;
 
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.utils.DateUtil;
-import org.noear.snack.from.encoder.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -60,15 +56,7 @@ public class Constants {
         return this;
     }
 
-    public Constants() {
-        addEncoder(Boolean.class, BooleanEncoder.instance);
-        addEncoder(Date.class, DateEncoder.instance);
-        addEncoder(LocalDateTime.class, LocalDateTimeEncoder.instance);
-        addEncoder(LocalDate.class, LocalDateEncoder.instance);
-        addEncoder(LocalTime.class, LocalTimeEncoder.instance);
-        addEncoder(Number.class, NumberEncoder.instance);
-        addEncoder(String.class, StringEncoder.instance);
-    }
+    public Constants() {}
 
     public Constants(int features){
         this();
@@ -84,15 +72,28 @@ public class Constants {
         return this;
     }
 
-    private final Map<Class<?>,NodeEncoder> encoderMap = new HashMap<>();
+    //自定义编码
+    private final Map<Class<?>,NodeEncoderEntity> encoderMap = new LinkedHashMap<>();
 
-    public Map<Class<?>,NodeEncoder> encoderMap(){
-        return Collections.unmodifiableMap(encoderMap);
+    public Collection<NodeEncoderEntity> encoders() {
+        return Collections.unmodifiableCollection(encoderMap.values());
     }
 
-    public <T> void addEncoder(Class<T> clz, NodeEncoder<T> encoder){
-        encoderMap.put(clz, encoder);
+    public <T> void addEncoder(Class<T> clz, NodeEncoder<T> encoder) {
+        encoderMap.put(clz, new NodeEncoderEntity(clz, encoder));
     }
+
+    //自定义解析
+    private final Map<Class<?>,NodeDecoderEntity> decoderMap = new LinkedHashMap<>();
+
+    public Collection<NodeDecoderEntity> decoders() {
+        return Collections.unmodifiableCollection(decoderMap.values());
+    }
+
+    public <T> void addDecoder(Class<T> clz, NodeDecoder<T> decoder) {
+        decoderMap.put(clz, new NodeDecoderEntity(clz, decoder));
+    }
+
 
     //日期格式
     public String date_format = DEFAULTS.DEF_DATETIME_FORMAT;

@@ -11,6 +11,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -36,16 +40,34 @@ public class ObjectFromer implements Fromer {
 
         Class<?> clz = source.getClass();
 
-        for(Map.Entry<Class<?>, NodeEncoder> kv: cfg.encoderMap().entrySet()){
-            if(kv.getKey().isAssignableFrom(clz)){
-                kv.getValue().encode(source, rst);
+        //尝试自定义编码
+        for(NodeEncoderEntity encoder: cfg.encoders()) {
+            if (encoder.isEncodable(clz)) {
+                encoder.encode(source, rst);
                 return rst;
             }
         }
 
         if (source instanceof ONode) {
             rst.val(source);
-        } else if (source instanceof Throwable) { //新补充的类型
+        } else if (source instanceof String) {
+            rst.val().setString((String) source);
+        } else if (source instanceof Date) {
+            rst.val().setDate((Date) source);
+        } else if(source instanceof LocalDateTime){
+            Instant instant = ((LocalDateTime)source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+            rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
+        } else if(source instanceof LocalDate){
+            Instant instant = ((LocalDate)source).atTime(LocalTime.MIN).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+            rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
+        } else if(source instanceof LocalTime){
+            Instant instant = ((LocalTime)source).atDate(LocalDate.of(1970,1,1)).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+            rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
+        } else if (source instanceof Boolean) {
+            rst.val().setBool((boolean) source);
+        } else if (source instanceof Number) {
+            rst.val().setNumber((Number) source);
+        }  else if (source instanceof Throwable) { //新补充的类型
             analyseBean(cfg, rst, clz, source);
         } else if (analyseArray(cfg, rst, clz, source)) { //新补充的类型::可适用任何数组
 
