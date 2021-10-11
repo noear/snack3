@@ -3,7 +3,7 @@ package features;
 import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.Feature;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class _test {
 
     @Test
     public void test3() {
-        ONode n = new ONode(Constants.of()); //空特性，什么都没有
+        ONode n = new ONode(Options.of()); //空特性，什么都没有
 
         assert "".equals(n.getString()) == false;
     }
@@ -106,7 +106,7 @@ public class _test {
         list.add(u2);
 
 
-        ONode o = ONode.load("{code:1,msg:'succeed'}",  Constants.serialize());//当toJson(),会产生@type
+        ONode o = ONode.load("{code:1,msg:'succeed'}",  Options.serialize());//当toJson(),会产生@type
         o.get("data").get("list").fill(list);
 
         assert o.select("data.list").count() == 2;
@@ -214,7 +214,7 @@ public class _test {
 
     @Test
     public void test11(){
-        ONode tmp = ONode.loadObj("46qh", Constants.serialize().sub(Feature.BrowserCompatible));
+        ONode tmp = ONode.loadObj("46qh", Options.serialize().sub(Feature.BrowserCompatible));
 
         assert "46qh".equals(tmp.val().getString());
     }

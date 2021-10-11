@@ -7,7 +7,7 @@ import org.noear.snack.core.Feature;
 import org.noear.snack.core.exts.ThData;
 import org.noear.snack.core.utils.IOUtil;
 import org.noear.snack.core.utils.TypeUtil;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.Context;
 
 import java.math.BigDecimal;
@@ -31,14 +31,14 @@ public class JsonToer implements Toer {
             StringBuilder sb =  tlBuilder.get(); // new StringBuilder(1024*5); //
             sb.setLength(0);
 
-            analyse(ctx.config, o, sb);
+            analyse(ctx.options, o, sb);
 
             ctx.target = sb.toString();
         }
     }
 
 
-    public void analyse(Constants cfg, ONode o, StringBuilder sb) {
+    public void analyse(Options cfg, ONode o, StringBuilder sb) {
         if (o == null) {
             return;
         }
@@ -62,7 +62,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeArray(Constants cfg, StringBuilder sBuf, ONodeData d){
+    private void writeArray(Options cfg, StringBuilder sBuf, ONodeData d){
         sBuf.append("[");
         Iterator<ONode> iterator = d.array.iterator();
         while (iterator.hasNext()) {
@@ -75,7 +75,7 @@ public class JsonToer implements Toer {
         sBuf.append("]");
     }
 
-    private void writeObject(Constants cfg, StringBuilder sBuf, ONodeData d){
+    private void writeObject(Options cfg, StringBuilder sBuf, ONodeData d){
         sBuf.append("{");
         Iterator<String> itr = d.object.keySet().iterator();
         while (itr.hasNext()) {
@@ -90,7 +90,7 @@ public class JsonToer implements Toer {
         sBuf.append("}");
     }
 
-    private void writeValue(Constants cfg, StringBuilder sBuf, ONodeData d){
+    private void writeValue(Options cfg, StringBuilder sBuf, ONodeData d){
         OValue v = d.value;
         switch (v.type()) {
             case Null:
@@ -119,7 +119,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeName(Constants cfg, StringBuilder sBuf, String val) {
+    private void writeName(Options cfg, StringBuilder sBuf, String val) {
         if (cfg.hasFeature(Feature.QuoteFieldNames)) {
             if(cfg.hasFeature(Feature.UseSingleQuotes)){
                 sBuf.append("'").append(val).append("'");
@@ -131,7 +131,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeValDate(Constants cfg, StringBuilder sBuf, Date val){
+    private void writeValDate(Options cfg, StringBuilder sBuf, Date val){
         if(cfg.hasFeature(Feature.WriteDateUseTicks)){
             sBuf.append(val.getTime());
         }else if(cfg.hasFeature(Feature.WriteDateUseFormat)){
@@ -141,7 +141,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeValBool(Constants cfg, StringBuilder sBuf, Boolean val){
+    private void writeValBool(Options cfg, StringBuilder sBuf, Boolean val){
         if(cfg.hasFeature(Feature.WriteBoolUse01)){
             sBuf.append(val?1:0);
         }else{
@@ -149,7 +149,7 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeValNumber(Constants cfg, StringBuilder sBuf, Number val) {
+    private void writeValNumber(Options cfg, StringBuilder sBuf, Number val) {
 
         if (val instanceof BigInteger) {
             BigInteger v = (BigInteger) val;
@@ -195,7 +195,7 @@ public class JsonToer implements Toer {
     /**
      * @param isStr 是否为真实字符串
      * */
-    private void writeValString(Constants cfg, StringBuilder sBuf, String val, boolean isStr) {
+    private void writeValString(Options cfg, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
         boolean useSingleQuotes = cfg.hasFeature(Feature.UseSingleQuotes);
         char quote = (useSingleQuotes ? '\'' : '\"');

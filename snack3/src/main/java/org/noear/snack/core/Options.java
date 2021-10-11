@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * 参数配置
  * */
-public class Constants {
+public class Options {
     public static int features_def = Feature.of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
@@ -27,38 +27,38 @@ public class Constants {
     /**
      * 默认配置
      * */
-    public static final Constants def() {
-        return new Constants(features_def);
+    public static final Options def() {
+        return new Options(features_def);
     }
 
     /**
      * 序列化配置
      * */
-    public static final Constants serialize() {
-        return new Constants(features_serialize);
+    public static final Options serialize() {
+        return new Options(features_serialize);
     }
 
-    public static Constants of(Feature... features) {
-        return new Constants().add(features);
+    public static Options of(Feature... features) {
+        return new Options().add(features);
     }
 
-    public Constants add(Feature... features){
+    public Options add(Feature... features){
         for (Feature f : features) {
             this.features = Feature.config(this.features, f, true);
         }
         return this;
     }
 
-    public Constants sub(Feature... features){
+    public Options sub(Feature... features){
         for (Feature f : features) {
             this.features = Feature.config(this.features, f, false);
         }
         return this;
     }
 
-    public Constants() {}
+    public Options() {}
 
-    public Constants(int features){
+    public Options(int features){
         this();
         this.features = features;
     }
@@ -67,7 +67,7 @@ public class Constants {
     /**
      * 构建自己
      */
-    public Constants build(Act1<Constants> builder) {
+    public Options build(Act1<Options> builder) {
         builder.run(this);
         return this;
     }

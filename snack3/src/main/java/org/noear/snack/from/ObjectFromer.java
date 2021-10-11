@@ -1,7 +1,7 @@
 package org.noear.snack.from;
 
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.FieldWrap;
@@ -24,12 +24,12 @@ import java.util.*;
 public class ObjectFromer implements Fromer {
     @Override
     public void handle(Context ctx) {
-        ctx.target = analyse(ctx.config, ctx.source); //如果是null,会返回 ONode.Null
+        ctx.target = analyse(ctx.options, ctx.source); //如果是null,会返回 ONode.Null
     }
 
-    private ONode analyse(Constants cfg, Object source) {
+    private ONode analyse(Options opt, Object source) {
 
-        ONode rst = new ONode(cfg);
+        ONode rst = new ONode(opt);
 
         if (source == null) {
             return rst;
@@ -42,7 +42,7 @@ public class ObjectFromer implements Fromer {
         Class<?> clz = source.getClass();
 
         //尝试自定义编码
-        for(NodeEncoderEntity encoder: cfg.encoders()) {
+        for(NodeEncoderEntity encoder: opt.encoders()) {
             if (encoder.isEncodable(clz)) {
                 encoder.encode(source, rst);
                 return rst;
@@ -69,47 +69,47 @@ public class ObjectFromer implements Fromer {
         } else if (source instanceof Number) {
             rst.val().setNumber((Number) source);
         }  else if (source instanceof Throwable) { //新补充的类型
-            analyseBean(cfg, rst, clz, source);
-        } else if (analyseArray(cfg, rst, clz, source)) { //新补充的类型::可适用任何数组
+            analyseBean(opt, rst, clz, source);
+        } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
 
         } else if (clz.isEnum()) { //新补充的类型
             Enum em = (Enum) source;
 
-            if (cfg.hasFeature(Feature.EnumUsingName)) {
+            if (opt.hasFeature(Feature.EnumUsingName)) {
                 rst.val().setString(em.name());
             } else {
                 rst.val().setNumber(em.ordinal());
             }
         } else if (source instanceof Map) {
             //为序列化添加特性支持
-            if (cfg.hasFeature(Feature.WriteClassName)) {
-                typeSet(cfg, rst, clz);
+            if (opt.hasFeature(Feature.WriteClassName)) {
+                typeSet(opt, rst, clz);
             }
 
             rst.asObject();
             Map map = ((Map) source);
             for (Object k : map.keySet()) {
                 if (k != null) {
-                    rst.setNode(k.toString(), analyse(cfg, map.get(k)));
+                    rst.setNode(k.toString(), analyse(opt, map.get(k)));
                 }
             }
         } else if (source instanceof Iterable) {
             rst.asArray();
             ONode ary =rst;
             //为序列化添加特性支持
-            if (cfg.hasFeature(Feature.WriteArrayClassName)) {
-                rst.add(typeSet(cfg,new ONode(cfg), clz));
+            if (opt.hasFeature(Feature.WriteArrayClassName)) {
+                rst.add(typeSet(opt,new ONode(opt), clz));
                 ary = rst.addNew().asArray();
             }
 
             for (Object o : ((Iterable) source)) {
-                ary.addNode(analyse(cfg, o));
+                ary.addNode(analyse(opt, o));
             }
         } else if (source instanceof Enumeration) { //新补充的类型
             rst.asArray();
             Enumeration o = (Enumeration) source;
             while (o.hasMoreElements()) {
-                rst.addNode(analyse(cfg, o.nextElement()));
+                rst.addNode(analyse(opt, o.nextElement()));
             }
         } else {
             String clzName = clz.getName();
@@ -117,9 +117,9 @@ public class ObjectFromer implements Fromer {
             if(clzName.endsWith(".Undefined")){
                 rst.val().setNull();
             }else {
-                if (analyseOther(cfg, rst, clz, source) == false) {
+                if (analyseOther(opt, rst, clz, source) == false) {
                     if (clzName.startsWith("jdk.") == false) {
-                        analyseBean(cfg, rst, clz, source);
+                        analyseBean(opt, rst, clz, source);
                     }
                 }
             }
@@ -128,12 +128,12 @@ public class ObjectFromer implements Fromer {
         return rst;
     }
 
-    private ONode typeSet(Constants cfg, ONode o, Class<?> clz) {
+    private ONode typeSet(Options cfg, ONode o, Class<?> clz) {
         return o.set(cfg.type_key, clz.getName());
     }
 
 
-    private boolean analyseArray(Constants cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseArray(Options cfg, ONode rst, Class<?> clz, Object obj) {
         if (obj instanceof Object[]) {
             rst.asArray();
             for (Object o : ((Object[]) obj)) {
@@ -186,7 +186,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseBean(Constants cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseBean(Options cfg, ONode rst, Class<?> clz, Object obj) {
 //        if (obj instanceof NodeEncoder) {
 //            rst.val(((NodeEncoder) obj).toNode());
 //        } else {
@@ -226,7 +226,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseOther(Constants cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseOther(Options cfg, ONode rst, Class<?> clz, Object obj) {
         if (obj instanceof SimpleDateFormat) {
             rst.set(cfg.type_key, clz.getName());
             rst.set("val", ((SimpleDateFormat) obj).toPattern());

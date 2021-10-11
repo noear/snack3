@@ -30,7 +30,7 @@ public class JsonFromer implements Fromer {
 
     private ONode do_handle(Context ctx, String text) throws IOException {
         if (text == null) {
-            return new ONode(ctx.config);
+            return new ONode(ctx.options);
         } else {
             text = text.trim();//去除两边的空隔
         }
@@ -41,7 +41,7 @@ public class JsonFromer implements Fromer {
         //完整的处理（支持像："xx",'xx',12,true,{...},[],null,undefined 等）
         //
         if (len == 0) {
-            node = new ONode(ctx.config);
+            node = new ONode(ctx.options);
         } else {
             char prefix = text.charAt(0);
             char suffix = text.charAt(text.length() - 1);
@@ -53,7 +53,7 @@ public class JsonFromer implements Fromer {
                 CharBuffer sBuf = tlBuilder.get(); // new CharBuffer();//
                 sBuf.setLength(0);
 
-                node = new ONode(ctx.config);
+                node = new ONode(ctx.options);
                 analyse(ctx,new CharReader(text), sBuf, node);
 
             } else if (len >= 2 && (
@@ -68,7 +68,7 @@ public class JsonFromer implements Fromer {
                 node = analyse_val(ctx, text, false, true);
             } else {
                 //普通的字符串
-                node = new ONode(ctx.config);
+                node = new ONode(ctx.options);
                 node.val().setString(text);
             }
         }
@@ -252,19 +252,19 @@ public class JsonFromer implements Fromer {
         ONode orst = null;
 
         if (isString) {
-            if(ctx.config.hasFeature(Feature.StringJsonToNode)) {
+            if(ctx.options.hasFeature(Feature.StringJsonToNode)) {
                 if ((sval.startsWith("{") && sval.endsWith("}")) ||
                         (sval.startsWith("[") && sval.endsWith("]"))) {
-                    orst = ONode.loadStr(sval, ctx.config);
+                    orst = ONode.loadStr(sval, ctx.options);
                 }
             }
 
             if(orst == null){
-                orst = new ONode(ctx.config);
+                orst = new ONode(ctx.options);
                 orst.val().setString(sval);
             }
         } else {
-            orst = new ONode(ctx.config);
+            orst = new ONode(ctx.options);
             OValue oval = orst.val();
 
             char c = sval.charAt(0);

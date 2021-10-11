@@ -4,7 +4,7 @@ import _models.OrderModel;
 import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.DEFAULTS;
 
 import java.time.LocalTime;
@@ -18,7 +18,7 @@ public class Coding {
     public void test0() {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
-        Constants cfg = Constants.def();
+        Options cfg = Options.def();
         //添加编码器
         cfg.addEncoder(OrderModel.class, (source, target) -> {
             target.set("id", source.order_id);
@@ -48,7 +48,7 @@ public class Coding {
     public void test1() {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
-        Constants cfg = Constants.def();
+        Options cfg = Options.def();
         //添加编码器
         cfg.addEncoder(OrderModel.class, (source, target) -> {
             target.set("user", new ONode().set("uid","1001"));

@@ -11,9 +11,9 @@ import java.lang.reflect.Type;
  * */
 public class Context {
     /**
-     * 常量配置
+     * 选项
      */
-    public final Constants config;
+    public final Options options;
 
     /**
      * 来源
@@ -30,16 +30,16 @@ public class Context {
     /**
      * 用于来源处理的构造
      */
-    public Context(Constants config, Object from) {
-        this.config = config;
+    public Context(Options options, Object from) {
+        this.options = options;
         this.source = from;
     }
 
     /**
      * 用于去处的构造
      */
-    public Context(Constants config, ONode node, Type type0) {
-        this.config = config;
+    public Context(Options options, ONode node, Type type0) {
+        this.options = options;
         this.source = node;
 
         if (type0 == null) {

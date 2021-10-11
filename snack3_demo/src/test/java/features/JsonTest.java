@@ -2,7 +2,7 @@ package features;
 
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
 import org.noear.snack.from.JsonFromer;
@@ -22,40 +22,40 @@ public class JsonTest {
     /** 测试非对象，非数组数据 */
     @Test
     public void test11() throws IOException {
-        Context c = new Context(Constants.def(), "\"xxx\"");
+        Context c = new Context(Options.def(), "\"xxx\"");
         new JsonFromer().handle(c);
         assert "xxx".equals(((ONode) c.target).getString());
 
-        c = new Context(Constants.def(), "'xxx'");
+        c = new Context(Options.def(), "'xxx'");
         new JsonFromer().handle(c);
         assert "xxx".equals(((ONode) c.target).getString());
 
-        c = new Context(Constants.def(), "true");
+        c = new Context(Options.def(), "true");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).getBoolean();
 
-        c = new Context(Constants.def(), "false");
+        c = new Context(Options.def(), "false");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).getBoolean() == false;
 
-        c = new Context(Constants.def(), "123");
+        c = new Context(Options.def(), "123");
         new JsonFromer().handle(c);
         assert 123 == ((ONode) c.target).getInt();
 
-        c = new Context(Constants.def(), "null");
+        c = new Context(Options.def(), "null");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).isNull();
 
-        c = new Context(Constants.def(), "NaN");
+        c = new Context(Options.def(), "NaN");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).isNull();
 
-        c = new Context(Constants.def(), "undefined");
+        c = new Context(Options.def(), "undefined");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).isNull();
 
         long times = System.currentTimeMillis();
-        c = new Context(Constants.def(), "new Date(" + times + ") ");
+        c = new Context(Options.def(), "new Date(" + times + ") ");
         new JsonFromer().handle(c);
         assert ((ONode) c.target).getDate().getTime() == times;
 
@@ -63,7 +63,7 @@ public class JsonTest {
 
     @Test
     public void test21() throws IOException {
-        Context c = new Context(Constants.def(), "{'a':'b','c':{'d':'e'},'f':{'g':\"h\"},'i':[{'j':'k','l':'m'},'n']}");
+        Context c = new Context(Options.def(), "{'a':'b','c':{'d':'e'},'f':{'g':\"h\"},'i':[{'j':'k','l':'m'},'n']}");
 
         new JsonFromer().handle(c);
 
@@ -78,7 +78,7 @@ public class JsonTest {
 
     @Test
     public void test22() throws IOException {
-        Context c = new Context(Constants.def(), "{a:\"b\"}");
+        Context c = new Context(Options.def(), "{a:\"b\"}");
 
         new JsonFromer().handle(c);
 
@@ -92,7 +92,7 @@ public class JsonTest {
 
     @Test
     public void test23() throws IOException {
-        Context c = new Context(Constants.def(), "{a:{b:{c:{d:{e:'f'}}}}}");
+        Context c = new Context(Options.def(), "{a:{b:{c:{d:{e:'f'}}}}}");
 
         new JsonFromer().handle(c);
 
@@ -108,7 +108,7 @@ public class JsonTest {
     public void test24() throws IOException {
         String json = "[[[],[]],[[]],[],[{},{},null]]";
 
-        Context c = new Context(Constants.def(), json);
+        Context c = new Context(Options.def(), json);
 
         new JsonFromer().handle(c);
 
@@ -120,7 +120,7 @@ public class JsonTest {
 
     @Test
     public void test25() throws IOException {
-        Context c = new Context(Constants.def(), "[{a:'b'},{c:'d'},[{e:'f'}]]");
+        Context c = new Context(Options.def(), "[{a:'b'},{c:'d'},[{e:'f'}]]");
 
         new JsonFromer().handle(c);
 
@@ -134,7 +134,7 @@ public class JsonTest {
 
     @Test
     public void test26() throws IOException {
-        Context c = new Context(Constants.def(), "[123,123.45,'123.45','2019-01-02T03:04:05',true,false]");
+        Context c = new Context(Options.def(), "[123,123.45,'123.45','2019-01-02T03:04:05',true,false]");
 
         new JsonFromer().handle(c);
 
@@ -158,7 +158,7 @@ public class JsonTest {
     @Test
     public void test27() throws IOException {
 
-        Context c = new Context(Constants.def(), "{\"a\":\"\\t\"}");
+        Context c = new Context(Options.def(), "{\"a\":\"\\t\"}");
 
         new JsonFromer().handle(c);
 
@@ -176,7 +176,7 @@ public class JsonTest {
     @Test
     public void test28() throws IOException {
 
-        Context c = new Context(Constants.def(), "{\"a\":\"'\\u7684\\t\\n\"}");
+        Context c = new Context(Options.def(), "{\"a\":\"'\\u7684\\t\\n\"}");
 
         new JsonFromer().handle(c);
 
@@ -194,7 +194,7 @@ public class JsonTest {
     @Test
     public void test29() throws IOException {
 
-        Context c = new Context(Constants.of(Feature.BrowserCompatible), "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}");
+        Context c = new Context(Options.of(Feature.BrowserCompatible), "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}");
 
         new JsonFromer().handle(c);
 
@@ -211,7 +211,7 @@ public class JsonTest {
     @Test
     public void test30() throws IOException {
 
-        Context c = new Context(Constants.def(), "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}");
+        Context c = new Context(Options.def(), "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}");
 
         new JsonFromer().handle(c);
 
@@ -228,7 +228,7 @@ public class JsonTest {
     @Test
     public void test31() throws IOException {
 
-        Context c = new Context(Constants.of(Feature.BrowserCompatible), "{\"a\":\" \\u000f\\u0012\"}");
+        Context c = new Context(Options.of(Feature.BrowserCompatible), "{\"a\":\" \\u000f\\u0012\"}");
 
         new JsonFromer().handle(c);
 

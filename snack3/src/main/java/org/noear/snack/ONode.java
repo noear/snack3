@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  * */
 public class ONode {
     //内部配置
-    protected Constants _c;
+    protected Options _c;
     //内部数据
     protected ONodeData _d;
 
@@ -27,21 +27,21 @@ public class ONode {
      * @return 版本信息
      */
     public static String version() {
-        return "3.1.12";
+        return "3.2";
     }
 
     public ONode() {
-        _c = Constants.def();
+        _c = Options.def();
         _d = new ONodeData(this);
     }
 
-    public ONode(Constants cfg) {
+    public ONode(Options options) {
         _d = new ONodeData(this);
 
-        if(cfg ==null){
-            _c = Constants.def();
+        if(options ==null){
+            _c = Options.def();
         }else {
-            _c = cfg;
+            _c = options;
         }
     }
 
@@ -143,14 +143,14 @@ public class ONode {
      * @param cfg 常量配置
      * @return self:ONode
      */
-    public ONode cfg(Constants cfg) {
+    public ONode cfg(Options cfg) {
         if (cfg != null) {
             _c = cfg;
         }
         return this;
     }
 
-    public Constants cfg(){
+    public Options cfg(){
         return _c;
     }
 
@@ -898,17 +898,17 @@ public class ONode {
     }
 
     public ONode fill(Object source,  Feature... features) {
-        val(doLoad(source, source instanceof String, Constants.def().add(features), null));
+        val(doLoad(source, source instanceof String, Options.def().add(features), null));
         return this;
     }
 
     public ONode fillObj(Object source, Feature... features) {
-        val(doLoad(source, false, Constants.def().add(features), null));
+        val(doLoad(source, false, Options.def().add(features), null));
         return this;
     }
 
     public ONode fillStr(String source, Feature... features) {
-        val(doLoad(source, true, Constants.def().add(features), null));
+        val(doLoad(source, true, Options.def().add(features), null));
         return this;
     }
 
@@ -932,13 +932,13 @@ public class ONode {
      * @param features 特性
      * */
     public static ONode load(Object source, Feature... features) {
-        return load(source, Constants.def().add(features), null);
+        return load(source, Options.def().add(features), null);
     }
 
     /**
      * @param cfg 常数配置
      * */
-    public static ONode load(Object source, Constants cfg) {
+    public static ONode load(Object source, Options cfg) {
         return load(source, cfg, null);
     }
 
@@ -947,7 +947,7 @@ public class ONode {
     /**
      * @param fromer 来源处理器
      * */
-    public static ONode load(Object source, Constants cfg, Fromer fromer) {
+    public static ONode load(Object source, Options cfg, Fromer fromer) {
         return doLoad(source, source instanceof String, cfg, fromer);
     }
 
@@ -958,12 +958,12 @@ public class ONode {
         return doLoad(source, true, null, null);
     }
 
-    public static ONode loadStr(String source, Constants cfg) {
+    public static ONode loadStr(String source, Options cfg) {
         return doLoad(source, true, cfg, null);
     }
 
     public static ONode loadStr(String source, Feature... features) {
-        return doLoad(source, true, Constants.def().add(features), null);
+        return doLoad(source, true, Options.def().add(features), null);
     }
 
     /**
@@ -974,17 +974,17 @@ public class ONode {
     }
 
     //loadStr 不需要 cfg
-    public static ONode loadObj(Object source, Constants cfg) {
+    public static ONode loadObj(Object source, Options cfg) {
         return doLoad(source, false, cfg, null);
     }
 
     public static ONode loadObj(Object source, Feature... features) {
-        return doLoad(source, false, Constants.def().add(features), null);
+        return doLoad(source, false, Options.def().add(features), null);
     }
 
 
 
-    private static ONode doLoad(Object source, boolean isString, Constants cfg, Fromer fromer) {
+    private static ONode doLoad(Object source, boolean isString, Options cfg, Fromer fromer) {
         if (fromer == null) {
             if (isString) {
                 fromer = DEFAULTS.DEF_STRING_FROMER;
@@ -994,7 +994,7 @@ public class ONode {
         }
 
         if (cfg == null) {
-            cfg = Constants.def();
+            cfg = Options.def();
         }
 
         return (ONode) new Context(cfg, source).handle(fromer).target;
@@ -1013,14 +1013,14 @@ public class ONode {
      * @throws Exception
      */
     public static String stringify(Object source) {
-        return stringify(source, Constants.def());
+        return stringify(source, Options.def());
     }
 
     public static String stringify(Object source, Feature... features) {
         if (features.length > 0) {
-            return stringify(source, new Constants(Feature.of(features)));
+            return stringify(source, new Options(Feature.of(features)));
         } else {
-            return stringify(source, Constants.def());
+            return stringify(source, Options.def());
         }
     }
 
@@ -1031,7 +1031,7 @@ public class ONode {
      * @param cfg    常量配置
      * @throws Exception
      */
-    public static String stringify(Object source, Constants cfg) {
+    public static String stringify(Object source, Options cfg) {
         //加载java object，须指定Fromer
         return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toString();
     }
@@ -1050,7 +1050,7 @@ public class ONode {
      */
     public static String serialize(Object source) {
         //加载java object，须指定Fromer
-        return load(source, Constants.serialize(), DEFAULTS.DEF_OBJECT_FROMER).toJson();
+        return load(source, Options.serialize(), DEFAULTS.DEF_OBJECT_FROMER).toJson();
     }
 
     /**
@@ -1071,7 +1071,7 @@ public class ONode {
      */
     public static <T> T deserialize(String source, Type clz) {
         //加载String，不需指定Fromer
-        return load(source,  Constants.serialize(), null).toObject(clz);
+        return load(source,  Options.serialize(), null).toObject(clz);
     }
 
 

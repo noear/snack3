@@ -3,7 +3,7 @@ package demo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.TypeRef;
 
@@ -114,7 +114,7 @@ public class Demo3 {
         User user = new User("张三", 24);
         System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
-        Constants cfg = Constants.of(Feature.SerializeNulls);
+        Options cfg = Options.of(Feature.SerializeNulls);
         System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
     }
 
@@ -122,7 +122,7 @@ public class Demo3 {
     public void demo9() {
         Date date = new Date();
 
-        Constants cfg = Constants.of(Feature.WriteDateUseFormat)
+        Options cfg = Options.of(Feature.WriteDateUseFormat)
                 .build(c -> c.date_format = "yyyy-MM-dd");
 
         System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06

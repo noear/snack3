@@ -3,7 +3,7 @@ package features;
 import _models.*;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.Constants;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.Context;
 import org.noear.snack.from.ObjectFromer;
 
@@ -33,7 +33,7 @@ public class DataTest {
         a.b = b;
         b.a = a;
 
-        Context c = new Context(Constants.def(), a);
+        Context c = new Context(Options.def(), a);
 
         new ObjectFromer().handle(c);
 
@@ -56,7 +56,7 @@ public class DataTest {
         order.order_id = 2222;
         order.order_num = "ddddd";
 
-        Context c = new Context(Constants.def(), order);
+        Context c = new Context(Options.def(), order);
 
         new ObjectFromer().handle(c);
 
