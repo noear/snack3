@@ -4,7 +4,6 @@ import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.core.NodeDecoderEntity;
-import org.noear.snack.core.NodeEncoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
@@ -51,7 +50,7 @@ public class ObjectToer implements Toer {
                 return o;
             }
 
-            //自定义解码
+            //自定义解析
             for(NodeDecoderEntity decoder: ctx.config.decoders()) {
                 if (decoder.isDecodable(clz)) {
                     return decoder.decode(o, clz);
