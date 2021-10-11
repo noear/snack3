@@ -6,6 +6,9 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -63,6 +66,17 @@ public class Coding {
                 return new Date();
             }else{
                 return source.getDate();
+            }
+        });
+
+        //添加解码器
+        cfg.addDecoder(LocalTime.class, (source, type) -> {
+            if(source.isNull()){
+                return LocalTime.now();
+            }else{
+                return LocalDateTime.
+                        ofInstant(source.getDate().toInstant(), ZoneId.of("+08")).
+                        toLocalTime();
             }
         });
 
