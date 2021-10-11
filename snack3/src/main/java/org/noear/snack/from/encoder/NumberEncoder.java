@@ -11,6 +11,6 @@ public class NumberEncoder implements NodeEncoder<Number> {
 
     @Override
     public void encode(Number source, ONode target) {
-        target.val().setNumber((Number) source);
+        target.val().setNumber(source);
     }
 }
