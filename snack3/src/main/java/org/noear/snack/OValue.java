@@ -247,7 +247,7 @@ public class OValue {
             case DateTime:
                 return String.valueOf(_date);
             default:
-                return _n._c.nullString();
+                return _n._o.nullString();
         }
     }
 
@@ -295,7 +295,7 @@ public class OValue {
      */
     private Date parseDate(String dateString) {
         try {
-            return _n._c.stringToDate(dateString);
+            return _n._o.stringToDate(dateString);
         } catch (ParseException ex) {
             return null;
         }

@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  * */
 public class ONode {
     //内部配置
-    protected Options _c;
+    protected Options _o;
     //内部数据
     protected ONodeData _d;
 
@@ -31,7 +31,7 @@ public class ONode {
     }
 
     public ONode() {
-        _c = Options.def();
+        _o = Options.def();
         _d = new ONodeData(this);
     }
 
@@ -39,9 +39,9 @@ public class ONode {
         _d = new ONodeData(this);
 
         if(options ==null){
-            _c = Options.def();
+            _o = Options.def();
         }else {
-            _c = options;
+            _o = options;
         }
     }
 
@@ -145,7 +145,7 @@ public class ONode {
      */
     public ONode options(Options opts) {
         if (opts != null) {
-            _c = opts;
+            _o = opts;
         }
         return this;
     }
@@ -154,7 +154,7 @@ public class ONode {
      * 获取选项
      * */
     public Options options(){
-        return _c;
+        return _o;
     }
 
 
@@ -225,7 +225,7 @@ public class ONode {
                 return toJson();
             }
 
-            return _c.nullString();
+            return _o.nullString();
         }
     }
 
@@ -380,19 +380,6 @@ public class ONode {
     }
 
     /**
-     * 只读模式
-     * get(key) 不会自动产生新节点
-     */
-    public ONode readonly(boolean readonly) {
-        _c.setReadonly(readonly);
-        return this;
-    }
-
-    public ONode readonly() {
-        return readonly(true);
-    }
-
-    /**
      * 是否存在对象子节点
      */
     public boolean contains(String key) {
@@ -434,7 +421,14 @@ public class ONode {
      * @return child:ONode
      */
     public ONode get(String key) {
-        return getOrNew(key);
+        _d.tryInitObject();
+
+        ONode tmp = _d.object.get(key);
+        if (tmp == null) {
+            return new ONode(_o);
+        } else {
+            return tmp;
+        }
     }
 
     public ONode getOrNew(String key) {
@@ -442,11 +436,8 @@ public class ONode {
 
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
-            tmp = new ONode(_c);
-
-            if (_c.getReadonly() == false) {
-                _d.object.put(key, tmp);
-            }
+            tmp = new ONode(_o);
+            _d.object.put(key, tmp);
         }
 
         return tmp;
@@ -471,7 +462,7 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getNew(String key) {
-        ONode tmp = new ONode(_c);
+        ONode tmp = new ONode(_o);
         _d.object.put(key, tmp);
 
         return tmp;
@@ -479,16 +470,16 @@ public class ONode {
 
     private ONode buildVal(Object val) {
         if (val instanceof Map) {
-            return new ONode(_c).setAll((Map<String, ?>) val);
+            return new ONode(_o).setAll((Map<String, ?>) val);
         } else if (val instanceof Collection) {
-            return new ONode(_c).addAll((Collection<?>) val);
+            return new ONode(_o).addAll((Collection<?>) val);
         } else {
             //可能会影响性能...
             //
             if (val != null && val.getClass().isArray()) {
-                return new ONode(_c).addAll(Arrays.asList((Object[]) val));
+                return new ONode(_o).addAll(Arrays.asList((Object[]) val));
             }
-            return new ONode(_c).val(val);
+            return new ONode(_o).val(val);
         }
     }
 
@@ -604,7 +595,7 @@ public class ONode {
             return _d.array.get(index);
         }
 
-        return new ONode();
+        return new ONode(_o);
     }
 
     public ONode getOrNew(int index) {
@@ -615,7 +606,7 @@ public class ONode {
         } else {
             ONode n = null;
             for (int i = _d.array.size(); i <= index; i++) {
-                n = new ONode(_c);
+                n = new ONode(_o);
                 _d.array.add(n);
             }
             return n;
@@ -653,7 +644,7 @@ public class ONode {
      */
     public ONode addNew() {
         _d.tryInitArray();
-        ONode n = new ONode(_c);
+        ONode n = new ONode(_o);
         _d.array.add(n);
         return n;
     }
@@ -882,7 +873,7 @@ public class ONode {
      * 将当前ONode 通过 toer 进行转换
      */
     public <T> T to(Toer toer, Type clz) {
-        return (T) (new Context(_c, this, clz).handle(toer).target);
+        return (T) (new Context(_o, this, clz).handle(toer).target);
     }
     public <T> T to(Toer toer) {
         return to(toer, null);
@@ -896,7 +887,7 @@ public class ONode {
      * @return self:ONode
      */
     public ONode fill(Object source) {
-        val(doLoad(source, source instanceof String, _c, null));
+        val(doLoad(source, source instanceof String, _o, null));
         return this;
     }
 

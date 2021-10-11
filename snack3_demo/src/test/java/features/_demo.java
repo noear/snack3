@@ -27,7 +27,7 @@ public class _demo {
         ONode o = ONode.load(" {code:1,msg:'succeed'}", Options.serialize());
         assert 1 == o.get("code").getInt();
 
-        o.get("data").get("list").fill(list);
+        o.getOrNew("data").getOrNew("list").fill(list);
 
         assert o.select("data.list").count() == 2;
 

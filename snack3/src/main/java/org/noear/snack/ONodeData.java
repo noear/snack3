@@ -77,7 +77,7 @@ public class ONodeData {
             nodeType = ONodeType.Object;
 
             if (object == null) {
-                if(_n._c.hasFeature(Feature.OrderedField)){
+                if(_n._o.hasFeature(Feature.OrderedField)){
                     object = new ONodeLinkedObject();
                 }else {
                     object = new ONodeObject();
