@@ -199,8 +199,8 @@ o.forEach((v)->{
 -nodeData() -> ONodeData //获取当前节点数据
 -nodeType() -> ONodeType //获取当前节点类型
 
--cfg(cfg:Constants) -> self:ONode   //切换配置
--cfg() -> Constants 				//获取配置
+-options(opts:Constants) -> self:ONode   //切换配置
+-options() -> Constants 				//获取配置
 
 -build(n->..) -> self:ONode     	//节点构建表达式
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
@@ -289,8 +289,8 @@ o.forEach((v)->{
 //
 +load(source:Object) -> new:ONode    //加载数据
 +load(source:Object, Feature... features) -> new:ONode
-+load(source:Object, cfg:Constants) -> new:ONode
-+load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
++load(source:Object, opts:Constants) -> new:ONode
++load(source:Object, opts:Constants, fromer:Fromer) -> new:ONode
 
 //加载 string
 +loadStr(source:String) -> new:ONode	//仅String

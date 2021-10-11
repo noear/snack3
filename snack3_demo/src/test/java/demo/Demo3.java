@@ -23,7 +23,7 @@ public class Demo3 {
 
         ONode tmp = new ONode();
 
-        tmp.cfg().add(Feature.QuoteFieldNames);
+        tmp.options().add(Feature.QuoteFieldNames);
 
         assert i == 100;
         assert d == 99.99;
@@ -114,18 +114,18 @@ public class Demo3 {
         User user = new User("张三", 24);
         System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
-        Options cfg = Options.of(Feature.SerializeNulls);
-        System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
+        Options opts = Options.of(Feature.SerializeNulls);
+        System.out.println(ONode.load(user, opts).toJson()); //{"name":"张三","age":24,"emailAddress":null}
     }
 
     @Test
     public void demo9() {
         Date date = new Date();
 
-        Options cfg = Options.of(Feature.WriteDateUseFormat)
+        Options opts = Options.of(Feature.WriteDateUseFormat)
                 .build(c -> c.date_format = "yyyy-MM-dd");
 
-        System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
+        System.out.println(ONode.load(date, opts).toJson()); //2019-12-06
     }
     @Test
     public void demo10() {

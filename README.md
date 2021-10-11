@@ -199,8 +199,8 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 -nodeData() -> ONodeData //Gets the current node data
 -nodeType() -> ONodeType //Gets the current node type
 
--cfg(cfg:Constants) -> self:ONode   //Switch configuration
--cfg() -> Constants 				//Access to the configuration
+-options(opts:Constants) -> self:ONode   //Switch configuration
+-options() -> Constants 				//Access to the configuration
 
 -build(n->..) -> self:ONode     	//Node build expression
 -select(jpath:String) -> new:ONode 	                    //Select nodes using JSONPATH expressions (default cache path compilation)
@@ -289,8 +289,8 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 //
 +load(source:Object) -> new:ONode    //Load the data
 +load(source:Object, Feature... features) -> new:ONode
-+load(source:Object, cfg:Constants) -> new:ONode
-+load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
++load(source:Object, opts:Constants) -> new:ONode
++load(source:Object, opts:Constants, fromer:Fromer) -> new:ONode
 
 //Load string
 +loadStr(source:String) -> new:ONode	//Only string

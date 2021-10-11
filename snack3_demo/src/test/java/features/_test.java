@@ -204,7 +204,7 @@ public class _test {
         String txt = "{id:1,name:'x'}";
         ONode tmp = ONode.load(txt);
 
-        tmp.cfg().sub(Feature.QuoteFieldNames) //取消字段引号
+        tmp.options().sub(Feature.QuoteFieldNames) //取消字段引号
                  .add(Feature.UseSingleQuotes); //采用单引号
 
         String txt2 = tmp.toJson();

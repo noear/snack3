@@ -217,7 +217,7 @@ User user = new User("张三", 24);
 System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
 
-Constants cfg = Constants.def().add(Feature.SerializeNulls); //导出null
+Constants opts = Constants.def().add(Feature.SerializeNulls); //导出null
 System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
 ```
 

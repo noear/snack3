@@ -138,19 +138,22 @@ public class ONode {
     }
 
     /**
-     * 切换配置
+     * 切换选项
      *
-     * @param cfg 常量配置
+     * @param opts 选项
      * @return self:ONode
      */
-    public ONode cfg(Options cfg) {
-        if (cfg != null) {
-            _c = cfg;
+    public ONode options(Options opts) {
+        if (opts != null) {
+            _c = opts;
         }
         return this;
     }
 
-    public Options cfg(){
+    /**
+     * 获取选项
+     * */
+    public Options options(){
         return _c;
     }
 
@@ -936,10 +939,10 @@ public class ONode {
     }
 
     /**
-     * @param cfg 常数配置
+     * @param opts 常数配置
      * */
-    public static ONode load(Object source, Options cfg) {
-        return load(source, cfg, null);
+    public static ONode load(Object source, Options opts) {
+        return load(source, opts, null);
     }
 
 
@@ -947,8 +950,8 @@ public class ONode {
     /**
      * @param fromer 来源处理器
      * */
-    public static ONode load(Object source, Options cfg, Fromer fromer) {
-        return doLoad(source, source instanceof String, cfg, fromer);
+    public static ONode load(Object source, Options opts, Fromer fromer) {
+        return doLoad(source, source instanceof String, opts, fromer);
     }
 
     /**
@@ -958,8 +961,8 @@ public class ONode {
         return doLoad(source, true, null, null);
     }
 
-    public static ONode loadStr(String source, Options cfg) {
-        return doLoad(source, true, cfg, null);
+    public static ONode loadStr(String source, Options opts) {
+        return doLoad(source, true, opts, null);
     }
 
     public static ONode loadStr(String source, Feature... features) {
@@ -973,9 +976,9 @@ public class ONode {
         return doLoad(source, false, null, null);
     }
 
-    //loadStr 不需要 cfg
-    public static ONode loadObj(Object source, Options cfg) {
-        return doLoad(source, false, cfg, null);
+    //loadStr 不需要 opts
+    public static ONode loadObj(Object source, Options opts) {
+        return doLoad(source, false, opts, null);
     }
 
     public static ONode loadObj(Object source, Feature... features) {
@@ -984,7 +987,7 @@ public class ONode {
 
 
 
-    private static ONode doLoad(Object source, boolean isString, Options cfg, Fromer fromer) {
+    private static ONode doLoad(Object source, boolean isString, Options opts, Fromer fromer) {
         if (fromer == null) {
             if (isString) {
                 fromer = DEFAULTS.DEF_STRING_FROMER;
@@ -993,11 +996,11 @@ public class ONode {
             }
         }
 
-        if (cfg == null) {
-            cfg = Options.def();
+        if (opts == null) {
+            opts = Options.def();
         }
 
-        return (ONode) new Context(cfg, source).handle(fromer).target;
+        return (ONode) new Context(opts, source).handle(fromer).target;
     }
 
     ////////////////////
@@ -1028,12 +1031,12 @@ public class ONode {
      * 字会串化 （由序列化器决定格式）
      *
      * @param source java object
-     * @param cfg    常量配置
+     * @param opts    常量配置
      * @throws Exception
      */
-    public static String stringify(Object source, Options cfg) {
+    public static String stringify(Object source, Options opts) {
         //加载java object，须指定Fromer
-        return load(source, cfg, DEFAULTS.DEF_OBJECT_FROMER).toString();
+        return load(source, opts, DEFAULTS.DEF_OBJECT_FROMER).toString();
     }
 
     ////////////////////

@@ -18,18 +18,18 @@ public class Coding {
     public void test0() {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
-        Options cfg = Options.def();
+        Options opts = Options.def();
         //添加编码器
-        cfg.addEncoder(OrderModel.class, (source, target) -> {
+        opts.addEncoder(OrderModel.class, (source, target) -> {
             target.set("id", source.order_id);
         });
 
-        String json = ONode.loadObj(orderModel, cfg).toJson();
+        String json = ONode.loadObj(orderModel, opts).toJson();
         System.out.println(json);
         assert json.contains("1");
 
         //添加解码器
-        cfg.addDecoder(OrderModel.class, (source, type) -> {
+        opts.addDecoder(OrderModel.class, (source, type) -> {
             OrderModel tmp = new OrderModel();
             tmp.order_id = source.get("id").getInt();
             return tmp;
@@ -39,7 +39,7 @@ public class Coding {
         System.out.println(rst);
         assert rst.order_id == 0;
 
-        rst = ONode.loadStr(json, cfg).toObject(OrderModel.class);
+        rst = ONode.loadStr(json, opts).toObject(OrderModel.class);
         System.out.println(rst);
         assert rst.order_id == 1;
     }
