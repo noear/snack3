@@ -12,13 +12,13 @@ import java.util.*;
  * 参数配置
  * */
 public class Options {
-    public static final int features_def = Feature.of(
+    public static int features_def = Feature.of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
             Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
 
-    public static final int features_serialize = Feature.of(
+    public static int features_serialize = Feature.of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
             Feature.BrowserCompatible,
