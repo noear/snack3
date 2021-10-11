@@ -1,6 +1,7 @@
 package org.noear.snack.from;
 
 import org.noear.snack.ONode;
+import org.noear.snack.core.Constants;
 import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.FieldWrap;

@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
 import org.noear.snack.core.Context;
-import org.noear.snack.core.Feature;
 import org.noear.snack.from.ObjectFromer;
 import org.noear.snack.to.ObjectToer;
 

@@ -73,7 +73,7 @@ public class Constants {
     }
 
     //自定义编码
-    private final Map<Class<?>,NodeEncoderEntity> encoderMap = new LinkedHashMap<>();
+    private final Map<Class<?>, NodeEncoderEntity> encoderMap = new LinkedHashMap<>();
 
     public Collection<NodeEncoderEntity> encoders() {
         return Collections.unmodifiableCollection(encoderMap.values());
@@ -84,7 +84,7 @@ public class Constants {
     }
 
     //自定义解析
-    private final Map<Class<?>,NodeDecoderEntity> decoderMap = new LinkedHashMap<>();
+    private final Map<Class<?>, NodeDecoderEntity> decoderMap = new LinkedHashMap<>();
 
     public Collection<NodeDecoderEntity> decoders() {
         return Collections.unmodifiableCollection(decoderMap.values());
