@@ -2,6 +2,7 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**

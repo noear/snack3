@@ -2,6 +2,8 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 
+import java.io.IOException;
+
 /**
  * ONode 编码（用于自定义编码）
  *
