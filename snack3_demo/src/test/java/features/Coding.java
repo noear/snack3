@@ -5,6 +5,7 @@ import _models.UserModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Constants;
+import org.noear.snack.core.DEFAULTS;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,9 +75,10 @@ public class Coding {
             if(source.isNull()){
                 return LocalTime.now();
             }else{
-                return LocalDateTime.
-                        ofInstant(source.getDate().toInstant(), ZoneId.of("+08")).
-                        toLocalTime();
+                return source.getDate()
+                        .toInstant()
+                        .atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId())
+                        .toLocalTime();
             }
         });
 
