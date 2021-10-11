@@ -3,7 +3,6 @@ package org.noear.snack.to;
 import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
-import org.noear.snack.core.NodeDecoder;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
@@ -107,11 +106,11 @@ public class ObjectToer implements Toer {
                 return o;
             }
 
-            if (is(NodeDecoder.class, clz)) {
-                NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(clz);
-                b.fromNode(o);
-                return b;
-            }
+//            if (is(NodeDecoder.class, clz)) {
+//                NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(clz);
+//                b.fromNode(o);
+//                return b;
+//            }
         }
 
 
@@ -374,11 +373,11 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseBean(Context ctx, ONode o, Class<?> target) throws Exception {
-        if (is(NodeDecoder.class, target)) {
-            NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(target);
-            b.fromNode(o);
-            return b;
-        }
+//        if (is(NodeDecoder.class, target)) {
+//            NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(target);
+//            b.fromNode(o);
+//            return b;
+//        }
 
         if (is(SimpleDateFormat.class, target)) {
             return new SimpleDateFormat(o.get("val").getString());

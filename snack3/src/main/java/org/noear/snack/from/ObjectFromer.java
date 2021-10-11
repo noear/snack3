@@ -11,7 +11,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.sql.Clob;
 import java.text.SimpleDateFormat;
-import java.time.*;
 import java.util.*;
 
 /**
@@ -31,31 +30,21 @@ public class ObjectFromer implements Fromer {
             return rst;
         }
 
-        if(source instanceof NodeEncoder){
-            return ((NodeEncoder)source).toNode();
-        }
+//        if(source instanceof NodeEncoder){
+//            return ((NodeEncoder)source).toNode();
+//        }
 
         Class<?> clz = source.getClass();
 
+        for(Map.Entry<Class<?>, NodeEncoder> kv: cfg.encoderMap().entrySet()){
+            if(kv.getKey().isAssignableFrom(clz)){
+                kv.getValue().encode(source, rst);
+                return rst;
+            }
+        }
+
         if (source instanceof ONode) {
             rst.val(source);
-        } else if (source instanceof String) {
-            rst.val().setString((String) source);
-        } else if (source instanceof Date) {
-            rst.val().setDate((Date) source);
-        } else if(source instanceof LocalDateTime){
-            Instant instant = ((LocalDateTime)source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
-            rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
-        } else if(source instanceof LocalDate){
-            Instant instant = ((LocalDate)source).atTime(LocalTime.MIN).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
-            rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
-        } else if(source instanceof LocalTime){
-            Instant instant = ((LocalTime)source).atDate(LocalDate.of(1970,1,1)).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
-            rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
-        } else if (source instanceof Boolean) {
-            rst.val().setBool((boolean) source);
-        } else if (source instanceof Number) {
-            rst.val().setNumber((Number) source);
         } else if (source instanceof Throwable) { //新补充的类型
             analyseBean(cfg, rst, clz, source);
         } else if (analyseArray(cfg, rst, clz, source)) { //新补充的类型::可适用任何数组
@@ -175,41 +164,41 @@ public class ObjectFromer implements Fromer {
     }
 
     private boolean analyseBean(Constants cfg, ONode rst, Class<?> clz, Object obj) {
-        if (obj instanceof NodeEncoder) {
-            rst.val(((NodeEncoder) obj).toNode());
-        } else {
+//        if (obj instanceof NodeEncoder) {
+//            rst.val(((NodeEncoder) obj).toNode());
+//        } else {
 
-            rst.asObject();
+        rst.asObject();
 
-            //为序列化添加特性支持
-            if (cfg.hasFeature(Feature.WriteClassName)) {
-                rst.set(cfg.type_key, clz.getName());
-            }
+        //为序列化添加特性支持
+        if (cfg.hasFeature(Feature.WriteClassName)) {
+            rst.set(cfg.type_key, clz.getName());
+        }
 
-            Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
+        Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
 
-            for (FieldWrap f : list) {
-                Object val = f.getValue(obj);
+        for (FieldWrap f : list) {
+            Object val = f.getValue(obj);
 
-                if (val == null) {
-                    //null string 是否以 空字符处理
-                    if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
-                        rst.setNode(f.name(), analyse(cfg, ""));
-                        continue;
-                    }
-
-                    //null是否输出
-                    if (cfg.hasFeature(Feature.SerializeNulls)) {
-                        rst.setNode(f.name(), analyse(cfg, null));
-                    }
+            if (val == null) {
+                //null string 是否以 空字符处理
+                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
+                    rst.setNode(f.name(), analyse(cfg, ""));
                     continue;
                 }
 
-                if (val.equals(obj) == false) { //null 和 自引用 不需要处理
-                    rst.setNode(f.name(), analyse(cfg, val));
+                //null是否输出
+                if (cfg.hasFeature(Feature.SerializeNulls)) {
+                    rst.setNode(f.name(), analyse(cfg, null));
                 }
+                continue;
+            }
+
+            if (val.equals(obj) == false) { //null 和 自引用 不需要处理
+                rst.setNode(f.name(), analyse(cfg, val));
             }
         }
+//        }
 
         return true;
     }

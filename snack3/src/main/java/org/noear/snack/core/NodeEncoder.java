@@ -7,6 +7,6 @@ import org.noear.snack.ONode;
  *
  * @author noear 2021/1/1 created
  * */
-public interface NodeEncoder {
-    ONode toNode();
+public interface NodeEncoder<T> {
+    void encode(T source, ONode target);
 }
