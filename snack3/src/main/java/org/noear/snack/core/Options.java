@@ -53,6 +53,9 @@ public class Options {
         return new Options().add(features);
     }
 
+    //特性
+    private int features = DEFAULTS.DEF_FEATURES;
+
     /**
      * 添加特性
      * */
@@ -134,15 +137,58 @@ public class Options {
 
 
     //日期格式
-    public String date_format = DEFAULTS.DEF_DATETIME_FORMAT;
-    //类型key
-    public String type_key = DEFAULTS.DEF_TYPE_KEY;
+    private String dateFormat = DEFAULTS.DEF_DATETIME_FORMAT;
+
+    /**
+     * 获取日期格式
+     * */
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    /**
+     * 设置日期格式
+     * */
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+
+
+    //类型属性名
+    private String typePropertyName = DEFAULTS.DEF_TYPE_PROPERTY_NAME;
+
+    /**
+     * 获取类型属性名
+     * */
+    public String getTypePropertyName() {
+        return typePropertyName;
+    }
+
+    /**
+     * 设置类型属性名
+     * */
+    public void setTypePropertyName(String typePropertyName) {
+        this.typePropertyName = typePropertyName;
+    }
+
     //时区
-    public TimeZone time_zone = DEFAULTS.DEF_TIME_ZONE;
-    //地区
-    public Locale locale = DEFAULTS.DEF_LOCALE;
-    //特性
-    public int features = DEFAULTS.DEF_FEATURES;
+    private TimeZone timeZone = DEFAULTS.DEF_TIME_ZONE;
+
+    /**
+     * 获取时区
+     * */
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    /**
+     * 设置时区
+     * */
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
+    }
+
     //n.get(key)时，只读处理; 即不自动添加新节点
     public boolean get_readonly = false;
 
@@ -150,8 +196,8 @@ public class Options {
 
 
     public String dateToString(Date date) {
-        DateFormat df = new SimpleDateFormat(date_format, DEFAULTS.DEF_LOCALE);
-        df.setTimeZone(time_zone);
+        DateFormat df = new SimpleDateFormat(dateFormat, DEFAULTS.DEF_LOCALE);
+        df.setTimeZone(timeZone);
 
         return df.format(date);
     }

@@ -123,7 +123,7 @@ public class Demo3 {
         Date date = new Date();
 
         Options opts = Options.of(Feature.WriteDateUseFormat)
-                .build(c -> c.date_format = "yyyy-MM-dd");
+                .build(c -> c.setDateFormat("yyyy-MM-dd"));
 
         System.out.println(ONode.load(date, opts).toJson()); //2019-12-06
     }

@@ -17,7 +17,7 @@ public class DEFAULTS {
     /** 默认特性 */
     public static final int DEF_FEATURES = Feature.QuoteFieldNames.code;
     /** 默认类型的key */
-    public static final String DEF_TYPE_KEY = "@type";
+    public static final String DEF_TYPE_PROPERTY_NAME = "@type";
 
     /** 默认时区 */
     public static final TimeZone  DEF_TIME_ZONE = TimeZone.getDefault();

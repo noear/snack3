@@ -77,7 +77,7 @@ public class ObjectToer implements Toer {
                 return analyseVal(ctx, o.nodeData(), clz);
             case Object:
                 //clz = getTypeByNode(ctx, o, clz);
-                o.remove(ctx.options.type_key);//尝试移除类型内容
+                o.remove(ctx.options.getTypePropertyName());//尝试移除类型内容
 
                 if (Map.class.isAssignableFrom(clz)) {
                     return analyseMap(ctx, o, clz, type);
@@ -272,7 +272,7 @@ public class ObjectToer implements Toer {
 
         if (o.count() == 2) {
             ONode o1 = o.get(0);
-            if (o1.count() == 1 && o1.contains(ctx.options.type_key)) { //说明，是有类型的集合
+            if (o1.count() == 1 && o1.contains(ctx.options.getTypePropertyName())) { //说明，是有类型的集合
                 o = o.get(1); //取第二个节点，做为数据节点（第1个为类型节点）;
             }
         }
@@ -397,7 +397,7 @@ public class ObjectToer implements Toer {
                 //
                 // 这段，不能与下面的 o.isObject() 复用
                 //
-                ONode n1 = o1.obj().get(ctx.options.type_key);
+                ONode n1 = o1.obj().get(ctx.options.getTypePropertyName());
                 if (n1 != null) {
                     typeStr = n1.val().getString();
                 }
@@ -405,7 +405,7 @@ public class ObjectToer implements Toer {
         }
 
         if (o.isObject()) {
-            ONode n1 = o.obj().get(ctx.options.type_key);
+            ONode n1 = o.obj().get(ctx.options.getTypePropertyName());
             if (n1 != null) {
                 typeStr = n1.val().getString();
             }

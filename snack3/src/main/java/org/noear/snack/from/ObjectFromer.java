@@ -129,7 +129,7 @@ public class ObjectFromer implements Fromer {
     }
 
     private ONode typeSet(Options cfg, ONode o, Class<?> clz) {
-        return o.set(cfg.type_key, clz.getName());
+        return o.set(cfg.getTypePropertyName(), clz.getName());
     }
 
 
@@ -195,7 +195,7 @@ public class ObjectFromer implements Fromer {
 
         //为序列化添加特性支持
         if (cfg.hasFeature(Feature.WriteClassName)) {
-            rst.set(cfg.type_key, clz.getName());
+            rst.set(cfg.getTypePropertyName(), clz.getName());
         }
 
         Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
@@ -228,7 +228,7 @@ public class ObjectFromer implements Fromer {
 
     private boolean analyseOther(Options cfg, ONode rst, Class<?> clz, Object obj) {
         if (obj instanceof SimpleDateFormat) {
-            rst.set(cfg.type_key, clz.getName());
+            rst.set(cfg.getTypePropertyName(), clz.getName());
             rst.set("val", ((SimpleDateFormat) obj).toPattern());
         } else if (clz == Class.class) {
             rst.val().setString(clz.getName());
