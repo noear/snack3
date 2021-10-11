@@ -199,8 +199,8 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 -nodeData() -> ONodeData //Gets the current node data
 -nodeType() -> ONodeType //Gets the current node type
 
--options(opts:Constants) -> self:ONode   //Switch configuration
--options() -> Constants 				//Access to the configuration
+-options(opts:Options) -> self:ONode   //Switch options
+-options() -> Options 				//Access to the options
 
 -build(n->..) -> self:ONode     	//Node build expression
 -select(jpath:String) -> new:ONode 	                    //Select nodes using JSONPATH expressions (default cache path compilation)
@@ -231,7 +231,7 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 -obj() -> Map<String,ONode>                     //Gets the data structure of the node object (automatically converted if it is not the object type)
 -contains(key:String) -> bool                   //Is there an object child node?
 -rename(key:String,newKey:String) -> self:ONode //Rename the child node and return itself
--get(key:String) -> child:ONode                 //Gets object child node (does not exist, generates new child node and returns)
+-get(key:String) -> child:ONode                 //Gets object child node (does not exist, returns empty node)***
 -getOrNew(key:String) -> child:ONode            //Gets object child node (does not exist, generates new child node and returns)
 -getOrNull(key:String) -> child:ONode           //Gets the child node of the object (does not exist, returns null)
 -getNew(key:String) -> child:ONode              //Generating a new child node of the object clears the previous data
@@ -246,9 +246,9 @@ case：`n.select("$..book.price.min()") //Find the lowest price`
 //Array operation
 //
 -ary() -> List<ONode>                   //Gets the node array data structure (automatically converted if it is not an array)
--get(index:int)  -> child:ONode                 //Gets the array child node (overbound, returns empty node)
+-get(index:int)  -> child:ONode                 //Gets the array child node (does not exist, returns empty node)
 -getOrNew(index:int)  -> child:ONode            //Gets array child node (does not exist, generates new child node and returns)
--getOrNull(index:int)  -> child:ONode           //Gets array child nodes (overbound, returns null)
+-getOrNull(index:int)  -> child:ONode           //Gets array child nodes (does not exist, returns null)
 -addNew() -> child:ONode                        //Generates a new array child node
 -add(val) -> self:ONode                         //Add array child node //val: for regular type or ONode
 -addNode(val:ONode) -> self:ONode               //Add array child node with value of type ONode (need to initialize type externally, recommend add(v))
