@@ -17,6 +17,7 @@ public class Coding {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
         Constants cfg = Constants.def();
+        //添加编码器
         cfg.addEncoder(OrderModel.class, (source, target) -> {
             target.set("id", source.order_id);
         });
@@ -25,6 +26,7 @@ public class Coding {
         System.out.println(json);
         assert json.contains("1");
 
+        //添加解码器
         cfg.addDecoder(OrderModel.class, (source, type) -> {
             OrderModel tmp = new OrderModel();
             tmp.order_id = source.get("id").getInt();
@@ -45,6 +47,7 @@ public class Coding {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
         Constants cfg = Constants.def();
+        //添加编码器
         cfg.addEncoder(OrderModel.class, (source, target) -> {
             target.set("user", new ONode().set("uid","1001"));
             target.set("order_time", null);
@@ -54,6 +57,7 @@ public class Coding {
         System.out.println(json);
         assert json.contains("1001");
 
+        //添加解码器
         cfg.addDecoder(Date.class, (source, type) -> {
             if(source.isNull()){
                 return new Date();
@@ -62,6 +66,7 @@ public class Coding {
             }
         });
 
+        //添加解码器
         cfg.addDecoder(UserModel.class, (source, type) -> {
             UserModel tmp = new UserModel();
             tmp.id = source.get("uid").getInt();
