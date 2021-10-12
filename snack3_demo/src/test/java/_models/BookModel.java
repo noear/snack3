@@ -4,7 +4,7 @@ import org.noear.snack.annotation.NodeName;
 
 public class BookModel {
     public int id;
-    @NodeName("name")
+    @NodeName(value = "name")
     public String bookname;
     public String note;
 }

@@ -1,5 +1,7 @@
 #### 3.2.0
 
+* NodeName 注解更名为 NodeAttr 并增加能力
+
 * Constants 更名为 Options
 
 * 将部分 Options 的公开字段，调整为函数
