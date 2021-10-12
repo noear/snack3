@@ -49,15 +49,18 @@ public class Coding {
     public void test1() {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
+
         Options options = Options.def();
+        options.addEncoder(Date.class, (data, node) -> {
+            node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
+        });
+
         //添加编码器
         options.addEncoder(OrderModel.class, (data, node) -> {
             node.set("user", new ONode().set("uid", "1001"));
             node.set("order_time", null);
         });
-        options.addEncoder(Date.class, (data, node) -> {
-            node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
-        });
+
 
         String json = ONode.loadObj(orderModel, options).toJson();
         System.out.println(json);

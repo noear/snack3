@@ -120,6 +120,12 @@ o.forEach((v)->{
 
 
 //demo8:自定义编码
+Options options = Options.def();
+options.addEncoder(Date.class, (data, node) -> {
+    node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
+});
+
+String json = ONode.loadObj(orderModel, options).toJson();
 ```
 
 ## 关于序列化的特点
