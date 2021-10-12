@@ -23,26 +23,28 @@ public class TypeUtil {
     public final static BigDecimal DEC_LOW = BigDecimal.valueOf(-9007199254740991L);
     public final static BigDecimal DEC_HIGH = BigDecimal.valueOf(9007199254740991L);
 
-    /** 将字符串转为类型 */
-    public static Object strTo(String str, Class<?> clz){
-        if(Integer.class.isAssignableFrom(clz) || Integer.TYPE == clz){
+    /**
+     * 将字符串转为类型
+     */
+    public static Object strTo(String str, Class<?> clz) {
+        if (Integer.class.isAssignableFrom(clz) || Integer.TYPE == clz) {
             return Integer.parseInt(str);
-        }else if(Long.class.isAssignableFrom(clz) ||  Long.TYPE == clz){
+        } else if (Long.class.isAssignableFrom(clz) || Long.TYPE == clz) {
             return Long.parseLong(str);
-        }else {
-            throw new SnackException("unsupport type "+ str);
+        } else {
+            throw new SnackException("unsupport type " + str);
         }
     }
 
 
-
     private static Map<String, EnumWrap> enumCached = new ConcurrentHashMap<>();
-    public static EnumWrap createEnum(Class<?> clz){
+
+    public static EnumWrap createEnum(Class<?> clz) {
         String key = clz.getName();
         EnumWrap val = enumCached.get(key);
-        if(val == null){
+        if (val == null) {
             val = new EnumWrap(clz);
-            enumCached.put(key,val);
+            enumCached.put(key, val);
         }
 
         return val;
@@ -130,43 +132,43 @@ public class TypeUtil {
     }
 
     public static Collection createCollection(Type type, boolean isThrow) {
-        if(type == null){
+        if (type == null) {
             return new ArrayList();
         }
 
         //最常用的放前面
-        if(type == ArrayList.class){
+        if (type == ArrayList.class) {
             return new ArrayList();
         }
 
         Class<?> rawClass = getRawClass(type);
         Collection list;
-        if(rawClass == AbstractCollection.class //
-                || rawClass == Collection.class){
+        if (rawClass == AbstractCollection.class //
+                || rawClass == Collection.class) {
             list = new ArrayList();
-        } else if(rawClass.isAssignableFrom(HashSet.class)){
+        } else if (rawClass.isAssignableFrom(HashSet.class)) {
             list = new HashSet();
-        } else if(rawClass.isAssignableFrom(LinkedHashSet.class)){
+        } else if (rawClass.isAssignableFrom(LinkedHashSet.class)) {
             list = new LinkedHashSet();
-        } else if(rawClass.isAssignableFrom(TreeSet.class)){
+        } else if (rawClass.isAssignableFrom(TreeSet.class)) {
             list = new TreeSet();
-        } else if(rawClass.isAssignableFrom(ArrayList.class)){
+        } else if (rawClass.isAssignableFrom(ArrayList.class)) {
             list = new ArrayList();
-        } else if(rawClass.isAssignableFrom(EnumSet.class)){
+        } else if (rawClass.isAssignableFrom(EnumSet.class)) {
             Type itemType;
-            if(type instanceof ParameterizedType){
+            if (type instanceof ParameterizedType) {
                 itemType = ((ParameterizedType) type).getActualTypeArguments()[0];
-            } else{
+            } else {
                 itemType = Object.class;
             }
             list = EnumSet.noneOf((Class<Enum>) itemType);
-        } else{
-            try{
+        } else {
+            try {
                 list = (Collection) rawClass.newInstance();
-            } catch(Exception e){
-                if(isThrow) {
+            } catch (Exception e) {
+                if (isThrow) {
                     throw new SnackException("create instance error, class " + rawClass.getName());
-                }else{
+                } else {
                     return null;
                 }
             }
@@ -176,12 +178,12 @@ public class TypeUtil {
 
 
     public static Map createMap(Type type) {
-        if(type == null){
+        if (type == null) {
             return new HashMap();
         }
 
         //最常用的放前面
-        if(type == HashMap.class){
+        if (type == HashMap.class) {
             return new HashMap();
         }
 
@@ -237,13 +239,13 @@ public class TypeUtil {
         }
     }
 
-    public static Class<?> getRawClass(Type type){
-        if(type instanceof Class<?>){
+    public static Class<?> getRawClass(Type type) {
+        if (type instanceof Class<?>) {
             return (Class<?>) type;
-        } else if(type instanceof ParameterizedType){
+        } else if (type instanceof ParameterizedType) {
             return getRawClass(((ParameterizedType) type).getRawType());
-        } else{
-            throw new SnackException("TODO");
+        } else {
+            throw new SnackException("unsupport type " + type);
         }
     }
 }
