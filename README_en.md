@@ -6,7 +6,7 @@ _[![Maven Central](https://img.shields.io/maven-central/v/org.noear/snack3.svg)]
 # Snack3 for java
 A miniature JSON + JSONPath framework
 
-Based on JDK8, 70Kb. Support: serialization and deserialization, parsing and transformation, JSON PATH query.
+Based on JDK8, 80Kb. Support: serialization and deserialization, parsing and transformation, JSON PATH query.
 
 ```xml
 <dependency>
