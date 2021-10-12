@@ -1,8 +1,8 @@
 #### 3.2.0
 
-* Constants 更名为 Options
+* Constants 更名为 Options，并优化细节
 
-* 将部分 Options 的公开字段，调整为函数
+* ONode::get(key) ，不再自动为文档树添加节点；如有需要改用 ONode::getOrNew(key)
 
 * 增加自定义编码与解码支持
 
