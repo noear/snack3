@@ -3,7 +3,10 @@ package org.noear.snack.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author noear 2021/1/1 created
+ * 节点名称
+ *
+ * @author noear
+ * @since 3.1
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
