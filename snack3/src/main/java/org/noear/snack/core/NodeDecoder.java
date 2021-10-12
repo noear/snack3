@@ -2,7 +2,6 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -11,5 +10,5 @@ import java.lang.reflect.Type;
  * @author noear 2021/1/1 created
  */
 public interface NodeDecoder<T> {
-    T decode(ONode source, Type type);
+    T decode(ONode node, Type type);
 }

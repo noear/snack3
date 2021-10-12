@@ -48,32 +48,36 @@ public class Coding {
     public void test1() {
         OrderModel orderModel = new OrderModel();
         orderModel.order_id = 1;
-        Options cfg = Options.def();
+        Options options = Options.def();
         //添加编码器
-        cfg.addEncoder(OrderModel.class, (source, target) -> {
-            target.set("user", new ONode().set("uid","1001"));
-            target.set("order_time", null);
+        options.addEncoder(OrderModel.class, (data, node) -> {
+            node.set("user", new ONode().set("uid", "1001"));
+            node.set("order_time", null);
+        });
+        options.addEncoder(Date.class, (data, node) -> {
+            node.val().setNumber(data.getTime());
         });
 
-        String json = ONode.loadObj(orderModel, cfg).toJson();
+        String json = ONode.loadObj(orderModel, options).toJson();
         System.out.println(json);
         assert json.contains("1001");
 
         //添加解码器
-        cfg.addDecoder(Date.class, (source, type) -> {
-            if(source.isNull()){
+        options.addDecoder(Date.class, (node, type) -> {
+            if (node.isNull()) {
                 return new Date();
-            }else{
-                return source.getDate();
+            } else {
+                return node.getDate();
             }
         });
 
+
         //添加解码器
-        cfg.addDecoder(LocalTime.class, (source, type) -> {
-            if(source.isNull()){
+        options.addDecoder(LocalTime.class, (node, type) -> {
+            if (node.isNull()) {
                 return LocalTime.now();
-            }else{
-                return source.getDate()
+            } else {
+                return node.getDate()
                         .toInstant()
                         .atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId())
                         .toLocalTime();
@@ -81,7 +85,7 @@ public class Coding {
         });
 
         //添加解码器
-        cfg.addDecoder(UserModel.class, (source, type) -> {
+        options.addDecoder(UserModel.class, (source, type) -> {
             UserModel tmp = new UserModel();
             tmp.id = source.get("uid").getInt();
             return tmp;
@@ -91,7 +95,7 @@ public class Coding {
         System.out.println(rst);
         assert rst.user.id == 0;
 
-        rst = ONode.loadStr(json, cfg).toObject(OrderModel.class);
+        rst = ONode.loadStr(json, options).toObject(OrderModel.class);
         System.out.println(rst);
         assert rst.user.id == 1001;
     }
