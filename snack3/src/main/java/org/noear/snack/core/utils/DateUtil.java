@@ -6,9 +6,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
- * @author noear 2021/6/13 created
+ * 日期操作工具
+ *
+ * @author noear
+ * @since 3.1
  */
 public class DateUtil {
     public static final String FORMAT_29 = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
@@ -22,6 +26,9 @@ public class DateUtil {
 
     public static final String FORMAT_8 = "HH:mm:ss";
 
+    /**
+     * 解析时间
+     * */
     public static Date parse(String val) throws ParseException {
         final int len = val.length();
         String ft = null;
@@ -62,5 +69,25 @@ public class DateUtil {
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * 格式化时间
+     * */
+    public static String format(Date date, String dateFormat) {
+        return format(date, dateFormat, null);
+    }
+
+    /**
+     * 格式化时间
+     * */
+    public static String format(Date date, String dateFormat, TimeZone timeZone) {
+        DateFormat df = new SimpleDateFormat(dateFormat, DEFAULTS.DEF_LOCALE);
+        if (timeZone != null) {
+            df.setTimeZone(timeZone);
+        }
+
+        return df.format(date);
     }
 }

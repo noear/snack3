@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Options;
 import org.noear.snack.core.DEFAULTS;
+import org.noear.snack.core.utils.DateUtil;
 
 import java.time.LocalTime;
 import java.util.Date;
@@ -55,7 +56,7 @@ public class Coding {
             node.set("order_time", null);
         });
         options.addEncoder(Date.class, (data, node) -> {
-            node.val().setNumber(data.getTime());
+            node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
         });
 
         String json = ONode.loadObj(orderModel, options).toJson();

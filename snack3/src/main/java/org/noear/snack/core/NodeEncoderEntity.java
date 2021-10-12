@@ -2,12 +2,11 @@ package org.noear.snack.core;
 
 import org.noear.snack.ONode;
 
-import java.io.IOException;
-
 /**
  * ONode 编码器实体
  *
- * @author noear 2021/10/11 created
+ * @author noear
+ * @since 3.2
  */
 public class NodeEncoderEntity<T> implements NodeEncoder<T> {
     private final Class<T> type;

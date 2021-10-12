@@ -3,13 +3,14 @@ package org.noear.snack.core;
 import org.noear.snack.core.exts.Act1;
 import org.noear.snack.core.utils.DateUtil;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * 参数配置
+ *
+ * @author noear
+ * @since 3.0
  * */
 public class Options {
     public static int features_def = Feature.of(
@@ -24,16 +25,17 @@ public class Options {
             Feature.BrowserCompatible,
             Feature.WriteClassName,
             Feature.QuoteFieldNames);
+
     /**
      * 默认配置
-     * */
+     */
     public static final Options def() {
         return new Options(features_def);
     }
 
     /**
      * 序列化配置
-     * */
+     */
     public static final Options serialize() {
         return new Options(features_serialize);
     }
@@ -41,9 +43,10 @@ public class Options {
 
     //////////////////////////////////////////////
 
-    public Options() {}
+    public Options() {
+    }
 
-    public Options(int features){
+    public Options(int features) {
         this();
         this.features = features;
     }
@@ -58,8 +61,8 @@ public class Options {
 
     /**
      * 添加特性
-     * */
-    public Options add(Feature... features){
+     */
+    public Options add(Feature... features) {
         for (Feature f : features) {
             this.features = Feature.config(this.features, f, true);
         }
@@ -68,8 +71,8 @@ public class Options {
 
     /**
      * 移除特性
-     * */
-    public Options remove(Feature... features){
+     */
+    public Options remove(Feature... features) {
         for (Feature f : features) {
             this.features = Feature.config(this.features, f, false);
         }
@@ -77,7 +80,7 @@ public class Options {
     }
 
     @Deprecated
-    public Options sub(Feature... features){
+    public Options sub(Feature... features) {
         return remove(features);
     }
 
@@ -104,14 +107,14 @@ public class Options {
 
     /**
      * 获取所有编码器
-     * */
+     */
     public Collection<NodeEncoderEntity> encoders() {
         return Collections.unmodifiableCollection(encoderMap.values());
     }
 
     /**
      * 添加编码器
-     * */
+     */
     public <T> void addEncoder(Class<T> clz, NodeEncoder<T> encoder) {
         encoderMap.put(clz, new NodeEncoderEntity(clz, encoder));
     }
@@ -123,14 +126,14 @@ public class Options {
 
     /**
      * 获取所有解码器
-     * */
+     */
     public Collection<NodeDecoderEntity> decoders() {
         return Collections.unmodifiableCollection(decoderMap.values());
     }
 
     /**
      * 添加解码器
-     * */
+     */
     public <T> void addDecoder(Class<T> clz, NodeDecoder<T> decoder) {
         decoderMap.put(clz, new NodeDecoderEntity(clz, decoder));
     }
@@ -141,18 +144,17 @@ public class Options {
 
     /**
      * 获取日期格式
-     * */
+     */
     public String getDateFormat() {
         return dateFormat;
     }
 
     /**
      * 设置日期格式
-     * */
+     */
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
-
 
 
     //类型属性名
@@ -160,14 +162,14 @@ public class Options {
 
     /**
      * 获取类型属性名
-     * */
+     */
     public String getTypePropertyName() {
         return typePropertyName;
     }
 
     /**
      * 设置类型属性名
-     * */
+     */
     public void setTypePropertyName(String typePropertyName) {
         this.typePropertyName = typePropertyName;
     }
@@ -177,14 +179,14 @@ public class Options {
 
     /**
      * 获取时区
-     * */
+     */
     public TimeZone getTimeZone() {
         return timeZone;
     }
 
     /**
      * 设置时区
-     * */
+     */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
@@ -193,10 +195,7 @@ public class Options {
 
 
     public String dateToString(Date date) {
-        DateFormat df = new SimpleDateFormat(dateFormat, DEFAULTS.DEF_LOCALE);
-        df.setTimeZone(timeZone);
-
-        return df.format(date);
+        return DateUtil.format(date, dateFormat, timeZone);
     }
 
     public Date stringToDate(String date) throws ParseException {
