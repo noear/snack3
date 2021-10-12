@@ -21,8 +21,8 @@ public class Coding {
         orderModel.order_id = 1;
         Options opts = Options.def();
         //添加编码器
-        opts.addEncoder(OrderModel.class, (source, target) -> {
-            target.set("id", source.order_id);
+        opts.addEncoder(OrderModel.class, (data, node) -> {
+            node.set("id", data.order_id);
         });
 
         String json = ONode.loadObj(orderModel, opts).toJson();
@@ -30,9 +30,9 @@ public class Coding {
         assert json.contains("1");
 
         //添加解码器
-        opts.addDecoder(OrderModel.class, (source, type) -> {
+        opts.addDecoder(OrderModel.class, (node, type) -> {
             OrderModel tmp = new OrderModel();
-            tmp.order_id = source.get("id").getInt();
+            tmp.order_id = node.get("id").getInt();
             return tmp;
         });
 
@@ -89,9 +89,9 @@ public class Coding {
         });
 
         //添加解码器
-        options.addDecoder(UserModel.class, (source, type) -> {
+        options.addDecoder(UserModel.class, (node, type) -> {
             UserModel tmp = new UserModel();
-            tmp.id = source.get("uid").getInt();
+            tmp.id = node.get("uid").getInt();
             return tmp;
         });
 
