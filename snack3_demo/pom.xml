@@ -25,9 +25,9 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-test</artifactId>
+            <version>1.6.4</version>
             <scope>test</scope>
         </dependency>
 
