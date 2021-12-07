@@ -67,11 +67,11 @@ public class NameTest {
 
     @Test
     public void test3() {
-        Options options = Options.of(Feature.OrderedField,
+        Options.features_def = Feature.of(Feature.OrderedField,
                 Feature.WriteDateUseTicks,
                 Feature.QuoteFieldNames);
 
-        String val = new ONode(options).get("name").getString();
+        String val = new ONode().get("name").getString();
 
         System.out.println(val);
 
