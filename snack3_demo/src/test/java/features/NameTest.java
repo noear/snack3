@@ -67,27 +67,17 @@ public class NameTest {
 
     @Test
     public void test3() {
-        Options.features_def = Feature.of(Feature.OrderedField,
-                Feature.WriteDateUseTicks,
-                Feature.QuoteFieldNames);
-
-        String val = new ONode().get("name").getString();
-
-        System.out.println(val);
-
-        assert val == null;
-    }
-
-    @Test
-    public void test4() {
         Options options = Options.of(Feature.OrderedField,
                 Feature.WriteDateUseTicks,
                 Feature.QuoteFieldNames);
 
         String val = new ONode(options).get("name").getString();
-
         System.out.println(val);
-
         assert val == null;
+
+
+        String val2 = new ONode().get("name").getRawString();
+        System.out.println(val2);
+        assert val2 == null;
     }
 }
