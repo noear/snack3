@@ -231,6 +231,7 @@ public class ONode {
 
     /**
      * 获取节点的值并以 rawString 输出
+     * 如果节点不是值类型，则输出null
      * */
     public String getRawString() {
         if (isValue()) {
