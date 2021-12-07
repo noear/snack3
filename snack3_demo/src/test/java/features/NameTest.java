@@ -4,6 +4,8 @@ import _models.BookModel;
 import _models.BookViewModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Feature;
+import org.noear.snack.core.Options;
 
 import java.util.ArrayList;
 
@@ -61,5 +63,18 @@ public class NameTest {
         System.out.println(vm2.list.get(0).bookname);
 
         assert "noear".equals(vm2.list.get(0).bookname);
+    }
+
+    @Test
+    public void test3() {
+        Options options = Options.of(Feature.OrderedField,
+                Feature.WriteDateUseTicks,
+                Feature.QuoteFieldNames);
+
+        String val = new ONode(options).get("name").getString();
+
+        System.out.println(val);
+
+        assert val == null;
     }
 }

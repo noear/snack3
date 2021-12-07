@@ -85,6 +85,13 @@ public class Options {
     }
 
     /**
+     * 获取特性码
+     * */
+    public final int getFeatures() {
+        return features;
+    }
+
+    /**
      * 检查是否有特性
      */
     public final boolean hasFeature(Feature feature) {
