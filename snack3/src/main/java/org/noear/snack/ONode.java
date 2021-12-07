@@ -230,6 +230,17 @@ public class ONode {
     }
 
     /**
+     * 获取节点的值并以 rawString 输出
+     * */
+    public String getRawString() {
+        if (isValue()) {
+            return _d.value.getRawString();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 获取节点值并以 short 输出
      */
     public short getShort() {
