@@ -77,4 +77,17 @@ public class NameTest {
 
         assert val == null;
     }
+
+    @Test
+    public void test4() {
+        Options options = Options.of(Feature.OrderedField,
+                Feature.WriteDateUseTicks,
+                Feature.QuoteFieldNames);
+
+        String val = new ONode(options).get("name").getString();
+
+        System.out.println(val);
+
+        assert val == null;
+    }
 }
