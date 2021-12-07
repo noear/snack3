@@ -1,3 +1,11 @@
+#### 3.2.1
+
+* 增加接口 ONode::getRawString()
+* 增加接口 ONode::getRawNumber()
+* 增加接口 ONode::getRawBoolean()
+* 增加接口 ONode::getRawDate()
+* 增加接口 Options::getFeatures()
+
 #### 3.2.0
 
 * Constants 更名为 Options，并优化细节
