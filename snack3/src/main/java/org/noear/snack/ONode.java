@@ -229,17 +229,6 @@ public class ONode {
         }
     }
 
-    /**
-     * 获取节点的值并以 rawString 输出
-     * 如果节点不是值类型，则输出null
-     * */
-    public String getRawString() {
-        if (isValue()) {
-            return _d.value.getRawString();
-        } else {
-            return null;
-        }
-    }
 
     /**
      * 获取节点值并以 short 输出
@@ -262,23 +251,6 @@ public class ONode {
     }
 
     /**
-     * 获取节点值并以 boolean 输出
-     */
-    public boolean getBoolean() {
-        if (isValue())
-            return _d.value.getBoolean();
-        else
-            return false;
-    }
-
-    public Number getNumber() {
-        if (isValue())
-            return _d.value.getRawNumber();
-        else
-            return null;
-    }
-
-    /**
      * 获取节点值并以 long 输出
      */
     public long getLong() {
@@ -286,16 +258,6 @@ public class ONode {
             return _d.value.getLong();
         else
             return 0;
-    }
-
-    /**
-     * 获取节点值并以 Date 输出
-     */
-    public Date getDate() {
-        if (isValue())
-            return _d.value.getDate();
-        else
-            return null;
     }
 
     /**
@@ -334,6 +296,27 @@ public class ONode {
                     .doubleValue();
     }
 
+
+    /**
+     * 获取节点值并以 boolean 输出
+     */
+    public boolean getBoolean() {
+        if (isValue())
+            return _d.value.getBoolean();
+        else
+            return false;
+    }
+
+    /**
+     * 获取节点值并以 Date 输出
+     */
+    public Date getDate() {
+        if (isValue())
+            return _d.value.getDate();
+        else
+            return null;
+    }
+
     /**
      * 获取节点值并以 char 输出
      */
@@ -342,6 +325,51 @@ public class ONode {
             return _d.value.getChar();
         else
             return 0;
+    }
+
+    /**
+     * 获取节点的值并以 rawString 输出
+     * 如果节点不是值类型，则输出null
+     * */
+    public String getRawString() {
+        if (isValue()) {
+            return _d.value.getRawString();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取节点的值并以 rawNumber 输出
+     * 如果节点不是值类型，则输出null
+     * */
+    public Number getRawNumber() {
+        if (isValue())
+            return _d.value.getRawNumber();
+        else
+            return null;
+    }
+
+    /**
+     * 获取节点的值并以 rawBoolean 输出
+     * 如果节点不是值类型，则输出null
+     * */
+    public Boolean getRawBoolean() {
+        if (isValue())
+            return _d.value.getRawBoolean();
+        else
+            return null;
+    }
+
+    /**
+     * 获取节点的值并以 rawDate 输出
+     * 如果节点不是值类型，则输出null
+     * */
+    public Date getRawDate() {
+        if (isValue())
+            return _d.value.getRawDate();
+        else
+            return null;
     }
 
     ////////////////////
