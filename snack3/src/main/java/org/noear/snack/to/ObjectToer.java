@@ -365,8 +365,14 @@ public class ObjectToer implements Toer {
 
 
         // 遍历每个字段
-        for (FieldWrap f : ClassWrap.get(target).fieldAllWraps()) {
-            String key = f.name();
+        Collection<FieldWrap> list = ClassWrap.get(target).fieldAllWraps();
+
+        for (FieldWrap f : list) {
+            if(f.isDeserialize() == false){
+                continue;
+            }
+
+            String key = f.getName();
 
             if (o.contains(key)) {
                 f.setValue(rst, analyse(ctx, o.get(key), f.type, f.genericType));

@@ -1,5 +1,6 @@
 package org.noear.snack.core.exts;
 
+import org.noear.snack.annotation.ONodeAttr;
 import org.noear.snack.exception.SnackException;
 import org.noear.snack.annotation.NodeName;
 import org.noear.snack.core.utils.StringUtil;
@@ -15,7 +16,10 @@ public class FieldWrap {
     public final Class<?> type;
     public final Type genericType;
 
-    private String _name;
+    private String name;
+    private String format;
+    private boolean serialize = true;
+    private boolean deserialize = true;
 
     public FieldWrap(Class<?> clz, Field f) {
         field = f;
@@ -24,16 +28,53 @@ public class FieldWrap {
 
         NodeName anno = f.getAnnotation(NodeName.class);
         if (anno != null) {
-            _name = anno.value();
+            name = anno.value();
         }
 
-        if (StringUtil.isEmpty(_name)) {
-            _name = field.getName();
+        ONodeAttr attr = f.getAnnotation(ONodeAttr.class);
+        if(attr != null){
+            name = attr.name();
+            format = attr.format();
+            serialize = attr.serialize();
+            deserialize = attr.deserialize();
+        }
+
+        if (StringUtil.isEmpty(name)) {
+            name = field.getName();
         }
     }
 
-    public String name() {
-        return _name;
+    @Deprecated
+    public String name(){
+        return name;
+    }
+
+    /**
+     * @since 3.2.2
+     * */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @since 3.2.2
+     * */
+    public String getFormat() {
+        return format;
+    }
+
+    /**
+     * @since 3.2.2
+     * */
+    public boolean isDeserialize() {
+        return deserialize;
+    }
+
+    /**
+     * @since 3.2.2
+     * */
+    public boolean isSerialize() {
+        return serialize;
     }
 
     public void setValue(Object tObj, Object val) {

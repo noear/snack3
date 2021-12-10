@@ -8,6 +8,7 @@ import java.lang.annotation.*;
  * @author noear
  * @since 3.1
  */
+@Deprecated
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

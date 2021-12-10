@@ -198,27 +198,33 @@ public class ObjectFromer implements Fromer {
             rst.set(cfg.getTypePropertyName(), clz.getName());
         }
 
+        // 遍历每个字段
         Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
 
         for (FieldWrap f : list) {
+            if(f.isSerialize() == false){
+                //不做序列化
+                continue;
+            }
+
             Object val = f.getValue(obj);
 
             if (val == null) {
                 //null string 是否以 空字符处理
                 if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
-                    rst.setNode(f.name(), analyse(cfg, ""));
+                    rst.setNode(f.getName(), analyse(cfg, ""));
                     continue;
                 }
 
                 //null是否输出
                 if (cfg.hasFeature(Feature.SerializeNulls)) {
-                    rst.setNode(f.name(), analyse(cfg, null));
+                    rst.setNode(f.getName(), analyse(cfg, null));
                 }
                 continue;
             }
 
             if (val.equals(obj) == false) { //null 和 自引用 不需要处理
-                rst.setNode(f.name(), analyse(cfg, val));
+                rst.setNode(f.getName(), analyse(cfg, val));
             }
         }
 //        }
