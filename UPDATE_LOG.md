@@ -1,3 +1,6 @@
+#### 3.2.2
+* 增加 @ONodeAttr 注解，取代旧的 @NodeName
+
 #### 3.2.1
 
 * 增加接口 ONode::getRawString()
