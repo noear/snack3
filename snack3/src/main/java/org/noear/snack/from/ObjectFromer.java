@@ -6,11 +6,15 @@ import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
+import org.noear.snack.core.utils.DateUtil;
+import org.noear.snack.core.utils.StringUtil;
 
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.sql.Clob;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -34,10 +38,6 @@ public class ObjectFromer implements Fromer {
         if (source == null) {
             return rst;
         }
-
-//        if(source instanceof NodeEncoder){
-//            return ((NodeEncoder)source).toNode();
-//        }
 
         Class<?> clz = source.getClass();
 
@@ -187,10 +187,6 @@ public class ObjectFromer implements Fromer {
     }
 
     private boolean analyseBean(Options cfg, ONode rst, Class<?> clz, Object obj) {
-//        if (obj instanceof NodeEncoder) {
-//            rst.val(((NodeEncoder) obj).toNode());
-//        } else {
-
         rst.asObject();
 
         //为序列化添加特性支持
@@ -202,13 +198,14 @@ public class ObjectFromer implements Fromer {
         Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
 
         for (FieldWrap f : list) {
-            if(f.isSerialize() == false){
+            if (f.isSerialize() == false) {
                 //不做序列化
                 continue;
             }
 
             Object val = f.getValue(obj);
 
+            //如果是null
             if (val == null) {
                 //null string 是否以 空字符处理
                 if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
@@ -223,11 +220,28 @@ public class ObjectFromer implements Fromer {
                 continue;
             }
 
-            if (val.equals(obj) == false) { //null 和 自引用 不需要处理
-                rst.setNode(f.getName(), analyse(cfg, val));
+            //如果是自引用
+            if (val.equals(obj)) {
+                continue;
             }
+
+            if (StringUtil.isEmpty(f.getFormat()) == false) {
+                if (val instanceof Date) {
+                    String val2 = DateUtil.format((Date) val, f.getFormat());
+                    rst.set(f.getName(), val2);
+                    continue;
+                }
+
+                if (val instanceof Number) {
+                    NumberFormat format = new DecimalFormat(f.getFormat());
+                    String val2 = format.format(val);
+                    rst.set(f.getName(), val2);
+                    continue;
+                }
+            }
+
+            rst.setNode(f.getName(), analyse(cfg, val));
         }
-//        }
 
         return true;
     }

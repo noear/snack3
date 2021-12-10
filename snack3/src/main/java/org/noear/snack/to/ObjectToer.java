@@ -63,12 +63,6 @@ public class ObjectToer implements Toer {
                     return decoder.decode(o, clz);
                 }
             }
-
-//            if (is(NodeDecoder.class, clz)) {
-//                NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(clz);
-//                b.fromNode(o);
-//                return b;
-//            }
         }
 
 
