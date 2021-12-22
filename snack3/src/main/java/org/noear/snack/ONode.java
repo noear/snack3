@@ -1,8 +1,6 @@
 package org.noear.snack;
 
 import org.noear.snack.core.*;
-import org.noear.snack.core.exts.Act1;
-import org.noear.snack.core.exts.Act2;
 import org.noear.snack.from.Fromer;
 import org.noear.snack.to.Toer;
 
@@ -169,11 +167,11 @@ public class ONode {
     /**
      * 构建表达式
      *
-     * @param fun lambda表达式
+     * @param custom lambda表达式
      * @return self:ONode
      */
-    public ONode build(Act1<ONode> fun) {
-        fun.run(this);
+    public ONode build(Consumer<ONode> custom) {
+        custom.accept(this);
         return this;
     }
 
@@ -233,7 +231,11 @@ public class ONode {
                 return toJson();
             }
 
-            return _o.nullString();
+            if (_o.hasFeature(Feature.StringNullAsEmpty)) {
+                return "";
+            } else {
+                return null;
+            }
         }
     }
 
@@ -596,12 +598,12 @@ public class ONode {
      *
      * @return self:ONode
      */
-    public <T> ONode setAll(Map<String, T> map, Act2<ONode, T> handler) {
+    public <T> ONode setAll(Map<String, T> map, BiConsumer<ONode, T> handler) {
         _d.tryInitObject();
 
         if (map != null) {
             map.forEach((k, v) -> {
-                handler.run(this.get(k), v);
+                handler.accept(this.get(k), v);
             });
         }
         return this;
@@ -760,11 +762,11 @@ public class ONode {
      *
      * @return self:ONode
      */
-    public <T> ONode addAll(Collection<T> ary, Act2<ONode, T> handler) {
+    public <T> ONode addAll(Collection<T> ary, BiConsumer<ONode, T> handler) {
         _d.tryInitArray();
 
         if (ary != null) {
-            ary.forEach(m -> handler.run(addNew(), m));
+            ary.forEach(m -> handler.accept(addNew(), m));
         }
         return this;
     }

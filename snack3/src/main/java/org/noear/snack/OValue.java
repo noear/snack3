@@ -1,5 +1,6 @@
 package org.noear.snack;
 
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.exception.SnackException;
 
@@ -247,8 +248,13 @@ public class OValue {
                 return String.valueOf(_bool);
             case DateTime:
                 return String.valueOf(_date);
-            default:
-                return _n._o.nullString();
+            default: {
+                if (_n._o.hasFeature(Feature.StringNullAsEmpty)) {
+                    return "";
+                } else {
+                    return null;
+                }
+            }
         }
     }
 

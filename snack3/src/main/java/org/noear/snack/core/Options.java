@@ -1,10 +1,7 @@
 package org.noear.snack.core;
 
-import org.noear.snack.core.exts.Act1;
-import org.noear.snack.core.utils.DateUtil;
-
-import java.text.ParseException;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 参数配置
@@ -102,8 +99,8 @@ public class Options {
     /**
      * 构建自己
      */
-    public Options build(Act1<Options> builder) {
-        builder.run(this);
+    public Options build(Consumer<Options> custom) {
+        custom.accept(this);
         return this;
     }
 
@@ -198,17 +195,4 @@ public class Options {
         this.timeZone = timeZone;
     }
 
-    //=================
-
-
-    /**
-     * null string 默认值
-     */
-    public final String nullString() {
-        if (hasFeature(Feature.StringNullAsEmpty)) {
-            return "";
-        } else {
-            return null;
-        }
-    }
 }
