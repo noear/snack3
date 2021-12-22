@@ -2,6 +2,7 @@
 
 * Options 取消功能特性，只留配置特性
 * 增加接口 ONode::options(ops->...);
+* 取消 Act0, Act1, Fun0, Fun4 临时功能接口
 
 #### 3.2.2
 
