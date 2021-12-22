@@ -91,8 +91,8 @@ public class Options {
     /**
      * 重新设置特性码
      * */
-    public final void setFeatures(int features) {
-        this.features = features;
+    public final void setFeatures(Feature... features) {
+        this.features = Feature.of(features);
     }
 
     /**
