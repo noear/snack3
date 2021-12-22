@@ -1,6 +1,6 @@
 #### 3.2.3
 * Options 取消功能特性，只留配置特性
-
+* 增加接口 ONode::options(ops->...);
 
 #### 3.2.2
 * 增加 @ONodeAttr 注解，取代旧的 @NodeName
