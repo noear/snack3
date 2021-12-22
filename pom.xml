@@ -9,7 +9,7 @@
     <version>dev</version>
     <packaging>pom</packaging>
 
-    <name>snack3_java</name>
+    <name>_root</name>
     <description>Java project for solon</description>
 
     <properties>

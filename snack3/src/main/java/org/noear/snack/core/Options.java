@@ -201,14 +201,6 @@ public class Options {
     //=================
 
 
-    public String dateToString(Date date) {
-        return DateUtil.format(date, dateFormat, timeZone);
-    }
-
-    public Date stringToDate(String date) throws ParseException {
-        return DateUtil.parse(date);
-    }
-
     /**
      * null string 默认值
      */

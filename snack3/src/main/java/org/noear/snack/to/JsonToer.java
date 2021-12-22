@@ -5,6 +5,7 @@ import org.noear.snack.ONodeData;
 import org.noear.snack.OValue;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.exts.ThData;
+import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.core.utils.IOUtil;
 import org.noear.snack.core.utils.TypeUtil;
 import org.noear.snack.core.Options;
@@ -135,7 +136,8 @@ public class JsonToer implements Toer {
         if(opts.hasFeature(Feature.WriteDateUseTicks)){
             sBuf.append(val.getTime());
         }else if(opts.hasFeature(Feature.WriteDateUseFormat)){
-            writeValString(opts, sBuf, opts.dateToString(val), false);
+            String valStr = DateUtil.format(val, opts.getDateFormat(), opts.getTimeZone());
+            writeValString(opts, sBuf, valStr, false);
         }else{
             sBuf.append("new Date(").append(val.getTime()).append(")");
         }

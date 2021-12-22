@@ -50,28 +50,28 @@ public class FieldWrap {
     }
 
     /**
-     * @since 3.2.2
+     * @since 3.2
      * */
     public String getName() {
         return name;
     }
 
     /**
-     * @since 3.2.2
+     * @since 3.2
      * */
     public String getFormat() {
         return format;
     }
 
     /**
-     * @since 3.2.2
+     * @since 3.2
      * */
     public boolean isDeserialize() {
         return deserialize;
     }
 
     /**
-     * @since 3.2.2
+     * @since 3.2
      * */
     public boolean isSerialize() {
         return serialize;

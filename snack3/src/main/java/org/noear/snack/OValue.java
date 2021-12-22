@@ -1,5 +1,6 @@
 package org.noear.snack;
 
+import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.exception.SnackException;
 
 import java.math.BigDecimal;
@@ -295,7 +296,7 @@ public class OValue {
      */
     private Date parseDate(String dateString) {
         try {
-            return _n._o.stringToDate(dateString);
+            return DateUtil.parse(dateString);
         } catch (ParseException ex) {
             return null;
         }
