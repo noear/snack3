@@ -89,6 +89,13 @@ public class Options {
     }
 
     /**
+     * 重新设置特性码
+     * */
+    public final void setFeatures(int features) {
+        this.features = features;
+    }
+
+    /**
      * 检查是否有特性
      */
     public final boolean hasFeature(Feature feature) {
