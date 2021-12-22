@@ -414,8 +414,8 @@ public class JsonPath {
         return p;
     }
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_$=(s, root, tmp, usd)->{ return tmp;};
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_xx=(s, root, tmp, usd)-> {
+    private static Resolver handler_$=(s, root, tmp, usd)->{ return tmp;};
+    private static Resolver handler_xx=(s, root, tmp, usd)-> {
 
         if (s.name.length() > 0) {
             ONode tmp2 = new ONode().asArray();
@@ -433,7 +433,7 @@ public class JsonPath {
         return null;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_x=(s, root, tmp, usd)->{
+    private static Resolver handler_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
@@ -448,7 +448,7 @@ public class JsonPath {
 
         return tmp2;
     };
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_prop=(s, root, tmp, usd)->{
+    private static Resolver handler_prop=(s, root, tmp, usd)->{
         //.name 指令
         //
         //name
@@ -472,7 +472,7 @@ public class JsonPath {
         return null;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_fun=(s, root, tmp, usd)->{
+    private static Resolver handler_fun=(s, root, tmp, usd)->{
         switch (s.cmd) {
             case "size()":{
                 return new ONode(tmp.options()).val(tmp.count());
@@ -564,7 +564,7 @@ public class JsonPath {
         }
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_x=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_x=(s, root, tmp, usd)->{
         ONode tmp2 = null;
         if (tmp.isArray()) {
             tmp2 = tmp;
@@ -578,7 +578,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_exp=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_exp=(s, root, tmp, usd)->{
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
@@ -632,7 +632,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_ref=(s, root, tmp, usd)-> {
+    private static Resolver handler_ary_ref=(s, root, tmp, usd)-> {
         ONode tmp2 = null;
 
         if(tmp.isObject()) {
@@ -652,7 +652,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_multi=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_multi=(s, root, tmp, usd)->{
         ONode tmp2 = null;
 
         if(s.cmdAry.indexOf("'")>=0){
@@ -704,7 +704,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_range=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_range=(s, root, tmp, usd)->{
         if (tmp.isArray()) {
             int count = tmp.count();
             int start = s.start;
@@ -735,7 +735,7 @@ public class JsonPath {
         }
     };
 
-    private static Fun4<ONode,Segment,ONode,ONode,Boolean> handler_ary_prop=(s, root, tmp, usd)-> {
+    private static Resolver handler_ary_prop=(s, root, tmp, usd)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
             if(tmp.isObject()) {
@@ -766,6 +766,12 @@ public class JsonPath {
         }
     };
 
+    @FunctionalInterface
+    private interface Resolver {
+        ONode run(Segment s, ONode root, ONode tmp, Boolean usd);
+    }
+
+
     private static class Segment {
         public String cmd;
         public String cmdAry;
@@ -782,7 +788,7 @@ public class JsonPath {
         public String op;
         public String right;
 
-        public Fun4<ONode,Segment,ONode,ONode,Boolean> handler;
+        public Resolver handler;
 
         public Segment(String test) {
             cmd = test.trim();
