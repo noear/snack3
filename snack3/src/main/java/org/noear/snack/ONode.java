@@ -151,6 +151,14 @@ public class ONode {
     }
 
     /**
+     * 定制选项
+     * */
+    public ONode options(Consumer<Options> custom) {
+        custom.accept(_o);
+        return this;
+    }
+
+    /**
      * 获取选项
      * */
     public Options options(){
