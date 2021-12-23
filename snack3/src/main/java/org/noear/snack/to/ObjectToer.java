@@ -35,12 +35,7 @@ public class ObjectToer implements Toer {
         ONode o = (ONode) ctx.source;
 
         if (null != o) {
-            Map<TypeVariable, Type> genericInfo = null;
-//            if (ctx.target_type instanceof ParameterizedType) {
-//                genericInfo = TypeVariableMapper.get(ctx.target_type);
-//            }
-
-            ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type, genericInfo);
+            ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type, null);
         }
     }
 
@@ -272,12 +267,13 @@ public class ObjectToer implements Toer {
             return null;
         }
 
-        if (o.count() == 2) {
-            ONode o1 = o.get(0);
-            if (o1.count() == 1 && o1.contains(ctx.options.getTypePropertyName())) { //说明，是有类型的集合
-                o = o.get(1); //取第二个节点，做为数据节点（第1个为类型节点）;
-            }
-        }
+        //todo:不再支持
+//        if (o.count() == 2) {
+//            ONode o1 = o.get(0);
+//            if (o1.count() == 1 && o1.contains(ctx.options.getTypePropertyName())) { //说明，是有类型的集合
+//                o = o.get(1); //取第二个节点，做为数据节点（第1个为类型节点）;
+//            }
+//        }
 
         Type itemType = null;
         if (ctx.target_type != null) {
@@ -285,7 +281,7 @@ public class ObjectToer implements Toer {
         }
 
         //解决无法识别的范型
-        if (itemType != null && "T".equals(itemType.getTypeName())) {
+        if (itemType != null && itemType instanceof TypeVariable) {
             itemType = null;
         }
 
