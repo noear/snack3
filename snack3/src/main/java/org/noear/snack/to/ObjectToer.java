@@ -36,9 +36,9 @@ public class ObjectToer implements Toer {
 
         if (null != o) {
             Map<TypeVariable, Type> genericInfo = null;
-            if (ctx.target_type instanceof ParameterizedType) {
-                genericInfo = TypeVariableMapper.get(ctx.target_type);
-            }
+//            if (ctx.target_type instanceof ParameterizedType) {
+//                genericInfo = TypeVariableMapper.get(ctx.target_type);
+//            }
 
             ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type, genericInfo);
         }
@@ -378,10 +378,14 @@ public class ObjectToer implements Toer {
                     Type[] actualTypes = type2.getActualTypeArguments();
                     boolean actualTypesChanged = false;
                     for (int i = 0, len = actualTypes.length; i < len; i++) {
-                        Type t1 = actualTypes[i];
-                        if (t1 instanceof TypeVariable) {
-                            actualTypes[i] = genericInfo.get(t1);
-                            actualTypesChanged = true;
+                        Type tmp = actualTypes[i];
+                        if (tmp instanceof TypeVariable) {
+                            tmp = genericInfo.get(tmp);
+
+                            if (tmp != null) { //有可能不有
+                                actualTypes[i] = tmp;
+                                actualTypesChanged = true;
+                            }
                         }
                     }
 

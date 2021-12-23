@@ -1,5 +1,6 @@
 package features;
 
+import _model2.Data;
 import _model2.House;
 import _model2.Result;
 import _models.ComplexModel;
@@ -12,9 +13,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author noear 2021/1/2 created
@@ -87,13 +86,42 @@ public class GenericTest {
         //Result<House> result = JSONUtil.parseObj
 
 
-        Result<House> result1 = ONode.deserialize(json, new Result<House>(){}.getClass());
+        Result<House> result1 = ONode.deserialize(json, new Result<House>() {
+        }.getClass());
         assert result1.getData().getContent().size() == 1;
         assert result1.getData().getContent().get(0).getClass() == House.class;
 
 
-        Result<House> result2 = ONode.deserialize(json, new TypeRef<Result<House>>(){}.getType());
+        Result<House> result2 = ONode.deserialize(json, new TypeRef<Result<House>>() {
+        }.getType());
         assert result2.getData().getContent().size() == 1;
         assert result2.getData().getContent().get(0).getClass() == House.class;
+    }
+
+    @Test
+    public void test3() {
+        String json = "{\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"content\": [{\n" +
+                "\t\t\t\"sn\": \"P009-F07-H002-B001-R0001\",\n" +
+                "\t\t\t\"dver_type\": \"1\",\n" +
+                "\t\t\t\"data_status\": \"0\",\n" +
+                "\t\t\t\"created_by\": \"lvm\",\n" +
+                "\t\t\t\"created_date\": \"2021-12-21 14:44:36\",\n" +
+                "\t\t\t\"updated_by\": \"lvm\",\n" +
+                "\t\t\t\"updated_date\": \"2021-12-21 14:44:36\"\n" +
+                "\t\t}],\n" +
+                "\t\t\"pageNum\": 1,\n" +
+                "\t\t\"pageSize\": 20,\n" +
+                "\t\t\"totalElements\": 2,\n" +
+                "\t\t\"pages\": 1\n" +
+                "\t}\n" +
+                "}";
+
+
+        HashMap<String, Data> map = ONode.deserialize(json, new HashMap<String, Data>() {
+        }.getClass());
+
+        assert map.get("data").getClass() == Data.class;
     }
 }
