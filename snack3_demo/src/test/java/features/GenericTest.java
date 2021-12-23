@@ -8,7 +8,6 @@ import _models.Person;
 import _models.Point;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.parser.Feature;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
@@ -119,9 +118,29 @@ public class GenericTest {
                 "}";
 
 
-        HashMap<String, Data> map = ONode.deserialize(json, new HashMap<String, Data>() {
+        Map<String, Data> map = ONode.deserialize(json, new HashMap<String, Data>() {
         }.getClass());
 
         assert map.get("data").getClass() == Data.class;
+    }
+
+    @Test
+    public void test4() {
+        String json = "[{\n" +
+                "\t\t\t\"sn\": \"P009-F07-H002-B001-R0001\",\n" +
+                "\t\t\t\"dver_type\": \"1\",\n" +
+                "\t\t\t\"data_status\": \"0\",\n" +
+                "\t\t\t\"created_by\": \"lvm\",\n" +
+                "\t\t\t\"created_date\": \"2021-12-21 14:44:36\",\n" +
+                "\t\t\t\"updated_by\": \"lvm\",\n" +
+                "\t\t\t\"updated_date\": \"2021-12-21 14:44:36\"\n" +
+                "\t\t}]";
+
+
+        List<House> ary = ONode.deserialize(json, new ArrayList<House>() {
+        }.getClass());
+
+        assert ary.size() > 0;
+        assert ary.get(0).getClass() == House.class;
     }
 }
