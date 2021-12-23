@@ -1,8 +1,13 @@
 package features;
 
+import _model2.House;
+import _model2.Result;
 import _models.ComplexModel;
 import _models.Person;
 import _models.Point;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.TypeReference;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
@@ -51,5 +56,40 @@ public class GenericTest {
         for (Point p1 : points1) {
             System.out.println(p1.getX());
         }
+    }
+
+    @Test
+    public void test2() {
+        String json = "{\n" +
+                "\t\"code\": \"2000\",\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"content\": [{\n" +
+                "\t\t\t\"sn\": \"P009-F07-H002-B001-R0001\",\n" +
+                "\t\t\t\"dver_type\": \"1\",\n" +
+                "\t\t\t\"data_status\": \"0\",\n" +
+                "\t\t\t\"created_by\": \"lvm\",\n" +
+                "\t\t\t\"created_date\": \"2021-12-21 14:44:36\",\n" +
+                "\t\t\t\"updated_by\": \"lvm\",\n" +
+                "\t\t\t\"updated_date\": \"2021-12-21 14:44:36\"\n" +
+                "\t\t}],\n" +
+                "\t\t\"pageNum\": 1,\n" +
+                "\t\t\"pageSize\": 20,\n" +
+                "\t\t\"totalElements\": 2,\n" +
+                "\t\t\"pages\": 1\n" +
+                "\t}\n" +
+                "}";
+
+        String json2 = ONode.loadStr(json).toJson();
+        System.out.println(json2);
+
+        //Result<House> result = JSON.parseObject(json, new Result<House>().getClass());
+        //Result<House> result = JSONUtil.parseObj
+
+        Result<House> result2 = ONode.loadStr(json)
+                .options(opt -> opt.addDecoder(List.class, (o, t) -> o.toObjectList(House.class)))
+                .toObject(new Result<House>().getClass());
+
+        assert result2.getData().getContent().size() == 1;
+        assert result2.getData().getContent().get(0).getClass() == House.class;
     }
 }
