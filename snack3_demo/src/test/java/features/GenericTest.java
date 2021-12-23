@@ -86,9 +86,13 @@ public class GenericTest {
         });
         //Result<House> result = JSONUtil.parseObj
 
-        //Result<House> result1 = ONode.deserialize(json, new Result<House>().getClass());
-        Result<House> result2 = ONode.deserialize(json, new TypeRef<Result<House>>() {}.getType());
 
+        Result<House> result1 = ONode.deserialize(json, new Result<House>(){}.getClass());
+        assert result1.getData().getContent().size() == 1;
+        assert result1.getData().getContent().get(0).getClass() == House.class;
+
+
+        Result<House> result2 = ONode.deserialize(json, new TypeRef<Result<House>>(){}.getType());
         assert result2.getData().getContent().size() == 1;
         assert result2.getData().getContent().get(0).getClass() == House.class;
     }

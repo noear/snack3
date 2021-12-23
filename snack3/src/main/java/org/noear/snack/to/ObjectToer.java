@@ -7,15 +7,14 @@ import org.noear.snack.core.NodeDecoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
+import org.noear.snack.core.exts.ParameterizedTypeImpl;
+import org.noear.snack.core.utils.TypeVariableMapper;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.core.utils.TypeUtil;
 import org.noear.snack.exception.SnackException;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
@@ -36,11 +35,16 @@ public class ObjectToer implements Toer {
         ONode o = (ONode) ctx.source;
 
         if (null != o) {
-            ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type);
+            Map<TypeVariable, Type> genericInfo = null;
+            if (ctx.target_type instanceof ParameterizedType) {
+                genericInfo = TypeVariableMapper.get(ctx.target_type);
+            }
+
+            ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type, genericInfo);
         }
     }
 
-    private Object analyse(Context ctx, ONode o, Class<?> clz, Type type) throws Exception {
+    private Object analyse(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
         if (o == null) {
             return null;
         }
@@ -74,7 +78,7 @@ public class ObjectToer implements Toer {
                 o.remove(ctx.options.getTypePropertyName());//尝试移除类型内容
 
                 if (Map.class.isAssignableFrom(clz)) {
-                    return analyseMap(ctx, o, clz, type);
+                    return analyseMap(ctx, o, clz, type , genericInfo);
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
                     String declaringClass = o.get("declaringClass").getString();
                     if(declaringClass == null){
@@ -88,7 +92,11 @@ public class ObjectToer implements Toer {
                             o.get("fileName").getString(),
                             o.get("lineNumber").getInt());
                 } else {
-                    return analyseBean(ctx, o, clz);
+                    if (type instanceof ParameterizedType) {
+                        genericInfo = TypeVariableMapper.get(type);
+                    }
+
+                    return analyseBean(ctx, o, clz, type, genericInfo);
                 }
             case Array:
                 //clz = getTypeByNode(ctx, o, clz);
@@ -96,7 +104,7 @@ public class ObjectToer implements Toer {
                 if (clz.isArray()) {
                     return analyseArray(ctx, o.nodeData(), clz);
                 } else {
-                    return analyseCollection(ctx, o, clz, type);
+                    return analyseCollection(ctx, o, clz, type, genericInfo);
                 }
             default:
                 return null;
@@ -248,7 +256,7 @@ public class ObjectToer implements Toer {
             Class<?> c = target.getComponentType();
             Object[] val = (Object[]) Array.newInstance(c, len);
             for (int i = 0; i < len; i++) {
-                val[i] = analyse(ctx, d.array.get(i), c, c);
+                val[i] = analyse(ctx, d.array.get(i), c, c, null);
             }
             return val;
         } else {
@@ -257,7 +265,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseCollection(Context ctx, ONode o, Class<?> clz, Type type) throws Exception {
+    public Object analyseCollection(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
         Collection list = TypeUtil.createCollection(clz, false);
 
         if (list == null) {
@@ -282,14 +290,14 @@ public class ObjectToer implements Toer {
         }
 
         for (ONode o1 : o.nodeData().array) {
-            list.add(analyse(ctx, o1, (Class<?>) itemType, itemType));
+            list.add(analyse(ctx, o1, (Class<?>) itemType, itemType, genericInfo));
         }
 
         return list;
     }
 
 
-    public Object analyseMap(Context ctx, ONode o, Class<?> clz, Type type) throws Exception {
+    public Object analyseMap(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
         Map<Object, Object> map = TypeUtil.createMap(clz);
 
         if (type instanceof ParameterizedType) { //这里还要再研究下
@@ -307,16 +315,16 @@ public class ObjectToer implements Toer {
 
             if (kType == String.class) {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), (Class<?>) vType, vType));
+                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), (Class<?>) vType, vType, genericInfo));
                 }
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), (Class<?>) vType, vType));
+                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), (Class<?>) vType, vType, genericInfo));
                 }
             }
         } else {
             for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, null));
+                map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, null, genericInfo));
             }
         }
 
@@ -324,28 +332,22 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseBean(Context ctx, ONode o, Class<?> target) throws Exception {
-//        if (is(NodeDecoder.class, target)) {
-//            NodeDecoder b = (NodeDecoder) BeanUtil.newInstance(target);
-//            b.fromNode(o);
-//            return b;
-//        }
-
-        if (is(SimpleDateFormat.class, target)) {
+    public Object analyseBean(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+        if (is(SimpleDateFormat.class, clz)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
 
-        if (is(InetSocketAddress.class, target)) {
+        if (is(InetSocketAddress.class, clz)) {
             return new InetSocketAddress(o.get("address").getString(), o.get("port").getInt());
         }
 
         Object rst = null;
-        if(is(Throwable.class, target)) {
+        if (is(Throwable.class, clz)) {
             //todo: 兼容fastjson的异常序列化
             String message = o.get("message").getString();
             if (StringUtil.isEmpty(message) == false) {
                 try {
-                    Constructor fun = target.getConstructor(String.class);
+                    Constructor fun = clz.getConstructor(String.class);
                     rst = fun.newInstance(message);
                 } catch (Exception e) {
 
@@ -353,25 +355,46 @@ public class ObjectToer implements Toer {
             }
         }
 
-        if(rst == null){
-            rst = BeanUtil.newInstance(target);
+        if (rst == null) {
+            rst = BeanUtil.newInstance(clz);
         }
 
 
         // 遍历每个字段
-        Collection<FieldWrap> list = ClassWrap.get(target).fieldAllWraps();
+        Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
 
         for (FieldWrap f : list) {
-            if(f.isDeserialize() == false){
+            if (f.isDeserialize() == false) {
                 continue;
             }
 
             String key = f.getName();
 
             if (o.contains(key)) {
-                f.setValue(rst, analyse(ctx, o.get(key), f.type, f.genericType));
+                Type fieldGt = f.genericType;
+
+                if (fieldGt instanceof ParameterizedType && genericInfo != null) {
+                    ParameterizedType type2 = ((ParameterizedType) fieldGt);
+                    Type[] actualTypes = type2.getActualTypeArguments();
+                    boolean actualTypesChanged = false;
+                    for (int i = 0, len = actualTypes.length; i < len; i++) {
+                        Type t1 = actualTypes[i];
+                        if (t1 instanceof TypeVariable) {
+                            actualTypes[i] = genericInfo.get(t1);
+                            actualTypesChanged = true;
+                        }
+                    }
+
+                    if (actualTypesChanged) {
+                        fieldGt = new ParameterizedTypeImpl(actualTypes, type2.getOwnerType(), type2.getRawType());
+                    }
+                }
+
+                Object val = analyse(ctx, o.get(key), f.type, fieldGt, genericInfo);
+                f.setValue(rst, val);
             }
         }
+
         return rst;
     }
 
