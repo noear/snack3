@@ -6,8 +6,8 @@ import java.util.List;
  * @author noear 2021/12/23 created
  */
 @lombok.Data
-public class Data<T> {
-    private List<T> content;
+public class Data<X> {
+    private List<X> content;
     private int pageNum;
     private int pageSize;
     private int totalElements;

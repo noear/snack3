@@ -248,4 +248,40 @@ public class TypeUtil {
             throw new SnackException("unsupport type " + type);
         }
     }
+
+    /**
+     * 将{@link Type} 转换为{@link ParameterizedType}<br>
+     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型<br>
+     * 一般用于获取泛型参数具体的参数类型，例如：
+     *
+     * <pre>
+     * class A&lt;T&gt;
+     * class B extends A&lt;String&gt;
+     * </pre>
+     * <p>
+     * 通过此方法，传入B.class即可得到B{@link ParameterizedType}，从而获取到String
+     *
+     * @param type {@link Type}
+     * @return {@link ParameterizedType}
+     * @since 4.5.2
+     */
+    public static ParameterizedType toParameterizedType(Type type) {
+        ParameterizedType result = null;
+        if (type instanceof ParameterizedType) {
+            result = (ParameterizedType) type;
+        } else if (type instanceof Class) {
+            final Class<?> clazz = (Class<?>) type;
+            Type genericSuper = clazz.getGenericSuperclass();
+            if (null == genericSuper || Object.class.equals(genericSuper)) {
+                // 如果类没有父类，而是实现一些定义好的泛型接口，则取接口的Type
+                final Type[] genericInterfaces = clazz.getGenericInterfaces();
+                if (genericInterfaces != null && genericInterfaces.length > 0) {
+                    // 默认取第一个实现接口的泛型Type
+                    genericSuper = genericInterfaces[0];
+                }
+            }
+            result = toParameterizedType(genericSuper);
+        }
+        return result;
+    }
 }
