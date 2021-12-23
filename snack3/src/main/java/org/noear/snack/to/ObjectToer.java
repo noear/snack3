@@ -8,7 +8,6 @@ import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.exts.ParameterizedTypeImpl;
-import org.noear.snack.core.utils.TypeVariableMapper;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.core.utils.TypeUtil;
@@ -88,14 +87,12 @@ public class ObjectToer implements Toer {
                             o.get("lineNumber").getInt());
                 } else {
                     if (type instanceof ParameterizedType) {
-                        genericInfo = TypeVariableMapper.get(type);
+                        genericInfo = TypeUtil.getGenericInfo(type);
                     }
 
                     return analyseBean(ctx, o, clz, type, genericInfo);
                 }
             case Array:
-                //clz = getTypeByNode(ctx, o, clz);
-
                 if (clz.isArray()) {
                     return analyseArray(ctx, o.nodeData(), clz);
                 } else {
@@ -266,14 +263,6 @@ public class ObjectToer implements Toer {
         if (list == null) {
             return null;
         }
-
-        //todo:不再支持
-//        if (o.count() == 2) {
-//            ONode o1 = o.get(0);
-//            if (o1.count() == 1 && o1.contains(ctx.options.getTypePropertyName())) { //说明，是有类型的集合
-//                o = o.get(1); //取第二个节点，做为数据节点（第1个为类型节点）;
-//            }
-//        }
 
         Type itemType = null;
         if (ctx.target_type != null) {
