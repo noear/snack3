@@ -287,7 +287,7 @@ public class TypeUtil {
 
     ///////////////////////////
 
-    private static final Map<Type, Map<TypeVariable, Type>> genericMapperCached = new HashMap<>();
+    private static final Map<Type, Map<TypeVariable, Type>> genericInfoCached = new HashMap<>();
 
     /**
      * 获取泛型变量和泛型实际类型的对应关系Map
@@ -296,14 +296,14 @@ public class TypeUtil {
      * @return 泛型对应关系Map
      */
     public static Map<TypeVariable, Type> getGenericInfo(Type type) {
-        Map<TypeVariable, Type> tmp = genericMapperCached.get(type);
+        Map<TypeVariable, Type> tmp = genericInfoCached.get(type);
         if (tmp == null) {
             synchronized (type) {
-                tmp = genericMapperCached.get(type);
+                tmp = genericInfoCached.get(type);
 
                 if (tmp == null) {
                     tmp = createTypeGenericMap(type);
-                    genericMapperCached.put(type, tmp);
+                    genericInfoCached.put(type, tmp);
                 }
             }
         }

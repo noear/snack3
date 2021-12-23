@@ -359,9 +359,10 @@ public class ObjectToer implements Toer {
                 Type fieldGt = f.genericType;
 
                 if (fieldGt instanceof ParameterizedType && genericInfo != null) {
-                    ParameterizedType type2 = ((ParameterizedType) fieldGt);
-                    Type[] actualTypes = type2.getActualTypeArguments();
+                    ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
+                    Type[] actualTypes = fieldGt2.getActualTypeArguments();
                     boolean actualTypesChanged = false;
+
                     for (int i = 0, len = actualTypes.length; i < len; i++) {
                         Type tmp = actualTypes[i];
                         if (tmp instanceof TypeVariable) {
@@ -375,7 +376,7 @@ public class ObjectToer implements Toer {
                     }
 
                     if (actualTypesChanged) {
-                        fieldGt = new ParameterizedTypeImpl(actualTypes, type2.getOwnerType(), type2.getRawType());
+                        fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
                     }
                 }
 
