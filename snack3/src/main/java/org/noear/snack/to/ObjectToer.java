@@ -356,31 +356,46 @@ public class ObjectToer implements Toer {
             String key = f.getName();
 
             if (o.contains(key)) {
+                Class fieldT = f.type;
                 Type fieldGt = f.genericType;
 
-                if (fieldGt instanceof ParameterizedType && genericInfo != null) {
-                    ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
-                    Type[] actualTypes = fieldGt2.getActualTypeArguments();
-                    boolean actualTypesChanged = false;
-
-                    for (int i = 0, len = actualTypes.length; i < len; i++) {
-                        Type tmp = actualTypes[i];
-                        if (tmp instanceof TypeVariable) {
-                            tmp = genericInfo.get(tmp);
-
-                            if (tmp != null) { //有可能不有
-                                actualTypes[i] = tmp;
-                                actualTypesChanged = true;
+                if(genericInfo != null) {
+                    if (fieldGt instanceof TypeVariable) {
+                        Type tmp = genericInfo.get(fieldGt);
+                        if (tmp != null) {
+                            fieldGt = tmp;
+                            if (tmp instanceof Class) {
+                                fieldT = (Class) tmp;
+                            } else if (tmp instanceof ParameterizedType) {
+                                fieldT = (Class) ((ParameterizedType) tmp).getRawType();
                             }
                         }
                     }
 
-                    if (actualTypesChanged) {
-                        fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
+                    if (fieldGt instanceof ParameterizedType) {
+                        ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
+                        Type[] actualTypes = fieldGt2.getActualTypeArguments();
+                        boolean actualTypesChanged = false;
+
+                        for (int i = 0, len = actualTypes.length; i < len; i++) {
+                            Type tmp = actualTypes[i];
+                            if (tmp instanceof TypeVariable) {
+                                tmp = genericInfo.get(tmp);
+
+                                if (tmp != null) { //有可能不有
+                                    actualTypes[i] = tmp;
+                                    actualTypesChanged = true;
+                                }
+                            }
+                        }
+
+                        if (actualTypesChanged) {
+                            fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
+                        }
                     }
                 }
 
-                Object val = analyse(ctx, o.get(key), f.type, fieldGt, genericInfo);
+                Object val = analyse(ctx, o.get(key), fieldT, fieldGt, genericInfo);
                 f.setValue(rst, val);
             }
         }

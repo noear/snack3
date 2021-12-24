@@ -141,4 +141,13 @@ public class GenericTest {
         assert ary.size() > 0;
         assert ary.get(0).getClass() == House.class;
     }
+
+    @Test
+    public void test5(){
+        String json = "{\"code\":\"2000\",\"data\":{\"content\":[{\"sn\":\"P0008\",\"dver_type\":\"1\",\"data_status\":\"0\",\"created_by\":\"xieb\",\"created_date\":\"2021-12-16 13:25:16\",\"updated_by\":\"xieb\",\"updated_date\":\"2021-12-16 13:25:16\"},{\"sn\":\"P0009\",\"dver_type\":\"1\",\"data_status\":\"0\",\"created_by\":\"xieb\",\"created_date\":\"2021-12-16 13:41:36\",\"updated_by\":\"xieb\",\"updated_date\":\"2021-12-16 17:09:02\"}],\"obj\":{\"sn\":\"P0008\",\"dver_type\":\"1\",\"data_status\":\"0\",\"created_by\":\"xieb\",\"created_date\":\"2021-12-16 13:25:16\",\"updated_by\":\"xieb\",\"updated_date\":\"2021-12-16 13:25:16\"},\"pageNum\":1,\"pageSize\":20,\"totalElements\":4,\"pages\":1}}";
+
+        Result<House> result1 = ONode.deserialize(json, new Result<House>(){}.getClass());
+        assert result1.getData().getContent().size() > 0;
+        assert result1.getData().getContent().get(0).getClass() == House.class;
+    }
 }

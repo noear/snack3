@@ -8,6 +8,7 @@ import java.util.List;
 @lombok.Data
 public class Data<X> {
     private List<X> content;
+    private X obj;
     private int pageNum;
     private int pageSize;
     private int totalElements;
