@@ -366,9 +366,9 @@ public class ObjectToer implements Toer {
                             fieldGt = tmp;
                             if (tmp instanceof Class) {
                                 fieldT = (Class) tmp;
-                            } else if (tmp instanceof ParameterizedType) {
-                                fieldT = (Class) ((ParameterizedType) tmp).getRawType();
                             }
+
+                            //如果是ParameterizedType，下面还会接着处理
                         }
                     }
 
@@ -376,6 +376,8 @@ public class ObjectToer implements Toer {
                         ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
                         Type[] actualTypes = fieldGt2.getActualTypeArguments();
                         boolean actualTypesChanged = false;
+
+                        fieldT = (Class) fieldGt2.getRawType();
 
                         for (int i = 0, len = actualTypes.length; i < len; i++) {
                             Type tmp = actualTypes[i];
