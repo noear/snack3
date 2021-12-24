@@ -392,7 +392,7 @@ public class ObjectToer implements Toer {
                         }
 
                         if (actualTypesChanged) {
-                            fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
+                            fieldGt =  new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
                         }
                     }
                 }
