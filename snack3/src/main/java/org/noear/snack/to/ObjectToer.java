@@ -50,7 +50,7 @@ public class ObjectToer implements Toer {
         }
 
         //提前找到@type类型，便于自定义解码器定位
-        if(o.isObject()) { //if(o.isObject() ||  o.isArray()) {
+        if(o.isObject() ||  o.isArray()) {
             clz = getTypeByNode(ctx, o, clz);
         }
 
@@ -426,18 +426,18 @@ public class ObjectToer implements Toer {
         }
 
         String typeStr = null;
-//        if (o.isArray() && o.ary().size() == 2) {
-//            ONode o1 = o.ary().get(0);
-//            if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
-//                //
-//                // 这段，不能与下面的 o.isObject() 复用
-//                //
-//                ONode n1 = o1.obj().get(ctx.options.getTypePropertyName());
-//                if (n1 != null) {
-//                    typeStr = n1.val().getString();
-//                }
-//            }
-//        }
+        if (o.isArray() && o.ary().size() == 2) {
+            ONode o1 = o.ary().get(0);
+            if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
+                //
+                // 这段，不能与下面的 o.isObject() 复用
+                //
+                ONode n1 = o1.obj().get(ctx.options.getTypePropertyName());
+                if (n1 != null) {
+                    typeStr = n1.val().getString();
+                }
+            }
+        }
 
         if (o.isObject()) {
             ONode n1 = o.obj().get(ctx.options.getTypePropertyName());
