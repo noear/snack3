@@ -166,6 +166,7 @@ public class GenericTest {
         List<MessageListItem> messageListItems = ONode.loadStr(s).toObjectList(MessageListItem.class);
         for (MessageListItem messageListItem : messageListItems) {
             System.out.println(messageListItem);
+            assert messageListItem.getMessage().getContent() instanceof String;
         }
     }
 }
