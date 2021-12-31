@@ -61,8 +61,14 @@ public class Context {
 
             if (clz.getName().indexOf("$") > 0) {
                 // 临时类：(new ArrayList<UserModel>(){}).getClass(); (new UserModel(){}).getClass();
-                //
-                initType(clz.getGenericSuperclass());
+                // => features.GenericTest$6;
+                // 内部类：Server.One.class
+                // => _model3.Server$One
+                if (clz.isMemberClass()) {
+                    initType(clz, clz);
+                } else {
+                    initType(clz.getGenericSuperclass());
+                }
             } else {
                 initType(clz, clz);
             }

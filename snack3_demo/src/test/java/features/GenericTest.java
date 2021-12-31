@@ -138,8 +138,7 @@ public class GenericTest {
                 "\t\t}]";
 
 
-        List<House> ary = ONode.deserialize(json, new ArrayList<House>() {
-        }.getClass());
+        List<House> ary = ONode.deserialize(json, new ArrayList<House>() {}.getClass());
 
         assert ary.size() > 0;
         assert ary.get(0).getClass() == House.class;
