@@ -36,7 +36,8 @@ public class ClassWrap {
     private final Class<?> _clz;
     //clz.all_fieldS
     private final Collection<FieldWrap> _fieldAllWraps;
-    //是否所有字段只读（即只能使用构造函数）
+
+    //for record
     private boolean _recordable;
     private Constructor _recordConstructor;
     private Parameter[] _recordParams;
@@ -71,6 +72,8 @@ public class ClassWrap {
         return _fieldAllWraps;
     }
 
+
+    //for record
     public boolean recordable() {
         return _recordable;
     }
