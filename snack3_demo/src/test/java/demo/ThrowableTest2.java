@@ -4,7 +4,6 @@ import _models.BookModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.util.TypeUtils;
-import com.sun.rowset.JdbcRowSetImpl;
 import org.junit.Test;
 
 /**

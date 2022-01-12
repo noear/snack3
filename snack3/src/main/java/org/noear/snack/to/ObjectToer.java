@@ -345,69 +345,92 @@ public class ObjectToer implements Toer {
             }
         }
 
-        if (rst == null) {
-            rst = BeanUtil.newInstance(clz);
-        }
+        ClassWrap clzWrap = ClassWrap.get(clz);
 
+        if (clzWrap.recordable()) {
+            //如果所有字段只读,则通过构造函数处理(支持 jdk14+  的 record 类型)
+            Parameter[] argsP = clzWrap.recordParams();
+            Object[] argsV = new Object[argsP.length];
 
-        // 遍历每个字段
-        Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
+            for (int j = 0; j < argsP.length; j++) {
+                Parameter f = argsP[j];
+                String fieldK = f.getName();
+                if (o.contains(fieldK)) {
+                    Class fieldT = f.getType();
+                    Type fieldGt = f.getParameterizedType();
 
-        for (FieldWrap f : list) {
-            if (f.isDeserialize() == false) {
-                continue;
+                    Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
+                    argsV[j] = val;
+                }
             }
 
-            String key = f.getName();
+            rst = clzWrap.recordConstructor().newInstance(argsV);
+        } else {
+            if (rst == null) {
+                rst = BeanUtil.newInstance(clz);
+            }
 
-            if (o.contains(key)) {
-                Class fieldT = f.type;
-                Type fieldGt = f.genericType;
-
-                if(genericInfo != null) {
-                    if (fieldGt instanceof TypeVariable) {
-                        Type tmp = genericInfo.get(fieldGt);
-                        if (tmp != null) {
-                            fieldGt = tmp;
-                            if (tmp instanceof Class) {
-                                fieldT = (Class) tmp;
-                            }
-
-                            //如果是ParameterizedType，下面还会接着处理
-                        }
-                    }
-
-                    if (fieldGt instanceof ParameterizedType) {
-                        ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
-                        Type[] actualTypes = fieldGt2.getActualTypeArguments();
-                        boolean actualTypesChanged = false;
-
-                        fieldT = (Class) fieldGt2.getRawType();
-
-                        for (int i = 0, len = actualTypes.length; i < len; i++) {
-                            Type tmp = actualTypes[i];
-                            if (tmp instanceof TypeVariable) {
-                                tmp = genericInfo.get(tmp);
-
-                                if (tmp != null) { //有可能不有
-                                    actualTypes[i] = tmp;
-                                    actualTypesChanged = true;
-                                }
-                            }
-                        }
-
-                        if (actualTypesChanged) {
-                            fieldGt =  new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
-                        }
-                    }
+            for (FieldWrap f : clzWrap.fieldAllWraps()) {
+                if (f.isDeserialize() == false) {
+                    continue;
                 }
 
-                Object val = analyse(ctx, o.get(key), fieldT, fieldGt, genericInfo);
-                f.setValue(rst, val);
+                String fieldK = f.getName();
+                if (o.contains(fieldK)) {
+                    Class fieldT = f.type;
+                    Type fieldGt = f.genericType;
+
+                    Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
+
+                    f.setValue(rst, val);
+                }
             }
         }
 
         return rst;
+    }
+
+
+    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Map<TypeVariable, Type> genericInfo) throws Exception {
+        if (genericInfo != null) {
+            if (fieldGt instanceof TypeVariable) {
+                Type tmp = genericInfo.get(fieldGt);
+                if (tmp != null) {
+                    fieldGt = tmp;
+                    if (tmp instanceof Class) {
+                        fieldT = (Class) tmp;
+                    }
+
+                    //如果是ParameterizedType，下面还会接着处理
+                }
+            }
+
+            if (fieldGt instanceof ParameterizedType) {
+                ParameterizedType fieldGt2 = ((ParameterizedType) fieldGt);
+                Type[] actualTypes = fieldGt2.getActualTypeArguments();
+                boolean actualTypesChanged = false;
+
+                fieldT = (Class) fieldGt2.getRawType();
+
+                for (int i = 0, len = actualTypes.length; i < len; i++) {
+                    Type tmp = actualTypes[i];
+                    if (tmp instanceof TypeVariable) {
+                        tmp = genericInfo.get(tmp);
+
+                        if (tmp != null) { //有可能不有
+                            actualTypes[i] = tmp;
+                            actualTypesChanged = true;
+                        }
+                    }
+                }
+
+                if (actualTypesChanged) {
+                    fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
+                }
+            }
+        }
+
+        return analyse(ctx, o.get(fieldK), fieldT, fieldGt, genericInfo);
     }
 
 

@@ -15,16 +15,18 @@ public class FieldWrap {
     public final Field field;
     public final Class<?> type;
     public final Type genericType;
+    public final boolean readonly;
 
     private String name;
     private String format;
     private boolean serialize = true;
     private boolean deserialize = true;
 
-    public FieldWrap(Class<?> clz, Field f) {
+    public FieldWrap(Class<?> clz, Field f, boolean isFinal) {
         field = f;
         type = f.getType();
         genericType = f.getGenericType();
+        readonly = isFinal;
 
         NodeName anno = f.getAnnotation(NodeName.class);
         if (anno != null) {
@@ -78,6 +80,10 @@ public class FieldWrap {
     }
 
     public void setValue(Object tObj, Object val) {
+        if(readonly){
+            return;
+        }
+
         try {
             field.set(tObj, val);
         } catch (IllegalAccessException e) {

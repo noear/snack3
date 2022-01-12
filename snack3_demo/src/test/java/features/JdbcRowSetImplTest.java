@@ -1,6 +1,5 @@
 package features;
 
-import com.sun.rowset.JdbcRowSetImpl;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -16,6 +15,7 @@ public class JdbcRowSetImplTest {
         //
         Object tmp = ONode.deserialize(json);
 
-        assert tmp instanceof JdbcRowSetImpl;
+        assert tmp != null;
+        assert tmp.getClass().getName().equals("com.sun.rowset.JdbcRowSetImpl");
     }
 }

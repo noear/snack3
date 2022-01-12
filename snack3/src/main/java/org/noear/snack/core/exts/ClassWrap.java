@@ -1,7 +1,9 @@
 package org.noear.snack.core.exts;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,15 +36,30 @@ public class ClassWrap {
     private final Class<?> _clz;
     //clz.all_fieldS
     private final Collection<FieldWrap> _fieldAllWraps;
+    //是否所有字段只读（即只能使用构造函数）
+    private boolean _recordable;
+    private Constructor _recordConstructor;
+    private Parameter[] _recordParams;
 
 
     protected ClassWrap(Class<?> clz) {
         _clz = clz;
+        _recordable = true;
 
         Map<String, FieldWrap> map = new LinkedHashMap<>();
         scanAllFields(clz, map::containsKey, map::put);
 
         _fieldAllWraps = map.values();
+
+        if (_fieldAllWraps.size() == 0) {
+            _recordable = false;
+        }
+
+        if (_recordable) {
+            //如果合字段只读
+            _recordConstructor = clz.getConstructors()[0];
+            _recordParams = _recordConstructor.getParameters();
+        }
     }
 
     public Class<?> clz() {
@@ -50,16 +67,26 @@ public class ClassWrap {
     }
 
 
-    public Collection<FieldWrap> fieldAllWraps(){
+    public Collection<FieldWrap> fieldAllWraps() {
         return _fieldAllWraps;
     }
 
+    public boolean recordable() {
+        return _recordable;
+    }
 
+    public Constructor recordConstructor(){
+        return _recordConstructor;
+    }
+
+    public Parameter[] recordParams(){
+        return _recordParams;
+    }
 
     /**
      * 扫描一个类的所有字段
      */
-    private static void scanAllFields(Class<?> clz, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
+    private void scanAllFields(Class<?> clz, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
         if (clz == null) {
             return;
         }
@@ -67,13 +94,13 @@ public class ClassWrap {
         for (Field f : clz.getDeclaredFields()) {
             int mod = f.getModifiers();
 
-            if (!Modifier.isFinal(mod)
-                    && !Modifier.isStatic(mod)
+            if (!Modifier.isStatic(mod)
                     && !Modifier.isTransient(mod)) {
                 f.setAccessible(true);
 
                 if (checker.test(f.getName()) == false) {
-                    consumer.accept(f.getName(), new FieldWrap(clz, f));
+                    _recordable &= Modifier.isFinal(mod);
+                    consumer.accept(f.getName(), new FieldWrap(clz, f, Modifier.isFinal(mod)));
                 }
             }
         }

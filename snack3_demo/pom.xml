@@ -13,15 +13,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.noear</groupId>
             <artifactId>snack3</artifactId>
-            <version>3.2.7</version>
-            <scope>test</scope>
+            <version>3.2.8</version>
         </dependency>
 
 <!--        <dependency>-->
@@ -87,11 +86,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
+                    <compilerArgument>-parameters</compilerArgument>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArguments>
-                        <extdirs>${project.basedir}/lib</extdirs>
-                    </compilerArguments>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
