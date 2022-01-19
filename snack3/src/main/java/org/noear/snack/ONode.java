@@ -888,6 +888,15 @@ public class ONode {
     /**
      * 将当前ONode 转为 java object
      *
+     * clz = Object.class   => auto typ
+     */
+    public <T> T toObject() {
+        return toObject(Object.class);
+    }
+
+    /**
+     * 将当前ONode 转为 java object
+     *
      * clz = XxxModel.class => XxxModel
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
