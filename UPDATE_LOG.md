@@ -1,3 +1,7 @@
+#### 3.2.9
+* 增加 toObject() 接口
+* 去掉 ParameterizedTypeImpl ，改用自带的
+
 #### 3.2.8
 * 增加对 kotlin data class 和 jdk14+ record 的序列化与反序列化支持
 
