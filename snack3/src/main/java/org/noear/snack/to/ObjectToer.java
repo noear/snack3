@@ -7,11 +7,11 @@ import org.noear.snack.core.NodeDecoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
-import org.noear.snack.core.exts.ParameterizedTypeImpl;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.core.utils.TypeUtil;
 import org.noear.snack.exception.SnackException;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -425,7 +425,7 @@ public class ObjectToer implements Toer {
                 }
 
                 if (actualTypesChanged) {
-                    fieldGt = new ParameterizedTypeImpl(actualTypes, fieldGt2.getOwnerType(), fieldGt2.getRawType());
+                    fieldGt = ParameterizedTypeImpl.make((Class<?>) fieldGt2.getRawType(), actualTypes, fieldGt2.getOwnerType());
                 }
             }
         }
