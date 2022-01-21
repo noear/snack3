@@ -128,6 +128,11 @@ public class TypeUtil {
             Type[] upperBounds = wildcardType.getUpperBounds();
             return upperBounds.length > 0 ? upperBounds[0] : Object.class;
         }
+
+        if (type instanceof ParameterizedType) {
+            return ((ParameterizedType) type).getRawType();
+        }
+
         return type;
     }
 
