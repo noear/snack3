@@ -5,6 +5,7 @@ import _model2.House;
 import _model2.Result;
 import _model3.MessageListItem;
 import _models.ComplexModel;
+import _models.GModel;
 import _models.Person;
 import _models.Point;
 import com.alibaba.fastjson.JSON;
@@ -180,5 +181,20 @@ public class GenericTest {
         assert list != null;
         assert list.size() == 2;
         assert list.get(0).size() == 3;
+    }
+
+    @Test
+    public void test8() {
+        String s = "{\"list\":[[1,2,4],[6,9,1001]],\"book\":{id:1,\"name\":\"test\"}}";
+
+        GModel model = ONode.deserialize(s, GModel.class);
+
+        assert model.list != null;
+        assert model.list.size() == 2;
+        assert model.list.get(0).size() == 3;
+
+        assert model.book != null;
+        assert model.book.id == 1;
+        assert "test".equals(model.book.bookname);
     }
 }
