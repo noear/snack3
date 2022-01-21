@@ -12,7 +12,7 @@ Based on JDK8, 80Kb. Support: serialization and deserialization, parsing and tra
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.2.9</version>
+  <version>3.2.10</version>
 </dependency>
 ```
 
