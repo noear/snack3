@@ -1,3 +1,6 @@
+#### 3.2.11
+* 加回自建 ParameterizedTypeImpl 类，不然在jdk17里麻烦
+
 #### 3.2.10
 * 增加 List<List<Interge>> 之类的泛型支持
 
