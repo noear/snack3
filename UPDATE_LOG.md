@@ -1,3 +1,6 @@
+#### 3.2.10
+* 增加 List<List<Interge>> 之类的泛型支持
+
 #### 3.2.9
 * 增加 toObject() 接口
 * 去掉 ParameterizedTypeImpl ，改用自带的
