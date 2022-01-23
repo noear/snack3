@@ -2,7 +2,6 @@ package org.noear.snack.core.utils;
 
 import org.noear.snack.exception.SnackException;
 import org.noear.snack.core.exts.EnumWrap;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -119,7 +118,7 @@ public class TypeUtil {
                 actualTypeArguments[i] = typeParameterMap.get(actualTypeArgument);
             }
         }
-        return ParameterizedTypeImpl.make(rawClass, actualTypeArguments, null);
+        return new ParameterizedTypeImpl(rawClass, actualTypeArguments, null);
     }
 
     private static Type getWildcardTypeUpperBounds(Type type) {
