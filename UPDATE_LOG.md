@@ -1,3 +1,6 @@
+#### 3.2.12
+* 增新加特性 Feature.DisThreadLocal
+
 #### 3.2.11
 * 加回自建 ParameterizedTypeImpl 类，不然在jdk17里麻烦
 
