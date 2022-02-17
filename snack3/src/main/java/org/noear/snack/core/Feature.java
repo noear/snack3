@@ -4,7 +4,6 @@ package org.noear.snack.core;
  * 特性
  * */
 public enum  Feature {
-
     /** 输出:为字段名加引号 */
     QuoteFieldNames,
 
@@ -25,12 +24,11 @@ public enum  Feature {
 
     /** 输出:Bool用0或1替代 */
     WriteBoolUse01,
+
     /** 输出：对斜杠’/’进行转义 */
     WriteSlashAsSpecial,
 
-    /**
-     * 输出：数字用字符串
-     * */
+    /** 输出：数字用字符串 */
     WriteNumberUseString,
 
     /** 输出:浏览器安全处理（不输出<>） */
@@ -48,24 +46,16 @@ public enum  Feature {
     /** 存储 or 输出:字符串字段初始化为空（返序列化时） */
     StringFieldInitEmpty,
 
-    /**
-     * 输出：序列化Null
-     * */
+    /** 输出：序列化Null */
     SerializeNulls,
 
-    /**
-     * 输出：使用单引号输出
-     * */
+    /** 输出：使用单引号输出 */
     UseSingleQuotes,
 
-    /**
-     * 禁止线程缓存
-     * */
+    /** 禁止线程缓存 */
     DisThreadLocal,
 
-    /**
-     * 存储 or 读取：当 value is json string 时，自动转为ONode
-     * */
+    /** 存储 or 读取：当 value is json string 时，自动转为ONode */
     StringJsonToNode,
     ;
 
