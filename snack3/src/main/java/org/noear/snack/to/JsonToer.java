@@ -29,15 +29,20 @@ public class JsonToer implements Toer {
         ONode o = (ONode) ctx.source;
 
         if (null != o) {
-            StringBuilder sb =  tlBuilder.get(); // new StringBuilder(1024*5); //
-            sb.setLength(0);
+            StringBuilder sb = null;
+            if (ctx.options.hasFeature(Feature.DisThreadLocal)) {
+                sb = new StringBuilder(1024 * 5); //5k
+            } else {
+                sb = tlBuilder.get(); //
+                sb.setLength(0);
+            }
+
 
             analyse(ctx.options, o, sb);
 
             ctx.target = sb.toString();
         }
     }
-
 
     public void analyse(Options opts, ONode o, StringBuilder sb) {
         if (o == null) {

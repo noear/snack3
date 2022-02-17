@@ -59,6 +59,11 @@ public enum  Feature {
     UseSingleQuotes,
 
     /**
+     * 禁止线程缓存
+     * */
+    DisThreadLocal,
+
+    /**
      * 存储 or 读取：当 value is json string 时，自动转为ONode
      * */
     StringJsonToNode,

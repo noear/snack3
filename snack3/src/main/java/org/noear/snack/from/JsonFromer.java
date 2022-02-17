@@ -50,11 +50,16 @@ public class JsonFromer implements Fromer {
                     || (prefix == '[' && suffix == ']')) {
                 //object or array
                 //
-                CharBuffer sBuf = tlBuilder.get(); // new CharBuffer();//
-                sBuf.setLength(0);
+                CharBuffer sBuf = null;
+                if (ctx.options.hasFeature(Feature.DisThreadLocal)) {
+                    sBuf = new CharBuffer();//
+                } else {
+                    sBuf = tlBuilder.get(); //
+                    sBuf.setLength(0);
+                }
 
                 node = new ONode(ctx.options);
-                analyse(ctx,new CharReader(text), sBuf, node);
+                analyse(ctx, new CharReader(text), sBuf, node);
 
             } else if (len >= 2 && (
                     (prefix == '"' && suffix == '"') ||
