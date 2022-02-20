@@ -77,7 +77,7 @@ public class ObjectToer implements Toer {
                 o.remove(ctx.options.getTypePropertyName());//尝试移除类型内容
 
                 if (Properties.class.isAssignableFrom(clz)) {
-                    return analyseProps(ctx, o, clz, type, genericInfo);
+                    return analyseProps(ctx, o, (Properties) rst, clz, type, genericInfo);
                 } else if (Map.class.isAssignableFrom(clz)) {
                     return analyseMap(ctx, o, clz, type, genericInfo);
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
@@ -155,9 +155,9 @@ public class ObjectToer implements Toer {
         } else if (is(LocalDateTime.class, clz)) {
             return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
         } else if (is(LocalDate.class, clz)) {
-            return  v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
+            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
         } else if (is(LocalTime.class, clz)) {
-            return  v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
+            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
         } else if (is(BigDecimal.class, clz)) {
             if (v.type() == OValueType.Number) {
                 if (v.getRawNumber() instanceof BigDecimal) {
@@ -282,18 +282,21 @@ public class ObjectToer implements Toer {
         }
 
         for (ONode o1 : o.nodeData().array) {
-            list.add(analyse(ctx, o1, null,(Class<?>) itemType, itemType, genericInfo));
+            list.add(analyse(ctx, o1, null, (Class<?>) itemType, itemType, genericInfo));
         }
 
         return list;
     }
 
-    public Object analyseProps(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
-        Properties props = new Properties();
-        String prefix = "";
-        propsLoad0(props, prefix, o);
+    public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+        if (rst == null) {
+            rst = new Properties();
+        }
 
-        return props;
+        String prefix = "";
+        propsLoad0(rst, prefix, o);
+
+        return rst;
     }
 
     private void propsLoad0(Properties props, String prefix, ONode tmp) {
