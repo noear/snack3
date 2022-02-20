@@ -1,3 +1,6 @@
+#### 3.2.13
+* 增加与Properties 的相互转换能力
+
 #### 3.2.12
 * 增新加特性 Feature.DisThreadLocal
 
