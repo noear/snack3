@@ -34,11 +34,11 @@ public class ObjectToer implements Toer {
         ONode o = (ONode) ctx.source;
 
         if (null != o) {
-            ctx.target = analyse(ctx, o, ctx.target_clz, ctx.target_type, null);
+            ctx.target = analyse(ctx, o, ctx.target, ctx.target_clz, ctx.target_type, null);
         }
     }
 
-    private Object analyse(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
         if (o == null) {
             return null;
         }
@@ -97,7 +97,7 @@ public class ObjectToer implements Toer {
                         genericInfo = TypeUtil.getGenericInfo(type);
                     }
 
-                    return analyseBean(ctx, o, clz, type, genericInfo);
+                    return analyseBean(ctx, o, rst, clz, type, genericInfo);
                 }
             case Array:
                 if (clz.isArray()) {
@@ -255,7 +255,7 @@ public class ObjectToer implements Toer {
             Class<?> c = target.getComponentType();
             Object[] val = (Object[]) Array.newInstance(c, len);
             for (int i = 0; i < len; i++) {
-                val[i] = analyse(ctx, d.array.get(i), c, c, null);
+                val[i] = analyse(ctx, d.array.get(i), null, c, c, null);
             }
             return val;
         } else {
@@ -282,7 +282,7 @@ public class ObjectToer implements Toer {
         }
 
         for (ONode o1 : o.nodeData().array) {
-            list.add(analyse(ctx, o1, (Class<?>) itemType, itemType, genericInfo));
+            list.add(analyse(ctx, o1, null,(Class<?>) itemType, itemType, genericInfo));
         }
 
         return list;
@@ -349,16 +349,16 @@ public class ObjectToer implements Toer {
 
             if (kType == String.class) {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), (Class<?>) vType, vType, genericInfo));
+                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, (Class<?>) vType, vType, genericInfo));
                 }
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), (Class<?>) vType, vType, genericInfo));
+                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), null, (Class<?>) vType, vType, genericInfo));
                 }
             }
         } else {
             for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, null, genericInfo));
+                map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, null, null, genericInfo));
             }
         }
 
@@ -366,7 +366,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseBean(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
         if (is(SimpleDateFormat.class, clz)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
@@ -375,7 +375,6 @@ public class ObjectToer implements Toer {
             return new InetSocketAddress(o.get("address").getString(), o.get("port").getInt());
         }
 
-        Object rst = null;
         if (is(Throwable.class, clz)) {
             //todo: 兼容fastjson的异常序列化
             String message = o.get("message").getString();
@@ -474,7 +473,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        return analyse(ctx, o.get(fieldK), fieldT, fieldGt, genericInfo);
+        return analyse(ctx, o.get(fieldK), null, fieldT, fieldGt, genericInfo);
     }
 
 
