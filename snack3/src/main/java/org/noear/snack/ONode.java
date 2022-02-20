@@ -938,6 +938,15 @@ public class ONode {
         return to(toer, null);
     }
 
+    /**
+     * 绑定到
+     * */
+    public <T> T bindTo(T target) {
+        Context ctx = new Context(_o, this, target.getClass());
+        ctx.target = target;
+        return (T) ctx.handle(DEFAULTS.DEF_OBJECT_TOER).target;
+    }
+
 
     /**
      * 填充数据（如有问题会跳过，不会出异常）
