@@ -1,7 +1,7 @@
-_[![Maven Central](https://img.shields.io/maven-central/v/org.noear/snack3.svg)](https://mvnrepository.com/search?q=snack3)
-
-
-` QQ交流群：22200020 `
+[![Maven Central](https://img.shields.io/maven-central/v/org.noear/snack3.svg)](https://search.maven.org/artifact/org.noear/snack3)
+[![Apache 2.0](https://img.shields.io/:license-Apache2-blue.svg)](https://license.coscl.org.cn/Apache2/)
+[![JDK-8+](https://img.shields.io/badge/JDK-8+-green.svg)](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
+[![QQ交流群](https://img.shields.io/badge/QQ交流群-22200020-orange)](https://jq.qq.com/?_wv=1027&k=kjB5JNiC)
 
 # Snack3 for java
 A miniature JSON + JSONPath framework
