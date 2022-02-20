@@ -50,13 +50,13 @@ public class ObjectToer implements Toer {
         }
 
         //提前找到@type类型，便于自定义解码器定位
-        if(o.isObject() ||  o.isArray()) {
+        if (o.isObject() || o.isArray()) {
             clz = getTypeByNode(ctx, o, clz);
         }
 
         if (clz != null) {
             //自定义解析
-            for(NodeDecoderEntity decoder: ctx.options.decoders()) {
+            for (NodeDecoderEntity decoder : ctx.options.decoders()) {
                 if (decoder.isDecodable(clz)) {
                     return decoder.decode(o, clz);
                 }
@@ -64,7 +64,7 @@ public class ObjectToer implements Toer {
         }
 
         //如果是String接收
-        if(String.class == clz){
+        if (String.class == clz) {
             return o.getString();
         }
 
@@ -76,11 +76,13 @@ public class ObjectToer implements Toer {
                 //clz = getTypeByNode(ctx, o, clz);
                 o.remove(ctx.options.getTypePropertyName());//尝试移除类型内容
 
-                if (Map.class.isAssignableFrom(clz)) {
-                    return analyseMap(ctx, o, clz, type , genericInfo);
+                if (Properties.class.isAssignableFrom(clz)) {
+                    return analyseProps(ctx, o, clz, type, genericInfo);
+                } else if (Map.class.isAssignableFrom(clz)) {
+                    return analyseMap(ctx, o, clz, type, genericInfo);
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
                     String declaringClass = o.get("declaringClass").getString();
-                    if(declaringClass == null){
+                    if (declaringClass == null) {
                         //todo: 兼容fastjson的序列化
                         declaringClass = o.get("className").getString();
                     }
@@ -284,6 +286,48 @@ public class ObjectToer implements Toer {
         }
 
         return list;
+    }
+
+    public Object analyseProps(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+        Properties props = new Properties();
+        String prefix = "";
+        propsLoad0(props, prefix, o);
+
+        return props;
+    }
+
+    private void propsLoad0(Properties props, String prefix, ONode tmp) {
+        if (tmp.isObject()) {
+            tmp.forEach((k, v) -> {
+                String prefix2 = prefix + "." + k;
+                propsLoad0(props, prefix2, v);
+            });
+            return;
+        }
+
+        if (tmp.isArray()) {
+            int index = 0;
+            for (ONode v : tmp.ary()) {
+                String prefix2 = prefix + "[" + index + "]";
+                propsLoad0(props, prefix2, v);
+                index++;
+            }
+            return;
+        }
+
+        if (tmp.isNull()) {
+            propsPut0(props, prefix, "");
+        } else {
+            propsPut0(props, prefix, tmp.getString());
+        }
+    }
+
+    private void propsPut0(Properties props, String key, Object val) {
+        if (key.startsWith(".")) {
+            props.put(key.substring(1), val);
+        } else {
+            props.put(key, val);
+        }
     }
 
 

@@ -42,7 +42,7 @@ public class ObjectFromer implements Fromer {
         Class<?> clz = source.getClass();
 
         //尝试自定义编码
-        for(NodeEncoderEntity encoder: opt.encoders()) {
+        for (NodeEncoderEntity encoder : opt.encoders()) {
             if (encoder.isEncodable(clz)) {
                 encoder.encode(source, rst);
                 return rst;
@@ -55,21 +55,23 @@ public class ObjectFromer implements Fromer {
             rst.val().setString((String) source);
         } else if (source instanceof Date) {
             rst.val().setDate((Date) source);
-        } else if(source instanceof LocalDateTime){
-            Instant instant = ((LocalDateTime)source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+        } else if (source instanceof LocalDateTime) {
+            Instant instant = ((LocalDateTime) source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
-        } else if(source instanceof LocalDate){
-            Instant instant = ((LocalDate)source).atTime(LocalTime.MIN).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+        } else if (source instanceof LocalDate) {
+            Instant instant = ((LocalDate) source).atTime(LocalTime.MIN).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
-        } else if(source instanceof LocalTime){
-            Instant instant = ((LocalTime)source).atDate(LocalDate.of(1970,1,1)).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
+        } else if (source instanceof LocalTime) {
+            Instant instant = ((LocalTime) source).atDate(LocalDate.of(1970, 1, 1)).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
         } else if (source instanceof Boolean) {
             rst.val().setBool((boolean) source);
         } else if (source instanceof Number) {
             rst.val().setNumber((Number) source);
-        }  else if (source instanceof Throwable) { //新补充的类型
+        } else if (source instanceof Throwable) { //新补充的类型
             analyseBean(opt, rst, clz, source);
+        } else if (source instanceof Properties) {
+            analyseProps(opt, rst, clz, source);
         } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
 
         } else if (clz.isEnum()) { //新补充的类型
@@ -95,10 +97,10 @@ public class ObjectFromer implements Fromer {
             }
         } else if (source instanceof Iterable) {
             rst.asArray();
-            ONode ary =rst;
+            ONode ary = rst;
             //为序列化添加特性支持
             if (opt.hasFeature(Feature.WriteArrayClassName)) {
-                rst.add(typeSet(opt,new ONode(opt), clz));
+                rst.add(typeSet(opt, new ONode(opt), clz));
                 ary = rst.addNew().asArray();
             }
 
@@ -114,9 +116,9 @@ public class ObjectFromer implements Fromer {
         } else {
             String clzName = clz.getName();
 
-            if(clzName.endsWith(".Undefined")){
+            if (clzName.endsWith(".Undefined")) {
                 rst.val().setNull();
-            }else {
+            } else {
                 if (analyseOther(opt, rst, clz, source) == false) {
                     if (clzName.startsWith("jdk.") == false) {
                         analyseBean(opt, rst, clz, source);
@@ -182,6 +184,34 @@ public class ObjectFromer implements Fromer {
         } else {
             return false;
         }
+
+        return true;
+    }
+
+    private boolean analyseProps(Options cfg, ONode rst, Class<?> clz, Object obj) {
+        rst.asObject();
+
+        Properties props = (Properties) obj;
+
+        props.forEach((k, v) -> {
+            if (k instanceof String) {
+                String key = (String) k;
+
+                String[] kk = key.split("\\.");
+                ONode n1 = rst;
+                for (int i = 0; i < kk.length; i++) {
+                    String p1 = kk[i];
+                    if (p1.endsWith("]")) {
+                        p1 = p1.substring(0, p1.lastIndexOf('['));
+                        n1 = n1.getOrNew(p1).addNew();
+                    } else {
+                        n1 = n1.getOrNew(p1);
+                    }
+                }
+
+                n1.val(v);
+            }
+        });
 
         return true;
     }
