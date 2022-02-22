@@ -13,6 +13,7 @@ public class PropertiesTest {
     public void test() {
         Properties props = new Properties();
         props.setProperty("title","test");
+        props.setProperty("debug","true");
         props.setProperty("user.id", "1");
         props.setProperty("user.name", "noear");
         props.setProperty("server.urls[0]", "http://x.x.x");
@@ -21,6 +22,8 @@ public class PropertiesTest {
 
         ONode oNode = ONode.loadObj(props);
         String json = oNode.toJson();
+
+        assert oNode.get("debug").getBoolean();
 
         System.out.println(json);
 

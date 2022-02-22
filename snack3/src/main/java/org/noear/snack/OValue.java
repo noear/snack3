@@ -237,7 +237,7 @@ public class OValue {
                 return _string;
             case Number: {
                 if (_number instanceof BigInteger) {
-                    return ((BigInteger) _number).toString();
+                    return _number.toString();
                 } else if (_number instanceof BigDecimal) {
                     return ((BigDecimal) _number).toPlainString();
                 } else {
@@ -268,7 +268,7 @@ public class OValue {
             case Number:
                 return _number.intValue() > 0;
             case String:
-                return false;
+                return "true".equals(_string) || "True".equals(_string);
             case DateTime:
                 return false;
             default:
