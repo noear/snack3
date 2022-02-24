@@ -28,7 +28,7 @@ public class AttrTest {
 
     @Test
     public void test2(){
-        String json = "{id:1,name:'noear',note:'test'}";
+        String json = "{id:1,name:'noear',note:'test',nodeEncoder:{}}";
         UserModel2 user =  ONode.deserialize(json,UserModel2.class );
 
         assert "noear".equals(user.name);

@@ -416,6 +416,10 @@ public class ObjectToer implements Toer {
                 rst = BeanUtil.newInstance(clz);
             }
 
+            if(rst == null){
+                return null;
+            }
+
             for (FieldWrap f : clzWrap.fieldAllWraps()) {
                 if (f.isDeserialize() == false) {
                     continue;

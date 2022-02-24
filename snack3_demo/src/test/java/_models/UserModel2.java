@@ -1,10 +1,13 @@
 package _models;
 
 import org.noear.snack.annotation.ONodeAttr;
+import org.noear.snack.core.NodeEncoder;
 
 import java.util.Date;
 
 public class UserModel2 {
+    public NodeEncoder nodeEncoder;
+
     public int id;
     @ONodeAttr(serialize = false)
     public String name;

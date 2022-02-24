@@ -68,7 +68,11 @@ public class BeanUtil {
 
     public static Object newInstance(Class<?> clz) {
         try {
-            return clz.newInstance();
+            if(clz.isInterface()){
+                return null;
+            }else {
+                return clz.newInstance();
+            }
         } catch (Exception ex) {
             throw new SnackException("create instance error, class " + clz.getName());
         }
