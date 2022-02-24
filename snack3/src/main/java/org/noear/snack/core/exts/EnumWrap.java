@@ -8,24 +8,23 @@ import java.util.Map;
  * */
 public class EnumWrap {
     protected final Map<String, Enum> enumMap = new HashMap<>();
-    protected final Enum[]  enumOrdinal;
+    protected final Enum[] enumOrdinal;
 
-    public EnumWrap(Class<?> enumClass){
+    public EnumWrap(Class<?> enumClass) {
         enumOrdinal = (Enum[]) enumClass.getEnumConstants();
 
         for (int i = 0; i < enumOrdinal.length; ++i) {
             Enum e = enumOrdinal[i];
-            String name = e.name();
 
-            enumMap.put(name,e);
+            enumMap.put(e.name().toLowerCase(), e);
         }
     }
 
-    public Enum get(int ordinal){
+    public Enum get(int ordinal) {
         return enumOrdinal[ordinal];
     }
 
-    public Enum get(String name){
-        return enumMap.get(name);
+    public Enum get(String name) {
+        return enumMap.get(name.toLowerCase());
     }
 }
