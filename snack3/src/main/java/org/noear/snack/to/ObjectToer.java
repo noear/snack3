@@ -421,7 +421,7 @@ public class ObjectToer implements Toer {
                 return null;
             }
 
-            boolean useSetter = ctx.options.hasFeature(Feature.UseSetter);
+            boolean disSetter = !ctx.options.hasFeature(Feature.UseSetter);
 
             for (FieldWrap f : clzWrap.fieldAllWraps()) {
                 if (f.isDeserialize() == false) {
@@ -435,7 +435,7 @@ public class ObjectToer implements Toer {
 
                     Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
 
-                    f.setValue(rst, val, useSetter);
+                    f.setValue(rst, val, disSetter);
                 }
             }
         }
