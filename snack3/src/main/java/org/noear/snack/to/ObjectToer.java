@@ -3,6 +3,7 @@ package org.noear.snack.to;
 import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.NodeDecoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
@@ -420,6 +421,8 @@ public class ObjectToer implements Toer {
                 return null;
             }
 
+            boolean useSetter = ctx.options.hasFeature(Feature.UseSetter);
+
             for (FieldWrap f : clzWrap.fieldAllWraps()) {
                 if (f.isDeserialize() == false) {
                     continue;
@@ -432,7 +435,7 @@ public class ObjectToer implements Toer {
 
                     Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
 
-                    f.setValue(rst, val);
+                    f.setValue(rst, val, useSetter);
                 }
             }
         }

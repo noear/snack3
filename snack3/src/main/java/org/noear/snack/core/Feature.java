@@ -51,6 +51,10 @@ public enum  Feature {
 
     /** 输出：使用单引号输出 */
     UseSingleQuotes,
+    /**
+     * 使用设置属性
+     * */
+    UseSetter,
 
     /** 禁止线程缓存 */
     DisThreadLocal,
