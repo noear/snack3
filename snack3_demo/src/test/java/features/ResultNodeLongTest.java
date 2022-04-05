@@ -24,7 +24,7 @@ public class ResultNodeLongTest {
         ONode oNode2 = ONode.loadObj(result, options);
         String json = oNode2.toJson();
         System.out.println(json);
-        assert json.contains("\"12\"");
+        assert json.contains("\"12\"") == false;
     }
 
     @Test
