@@ -89,6 +89,11 @@ public class FieldWrap {
         return serialize;
     }
 
+    public void setValue(Object tObj, Object val) {
+        //别的地方要用，不要去掉
+        setValue(tObj, val, true);
+    }
+
     public void setValue(Object tObj, Object val, boolean disFun) {
         if (readonly) {
             return;
