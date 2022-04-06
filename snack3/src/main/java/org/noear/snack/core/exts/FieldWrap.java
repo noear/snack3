@@ -34,6 +34,8 @@ public class FieldWrap {
         genericType = f.getGenericType();
         readonly = isFinal;
 
+        field.setAccessible(true);
+
         NodeName anno = f.getAnnotation(NodeName.class);
         if (anno != null) {
             name = anno.value();
