@@ -169,9 +169,9 @@ public class TypeUtil {
         } else {
             try {
                 list = (Collection) rawClass.newInstance();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (isThrow) {
-                    throw new SnackException("create instance error, class " + rawClass.getName());
+                    throw new SnackException("create instance error, class " + rawClass.getName(), e);
                 } else {
                     return null;
                 }
@@ -238,7 +238,7 @@ public class TypeUtil {
 
         try {
             return (Map) clazz.newInstance();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SnackException("unsupport type " + type, e);
         }
     }

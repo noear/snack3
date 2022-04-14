@@ -12,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 public class BeanUtil {
 
-    public static final Map<String,Class<?>> clzCached = new ConcurrentHashMap<>();
+    public static final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
+
     public static Class<?> loadClass(String clzName) {
         try {
             Class<?> clz = clzCached.get(clzName);
@@ -24,7 +25,7 @@ public class BeanUtil {
             return clz;
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SnackException(e);
         }
     }
@@ -32,7 +33,9 @@ public class BeanUtil {
     /////////////////
 
 
-    /** 将 Clob 转为 String */
+    /**
+     * 将 Clob 转为 String
+     */
     public static String clobToString(Clob clob) {
 
         Reader reader = null;
@@ -49,8 +52,8 @@ public class BeanUtil {
                 }
                 buf.append(chars, 0, len);
             }
-        } catch (Exception ex) {
-            throw new SnackException("read string from reader error", ex);
+        } catch (Throwable e) {
+            throw new SnackException("read string from reader error", e);
         }
 
         String text = buf.toString();
@@ -58,8 +61,8 @@ public class BeanUtil {
         if (reader != null) {
             try {
                 reader.close();
-            }catch (Exception ex){
-                throw new SnackException("read string from reader error", ex);
+            } catch (Throwable e) {
+                throw new SnackException("read string from reader error", e);
             }
         }
 
@@ -68,13 +71,13 @@ public class BeanUtil {
 
     public static Object newInstance(Class<?> clz) {
         try {
-            if(clz.isInterface()){
+            if (clz.isInterface()) {
                 return null;
-            }else {
+            } else {
                 return clz.newInstance();
             }
-        } catch (Exception ex) {
-            throw new SnackException("create instance error, class " + clz.getName());
+        } catch (Throwable e) {
+            throw new SnackException("create instance error, class " + clz.getName(), e);
         }
     }
 }

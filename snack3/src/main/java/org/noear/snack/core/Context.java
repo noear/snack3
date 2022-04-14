@@ -103,7 +103,7 @@ public class Context {
             return this;
         } catch (RuntimeException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new SnackException(e);
         }
     }

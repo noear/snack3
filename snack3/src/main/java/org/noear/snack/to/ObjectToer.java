@@ -386,7 +386,7 @@ public class ObjectToer implements Toer {
                 try {
                     Constructor fun = clz.getConstructor(String.class);
                     rst = fun.newInstance(message);
-                } catch (Exception e) {
+                } catch (Throwable e) {
 
                 }
             }
