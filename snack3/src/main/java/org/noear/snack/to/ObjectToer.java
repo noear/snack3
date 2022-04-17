@@ -183,7 +183,7 @@ public class ObjectToer implements Toer {
             Object val = v.getRaw();
 
             if (val instanceof String && clz.isInterface()) {
-                //如果是String，则约定为Class（上面已有String的识别）
+                //如果是String，且为Interface
                 Class<?> valClz = BeanUtil.loadClass((String) val);
                 return BeanUtil.newInstance(valClz);
             } else {
