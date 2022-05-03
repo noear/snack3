@@ -205,10 +205,11 @@ public class ObjectFromer implements Fromer {
         for (String key : keyVector) {
             String val = props.getProperty(key);
 
-            String[] kk = key.split("\\.");
+            String[] keySegments = key.split("\\.");
             ONode n1 = rst;
-            for (int i = 0; i < kk.length; i++) {
-                String p1 = kk[i];
+
+            for (int i = 0; i < keySegments.length; i++) {
+                String p1 = keySegments[i];
                 if (p1.endsWith("]")) {
                     int i1 = Integer.parseInt(p1.substring(p1.lastIndexOf('[')+1, p1.length() - 1));
                     p1 = p1.substring(0, p1.lastIndexOf('['));
