@@ -210,16 +210,11 @@ public class ObjectFromer implements Fromer {
 
             for (int i = 0; i < keySegments.length; i++) {
                 String p1 = keySegments[i];
-                if (p1.endsWith("]")) {
-                    int i1 = Integer.parseInt(p1.substring(p1.lastIndexOf('[')+1, p1.length() - 1));
-                    p1 = p1.substring(0, p1.lastIndexOf('['));
-                    n1 = n1.getOrNew(p1).asArray();
 
-                    if (n1.count() > i1) {
-                        n1 = n1.get(i1);
-                    } else {
-                        n1 = n1.addNew();
-                    }
+                if (p1.endsWith("]")) {
+                    int idx = Integer.parseInt(p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1));
+                    p1 = p1.substring(0, p1.lastIndexOf('['));
+                    n1 = n1.getOrNew(p1).getOrNew(idx);
                 } else {
                     n1 = n1.getOrNew(p1);
                 }
