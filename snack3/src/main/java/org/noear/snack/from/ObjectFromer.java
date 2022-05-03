@@ -193,25 +193,39 @@ public class ObjectFromer implements Fromer {
 
         Properties props = (Properties) obj;
 
-        props.forEach((k, v) -> {
+        //对key排序，确保数组有序
+        Vector<String> keyVector = new Vector<>();
+        props.keySet().forEach(k -> {
             if (k instanceof String) {
-                String key = (String) k;
-
-                String[] kk = key.split("\\.");
-                ONode n1 = rst;
-                for (int i = 0; i < kk.length; i++) {
-                    String p1 = kk[i];
-                    if (p1.endsWith("]")) {
-                        p1 = p1.substring(0, p1.lastIndexOf('['));
-                        n1 = n1.getOrNew(p1).addNew();
-                    } else {
-                        n1 = n1.getOrNew(p1);
-                    }
-                }
-
-                n1.val(v);
+                keyVector.add((String) k);
             }
         });
+        Collections.sort(keyVector);
+
+        for (String key : keyVector) {
+            String val = props.getProperty(key);
+
+            String[] kk = key.split("\\.");
+            ONode n1 = rst;
+            for (int i = 0; i < kk.length; i++) {
+                String p1 = kk[i];
+                if (p1.endsWith("]")) {
+                    int i1 = Integer.parseInt(p1.substring(p1.lastIndexOf('[')+1, p1.length() - 1));
+                    p1 = p1.substring(0, p1.lastIndexOf('['));
+                    n1 = n1.getOrNew(p1).asArray();
+
+                    if (n1.count() > i1) {
+                        n1 = n1.get(i1);
+                    } else {
+                        n1 = n1.addNew();
+                    }
+                } else {
+                    n1 = n1.getOrNew(p1);
+                }
+            }
+
+            n1.val(val);
+        }
 
         return true;
     }
