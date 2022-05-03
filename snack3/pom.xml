@@ -12,12 +12,14 @@
     <name>${project.artifactId}</name>
     <description>Java project for snack3</description>
     <url>https://github.com/noear/snack3</url>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
     <developers>
         <developer>
             <name>noear</name>
@@ -26,12 +28,12 @@
             <organizationUrl>http://www.noear.org</organizationUrl>
         </developer>
     </developers>
+
     <scm>
         <connection>scm:git:git@github.com:noear/snack3.git</connection>
         <developerConnection>scm:git:git@github.com:noear/snack3.git</developerConnection>
         <url>https://github.com/noear/snack3</url>
     </scm>
-
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -150,7 +152,6 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
