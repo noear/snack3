@@ -1,3 +1,6 @@
+#### 3.2.22
+* 增加与Properties 数组的相互转换能力，排序后再转换
+
 #### 3.2.21
 * 当类型为 interface 时，支持将 string 自动转换为 object
 
