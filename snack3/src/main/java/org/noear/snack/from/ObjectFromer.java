@@ -194,7 +194,7 @@ public class ObjectFromer implements Fromer {
         Properties props = (Properties) obj;
 
         //对key排序，确保数组有序
-        Vector<String> keyVector = new Vector<>();
+        List<String> keyVector = new ArrayList<>();
         props.keySet().forEach(k -> {
             if (k instanceof String) {
                 keyVector.add((String) k);
