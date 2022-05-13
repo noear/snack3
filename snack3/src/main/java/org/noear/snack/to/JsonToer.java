@@ -236,6 +236,12 @@ public class JsonToer implements Toer {
                 }
 
                 if (isCompatible) {
+                    if (c == '\\' ) {
+                        sBuf.append("\\");
+                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
+                        continue;
+                    }
+
                     //对不可见ASC码，进行编码处理
                     if (c < 32) {
                         sBuf.append('\\');
