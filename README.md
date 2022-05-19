@@ -4,7 +4,7 @@
 [![QQ交流群](https://img.shields.io/badge/QQ交流群-22200020-orange)](https://jq.qq.com/?_wv=1027&k=kjB5JNiC)
 
 # Snack3 for java
-一个高性能的 JsonDom 和 JsonPath 框架
+一个高性能的 JsonPath 框架
 
 基于jdk8，80kb。支持：序列化反序列化、解析和转换、构建、查找、Json path 查询。
 

@@ -4,7 +4,7 @@
 [![QQ交流群](https://img.shields.io/badge/QQ交流群-22200020-orange)](https://jq.qq.com/?_wv=1027&k=kjB5JNiC)
 
 # Snack3 for java
-A high-performance JsonDom and JsonPath framework
+A high-performance JsonPath framework
 
 Based on JDK8, 80KB. Support: serialization deserialization, parsing and conversion, build, find, Json path query.
 
