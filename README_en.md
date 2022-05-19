@@ -18,7 +18,6 @@ Based on JDK8, 80KB. Support: serialization deserialization, parsing and convers
 
 Snack3 borrows from 'JavaScript' where all variables are declared by 'var' and 'XML DOM' where everything is' Node '. All data under it is represented by 'ONode'. 'ONode', which means' One node ', represents any type and can be converted to any type。
 * Emphasize the ability to manipulate and build the document tree
-* As an intermediate medium, it is convenient to transfer between different formats
 * High performance 'JSON path' queries (compatibility and performance are good)
 * Support for serialization and deserialization
 * Implementation based on no-argument constructors + field operations (risk of triggering an action due to injection, no)
