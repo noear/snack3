@@ -414,7 +414,7 @@ public class ObjectToer implements Toer {
                     Class fieldT = f.getType();
                     Type fieldGt = f.getParameterizedType();
 
-                    Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
+                    Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, null, genericInfo);
                     argsV[j] = val;
                 }
             }
@@ -425,7 +425,7 @@ public class ObjectToer implements Toer {
                 rst = BeanUtil.newInstance(clz);
             }
 
-            if(rst == null){
+            if (rst == null) {
                 return null;
             }
 
@@ -440,10 +440,13 @@ public class ObjectToer implements Toer {
                 if (o.contains(fieldK)) {
                     Class fieldT = f.type;
                     Type fieldGt = f.genericType;
+                    if (f.readonly) {
+                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
+                    } else {
+                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, null, genericInfo);
 
-                    Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, genericInfo);
-
-                    f.setValue(rst, val, disSetter);
+                        f.setValue(rst, val, disSetter);
+                    }
                 }
             }
         }
@@ -452,7 +455,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Map<TypeVariable, Type> genericInfo) throws Exception {
+    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst,Map<TypeVariable, Type> genericInfo) throws Exception {
         if (genericInfo != null) {
             if (fieldGt instanceof TypeVariable) {
                 Type tmp = genericInfo.get(fieldGt);
@@ -491,7 +494,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        return analyse(ctx, o.get(fieldK), null, fieldT, fieldGt, genericInfo);
+        return analyse(ctx, o.get(fieldK), rst, fieldT, fieldGt, genericInfo);
     }
 
 
