@@ -213,6 +213,8 @@ public class JsonToer implements Toer {
         if (isStr) {
             boolean isCompatible = opts.hasFeature(Feature.BrowserCompatible);
             boolean isSecure = opts.hasFeature(Feature.BrowserSecure);
+            boolean isTransfer = opts.hasFeature(Feature.TransferSecure);
+
             for (int i = 0, len = val.length(); i < len; i++) {
                 char c = val.charAt(i);
 
@@ -231,6 +233,14 @@ public class JsonToer implements Toer {
                         sBuf.append(IOUtil.DIGITS[(c >>> 8) & 15]);
                         sBuf.append(IOUtil.DIGITS[(c >>> 4) & 15]);
                         sBuf.append(IOUtil.DIGITS[c & 15]);
+                        continue;
+                    }
+                }
+
+                if(isTransfer){
+                    if (c == '\\' ) {
+                        sBuf.append("\\");
+                        sBuf.append(IOUtil.CHARS_MARK[(int)c]);
                         continue;
                     }
                 }

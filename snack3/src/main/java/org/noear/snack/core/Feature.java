@@ -36,6 +36,10 @@ public enum  Feature {
 
     /** 输出:浏览器兼容处理（将中文都会序列化为\\uXXXX格式，字节数会多一些） */
     BrowserCompatible,
+    /**
+     * 输出：传输安全（不输出\）
+     * */
+    TransferSecure,
 
     /** 输出:使用Enum的name输出 */
     EnumUsingName,
