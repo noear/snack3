@@ -213,7 +213,7 @@ public class JsonToer implements Toer {
         if (isStr) {
             boolean isCompatible = opts.hasFeature(Feature.BrowserCompatible);
             boolean isSecure = opts.hasFeature(Feature.BrowserSecure);
-            boolean isTransfer = opts.hasFeature(Feature.TransferSecure);
+            boolean isTransfer = opts.hasFeature(Feature.TransferCompatible);
 
             for (int i = 0, len = val.length(); i < len; i++) {
                 char c = val.charAt(i);

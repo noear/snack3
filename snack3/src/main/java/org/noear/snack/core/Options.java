@@ -13,6 +13,7 @@ public class Options {
     public static int features_def = Feature.of(
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
+            Feature.TransferCompatible,
             Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
 
