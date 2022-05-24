@@ -1,3 +1,6 @@
+#### 3.2.26
+* 增加特性：Feature.TransferCompatible （传输兼容处理）
+
 #### 3.2.25
 * 增加对 isFinal 字段的注入支持
 
