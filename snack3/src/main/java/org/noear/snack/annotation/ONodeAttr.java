@@ -12,8 +12,28 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ONodeAttr {
+    /**
+     * 名称
+     */
     String name() default "";
+
+    /**
+     * 格式化
+     */
     String format() default "";
+
+    /**
+     * 忽略（相当于：serialize=false, deserialize=false）
+     */
+    boolean ignore() default false;
+
+    /**
+     * 序列化
+     */
     boolean serialize() default true;
+
+    /**
+     * 反序列化
+     */
     boolean deserialize() default true;
 }

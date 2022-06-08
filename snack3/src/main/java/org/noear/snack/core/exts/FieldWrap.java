@@ -45,8 +45,14 @@ public class FieldWrap {
         if (attr != null) {
             name = attr.name();
             format = attr.format();
-            serialize = attr.serialize();
-            deserialize = attr.deserialize();
+
+            if (attr.ignore()) {
+                serialize = false;
+                deserialize = false;
+            } else {
+                serialize = attr.serialize();
+                deserialize = attr.deserialize();
+            }
         }
 
         if (StringUtil.isEmpty(name)) {
