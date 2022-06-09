@@ -1,3 +1,6 @@
+#### 3.2.28
+* 增加 @ONodeAttr(ignore,incNull)
+
 #### 3.2.26
 * 增加特性：Feature.TransferCompatible （传输兼容处理）
 
