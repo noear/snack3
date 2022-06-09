@@ -17,6 +17,9 @@ public class UserModel3 {
     @ONodeAttr(format = "yyyyMMdd")
     public Date date;
 
+    @ONodeAttr(incNull = false)
+    public String nullVal;
+
     @Override
     public String toString() {
         return "UserModel2{" +

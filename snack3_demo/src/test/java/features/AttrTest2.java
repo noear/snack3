@@ -3,6 +3,8 @@ package features;
 import _models.UserModel3;
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Feature;
+import org.noear.snack.core.Options;
 
 /**
  * @author noear 2021/12/10 created
@@ -22,6 +24,26 @@ public class AttrTest2 {
 
         assert json.contains("noear") == false;
         assert json.contains("test") == false;
+    }
+
+    @Test
+    public void test1() {
+        UserModel3 user = new UserModel3();
+
+        user.id = 1;
+        user.name = "noear";
+        user.note = "test";
+
+        Options options = new Options();
+        options.add(Feature.SerializeNulls);
+
+        String json = ONode.stringify(user, options);
+
+        System.out.println(json);
+
+        assert json.contains("noear") == false;
+        assert json.contains("test") == false;
+        assert json.contains("nullVal") == false;
     }
 
     @Test
