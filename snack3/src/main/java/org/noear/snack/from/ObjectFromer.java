@@ -247,16 +247,20 @@ public class ObjectFromer implements Fromer {
 
             //如果是null
             if (val == null) {
-                //null string 是否以 空字符处理
-                if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
-                    rst.setNode(f.getName(), analyse(cfg, ""));
-                    continue;
+                if(f.isIncNull()){
+                    //null string 是否以 空字符处理
+                    if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
+                        rst.setNode(f.getName(), analyse(cfg, ""));
+                        continue;
+                    }
+
+                    //null是否输出
+                    if (cfg.hasFeature(Feature.SerializeNulls)) {
+                        rst.setNode(f.getName(), analyse(cfg, null));
+                        continue;
+                    }
                 }
 
-                //null是否输出
-                if (cfg.hasFeature(Feature.SerializeNulls)) {
-                    rst.setNode(f.getName(), analyse(cfg, null));
-                }
                 continue;
             }
 

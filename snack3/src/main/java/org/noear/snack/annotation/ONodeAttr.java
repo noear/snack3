@@ -36,4 +36,9 @@ public @interface ONodeAttr {
      * 反序列化
      */
     boolean deserialize() default true;
+
+    /**
+     * 包函null
+     * */
+    boolean incNull() default true;
 }

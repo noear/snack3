@@ -22,6 +22,7 @@ public class FieldWrap {
     private String format;
     private boolean serialize = true;
     private boolean deserialize = true;
+    private boolean incNull = true;
 
     /**
      * 值设置器
@@ -45,6 +46,8 @@ public class FieldWrap {
         if (attr != null) {
             name = attr.name();
             format = attr.format();
+            incNull = attr.incNull();
+
 
             if (attr.ignore()) {
                 serialize = false;
@@ -93,6 +96,13 @@ public class FieldWrap {
      */
     public boolean isSerialize() {
         return serialize;
+    }
+
+    /**
+     * @since 3.2
+     * */
+    public boolean isIncNull() {
+        return incNull;
     }
 
     public void setValue(Object tObj, Object val) {
