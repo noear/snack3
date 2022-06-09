@@ -34,6 +34,16 @@ public class AttrTest2 {
         user.name = "noear";
         user.note = "test";
 
+        //全局开启可序列化null
+//        Options.features_def = Feature.of(
+//                Feature.OrderedField,
+//                Feature.WriteDateUseTicks,
+//                Feature.TransferCompatible,
+//                Feature.StringNullAsEmpty,
+//                Feature.QuoteFieldNames,
+//                Feature.SerializeNulls);
+
+        //配置 Options 实例，添加可序列化null
         Options options = new Options();
         options.add(Feature.SerializeNulls);
 
