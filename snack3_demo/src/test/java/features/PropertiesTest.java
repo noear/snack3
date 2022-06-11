@@ -12,13 +12,13 @@ public class PropertiesTest {
     @Test
     public void test() {
         Properties props = new Properties();
-        props.setProperty("title","test");
-        props.setProperty("debug","true");
+        props.setProperty("title", "test");
+        props.setProperty("debug", "true");
         props.setProperty("user.id", "1");
         props.setProperty("user.name", "noear");
         props.setProperty("server.urls[0]", "http://x.x.x");
         props.setProperty("server.urls[1]", "http://y.y.y");
-        props.setProperty("user.orders[0].items[0].name","手机");
+        props.setProperty("user.orders[0].items[0].name", "手机");
 
         ONode oNode = ONode.loadObj(props);
         String json = oNode.toJson();
@@ -42,5 +42,20 @@ public class PropertiesTest {
 
         assert json.length() == json3.length();
 
+    }
+
+    @Test
+    public void test1() {
+        Properties props = new Properties();
+        props.setProperty("[0].id", "1");
+        props.setProperty("[0].name", "id1");
+        props.setProperty("[1].id", "2");
+        props.setProperty("[1].name", "id2");
+
+        ONode oNode = ONode.loadObj(props);
+        System.out.println(oNode.toJson());
+
+        assert oNode.isArray() == true;
+        assert oNode.count() == 2;
     }
 }

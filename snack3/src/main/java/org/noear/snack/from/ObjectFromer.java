@@ -189,9 +189,13 @@ public class ObjectFromer implements Fromer {
     }
 
     private boolean analyseProps(Options cfg, ONode rst, Class<?> clz, Object obj) {
-        rst.asObject();
-
         Properties props = (Properties) obj;
+
+        if(props.size() ==0){
+            rst.asNull();
+            return true;
+        }
+
 
         //对key排序，确保数组有序
         List<String> keyVector = new ArrayList<>();
@@ -201,6 +205,13 @@ public class ObjectFromer implements Fromer {
             }
         });
         Collections.sort(keyVector);
+
+        //确定类型
+        if(keyVector.get(0).startsWith("[")){
+            rst.asArray();
+        }else{
+            rst.asObject();
+        }
 
         for (String key : keyVector) {
             String val = props.getProperty(key);
@@ -214,7 +225,12 @@ public class ObjectFromer implements Fromer {
                 if (p1.endsWith("]")) {
                     int idx = Integer.parseInt(p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1));
                     p1 = p1.substring(0, p1.lastIndexOf('['));
-                    n1 = n1.getOrNew(p1).getOrNew(idx);
+
+                    if(p1.length() > 0) {
+                        n1 = n1.getOrNew(p1).getOrNew(idx);
+                    }else{
+                        n1 = n1.getOrNew(idx);
+                    }
                 } else {
                     n1 = n1.getOrNew(p1);
                 }
