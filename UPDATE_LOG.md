@@ -1,4 +1,5 @@
 #### 3.2.29
+* 增加对 Properties 数组的转换支持
 
 #### 3.2.28
 * 增加 @ONodeAttr(ignore,incNull)
