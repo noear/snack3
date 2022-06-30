@@ -151,7 +151,7 @@ public class JsonPath {
             }
 
             if (branch_do && (useStandard || s.cmdAry != null)) { //..a[x] 下属进行分支处理 //s.cmdAry != null
-                ONode tmp2 = new ONode().asArray();
+                ONode tmp2 = new ONode(source.options()).asArray();
 
                 Consumer<ONode> act1 = (n1) -> {
                     ONode n2 = s.handler.run(s, source, n1, useStandard);
@@ -182,7 +182,7 @@ public class JsonPath {
         }
 
         if (tmp == null) {
-            return new ONode();
+            return new ONode(source.options());
         } else {
             return tmp;
         }
