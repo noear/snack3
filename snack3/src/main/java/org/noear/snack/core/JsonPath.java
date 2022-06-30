@@ -418,7 +418,7 @@ public class JsonPath {
     private static Resolver handler_xx=(s, root, tmp, usd)-> {
 
         if (s.name.length() > 0) {
-            ONode tmp2 = new ONode().asArray();
+            ONode tmp2 = new ONode(root.options()).asArray();
             if ("*".equals(s.name)) {
                 scanByAll(s.name, tmp, true, tmp2.ary());
             } else {
