@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.atomic.DoubleAdder;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 对象转换器（将 java Object 转为 ONode）
@@ -68,6 +70,10 @@ public class ObjectFromer implements Fromer {
             rst.val().setBool((boolean) source);
         } else if (source instanceof Number) {
             rst.val().setNumber((Number) source);
+        } else if (source instanceof LongAdder) {
+            rst.val().setNumber(((LongAdder) source).longValue());
+        } else if (source instanceof DoubleAdder) {
+            rst.val().setNumber(((DoubleAdder) source).doubleValue());
         } else if (source instanceof Throwable) { //新补充的类型
             analyseBean(opt, rst, clz, source);
         } else if (source instanceof Properties) {

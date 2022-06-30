@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.atomic.DoubleAdder;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 对象转换器
@@ -135,10 +137,18 @@ public class ObjectToer implements Toer {
             return v.getInt();
         } else if (is(Long.class, clz) || clz == Long.TYPE) {
             return v.getLong();
+        } else if(is(LongAdder.class,clz)){
+            LongAdder tmp = new LongAdder();
+            tmp.add(v.getLong());
+            return tmp;
         } else if (is(Float.class, clz) || clz == Float.TYPE) {
             return v.getFloat();
         } else if (is(Double.class, clz) || clz == Double.TYPE) {
             return v.getDouble();
+        } else if(is(DoubleAdder.class,clz)){
+            DoubleAdder tmp = new DoubleAdder();
+            tmp.add(v.getDouble());
+            return tmp;
         } else if (is(Boolean.class, clz) || clz == Boolean.TYPE) {
             return v.getBoolean();
         } else if (is(Character.class, clz) || clz == Character.TYPE) {
