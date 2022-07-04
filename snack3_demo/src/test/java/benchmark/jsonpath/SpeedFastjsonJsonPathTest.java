@@ -6,19 +6,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.junit.Test;
 
+import java.util.List;
+
 
 public class SpeedFastjsonJsonPathTest {
 
 
     @Test
     public void test1(){
-        //1000000=>529,546,539
+        //1000000=>529,546,539;;;353,370,397
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
 
-        JSONPath.eval(obj,"$..a");
+        Object tmp = JSONPath.eval(obj,"$..a");
+        System.out.println(tmp);
+        assert tmp instanceof List;
+        assert ((List)tmp).size() ==2;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {
@@ -34,13 +39,16 @@ public class SpeedFastjsonJsonPathTest {
 
     @Test
     public void test2(){
-        //不支持
+        //不支持（结果不对）
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
         JSONObject obj = JSON.parseObject(text);
 
-        JSONPath.eval(obj,"$..*");;
+        Object tmp = JSONPath.eval(obj,"$..*");
+        System.out.println(tmp);
+        assert tmp instanceof List;
+        assert ((List)tmp).size() ==4;
 
         long start = System.currentTimeMillis();
         for(int i=0,len=1000000; i<len; i++) {

@@ -18,6 +18,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         JSONArray rst = context.read("$..a");
+        System.out.println(rst);
         assert rst.size() ==2;
 
         long start = System.currentTimeMillis();
@@ -40,6 +41,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         JSONArray rst = context.read("$..*");
+        System.out.println(rst);
         assert rst.size() == 16;
 
         long start = System.currentTimeMillis();
@@ -62,6 +64,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         JSONArray rst = context.read("$.data.list[1,4]");
+        System.out.println(rst);
         assert rst.size() == 2;
 
         long start = System.currentTimeMillis();
@@ -85,6 +88,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         JSONArray rst = context.read("$.data.list[1:4]");
+        System.out.println(rst);
         assert rst.size() == 3;
 
         long start = System.currentTimeMillis();
@@ -108,7 +112,7 @@ public class SpeedJaywayJsonPathTest {
         ReadContext context = JsonPath.parse(text);
 
         JSONArray rst = context.read("$..ary2[0].a");
-
+        System.out.println(rst);
         assert rst.size() == 1;
 
         long start = System.currentTimeMillis();
