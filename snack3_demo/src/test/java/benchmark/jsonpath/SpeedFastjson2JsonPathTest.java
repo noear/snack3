@@ -138,7 +138,7 @@ public class SpeedFastjson2JsonPathTest {
 
     @Test
     public void test41(){
-        //1000000=>735,754,736
+        //1000000=>735,728,736
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
@@ -209,7 +209,7 @@ public class SpeedFastjson2JsonPathTest {
 
     @Test
     public void test6(){
-        //1000000=>642,645,623
+        //1000000=>642,645,660
         //
         //1.加载json
         String text = ("{code:1,msg:'Hello world',data:{list:[1,2,3,4,5], ary2:[{a:2},{a:3,b:{c:'ddd'}}]}}");
