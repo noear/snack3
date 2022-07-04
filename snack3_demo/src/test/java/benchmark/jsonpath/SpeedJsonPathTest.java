@@ -228,6 +228,8 @@ public class SpeedJsonPathTest {
 
 
         ONode tmp1 = n.select("$..c.min()", useStandard);
+        System.out.println(tmp1);
+
         if(useStandard) {
             assert tmp1.count() == 0;
         }else{
@@ -254,6 +256,7 @@ public class SpeedJsonPathTest {
         ONode n = ONode.load("[{c:'aaaa'}, {b:'cccc'}, {c:'cccaa'}]");
 
         ONode tmp = n.select("$[?(@.c =~ /.*a+/)]", useStandard);
+        System.out.println(tmp);
         assert tmp.count() == 2;
 
         long start = System.currentTimeMillis();
