@@ -212,7 +212,7 @@ public class SpeedFastjson2JsonPathTest {
         //不支持
         //
         //1.加载json
-        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]"); //解析会出错
         JSONArray obj = JSON.parseArray(text);
 
         JSONPath.eval(obj,"$..b[?(@.c == 12)]");//不支持
@@ -234,7 +234,7 @@ public class SpeedFastjson2JsonPathTest {
         //不支持
         //
         //1.加载json
-        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");
+        String text = ("[{b:{c:1}}, {b:{d:1}}, {b:{c:2}}, {b:{c:23}}]");//解析会出错
         JSONArray obj = JSON.parseArray(text);
 
         JSONPath.eval(obj,"$..c.min()");
