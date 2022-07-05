@@ -51,7 +51,7 @@ Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 * 基于 无参构造函数 + 字段 操作实现（因注入而触发动作的风险，不会有）
 
 
-## Json path 性能测试
+## 性能测试
 
 | Json path表达式 | 数据 | fastjson2   | json-path | snack3 |
 | --- | --- |-------------| --- | --- |
