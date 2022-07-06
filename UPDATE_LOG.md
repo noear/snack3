@@ -1,5 +1,5 @@
 #### 3.2.31
-* 增加 LongAdder，DoubleAdder 增加支持
+* 增加 LongAdder，DoubleAdder 反序列化支持
 
 #### 3.2.30
 * 增加 jsonpath 内的选项传导
