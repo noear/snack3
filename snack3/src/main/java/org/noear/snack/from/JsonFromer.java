@@ -205,7 +205,7 @@ public class JsonFromer implements Fromer {
             if ('\\' == c) {
                 c = sr.next();
 
-                if ('t' == c || 'r' == c || 'n' == c || 'f' == c || 'b' == c || '"' == c || '\'' == c || '/'==c || (c >= '0' && c <= '7')) {
+                if ('t' == c || 'r' == c || 'n' == c || 'f' == c || 'b' == c || '"' == c || '\'' == c || '/'==c || '\\' == c || (c >= '0' && c <= '7')) {
                     sBuf.append(IOUtil.CHARS_MARK_REV[(int) c]);
                     continue;
                 }

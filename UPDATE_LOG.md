@@ -1,3 +1,6 @@
+#### 3.2.32
+* 增加 name 值格式控制
+
 #### 3.2.31
 * 增加 LongAdder，DoubleAdder 反序列化支持
 

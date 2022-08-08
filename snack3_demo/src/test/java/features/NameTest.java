@@ -8,6 +8,8 @@ import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author noear 2021/1/1 created
@@ -80,4 +82,20 @@ public class NameTest {
         System.out.println(val2);
         assert val2 == null;
     }
+
+    @Test
+    public void test4() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("c:\\", "c:\\");
+
+        String json = ONode.stringify(data, options);
+        System.out.println(json);
+
+        String json2 = ONode.load(json).toJson();
+        System.out.println(json2);
+        assert json2.equals(json);
+    }
+
+    private static final Options options = Options.def()
+            .add(Feature.EnumUsingName);
 }
