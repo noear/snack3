@@ -84,7 +84,7 @@ public class JsonFromer implements Fromer {
     public void analyse(Context ctx, CharReader sr, CharBuffer sBuf, ONode p) throws IOException {
         String name = null;
 
-        boolean read_space1=false;
+        boolean read_space1 = false;
         // 读入字符
         while (sr.read()) {
             char c = sr.value();
@@ -158,17 +158,20 @@ public class JsonFromer implements Fromer {
                         if (c > 32) {//无引号的，只添加可见字符(key,no string val)
                             sBuf.append(c);
 
-                            if (c == 'n' && sBuf.isString == false) { //如果是 n开头, 可以读一次空隔
+                            if (c == 'n') { //如果是 n开头, 可以读一次空隔
                                 read_space1 = true;
                             }
                         }
                     } else {
                         if (c > 32) {
                             sBuf.append(c);
-                        } else if(c == 32){
+                        } else if (c == 32) {
                             if (read_space1) {
                                 read_space1 = false;
-                                sBuf.append(c);
+
+                                if (sBuf.isString == false) {
+                                    sBuf.append(c);
+                                }
                             }
                         }
                     }
