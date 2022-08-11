@@ -158,7 +158,7 @@ public class JsonFromer implements Fromer {
                         if (c > 32) {//无引号的，只添加可见字符(key,no string val)
                             sBuf.append(c);
 
-                            if (c == 'n') { //如果是 n开头, 可以读一次空隔
+                            if (c == 'n' && sBuf.isString == false) { //如果是 n开头, 可以读一次空隔
                                 read_space1 = true;
                             }
                         }
