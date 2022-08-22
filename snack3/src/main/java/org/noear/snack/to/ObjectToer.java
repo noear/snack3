@@ -74,6 +74,27 @@ public class ObjectToer implements Toer {
 
         switch (o.nodeType()) {
             case Value:
+                if (clz != null && Collection.class.isAssignableFrom(clz)) {
+                    //如果接收对象为集合???尝试做为item
+                    if (rst == null) {
+                        rst = TypeUtil.createCollection(clz, false);
+                    }
+
+                    if (rst != null) {
+                        //todo::
+                        Type type1 = TypeUtil.getCollectionItemType(type);
+                        if (type1 instanceof Class) {
+                            Object val1 = analyseVal(ctx, o.nodeData(), (Class<?>) type1);
+                            ((Collection) rst).add(val1);
+                            return rst;
+                        } else {
+                            Object val1 = analyseVal(ctx, o.nodeData(), null);
+                            ((Collection) rst).add(val1);
+                            return rst;
+                        }
+                    }
+                }
+
                 return analyseVal(ctx, o.nodeData(), clz);
             case Object:
                 //clz = getTypeByNode(ctx, o, clz);
@@ -137,7 +158,7 @@ public class ObjectToer implements Toer {
             return v.getInt();
         } else if (is(Long.class, clz) || clz == Long.TYPE) {
             return v.getLong();
-        } else if(is(LongAdder.class,clz)){
+        } else if (is(LongAdder.class, clz)) {
             LongAdder tmp = new LongAdder();
             tmp.add(v.getLong());
             return tmp;
@@ -145,7 +166,7 @@ public class ObjectToer implements Toer {
             return v.getFloat();
         } else if (is(Double.class, clz) || clz == Double.TYPE) {
             return v.getDouble();
-        } else if(is(DoubleAdder.class,clz)){
+        } else if (is(DoubleAdder.class, clz)) {
             DoubleAdder tmp = new DoubleAdder();
             tmp.add(v.getDouble());
             return tmp;
@@ -453,7 +474,7 @@ public class ObjectToer implements Toer {
                     if (f.readonly) {
                         analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
                     } else {
-                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, null, genericInfo);
+                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
 
                         f.setValue(rst, val, disSetter);
                     }
@@ -465,7 +486,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst,Map<TypeVariable, Type> genericInfo) throws Exception {
+    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst, Map<TypeVariable, Type> genericInfo) throws Exception {
         if (genericInfo != null) {
             if (fieldGt instanceof TypeVariable) {
                 Type tmp = genericInfo.get(fieldGt);
