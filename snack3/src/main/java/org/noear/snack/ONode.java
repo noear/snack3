@@ -586,9 +586,7 @@ public class ONode {
         _d.tryInitObject();
 
         if (map != null) {
-            map.forEach((k, v) -> {
-                set(k, v);
-            });
+            map.forEach(this::set);
         }
         return this;
     }
