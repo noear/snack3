@@ -92,6 +92,8 @@ public class Demo3 {
         String jsonArray = "[\"Android\",\"Java\",\"PHP\"]";
 
         ONode ary0 		  = ONode.load(jsonArray);
+        Assert.assertNotNull(ary0);
+
         List<String> ary1 = ONode.deserialize(jsonArray,(new ArrayList<String>(){}).getClass());
         List<String> ary2 = ONode.deserialize(jsonArray,(new TypeRef<List<String>>(){}).getClass());
 
