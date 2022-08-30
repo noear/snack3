@@ -40,6 +40,10 @@ public class DateUtil {
      * 解析时间
      * */
     public static Date parse(String val) throws ParseException {
+        if(val == null){
+            return null;
+        }
+
         final int len = val.length();
         String ft = null;
 

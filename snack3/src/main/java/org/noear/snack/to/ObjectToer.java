@@ -185,11 +185,26 @@ public class ObjectToer implements Toer {
         } else if (is(Date.class, clz)) {
             return v.getDate();
         } else if (is(LocalDateTime.class, clz)) {
-            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
+            Date date = v.getDate();
+            if (date == null) {
+                return null;
+            } else {
+                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
+            }
         } else if (is(LocalDate.class, clz)) {
-            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
+            Date date = v.getDate();
+            if (date == null) {
+                return null;
+            } else {
+                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
+            }
         } else if (is(LocalTime.class, clz)) {
-            return v.getDate().toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
+            Date date = v.getDate();
+            if (date == null) {
+                return null;
+            } else {
+                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
+            }
         } else if (is(BigDecimal.class, clz)) {
             if (v.type() == OValueType.Number) {
                 if (v.getRawNumber() instanceof BigDecimal) {
