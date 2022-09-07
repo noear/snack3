@@ -15,10 +15,11 @@
 
 //检测操作
 //
--isObject() -> bool  //检查当前节点是否为对象
--isArray()  -> bool  //检查当前节点是否为数组
--isValue()  -> bool  //检查当前节点是否为值
--isNull()   -> bool  //检查当前节点是否为null
+-isObject()    -> bool  //检查当前节点是否为对象
+-isArray()     -> bool  //检查当前节点是否为数组
+-isValue()     -> bool  //检查当前节点是否为值
+-isNull()      -> bool  //检查当前节点是否为null
+-isUndefined() -> bool  //检查当前节点是否未定义（即：nodeType == ONodeType.Null）
 
 //公共
 //
@@ -32,6 +33,8 @@
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
 -select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:使用标准模式,默认非标准
 -select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:是否缓存javaPath编译成果，默认缓存
+
+-exists(jpath:String) -> bool //使用JsonPath表达式查检节点是否存在（默认缓存路径编译）
 
 -clear()                    //清除子节点，对象或数组有效
 -count() -> int             //子节点数量，对象或数组有效
