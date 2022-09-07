@@ -21,8 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.atomic.DoubleAdder;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 对象转换器（将 java Object 转为 ONode）
@@ -274,7 +272,7 @@ public class ObjectFromer implements Fromer {
 
                     //null是否输出
                     if (cfg.hasFeature(Feature.SerializeNulls)) {
-                        rst.setNode(f.getName(), analyse(cfg, null));
+                        rst.setNode(f.getName(), new ONode().asValue());//不能用未初始化的类型填充
                         continue;
                     }
                 }
