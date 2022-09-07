@@ -1,7 +1,7 @@
 #### 3.2.37
 * 增加 ONode::isUndefined() 接口
 * 增加 ONode::exists(jpath)接口
-* 调整 当有 key 时，其 null 值统一为 valueType
+* 调整 当有 key 时，其 null 值统一为 valueType；用于区别 isUndefined
 
 #### 3.2.35
 * 修复 值为""时，转为 LocalDateTime 会出错的问题
