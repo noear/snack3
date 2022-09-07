@@ -1,3 +1,7 @@
+#### 3.2.36
+* 增加 ONode::isUndefined() 接口
+* 增加 ONode::exists(jpath)接口
+
 #### 3.2.35
 * 修复 值为""时，转为 LocalDateTime 会出错的问题
 

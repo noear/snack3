@@ -67,12 +67,32 @@ public class ONode {
         return JsonPath.eval(this, jpath, useStandard, cacheJpath);
     }
 
+    /**
+     * Json path select
+     *
+     * @param jpath json path express
+     * @param useStandard use standard mode(default: false)
+     */
     public ONode select(String jpath,  boolean useStandard) {
         return select(jpath, useStandard, true);
     }
 
+    /**
+     * Json path select
+     *
+     * @param jpath json path express
+     */
     public ONode select(String jpath) {
         return select(jpath, false);
+    }
+
+    /**
+     * Json path exists
+     *
+     * @param jpath json path express
+     */
+    public boolean exists(String jpath){
+        return select(jpath).isUndefined() == false;
     }
 
     /**
@@ -770,6 +790,13 @@ public class ONode {
     }
 
     //////////////////////
+
+    /**
+     * 检查节点是否未定义
+     * */
+    public boolean isUndefined(){
+        return _d.nodeType == ONodeType.Null;
+    }
 
     /**
      * 检查节点是否为null
