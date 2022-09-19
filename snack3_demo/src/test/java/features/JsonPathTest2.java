@@ -142,4 +142,16 @@ public class JsonPathTest2 {
         System.out.println(t5);
         assert t5.isArray() && t5.count()==1;
     }
+
+    @Test
+    public void test4(){
+        String str = "{\"transaction_id\":\"87cd7d71-c6df-4281-9927-469094395677\",\"data_list\":[{\"_widget_1634621669273\":{\"value\":\"\"},\"_widget_1634621669328\":{\"value\":\"\"},\"_widget_1634621669309\":{\"value\":\"\"},\"_widget_1634621669347\":{\"value\":\"\"},\"_widget_1658975890076\":{\"value\":\"\"},\"_widget_1658971955803\":{\"value\":0},\"_widget_1658971955822\":{\"value\":0},\"_widget_1658971955841\":{\"value\":\"\"},\"_widget_1634621669385\":{\"value\":0},\"_widget_1634622714388\":{\"value\":0},\"_widget_1634621669443\":{\"value\":0},\"_widget_1658971956001\":{\"value\":0},\"_widget_1658971956020\":{\"value\":\"\"},\"_widget_1658971956147\":{\"value\":\"\"},\"_widget_1662702941804\":{\"value\":\"\"},\"_widget_1662702941823\":{\"value\":\"\"},\"_widget_1634625436803\":{\"value\":0},\"_widget_1658971956075\":{\"value\":[]},\"_widget_1634621669481\":{\"value\":\"\"}}]}\n";
+        ONode oNode = ONode.loadStr(str);
+        ONode select = oNode.select("$.data_list[0]._widget_1634621669273");
+
+        System.out.println(select.toString());
+
+        assert select.isObject();
+        assert "".equals(select.get("value").getRawString());
+    }
 }

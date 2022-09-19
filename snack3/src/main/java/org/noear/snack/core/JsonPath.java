@@ -64,8 +64,8 @@ public class JsonPath {
     }
 
     private static JsonPath compile(String jpath) {
-        //将..替换为._ 方便解析（用_x替代为深度扫描）
-        String jpath2 = jpath.replace("..", "._");
+        //将..替换为.^ 方便解析（用_x替代为深度扫描）
+        String jpath2 = jpath.replace("..", ".^");
         JsonPath jsonPath = new JsonPath();
 
         char token = 0;
@@ -793,7 +793,7 @@ public class JsonPath {
         public Segment(String test) {
             cmd = test.trim();
             cmdHasQuote = cmd.indexOf("'")>=0;
-            cmdHasUnline = cmd.startsWith("_");
+            cmdHasUnline = cmd.startsWith("^");
 
             if(cmdHasUnline){
                 name = cmd.substring(1);
@@ -855,7 +855,7 @@ public class JsonPath {
             }
 
             //_指令（即..指令）
-            if (this.cmd.startsWith("_")) {
+            if (this.cmd.startsWith("^")) {
                 handler = handler_xx;
                 return;
             }

@@ -1,3 +1,6 @@
+#### 3.2.38
+* 修复 jsonpath 出现 ._ 时，会出错的问题
+
 #### 3.2.37
 * 增加 ONode::isUndefined() 接口
 * 增加 ONode::exists(jpath)接口
