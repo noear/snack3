@@ -1,5 +1,6 @@
 package features;
 
+import _model5.TypeC;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -57,5 +58,18 @@ public class PropertiesTest {
 
         assert oNode.isArray() == true;
         assert oNode.count() == 2;
+    }
+
+    @Test
+    public void test2(){
+        Properties props = new Properties();
+        props.setProperty("typeA", "_model5.TypeAImpl");
+        props.setProperty("typeB", "_model5.TypeBImpl");
+
+        TypeC typeC = ONode.loadObj(props).toObject(TypeC.class);
+        assert typeC.typeA != null;
+        System.out.println(typeC.typeA);
+        assert typeC.typeB != null;
+        System.out.println(typeC.typeB);
     }
 }

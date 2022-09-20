@@ -228,13 +228,15 @@ public class ObjectToer implements Toer {
         } else if (is(Object.class, clz)) {
             Object val = v.getRaw();
 
-            if (val instanceof String && clz.isInterface()) {
-                //如果是String，且为Interface
-                Class<?> valClz = BeanUtil.loadClass((String) val);
-                return BeanUtil.newInstance(valClz);
-            } else {
-                return val;
+            if (val instanceof String) {
+                //如果是 String，且 isInterface 或 isAbstract
+                if (clz.isInterface() || Modifier.isAbstract(clz.getModifiers())) {
+                    Class<?> valClz = BeanUtil.loadClass((String) val);
+                    return BeanUtil.newInstance(valClz);
+                }
             }
+
+            return val;
         } else {
             throw new SnackException("unsupport type " + clz.getName());
         }
