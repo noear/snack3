@@ -1103,6 +1103,7 @@ public class ONode {
         return stringify(source, Options.def());
     }
 
+    @Deprecated
     public static String stringify(Object source, Feature... features) {
         if (features.length > 0) {
             return stringify(source, new Options(Feature.of(features)));

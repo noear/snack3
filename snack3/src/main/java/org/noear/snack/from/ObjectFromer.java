@@ -74,7 +74,7 @@ public class ObjectFromer implements Fromer {
             analyseProps(opt, rst, clz, source);
         } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
 
-        } else if (clz.isEnum()) { //新补充的类型
+        } else if (clz.isEnum() || Enum.class.isAssignableFrom(clz)) { //新补充的类型 //clz.isEnum() 继随接口后，没法实别了
             Enum em = (Enum) source;
 
             if (opt.hasFeature(Feature.EnumUsingName)) {
