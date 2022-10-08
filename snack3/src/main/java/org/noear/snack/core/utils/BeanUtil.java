@@ -74,7 +74,7 @@ public class BeanUtil {
             if (clz.isInterface()) {
                 return null;
             } else {
-                return clz.newInstance();
+                return clz.getDeclaredConstructor().newInstance();
             }
         } catch (Throwable e) {
             throw new SnackException("create instance error, class " + clz.getName(), e);

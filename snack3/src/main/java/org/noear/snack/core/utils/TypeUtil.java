@@ -168,7 +168,7 @@ public class TypeUtil {
             list = EnumSet.noneOf((Class<Enum>) itemType);
         } else {
             try {
-                list = (Collection) rawClass.newInstance();
+                list = (Collection) rawClass.getDeclaredConstructor().newInstance();
             } catch (Throwable e) {
                 if (isThrow) {
                     throw new SnackException("create instance error, class " + rawClass.getName(), e);
@@ -237,7 +237,7 @@ public class TypeUtil {
         }
 
         try {
-            return (Map) clazz.newInstance();
+            return (Map) clazz.getDeclaredConstructor().newInstance();
         } catch (Throwable e) {
             throw new SnackException("unsupport type " + type, e);
         }
