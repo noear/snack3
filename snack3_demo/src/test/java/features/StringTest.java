@@ -5,6 +5,7 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @author noear 2022/1/8 created
@@ -33,5 +34,12 @@ public class StringTest {
         assert json.equals(json2);
 
         System.out.println(ONode.loadStr(json, Feature.StringJsonToNode).toJson());
+    }
+
+    @Test
+    public void test2(){
+        String tmp = ONode.stringify(UUID.randomUUID());
+        assert tmp.contains("-");
+        System.out.println(tmp);
     }
 }

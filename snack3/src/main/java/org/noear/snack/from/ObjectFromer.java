@@ -53,6 +53,8 @@ public class ObjectFromer implements Fromer {
             rst.val(source);
         } else if (source instanceof String) {
             rst.val().setString((String) source);
+        } else if (source instanceof UUID) {
+            rst.val().setString(((UUID) source).toString());
         } else if (source instanceof Date) {
             rst.val().setDate((Date) source);
         } else if (source instanceof LocalDateTime) {
