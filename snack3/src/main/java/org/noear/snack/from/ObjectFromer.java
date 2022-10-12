@@ -52,7 +52,26 @@ public class ObjectFromer implements Fromer {
         if (source instanceof ONode) {
             rst.val(source);
         } else if (source instanceof String) {
-            rst.val().setString((String) source);
+            if (opt.hasFeature(Feature.StringJsonToNode)) {
+                //尝试自动加载 json
+                String sval = (String) source;
+                ONode otmp = null;
+
+                if ((sval.startsWith("{") && sval.endsWith("}")) ||
+                        (sval.startsWith("[") && sval.endsWith("]"))) {
+                    otmp = ONode.loadStr(sval, opt);
+                }
+
+                if(otmp == null) {
+                    rst.val().setString(sval);
+                }else{
+                    rst.val(otmp);
+                }
+            }else{
+                rst.val().setString((String) source);
+            }
+
+
         } else if (source instanceof UUID) {
             rst.val().setString(((UUID) source).toString());
         } else if (source instanceof Date) {
