@@ -1,3 +1,6 @@
+
+* 增加特性 StringJsonToNode 对 ONode.loadObj() 的支持 
+
 #### 3.2.43
 * 修复反序列化时，只读保合不能被赋值的问题
 
