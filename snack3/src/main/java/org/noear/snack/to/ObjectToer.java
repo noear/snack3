@@ -127,7 +127,7 @@ public class ObjectToer implements Toer {
                 if (clz.isArray()) {
                     return analyseArray(ctx, o.nodeData(), clz);
                 } else {
-                    return analyseCollection(ctx, o, clz, type, genericInfo);
+                    return analyseCollection(ctx, o, rst, clz, type, genericInfo);
                 }
             default:
                 return null;
@@ -321,8 +321,13 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseCollection(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
-        Collection list = TypeUtil.createCollection(clz, false);
+    public Object analyseCollection(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+        Collection list = null;
+        if(rst instanceof Collection){
+            list = (Collection)rst;
+        }else {
+            list = TypeUtil.createCollection(clz, false);
+        }
 
         if (list == null) {
             return null;
