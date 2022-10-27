@@ -104,4 +104,20 @@ public class NumberTest {
         assert obj1.getNum21().compareTo(obj1.getNum21()) == 0;
         assert obj1.getNum22().compareTo(obj1.getNum22()) == 0;
     }
+
+    @Test
+    public void test7(){
+        String json = "{a:1}";
+        Map map = ONode.deserialize(json,Map.class);
+
+        assert map.get("a") instanceof Integer;
+    }
+
+    @Test
+    public void test8(){
+        Number number = 12.12D;
+
+        assert  number.intValue() == 12;
+        assert  number.longValue() == 12;
+    }
 }

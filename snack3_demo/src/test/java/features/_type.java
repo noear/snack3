@@ -42,13 +42,5 @@ public class _type {
         System.out.println(ONode.stringify(map));
         System.out.println(ONode.serialize(map));
         System.out.println(JSON.toJSON(map));
-
-
-        Options.features_def = Feature.of(
-                Feature.OrderedField,
-                Feature.WriteDateUseTicks,
-                Feature.StringNullAsEmpty,
-                Feature.BrowserCompatible,
-                Feature.QuoteFieldNames);
     }
 }

@@ -301,10 +301,15 @@ public class JsonFromer implements Fromer {
                         oval.setNumber(new BigInteger(sval));
                     }
                 } else { //小于16位长度；采用常规数字处理
-                    if (sval.indexOf('.') > 0 ) {
+                    if (sval.indexOf('.') > 0) {
                         oval.setNumber(Double.parseDouble(sval));
                     } else {
-                        oval.setNumber(Long.parseLong(sval));
+                        Long sval2 = Long.parseLong(sval);
+                        if (sval2 > Integer.MAX_VALUE) {
+                            oval.setNumber(sval2);
+                        } else {
+                            oval.setNumber(sval2.intValue());
+                        }
                     }
                 }
             } else { //other

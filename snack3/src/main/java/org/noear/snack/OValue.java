@@ -286,11 +286,7 @@ public class OValue {
             case String:
                 return parseDate(_string);
             case Number: {
-                if (_number instanceof Long) {
-                    return new Date(_number.longValue());
-                } else {
-                    return null;
-                }
+                return new Date(_number.longValue());
             }
             default:
                 return null;

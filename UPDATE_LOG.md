@@ -1,4 +1,8 @@
+#### 3.2.45
+* 增加 string 转 int 的支持（之前只转 long）
+* 增加 任何数字可 转 date 的支持
 
+#### 3.2.44
 * 增加特性 StringJsonToNode 对 ONode.loadObj() 的支持 
 
 #### 3.2.43
