@@ -464,11 +464,17 @@ public class ONode {
      * 重命名一个子节点（如果不存在则跳过）
      * */
     public ONode rename(String key, String newKey) {
-        if (isObject()) {
-            rename_do(this, key, newKey);
-        } else if (isArray()) {
-            for (ONode n : _d.array) {
-                rename_do(n, key, newKey);
+        if (key == null || newKey == null) {
+            return this;
+        }
+
+        if (key.equals(newKey) == false) {
+            if (isObject()) {
+                rename_do(this, key, newKey);
+            } else if (isArray()) {
+                for (ONode n : _d.array) {
+                    rename_do(n, key, newKey);
+                }
             }
         }
 
