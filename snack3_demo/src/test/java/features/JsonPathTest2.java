@@ -168,11 +168,11 @@ public class JsonPathTest2 {
         assert rst.count() == 1;
     }
 
-//    @Test
-//    public void test5() {
-//        ONode oNode = new ONode();
-//        oNode.select("$.orders[0].price").val(500);
-//
-//        System.out.println(oNode.toJson());
-//    }
+    @Test
+    public void test6() {
+        ONode oNode = ONode.loadStr("{\"data\":{\"title\":{\"updatedTime\":1648799928406,\"schemaType\":\"i\",\"name\":\"testName\"}}}");
+        ONode rst = oNode.select("$..title[?(@.name == 'testName')].schemaType");
+
+        System.out.println(rst.toJson());
+    }
 }
