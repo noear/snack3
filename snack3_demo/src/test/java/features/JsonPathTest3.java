@@ -164,6 +164,11 @@ public class JsonPathTest3 {
         ONode title = o.select("$.store.book[0].title");
         System.out.println("title=::" + title);
 
+        //倒数第一本书title
+        ONode title2 = o.select("$.store.book[-1].title");
+        System.out.println("title=::" + title2);
+        //assert "go语言实战".equals(title2);
+
         //price大于10元的book
         ONode list = o.select("$.store.book[?(price > 10)]");
         System.out.println("price大于10元的book=::" + list);
