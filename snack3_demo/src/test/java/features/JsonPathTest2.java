@@ -175,4 +175,12 @@ public class JsonPathTest2 {
 
         System.out.println(rst.toJson());
     }
+
+    @Test
+    public void test7(){
+        ONode oNode = ONode.loadStr("{\"data\":[{\"name\":false,\"value\":1},{\"name\":false,\"value\":2},{\"name\":false,\"value\":3},{\"name\":false,\"value\":4}]}");
+        ONode rst = oNode.select("$..data[?(@.value == 1)].name");
+
+        System.out.println(rst.toJson());
+    }
 }
