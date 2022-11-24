@@ -15,6 +15,10 @@ public class BeanUtil {
     public static final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
 
     public static Class<?> loadClass(String clzName) {
+        if (StringUtil.isEmpty(clzName)) {
+            return null;
+        }
+
         try {
             Class<?> clz = clzCached.get(clzName);
             if (clz == null) {
@@ -26,7 +30,7 @@ public class BeanUtil {
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable e) {
-            throw new SnackException(e);
+            throw new SnackException("Failed to load class: " + clzName, e);
         }
     }
 

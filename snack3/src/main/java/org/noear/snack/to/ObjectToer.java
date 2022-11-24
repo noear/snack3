@@ -232,7 +232,12 @@ public class ObjectToer implements Toer {
                 //如果是 String，且 isInterface 或 isAbstract
                 if (clz.isInterface() || Modifier.isAbstract(clz.getModifiers())) {
                     Class<?> valClz = BeanUtil.loadClass((String) val);
-                    return BeanUtil.newInstance(valClz);
+
+                    if (valClz == null) {
+                        return null;
+                    } else {
+                        return BeanUtil.newInstance(valClz);
+                    }
                 }
             }
 
