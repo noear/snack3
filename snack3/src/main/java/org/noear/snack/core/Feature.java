@@ -65,6 +65,9 @@ public enum  Feature {
 
     /** 存储 or 读取：当 value is json string 时，自动转为ONode */
     StringJsonToNode,
+
+    /** 读取 Double 使用 BigDecimal */
+    StringDoubleToDecimal,
     ;
 
     Feature(){

@@ -3,6 +3,7 @@ package features;
 import _models.NumberModel;
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Feature;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -106,18 +107,26 @@ public class NumberTest {
     }
 
     @Test
-    public void test7(){
+    public void test7() {
         String json = "{a:1}";
-        Map map = ONode.deserialize(json,Map.class);
+        Map map = ONode.deserialize(json, Map.class);
 
         assert map.get("a") instanceof Integer;
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         Number number = 12.12D;
 
-        assert  number.intValue() == 12;
-        assert  number.longValue() == 12;
+        assert number.intValue() == 12;
+        assert number.longValue() == 12;
+    }
+
+    @Test
+    public void test9() {
+        String json = "{\"a\":0.0000}";
+        String json2 = ONode.load(json, Feature.StringDoubleToDecimal).toJson();
+
+        assert json.equals(json2);
     }
 }
