@@ -38,7 +38,7 @@ public class ObjectToer implements Toer {
         }
     }
 
-    private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         if (o == null) {
             return null;
         }
@@ -323,7 +323,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseCollection(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    public Object analyseCollection(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         Collection list = null;
         if(rst instanceof Collection){
             list = (Collection)rst;
@@ -352,7 +352,7 @@ public class ObjectToer implements Toer {
         return list;
     }
 
-    public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         if (rst == null) {
             rst = new Properties();
         }
@@ -398,7 +398,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseMap(Context ctx, ONode o, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    public Object analyseMap(Context ctx, ONode o, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         Map<Object, Object> map = TypeUtil.createMap(clz);
 
         if (type instanceof ParameterizedType) { //这里还要再研究下
@@ -433,7 +433,7 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<TypeVariable, Type> genericInfo) throws Exception {
+    public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         if (is(SimpleDateFormat.class, clz)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
@@ -510,10 +510,10 @@ public class ObjectToer implements Toer {
     }
 
 
-    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst, Map<TypeVariable, Type> genericInfo) throws Exception {
+    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst, Map<String, Type> genericInfo) throws Exception {
         if (genericInfo != null) {
             if (fieldGt instanceof TypeVariable) {
-                Type tmp = genericInfo.get(fieldGt);
+                Type tmp = genericInfo.get(fieldGt.getTypeName());
                 if (tmp != null) {
                     fieldGt = tmp;
                     if (tmp instanceof Class) {
@@ -534,7 +534,7 @@ public class ObjectToer implements Toer {
                 for (int i = 0, len = actualTypes.length; i < len; i++) {
                     Type tmp = actualTypes[i];
                     if (tmp instanceof TypeVariable) {
-                        tmp = genericInfo.get(tmp);
+                        tmp = genericInfo.get(tmp.getTypeName());
 
                         if (tmp != null) { //有可能不有
                             actualTypes[i] = tmp;
