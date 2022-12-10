@@ -4,10 +4,7 @@ import _model2.Data;
 import _model2.House;
 import _model2.Result;
 import _model3.MessageListItem;
-import _models.ComplexModel;
-import _models.GModel;
-import _models.Person;
-import _models.Point;
+import _models.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import org.junit.Test;
@@ -196,5 +193,17 @@ public class GenericTest {
         assert model.book != null;
         assert model.book.id == 1;
         assert "test".equals(model.book.bookname);
+    }
+
+    @Test
+    public void test9() {
+        String json = "{page:1,pageSize:3,data:{id:5,name:'noear'}}";
+        PageRequest<UserModel> request = ONode.deserialize(json, new TypeRef<PageRequest<UserModel>>() {
+        }.getType());
+
+        assert request.getPage() == 1;
+
+        UserModel userModel = request.getData();
+        assert userModel.id == 5;
     }
 }
