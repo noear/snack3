@@ -8,10 +8,7 @@ import org.noear.snack.core.NodeDecoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
-import org.noear.snack.core.utils.BeanUtil;
-import org.noear.snack.core.utils.ParameterizedTypeImpl;
-import org.noear.snack.core.utils.StringUtil;
-import org.noear.snack.core.utils.TypeUtil;
+import org.noear.snack.core.utils.*;
 import org.noear.snack.exception.SnackException;
 
 import java.lang.reflect.*;
@@ -118,7 +115,7 @@ public class ObjectToer implements Toer {
                             o.get("lineNumber").getInt());
                 } else {
                     if (type instanceof ParameterizedType) {
-                        genericInfo = TypeUtil.getGenericInfo(type);
+                        genericInfo = GenericUtil.getGenericInfo(type);
                     }
 
                     return analyseBean(ctx, o, rst, clz, type, genericInfo);
