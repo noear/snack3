@@ -1,3 +1,6 @@
+#### 3.2.50
+* ONode 在分析 date str 时，增加 trim() 处理
+
 #### 3.2.49
 * 增加新特性 StringDoubleToDecimal （可保持小数不变位数）
 
