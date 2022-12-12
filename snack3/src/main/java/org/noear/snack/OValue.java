@@ -283,8 +283,13 @@ public class OValue {
         switch (_type) {
             case DateTime:
                 return _date;
-            case String:
-                return parseDate(_string);
+            case String: {
+                if (_string == null) {
+                    return null;
+                } else {
+                    return parseDate(_string.trim());
+                }
+            }
             case Number: {
                 return new Date(_number.longValue());
             }
