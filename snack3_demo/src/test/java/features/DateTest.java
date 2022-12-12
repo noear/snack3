@@ -50,4 +50,20 @@ public class DateTest {
         assert dateModel.date8.equals(dateModel2.date8);
         assert dateModel.date9.equals(dateModel2.date9);
     }
+
+    @Test
+    public void test4() {
+        String json = "{date1:1670774400000}";
+
+        DateModel dateModel0 = ONode.deserialize(json, DateModel.class);
+        DateModel2 dateModel = ONode.deserialize(json, DateModel2.class);
+
+        String json2 = ONode.stringify(dateModel);
+        System.out.println(json2);
+
+        DateModel2 dateModel2 = ONode.deserialize(json2, DateModel2.class);
+
+
+        assert dateModel.date1.equals(dateModel2.date1);
+    }
 }
