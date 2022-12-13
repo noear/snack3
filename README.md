@@ -173,7 +173,7 @@ o.forEach((v)->{
 });
 
 
-//demo8:自定义编码
+//demo8:自定义编码（ addDecoder 是添加解析器，用于反序列化 ）
 Options options = Options.def();
 options.addEncoder(Date.class, (data, node) -> {
     node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
