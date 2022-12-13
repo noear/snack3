@@ -8,6 +8,7 @@ import org.noear.snack.core.Options;
 import org.noear.snack.core.DEFAULTS;
 import org.noear.snack.core.utils.DateUtil;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -43,6 +44,18 @@ public class Coding {
         rst = ONode.loadStr(json, opts).toObject(OrderModel.class);
         System.out.println(rst);
         assert rst.order_id == 1;
+    }
+
+    public void demo0(){
+        String json = "";
+
+        Options opts = Options.def();
+        opts.addDecoder(LocalDateTime.class, (node,type)->{
+            //我随手写的，具体要自己解析下格式
+            return LocalDateTime.parse(node.getString());
+        });
+
+        OrderModel tmp = ONode.load(json, opts).toObject(OrderModel.class);
     }
 
     @Test
