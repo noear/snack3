@@ -221,12 +221,12 @@ Options opts = Options.def().add(Feature.SerializeNulls); //导出null
 System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
 ```
 
-#### （2）格式化输出、日期时间及其它：
+#### （2）格式化输出、日期时间及其它（是用于输出的）：
 ```java
 Date date = new Date();
 
-Options cfg = Options.of(Feature.WriteDateUseFormat) //使用格式化特性
-        .build(c-> c.date_format = new SimpleDateFormat("yyyy-MM-dd",c.locale)); //设置格式符（默认为："yyyy-MM-dd'T'HH:mm:ss"）
+Options cfg = Options.of(Feature.WriteDateUseFormat) //使用格式化特性（才会让下面的 setDateFormat 起效）
+        .build(c-> c.setDateFormat("yyyy-MM-dd")); //设置格式符（默认为："yyyy-MM-dd'T'HH:mm:ss"）;
 
 System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
 ```
