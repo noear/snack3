@@ -295,8 +295,8 @@ o.get("data").get("list").fill(list);
 -nodeData() -> ONodeData //获取节点数据
 -nodeType() -> ONodeType //获取节点类型
 
--opts(opts:Constants) -> self:ONode   //切换配置
--opts() -> Constants 				//获取配置
+-opts(opts:Options) -> self:ONode   //切换配置
+-opts() -> Options 				//获取配置
 
 -build(n->..) -> self:ONode     	//节点构建表达式
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
@@ -380,8 +380,8 @@ o.get("data").get("list").fill(list);
 //加载操作（source 为 String 或 java object）
 //
 +load(source:Object) -> new:ONode    //加载数据
-+load(source:Object, opts:Constants) -> new:ONode
-+load(source:Object, opts:Constants, fromer:Fromer) -> new:ONode
++load(source:Object, opts:Options) -> new:ONode
++load(source:Object, opts:Options, fromer:Fromer) -> new:ONode
 
 //加载 string
 +loadStr(source:String) -> new:ONode	//仅String
