@@ -166,10 +166,10 @@ ONode.deserialize(str,clz); //反序列化
 String json = "{\"name\":\"张三\",\"age\":\"24\"}";
 
 //反序列化
-User user = ONode.load(json,Constants.serialize()).toObject(User.class);
+User user = ONode.load(json,Options.serialize()).toObject(User.class);
 
 //序列化
-ONode.load(user,Constants.serialize()).toJson();
+ONode.load(user,Options.serialize()).toJson();
 ```
 
 自动方式最终都是通过`load(obj)`,`toObject(clz)`,`toJson()` 进行操作。
@@ -185,7 +185,7 @@ ONode.load(user,Constants.serialize()).toJson();
  */
 public static String serialize(Object source) {
     //加载java object，须指定Fromer
-    return load(source, Constants.serialize(), DEFAULTS.DEF_OBJECT_FROMER).toJson();
+    return load(source, Options.serialize(), DEFAULTS.DEF_OBJECT_FROMER).toJson();
 }
 
 
@@ -197,18 +197,18 @@ public static String serialize(Object source) {
  */
 public static <T> T deserialize(String source, Class<?> clz) {
     //加载String，不需指定Fromer
-    return load(source,  Constants.serialize(), null).toObject(clz);
+    return load(source,  Options.serialize(), null).toObject(clz);
 }
 ```
 
 ### 五、使用Snack3导出null值、格式化输出、日期时间
-一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Constants。
+一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Options。
 
-Constants从名字上看它是一个提供配置的类，要想改变ONode默认的设置必须使用该类进行配置。用法：　
+Options 从名字上看它是一个提供配置的类，要想改变ONode默认的设置必须使用该类进行配置。用法：　
 ```java
-Constants.of(..)                      //全新定义一份配置
-Constants.def().add(..).sub(..)       //在默认配置基础上，添加或减少特性
-Constants.serialize().add(..).sub(..) //在序列化配置基础上，添加或减少特性
+Options.of(..)                      //全新定义一份配置
+Options.def().add(..).sub(..)       //在默认配置基础上，添加或减少特性
+Options.serialize().add(..).sub(..) //在序列化配置基础上，添加或减少特性
 ```
 
 #### （1）Snack3在默认情况下是不动导出值null的键的，如：
@@ -217,7 +217,7 @@ User user = new User("张三", 24);
 System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
 
-Constants opts = Constants.def().add(Feature.SerializeNulls); //导出null
+Options opts = Options.def().add(Feature.SerializeNulls); //导出null
 System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
 ```
 
@@ -225,7 +225,7 @@ System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,
 ```java
 Date date = new Date();
 
-Constants cfg = Constants.of(Feature.WriteDateUseFormat) //使用格式化特性
+Options cfg = Options.of(Feature.WriteDateUseFormat) //使用格式化特性
         .build(c-> c.date_format = new SimpleDateFormat("yyyy-MM-dd",c.locale)); //设置格式符（默认为："yyyy-MM-dd'T'HH:mm:ss"）
 
 System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
@@ -363,12 +363,12 @@ XmlFromer xmlFromer = new XmlFromer();
 YmalToer  ymalToer  = new YmalToer();
 
 //加载xml，输出ymal
-String ymal = ONode.load(xml,Constants.def(),xmlFromer).to(ymalToer);
+String ymal = ONode.load(xml,Options.def(),xmlFromer).to(ymalToer);
 ```
 
 #### （2）加载Xml，去掉手机号，转为java object
 ```java
-ONode tmp =ONode.load(xml,Constants.def(),xmlFromer);
+ONode tmp =ONode.load(xml,Options.def(),xmlFromer);
 
 //找到有手机号的，然后移除手机号
 tmp.select("$..[?(@.mobile)]").forEach(n->n.remove("mobile"));
