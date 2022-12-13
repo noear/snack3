@@ -119,8 +119,8 @@
 //
 +load(source:Object) -> new:ONode    //加载数据
 +load(source:Object, Feature... features) -> new:ONode
-+load(source:Object, cfg:Constants) -> new:ONode
-+load(source:Object, cfg:Constants, fromer:Fromer) -> new:ONode
++load(source:Object, cfg:Options) -> new:ONode
++load(source:Object, cfg:Options, fromer:Fromer) -> new:ONode
 
 //加载 string
 +loadStr(source:String) -> new:ONode	//仅String
