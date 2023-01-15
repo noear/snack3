@@ -78,7 +78,7 @@ public class _test {
 
     @Test
     public void test2() {
-        ONode n = new ONode(); //默认,null string 为 空字符
+        ONode n = new ONode().options(opt->opt.add(Feature.StringNullAsEmpty)); //默认,null string 为 空字符
 
         assert "".equals(n.getString());
     }

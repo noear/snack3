@@ -14,7 +14,7 @@ public class Options {
             Feature.OrderedField,
             Feature.WriteDateUseTicks,
             Feature.TransferCompatible,
-            Feature.StringNullAsEmpty,
+            //Feature.StringNullAsEmpty,
             Feature.QuoteFieldNames);
 
     public static int features_serialize = Feature.of(

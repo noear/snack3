@@ -34,7 +34,7 @@ public class JsonPathTest3 {
         ONode n = ONode.load(entity);
 
         assert n.select("$.id").getInt() == 123;
-        assert n.select("$.*").count() == 2;
+        assert n.select("$.*").count() == 2;//因为 StringNullAsEmpty，使 name 变成了 ""
     }
 
     @Test

@@ -14,13 +14,13 @@ public class FeatureTest {
 
 
         System.out.println(oNode.options().getFeatures());
+        assert oNode.options().hasFeature(Feature.StringNullAsEmpty) == false;
+        assert oNode.get("name").getString() == null;
+
+        oNode.options().add(Feature.StringNullAsEmpty);
+        System.out.println(oNode.options().getFeatures());
         assert oNode.options().hasFeature(Feature.StringNullAsEmpty);
 
-
-        oNode.options().remove(Feature.StringNullAsEmpty);
-        System.out.println(oNode.options().getFeatures());
-        assert oNode.options().hasFeature(Feature.StringNullAsEmpty) == false;
-
-        assert oNode.get("name").getString() == null;
+        assert oNode.get("name").getString() != null;
     }
 }

@@ -46,6 +46,11 @@ public enum  Feature {
 
     /** 存储 or 输出:字符串Null时输出为空(get时用) */
     StringNullAsEmpty,
+    /** 存储 or 输出:布尔Null时输出为空(get时用) */
+    BooleanNullAsFalse,
+    /** 存储 or 输出:数字Null时输出为空(get时用) */
+    NumberNullAsZero,
+    ListNullAsEmpty,
 
     /** 存储 or 输出:字符串字段初始化为空（返序列化时） */
     StringFieldInitEmpty,

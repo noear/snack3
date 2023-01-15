@@ -104,7 +104,7 @@ public class ObjectFromer implements Fromer {
                 rst.val().setNumber(em.ordinal());
             }
         } else if (source instanceof Map) {
-            //为序列化添加特性支持
+            //为序列化添加特性支持 //todo: 改用新的特性 WriteMapClassName,by 202301
             if (opt.hasFeature(Feature.WriteClassName)) {
                 typeSet(opt, rst, clz);
             }
@@ -285,15 +285,38 @@ public class ObjectFromer implements Fromer {
             //如果是null
             if (val == null) {
                 if(f.isIncNull()){
-                    //null string 是否以 空字符处理
-                    if (cfg.hasFeature(Feature.StringFieldInitEmpty) && f.genericType == String.class) {
+                    if(cfg.hasFeature(Feature.StringNullAsEmpty) && f.type == String.class){
                         rst.setNode(f.getName(), analyse(cfg, ""));
                         continue;
                     }
 
+                    if(cfg.hasFeature(Feature.BooleanNullAsFalse) && f.type == Boolean.class){
+                        rst.setNode(f.getName(), analyse(cfg, false));
+                        continue;
+                    }
+
+                    if(cfg.hasFeature(Feature.NumberNullAsZero) && f.type == Number.class) {
+                        if (f.type == Long.class) {
+                            rst.setNode(f.getName(), analyse(cfg, 0L));
+                        } else if (f.type == Integer.class) {
+                            rst.setNode(f.getName(), analyse(cfg, 0));
+                        } else if (f.type == Double.class) {
+                            rst.setNode(f.getName(), analyse(cfg, 0.0D));
+                        } else if (f.type == Float.class) {
+                            rst.setNode(f.getName(), analyse(cfg, 0.0F));
+                        } else {
+                            rst.setNode(f.getName(), analyse(cfg, 0));
+                        }
+                        continue;
+                    }
+
+                    if(cfg.hasFeature(Feature.ListNullAsEmpty) && List.class.isAssignableFrom(f.type)){
+                        rst.setNode(f.getName(),new ONode(cfg).asArray());
+                    }
+
                     //null是否输出
                     if (cfg.hasFeature(Feature.SerializeNulls)) {
-                        rst.setNode(f.getName(), new ONode().asValue());//不能用未初始化的类型填充
+                        rst.setNode(f.getName(), new ONode(cfg).asValue());//不能用未初始化的类型填充
                         continue;
                     }
                 }

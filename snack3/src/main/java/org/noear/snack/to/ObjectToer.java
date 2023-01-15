@@ -495,10 +495,20 @@ public class ObjectToer implements Toer {
                 if (o.contains(fieldK)) {
                     Class fieldT = f.type;
                     Type fieldGt = f.genericType;
+
                     if (f.readonly) {
                         analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
                     } else {
+
+
                         Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
+
+                        if (val == null) {
+                            //null string 是否以 空字符处理
+                            if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                                val = "";
+                            }
+                        }
 
                         f.setValue(rst, val, disSetter);
                     }

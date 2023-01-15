@@ -98,7 +98,7 @@ public class ExistsTest {
         System.out.println(load1.exists("$.note"));
         assert load1.exists("$.note");
 
-        assert load1.select("$.note").isNull();
+        assert load1.select("$.note").isNull(); //因为
         assert load1.select("$.note").isValue();
         load1.select("$.note").set("a1", 1);
         System.out.println(load1.toJson());
