@@ -1,5 +1,6 @@
 #### 3.2.51
-增加特性 BooleanNullAsFalse, NumberNullAsZero, ListNullAsEmpty
+* 增加特性 BooleanNullAsFalse, NumberNullAsZero, ListNullAsEmpty
+* 默认 features_def，不再包括 StringNullAsEmpty
 
 #### 3.2.50
 * ONode 在分析 date str 时，增加 trim() 处理
