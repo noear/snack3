@@ -1,3 +1,6 @@
+#### 3.2.52
+* 增加 SerializeNulls 对 Map/nullValue 的控制（之前默认认输出）
+
 #### 3.2.51
 * 增加特性 BooleanNullAsFalse, NumberNullAsZero, ArrayNullAsEmpty
 * 默认 features_def，不再包括 StringNullAsEmpty（旧的作用，也就只有 OValue::getString 上）

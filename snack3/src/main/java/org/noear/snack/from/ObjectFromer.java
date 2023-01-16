@@ -113,7 +113,14 @@ public class ObjectFromer implements Fromer {
             Map map = ((Map) source);
             for (Object k : map.keySet()) {
                 if (k != null) {
-                    rst.setNode(k.toString(), analyse(opt, map.get(k)));
+                    Object v = map.get(k);
+                    if (v == null) {
+                        if (opt.hasFeature(Feature.SerializeNulls) == false) {
+                            continue;
+                        }
+                    }
+
+                    rst.setNode(k.toString(), analyse(opt, v));
                 }
             }
         } else if (source instanceof Iterable) {
