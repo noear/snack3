@@ -284,18 +284,18 @@ public class ObjectFromer implements Fromer {
 
             //如果是null
             if (val == null) {
-                if(f.isIncNull()){
-                    if(cfg.hasFeature(Feature.StringNullAsEmpty) && f.type == String.class){
+                if (f.isIncNull()) {
+                    if (cfg.hasFeature(Feature.StringNullAsEmpty) && f.type == String.class) {
                         rst.setNode(f.getName(), analyse(cfg, ""));
                         continue;
                     }
 
-                    if(cfg.hasFeature(Feature.BooleanNullAsFalse) && f.type == Boolean.class){
+                    if (cfg.hasFeature(Feature.BooleanNullAsFalse) && f.type == Boolean.class) {
                         rst.setNode(f.getName(), analyse(cfg, false));
                         continue;
                     }
 
-                    if(cfg.hasFeature(Feature.NumberNullAsZero) && f.type == Number.class) {
+                    if (cfg.hasFeature(Feature.NumberNullAsZero) && f.type == Number.class) {
                         if (f.type == Long.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0L));
                         } else if (f.type == Integer.class) {
@@ -310,8 +310,10 @@ public class ObjectFromer implements Fromer {
                         continue;
                     }
 
-                    if(cfg.hasFeature(Feature.ArrayNullAsEmpty) && Collection.class.isAssignableFrom(f.type)){
-                        rst.setNode(f.getName(),new ONode(cfg).asArray());
+                    if (cfg.hasFeature(Feature.ArrayNullAsEmpty)) {
+                        if (Collection.class.isAssignableFrom(f.type) || f.type.isArray()) {
+                            rst.setNode(f.getName(), new ONode(cfg).asArray());
+                        }
                     }
 
                     //null是否输出
