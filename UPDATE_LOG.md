@@ -1,6 +1,6 @@
 #### 3.2.51
 * 增加特性 BooleanNullAsFalse, NumberNullAsZero, ArrayNullAsEmpty
-* 默认 features_def，不再包括 StringNullAsEmpty
+* 默认 features_def，不再包括 StringNullAsEmpty（旧的作用，也就只有 OValue::getString 上）
 
 #### 3.2.50
 * ONode 在分析 date str 时，增加 trim() 处理
