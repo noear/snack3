@@ -295,11 +295,9 @@ public class ObjectFromer implements Fromer {
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.NumberNullAsZero) && f.type == Number.class) {
+                    if (cfg.hasFeature(Feature.NumberNullAsZero) && Number.class.isAssignableFrom(f.type)) {
                         if (f.type == Long.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0L));
-                        } else if (f.type == Integer.class) {
-                            rst.setNode(f.getName(), analyse(cfg, 0));
                         } else if (f.type == Double.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0.0D));
                         } else if (f.type == Float.class) {
