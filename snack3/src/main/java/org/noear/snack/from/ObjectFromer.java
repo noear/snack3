@@ -310,7 +310,7 @@ public class ObjectFromer implements Fromer {
                         continue;
                     }
 
-                    if(cfg.hasFeature(Feature.ListNullAsEmpty) && List.class.isAssignableFrom(f.type)){
+                    if(cfg.hasFeature(Feature.ArrayNullAsEmpty) && Collection.class.isAssignableFrom(f.type)){
                         rst.setNode(f.getName(),new ONode(cfg).asArray());
                     }
 

@@ -50,7 +50,7 @@ public enum  Feature {
     BooleanNullAsFalse,
     /** 存储 or 输出:数字Null时输出为空(get时用) */
     NumberNullAsZero,
-    ListNullAsEmpty,
+    ArrayNullAsEmpty,
 
     /** 存储 or 输出:字符串字段初始化为空（返序列化时） */
     StringFieldInitEmpty,

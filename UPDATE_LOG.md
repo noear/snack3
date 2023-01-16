@@ -1,5 +1,5 @@
 #### 3.2.51
-* 增加特性 BooleanNullAsFalse, NumberNullAsZero, ListNullAsEmpty
+* 增加特性 BooleanNullAsFalse, NumberNullAsZero, ArrayNullAsEmpty
 * 默认 features_def，不再包括 StringNullAsEmpty
 
 #### 3.2.50
