@@ -311,6 +311,7 @@ public class ObjectFromer implements Fromer {
                     if (cfg.hasFeature(Feature.ArrayNullAsEmpty)) {
                         if (Collection.class.isAssignableFrom(f.type) || f.type.isArray()) {
                             rst.setNode(f.getName(), new ONode(cfg).asArray());
+                            continue;
                         }
                     }
 
