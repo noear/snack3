@@ -1,5 +1,6 @@
 #### 3.2.52
 * 增加 SerializeNulls 对 Map/nullValue 的控制（之前默认认输出）
+* 增加 SerializeMapNullValues 特性
 
 #### 3.2.51
 * 增加特性 BooleanNullAsFalse, NumberNullAsZero, ArrayNullAsEmpty

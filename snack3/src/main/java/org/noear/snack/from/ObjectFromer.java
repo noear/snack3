@@ -115,7 +115,8 @@ public class ObjectFromer implements Fromer {
                 if (k != null) {
                     Object v = map.get(k);
                     if (v == null) {
-                        if (opt.hasFeature(Feature.SerializeNulls) == false) {
+                        if (opt.hasFeature(Feature.SerializeNulls) == false
+                                && opt.hasFeature(Feature.SerializeMapNullValues) == false) {
                             continue;
                         }
                     }

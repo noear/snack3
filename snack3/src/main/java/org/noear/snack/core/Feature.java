@@ -58,6 +58,9 @@ public enum  Feature {
     /** 输出：序列化Null */
     SerializeNulls,
 
+    /** 输出：序列化Map/Null val */
+    SerializeMapNullValues,
+
     /** 输出：使用单引号输出 */
     UseSingleQuotes,
     /**
