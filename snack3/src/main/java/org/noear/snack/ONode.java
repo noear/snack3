@@ -508,11 +508,21 @@ public class ONode {
     }
 
     public ONode getOrNew(String key) {
+        return getOrNew(key, ONodeType.Null);
+    }
+
+    public ONode getOrNew(String key, ONodeType newNodeType) {
         _d.tryInitObject();
 
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
             tmp = new ONode(_o);
+            if (newNodeType == ONodeType.Object) {
+                tmp.asObject();
+            } else if (newNodeType == ONodeType.Array) {
+                tmp.asArray();
+            }
+
             _d.object.put(key, tmp);
         }
 
@@ -673,17 +683,28 @@ public class ONode {
     }
 
     public ONode getOrNew(int index) {
+        return getOrNew(index, ONodeType.Null);
+    }
+
+    public ONode getOrNew(int index, ONodeType newNodeType) {
         _d.tryInitArray();
 
         if (_d.array.size() > index) {
             return _d.array.get(index);
         } else {
-            ONode n = null;
+            ONode tmp = null;
             for (int i = _d.array.size(); i <= index; i++) {
-                n = new ONode(_o);
-                _d.array.add(n);
+                tmp = new ONode(_o);
+
+                if (newNodeType == ONodeType.Object) {
+                    tmp.asObject();
+                } else if (newNodeType == ONodeType.Array) {
+                    tmp.asArray();
+                }
+
+                _d.array.add(tmp);
             }
-            return n;
+            return tmp;
         }
     }
 

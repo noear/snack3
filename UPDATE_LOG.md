@@ -1,3 +1,7 @@
+#### 3.2.53
+* 增加 getOrNew(int index, ONodeType newNodeType) 接口
+* 增加 getOrNew(String key, ONodeType newNodeType) 接口
+
 #### 3.2.52
 * 增加 SerializeNulls 对 Map/nullValue 的控制（之前默认认输出）
 * 增加 SerializeMapNullValues 特性
