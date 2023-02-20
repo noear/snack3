@@ -1,5 +1,5 @@
 #### 3.2.54
-
+* 增加 kotlin data 类支持
 
 #### 3.2.53
 * 增加 getOrNew(int index, ONodeType newNodeType) 接口
