@@ -1,9 +1,8 @@
 package org.noear.snack.core.exts;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
+import org.noear.snack.ONode;
+
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,14 +57,17 @@ public class ClassWrap {
 
         //支持 kotlin data 类型
         Constructor<?>[] constructors = clz.getConstructors();
-        if (constructors.length == 1 && constructors[0].getParameterCount() > 0) {
-            _recordable = true;
-        }
 
         if (_recordable) {
             //如果合字段只读
             _recordConstructor = constructors[0];
             _recordParams = _recordConstructor.getParameters();
+        }else{
+            if (constructors.length == 1 && constructors[0].getParameterCount() > 0) {
+                //如果合字段只读
+                _recordConstructor = constructors[0];
+                _recordParams = _recordConstructor.getParameters();
+            }
         }
     }
 

@@ -477,11 +477,35 @@ public class ObjectToer implements Toer {
             try {
                 rst = clzWrap.recordConstructor().newInstance(argsV);
             }catch (IllegalArgumentException e){
-                throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName());
+                throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName(), e);
             }
         } else {
             if (rst == null) {
-                rst = BeanUtil.newInstance(clz);
+                if(clzWrap.recordConstructor() == null) {
+                    rst = BeanUtil.newInstance(clz);
+                }else{
+                    //只有带参数的构造函（像 kotlin data）
+                    Parameter[] argsP = clzWrap.recordParams();
+                    Object[] argsV = new Object[argsP.length];
+
+                    for (int j = 0; j < argsP.length; j++) {
+                        Parameter f = argsP[j];
+                        String fieldK = f.getName();
+                        if (o.contains(fieldK)) {
+                            Class fieldT = f.getType();
+                            Type fieldGt = f.getParameterizedType();
+
+                            Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, null, genericInfo);
+                            argsV[j] = val;
+                        }
+                    }
+
+                    try {
+                        rst = clzWrap.recordConstructor().newInstance(argsV);
+                    }catch (IllegalArgumentException e){
+                        throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName(), e);
+                    }
+                }
             }
 
             if (rst == null) {
