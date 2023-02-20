@@ -474,7 +474,11 @@ public class ObjectToer implements Toer {
                 }
             }
 
-            rst = clzWrap.recordConstructor().newInstance(argsV);
+            try {
+                rst = clzWrap.recordConstructor().newInstance(argsV);
+            }catch (IllegalArgumentException e){
+                throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName());
+            }
         } else {
             if (rst == null) {
                 rst = BeanUtil.newInstance(clz);

@@ -56,9 +56,15 @@ public class ClassWrap {
             _recordable = false;
         }
 
+        //支持 kotlin data 类型
+        Constructor<?>[] constructors = clz.getConstructors();
+        if (constructors.length == 1 && constructors[0].getParameterCount() > 0) {
+            _recordable = true;
+        }
+
         if (_recordable) {
             //如果合字段只读
-            _recordConstructor = clz.getConstructors()[0];
+            _recordConstructor = constructors[0];
             _recordParams = _recordConstructor.getParameters();
         }
     }
