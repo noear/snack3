@@ -209,6 +209,10 @@ public class Options {
 
     private ClassLoader classLoader;
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

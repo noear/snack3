@@ -92,6 +92,12 @@ public class Context {
     private void initType(Type type, Class<?> clz) {
         target_type = type;
         target_clz = clz;
+
+        if (clz != null && clz != Object.class) {
+            if (options.getClassLoader() == null) {
+                options.setClassLoader(clz.getClassLoader());
+            }
+        }
     }
 
     /**
