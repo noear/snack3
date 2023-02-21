@@ -221,14 +221,14 @@ public class ObjectToer implements Toer {
         } else if (clz.isEnum()) {
             return analyseEnum(ctx, d, clz);
         } else if (is(Class.class, clz)) {
-            return BeanUtil.loadClass(v.getString());
+            return ctx.options.loadClass(v.getString());
         } else if (is(Object.class, clz)) {
             Object val = v.getRaw();
 
             if (val instanceof String) {
                 //如果是 String，且 isInterface 或 isAbstract
                 if (clz.isInterface() || Modifier.isAbstract(clz.getModifiers())) {
-                    Class<?> valClz = BeanUtil.loadClass((String) val);
+                    Class<?> valClz = ctx.options.loadClass((String) val);
 
                     if (valClz == null) {
                         return null;
@@ -627,7 +627,7 @@ public class ObjectToer implements Toer {
         }
 
         if (StringUtil.isEmpty(typeStr) == false) {
-            Class<?> clz = BeanUtil.loadClass(typeStr);
+            Class<?> clz = ctx.options.loadClass(typeStr);
             if (clz == null) {
                 throw new SnackException("unsupport type " + typeStr);
             } else {

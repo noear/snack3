@@ -12,8 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 public class BeanUtil {
 
-    public static final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
+    private static final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
 
+    /**
+     * @deprecated 3.2.55
+     * */
+    @Deprecated
     public static Class<?> loadClass(String clzName) {
         if (StringUtil.isEmpty(clzName)) {
             return null;

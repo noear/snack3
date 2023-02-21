@@ -1,6 +1,10 @@
 package org.noear.snack.core;
 
+import org.noear.snack.core.utils.StringUtil;
+import org.noear.snack.exception.SnackException;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -203,4 +207,36 @@ public class Options {
         this.timeZone = timeZone;
     }
 
+    private ClassLoader classLoader;
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    private final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
+
+    public  Class<?> loadClass( String clzName) {
+        if (StringUtil.isEmpty(clzName)) {
+            return null;
+        }
+
+        try {
+            Class<?> clz = clzCached.get(clzName);
+            if (clz == null) {
+                if(classLoader == null) {
+                    clz = Class.forName(clzName);
+                }else{
+                    clz = classLoader.loadClass(clzName);
+                }
+
+                clzCached.put(clzName, clz);
+            }
+
+            return clz;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SnackException("Failed to load class: " + clzName, e);
+        }
+    }
 }
