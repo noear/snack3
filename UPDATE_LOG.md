@@ -1,3 +1,7 @@
+#### 3.2.56
+* 增加 ClassLoader 自动指定能力
+* 增加 @NodeAttr 对 LocalTime,LocalDate,LocalDateTime 有效
+
 #### 3.2.55
 * 增加指定 ClassLoader 支持
 

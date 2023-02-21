@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -341,6 +342,24 @@ public class ObjectFromer implements Fromer {
             if (StringUtil.isEmpty(f.getFormat()) == false) {
                 if (val instanceof Date) {
                     String val2 = DateUtil.format((Date) val, f.getFormat());
+                    rst.set(f.getName(), val2);
+                    continue;
+                }
+
+                if (val instanceof LocalDateTime) {
+                    String val2 = ((LocalDateTime) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
+                    rst.set(f.getName(), val2);
+                    continue;
+                }
+
+                if (val instanceof LocalDate) {
+                    String val2 = ((LocalDate) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
+                    rst.set(f.getName(), val2);
+                    continue;
+                }
+
+                if (val instanceof LocalTime) {
+                    String val2 = ((LocalTime) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
                     rst.set(f.getName(), val2);
                     continue;
                 }
