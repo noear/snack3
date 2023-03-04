@@ -1,3 +1,6 @@
+#### 3.2.57
+* 增加 selectOrNew() 接口;//只支持简单索引查询时orNew，不支持条件表达式和函数
+
 #### 3.2.56
 * 增加 ClassLoader 自动指定能力
 * 增加 @NodeAttr 对 LocalTime,LocalDate,LocalDateTime 有效

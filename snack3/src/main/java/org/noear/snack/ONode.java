@@ -87,6 +87,15 @@ public class ONode {
     }
 
     /**
+     * Json path select or new（Conditional lookup and functions are not supported）
+     *
+     * @param jpath json path express
+     */
+    public ONode selectOrNew(String jpath){
+        return JsonPath.eval(this, jpath, false, true, true);
+    }
+
+    /**
      * Json path exists
      *
      * @param jpath json path express

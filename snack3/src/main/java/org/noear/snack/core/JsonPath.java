@@ -23,11 +23,15 @@ public class JsonPath {
     private static Map<String,JsonPath> _jpathCache = new HashMap<>(128);
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath) {
-        tlCache.get().clear();
-        return do_get(source, jpath, cacheJpath, useStandard);
+        return eval(source, jpath, useStandard, cacheJpath, false);
     }
 
-    private static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard) {
+    public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath, boolean getOrNew) {
+        tlCache.get().clear();
+        return do_get(source, jpath, cacheJpath, useStandard, getOrNew);
+    }
+
+    private static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard, boolean getOrNew) {
         //解析出指令
         JsonPath jsonPath = null;
         if (cacheJpath) {
@@ -49,7 +53,7 @@ public class JsonPath {
 
 
         //执行指令
-        return exec(jsonPath, source, useStandard);
+        return exec(jsonPath, source, useStandard, getOrNew);
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
@@ -142,7 +146,7 @@ public class JsonPath {
     /**
      * 执行jpath指令
      * */
-    private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard) {
+    private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard, boolean getOrNew) {
         ONode tmp = source;
         boolean branch_do = false;
         for (Segment s : jsonPath.segments) {
@@ -154,7 +158,7 @@ public class JsonPath {
                 ONode tmp2 = new ONode(source.options()).asArray();
 
                 Consumer<ONode> act1 = (n1) -> {
-                    ONode n2 = s.handler.run(s, source, n1, useStandard);
+                    ONode n2 = s.handler.run(s, source, n1, useStandard, getOrNew);
                     if (n2 != null) {
                         if (s.cmdAry != null) {
                             if (n2.isArray()) {
@@ -176,7 +180,7 @@ public class JsonPath {
                     branch_do = false;
                 }
             } else {
-                tmp = s.handler.run(s, source, tmp, useStandard);
+                tmp = s.handler.run(s, source, tmp, useStandard, getOrNew);
                 branch_do = s.cmdHasUnline;
             }
         }
@@ -234,7 +238,7 @@ public class JsonPath {
     /*
     * ?(left op right)
     * */
-    private static boolean compare(ONode root, ONode parent, ONode leftO, String op, String right, boolean useStandard) {
+    private static boolean compare(ONode root, ONode parent, ONode leftO, String op, String right, boolean useStandard, boolean getOrNew) {
         if (leftO == null) {
             return false;
         }
@@ -250,13 +254,13 @@ public class JsonPath {
             //全局描扫的数据，进行缓存
             rightO = tlCache.get().get(right);
             if (rightO == null) {
-                rightO = do_get(root, right, true, useStandard);
+                rightO = do_get(root, right, true, useStandard, getOrNew);
                 tlCache.get().put(right, rightO);
             }
         }
 
         if(right.startsWith("@")){
-            rightO = do_get(parent,right,true, useStandard);
+            rightO = do_get(parent,right,true, useStandard, getOrNew);
         }
 
         if(rightO != null) {
@@ -414,8 +418,8 @@ public class JsonPath {
         return p;
     }
 
-    private static Resolver handler_$=(s, root, tmp, usd)->{ return tmp;};
-    private static Resolver handler_xx=(s, root, tmp, usd)-> {
+    private static Resolver handler_$=(s, root, tmp, usd, orNew)->{ return tmp;};
+    private static Resolver handler_xx=(s, root, tmp, usd, orNew)-> {
 
         if (s.name.length() > 0) {
             ONode tmp2 = new ONode(root.options()).asArray();
@@ -433,7 +437,7 @@ public class JsonPath {
         return null;
     };
 
-    private static Resolver handler_x=(s, root, tmp, usd)->{
+    private static Resolver handler_x=(s, root, tmp, usd, orNew)->{
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
@@ -448,31 +452,43 @@ public class JsonPath {
 
         return tmp2;
     };
-    private static Resolver handler_prop=(s, root, tmp, usd)->{
+    private static Resolver handler_prop=(s, root, tmp, usd, orNew)->{
         //.name 指令
         //
         //name
         if (tmp.isObject()) {
-            return tmp.getOrNull(s.cmd);
+            if(orNew){
+                return tmp.getOrNew(s.cmd);
+            }else {
+                return tmp.getOrNull(s.cmd);
+            }
         }
 
         if (tmp.isArray()) {
             ONode tmp2 =  new ONode(tmp.options()).asArray();
             for (ONode n1 : tmp.ary()) {
                 if (n1.isObject()) {
-                    ONode n2 = n1.nodeData().object.get(s.cmd);
-                    if (n2 != null) {
-                        tmp2.add(n2);
+                    if(orNew){
+                        tmp2.add(n1.getOrNew(s.cmd));
+                    }else {
+                        ONode n2 = n1.nodeData().object.get(s.cmd);
+                        if (n2 != null) {
+                            tmp2.add(n2);
+                        }
                     }
                 }
             }
             return tmp2;
         }
 
+        if(orNew && tmp.isNull()){
+            return tmp.getOrNew(s.cmd);
+        }
+
         return null;
     };
 
-    private static Resolver handler_fun=(s, root, tmp, usd)->{
+    private static Resolver handler_fun=(s, root, tmp, usd, orNew)->{
         switch (s.cmd) {
             case "size()":{
                 return new ONode(tmp.options()).val(tmp.count());
@@ -564,7 +580,7 @@ public class JsonPath {
         }
     };
 
-    private static Resolver handler_ary_x=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_x=(s, root, tmp, usd, orNew)->{
         ONode tmp2 = null;
         if (tmp.isArray()) {
             tmp2 = tmp;
@@ -578,17 +594,17 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_exp=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_exp=(s, root, tmp, usd, orNew)->{
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
-                if(do_get(tmp,s.left,true, usd).isNull()){
+                if(do_get(tmp,s.left,true, usd, orNew).isNull()){
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
-                    if(do_get(n1,s.left,true, usd).isNull() == false){
+                    if(do_get(n1,s.left,true, usd, orNew).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
                 }
@@ -599,30 +615,30 @@ public class JsonPath {
                     return null;
                 }
 
-                ONode leftO = do_get(tmp,s.left,true, usd);
-                if (compare(root, tmp, leftO, s.op, s.right, usd) == false) {
+                ONode leftO = do_get(tmp,s.left,true, usd, orNew);
+                if (compare(root, tmp, leftO, s.op, s.right, usd, orNew) == false) {
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.options()).asArray();
                 if("@".equals(s.left)){
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(root, n1, n1, s.op, s.right, usd)) {
+                        if (compare(root, n1, n1, s.op, s.right, usd, orNew)) {
                             tmp2.addNode(n1);
                         }
                     }
                 }else {
                     for (ONode n1 : tmp.ary()) {
-                        ONode leftO = do_get(n1,s.left,true, usd);
+                        ONode leftO = do_get(n1,s.left,true, usd, orNew);
 
-                        if (compare(root, n1, leftO, s.op, s.right, usd)) {
+                        if (compare(root, n1, leftO, s.op, s.right, usd, orNew)) {
                             tmp2.addNode(n1);
                         }
                     }
                 }
             } else if(tmp.isValue()){
                 if("@".equals(s.left)){
-                    if (compare(root, tmp, tmp, s.op, s.right, usd) == false) {
+                    if (compare(root, tmp, tmp, s.op, s.right, usd, orNew) == false) {
                         return null;
                     }
                 }
@@ -632,14 +648,14 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_ref=(s, root, tmp, usd)-> {
+    private static Resolver handler_ary_ref=(s, root, tmp, usd, orNew)-> {
         ONode tmp2 = null;
 
         if(tmp.isObject()) {
             if (s.cmdAry.startsWith("$")) {
-                tmp2 = do_get(root, s.cmdAry, true, usd);
+                tmp2 = do_get(root, s.cmdAry, true, usd, orNew);
             } else {
-                tmp2 = do_get(tmp, s.cmdAry, true, usd);
+                tmp2 = do_get(tmp, s.cmdAry, true, usd, orNew);
             }
 
             if (tmp2.isValue()) {
@@ -652,7 +668,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_multi=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_multi=(s, root, tmp, usd, orNew)->{
         ONode tmp2 = null;
 
         if(s.cmdAry.indexOf("'")>=0){
@@ -704,7 +720,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_range=(s, root, tmp, usd)->{
+    private static Resolver handler_ary_range=(s, root, tmp, usd, orNew)->{
         if (tmp.isArray()) {
             int count = tmp.count();
             int start = s.start;
@@ -735,7 +751,7 @@ public class JsonPath {
         }
     };
 
-    private static Resolver handler_ary_prop=(s, root, tmp, usd)-> {
+    private static Resolver handler_ary_prop=(s, root, tmp, usd, orNew)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
             if(tmp.isObject()) {
@@ -759,16 +775,24 @@ public class JsonPath {
             return null;
         } else {
             if (s.start < 0) {
-                return tmp.getOrNull(tmp.count() + s.start);//倒数位
+                if(orNew){
+                    return tmp.getOrNew(tmp.count() + s.start);//倒数位
+                }else {
+                    return tmp.getOrNull(tmp.count() + s.start);//倒数位
+                }
             } else {
-                return tmp.getOrNull(s.start);//正数位
+                if (orNew) {
+                    return tmp.getOrNew(s.start);
+                } else {
+                    return tmp.getOrNull(s.start);//正数位
+                }
             }
         }
     };
 
     @FunctionalInterface
     private interface Resolver {
-        ONode run(Segment s, ONode root, ONode tmp, Boolean usd);
+        ONode run(Segment s, ONode root, ONode tmp, Boolean usd, Boolean orNew);
     }
 
 
