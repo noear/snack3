@@ -8,7 +8,6 @@ import org.noear.snack.core.exts.ThData;
 import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.core.utils.IOUtil;
 import org.noear.snack.core.utils.TypeUtil;
-import org.noear.snack.core.Options;
 import org.noear.snack.core.Context;
 
 import java.math.BigDecimal;
@@ -37,7 +36,7 @@ public class JsonToer implements Toer {
                 sb.setLength(0);
             }
 
-            ctx.beautiful = ctx.options.hasFeature(Feature.Beautiful);
+            ctx.pretty = ctx.options.hasFeature(Feature.PrettyFormat);
             analyse(ctx, o, sb);
 
             ctx.target = sb.toString();
@@ -70,15 +69,15 @@ public class JsonToer implements Toer {
 
     private void writeArray(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("[");
-        if (ctx.beautiful) {
+        if (ctx.pretty) {
             ctx.depth++;
         }
 
         Iterator<ONode> iterator = d.array.iterator();
         while (iterator.hasNext()) {
-            if (ctx.beautiful) {
+            if (ctx.pretty) {
                 sBuf.append("\n");
-                writeDepth(ctx, sBuf);
+                printDepth(ctx, sBuf);
             }
 
             ONode sub = iterator.next();
@@ -88,17 +87,17 @@ public class JsonToer implements Toer {
             }
         }
 
-        if (ctx.beautiful) {
+        if (ctx.pretty) {
             sBuf.append("\n");
             ctx.depth--;
-            writeDepth(ctx, sBuf);
+            printDepth(ctx, sBuf);
         }
         sBuf.append("]");
     }
 
     private void writeObject(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("{");
-        if (ctx.beautiful) {
+        if (ctx.pretty) {
             ctx.depth++;
         }
 
@@ -107,15 +106,15 @@ public class JsonToer implements Toer {
         while (itr.hasNext()) {
             String k = itr.next();
 
-            if(ctx.beautiful) {
+            if(ctx.pretty) {
                 sBuf.append("\n");
-                writeDepth(ctx, sBuf);
+                printDepth(ctx, sBuf);
             }
 
             writeName(ctx, sBuf, k);
             sBuf.append(":");
 
-            if(ctx.beautiful){
+            if(ctx.pretty){
                 sBuf.append(" ");
             }
 
@@ -125,17 +124,17 @@ public class JsonToer implements Toer {
             }
         }
 
-        if (ctx.beautiful) {
+        if (ctx.pretty) {
             sBuf.append("\n");
             ctx.depth--;
-            writeDepth(ctx, sBuf);
+            printDepth(ctx, sBuf);
         }
 
         sBuf.append("}");
     }
 
-    private void writeDepth(Context ctx, StringBuilder sBuf) {
-        if (ctx.depth > 0 && ctx.beautiful) {
+    private void printDepth(Context ctx, StringBuilder sBuf) {
+        if (ctx.depth > 0) {
             for (int i = 0; i < ctx.depth; i++) {
                 sBuf.append("  ");
             }

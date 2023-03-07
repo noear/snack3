@@ -24,7 +24,10 @@ public class Context {
      * 深度
      * */
     public int depth = 0;
-    public boolean beautiful=false;
+    /**
+     * 漂视的
+     * */
+    public boolean pretty =false;
 
     /**
      * 目标
