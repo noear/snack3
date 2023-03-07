@@ -73,6 +73,7 @@ public class JsonTest {
         c.source = c.target;
         new JsonToer().handle(c);
 
+        System.out.println(c.target);
         assert "{\"a\":\"b\",\"c\":{\"d\":\"e\"},\"f\":{\"g\":\"h\"},\"i\":[{\"j\":\"k\",\"l\":\"m\"},\"n\"]}".equals(c.target);
     }
 

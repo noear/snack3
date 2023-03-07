@@ -1,6 +1,7 @@
 package _models;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 2019.01.30
@@ -9,9 +10,11 @@ import java.util.Date;
  */
 public class OrderModel {
     public UserModel user;
+    public List userList;
     public String order_num;
     public int order_id;
     public Date order_time;
+    public List orderList;
 
     @Override
     public String toString() {

@@ -21,6 +21,12 @@ public class Context {
     public Object source;
 
     /**
+     * 深度
+     * */
+    public int depth = 0;
+    public boolean beautiful=false;
+
+    /**
      * 目标
      */
     public Object target;

@@ -2,7 +2,6 @@ package features;
 
 import org.junit.Test;
 import org.noear.snack.ONode;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * @author noear 2021/5/20 created

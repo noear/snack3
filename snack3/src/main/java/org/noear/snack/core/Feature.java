@@ -76,6 +76,8 @@ public enum  Feature {
 
     /** 读取 Double 使用 BigDecimal */
     StringDoubleToDecimal,
+    /** 美观 */
+    Beautiful,
     ;
 
     Feature(){

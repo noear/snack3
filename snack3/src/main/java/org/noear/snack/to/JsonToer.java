@@ -37,29 +37,29 @@ public class JsonToer implements Toer {
                 sb.setLength(0);
             }
 
-
-            analyse(ctx.options, o, sb);
+            ctx.beautiful = ctx.options.hasFeature(Feature.Beautiful);
+            analyse(ctx, o, sb);
 
             ctx.target = sb.toString();
         }
     }
 
-    public void analyse(Options opts, ONode o, StringBuilder sb) {
+    public void analyse(Context ctx, ONode o, StringBuilder sb) {
         if (o == null) {
             return;
         }
 
         switch (o.nodeType()) {
             case Value:
-                writeValue(opts, sb, o.nodeData());
+                writeValue(ctx, sb, o.nodeData());
                 break;
 
             case Array:
-                writeArray(opts, sb, o.nodeData());
+                writeArray(ctx, sb, o.nodeData());
                 break;
 
             case Object:
-                writeObject(opts, sb, o.nodeData());
+                writeObject(ctx, sb, o.nodeData());
                 break;
 
             default:
@@ -68,35 +68,81 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeArray(Options opts, StringBuilder sBuf, ONodeData d) {
+    private void writeArray(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("[");
+        if (ctx.beautiful) {
+            ctx.depth++;
+        }
+
         Iterator<ONode> iterator = d.array.iterator();
         while (iterator.hasNext()) {
+            if (ctx.beautiful) {
+                sBuf.append("\n");
+                writeDepth(ctx, sBuf);
+            }
+
             ONode sub = iterator.next();
-            analyse(opts, sub, sBuf);
+            analyse(ctx, sub, sBuf);
             if (iterator.hasNext()) {
                 sBuf.append(",");
             }
         }
+
+        if (ctx.beautiful) {
+            sBuf.append("\n");
+            ctx.depth--;
+            writeDepth(ctx, sBuf);
+        }
         sBuf.append("]");
     }
 
-    private void writeObject(Options opts, StringBuilder sBuf, ONodeData d) {
+    private void writeObject(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("{");
+        if (ctx.beautiful) {
+            ctx.depth++;
+        }
+
+
         Iterator<String> itr = d.object.keySet().iterator();
         while (itr.hasNext()) {
             String k = itr.next();
-            writeName(opts, sBuf, k);
+
+            if(ctx.beautiful) {
+                sBuf.append("\n");
+                writeDepth(ctx, sBuf);
+            }
+
+            writeName(ctx, sBuf, k);
             sBuf.append(":");
-            analyse(opts, d.object.get(k), sBuf);
+
+            if(ctx.beautiful){
+                sBuf.append(" ");
+            }
+
+            analyse(ctx, d.object.get(k), sBuf);
             if (itr.hasNext()) {
                 sBuf.append(",");
             }
         }
+
+        if (ctx.beautiful) {
+            sBuf.append("\n");
+            ctx.depth--;
+            writeDepth(ctx, sBuf);
+        }
+
         sBuf.append("}");
     }
 
-    private void writeValue(Options opts, StringBuilder sBuf, ONodeData d) {
+    private void writeDepth(Context ctx, StringBuilder sBuf) {
+        if (ctx.depth > 0 && ctx.beautiful) {
+            for (int i = 0; i < ctx.depth; i++) {
+                sBuf.append("  ");
+            }
+        }
+    }
+
+    private void writeValue(Context ctx, StringBuilder sBuf, ONodeData d) {
         OValue v = d.value;
         switch (v.type()) {
             case Null:
@@ -104,19 +150,19 @@ public class JsonToer implements Toer {
                 break;
 
             case String:
-                writeValString(opts, sBuf, v.getRawString(), true);
+                writeValString(ctx, sBuf, v.getRawString(), true);
                 break;
 
             case DateTime:
-                writeValDate(opts, sBuf, v.getRawDate());
+                writeValDate(ctx, sBuf, v.getRawDate());
                 break;
 
             case Boolean:
-                writeValBool(opts, sBuf, v.getRawBoolean());
+                writeValBool(ctx, sBuf, v.getRawBoolean());
                 break;
 
             case Number:
-                writeValNumber(opts, sBuf, v.getRawNumber());
+                writeValNumber(ctx, sBuf, v.getRawNumber());
                 break;
 
             default:
@@ -125,53 +171,53 @@ public class JsonToer implements Toer {
         }
     }
 
-    private void writeName(Options opts, StringBuilder sBuf, String val) {
-        if (opts.hasFeature(Feature.QuoteFieldNames)) {
-            if (opts.hasFeature(Feature.UseSingleQuotes)) {
+    private void writeName(Context ctx, StringBuilder sBuf, String val) {
+        if (ctx.options.hasFeature(Feature.QuoteFieldNames)) {
+            if (ctx.options.hasFeature(Feature.UseSingleQuotes)) {
                 sBuf.append("'");
-                writeString(opts, sBuf, val, '\'');
+                writeString(ctx, sBuf, val, '\'');
                 sBuf.append("'");
             } else {
                 sBuf.append("\"");
-                writeString(opts, sBuf, val, '"');
+                writeString(ctx, sBuf, val, '"');
                 sBuf.append("\"");
             }
         } else {
-            writeString(opts, sBuf, val, '"');
+            writeString(ctx, sBuf, val, '"');
         }
     }
 
-    private void writeValDate(Options opts, StringBuilder sBuf, Date val) {
-        if (opts.hasFeature(Feature.WriteDateUseTicks)) {
+    private void writeValDate(Context ctx, StringBuilder sBuf, Date val) {
+        if (ctx.options.hasFeature(Feature.WriteDateUseTicks)) {
             sBuf.append(val.getTime());
-        } else if (opts.hasFeature(Feature.WriteDateUseFormat)) {
-            String valStr = DateUtil.format(val, opts.getDateFormat(), opts.getTimeZone());
-            writeValString(opts, sBuf, valStr, false);
+        } else if (ctx.options.hasFeature(Feature.WriteDateUseFormat)) {
+            String valStr = DateUtil.format(val, ctx.options.getDateFormat(), ctx.options.getTimeZone());
+            writeValString(ctx, sBuf, valStr, false);
         } else {
             sBuf.append("new Date(").append(val.getTime()).append(")");
         }
     }
 
-    private void writeValBool(Options opts, StringBuilder sBuf, Boolean val) {
-        if (opts.hasFeature(Feature.WriteBoolUse01)) {
+    private void writeValBool(Context ctx, StringBuilder sBuf, Boolean val) {
+        if (ctx.options.hasFeature(Feature.WriteBoolUse01)) {
             sBuf.append(val ? 1 : 0);
         } else {
             sBuf.append(val ? "true" : "false");
         }
     }
 
-    private void writeValNumber(Options opts, StringBuilder sBuf, Number val) {
+    private void writeValNumber(Context ctx, StringBuilder sBuf, Number val) {
 
         if (val instanceof BigInteger) {
             BigInteger v = (BigInteger) val;
             String sVal = v.toString();
 
-            if (opts.hasFeature(Feature.WriteNumberUseString)) {
-                writeValString(opts, sBuf, sVal, false);
+            if (ctx.options.hasFeature(Feature.WriteNumberUseString)) {
+                writeValString(ctx, sBuf, sVal, false);
             } else {
                 //数字太大时，可用string来表示；
-                if (sVal.length() > 16 && (v.compareTo(TypeUtil.INT_LOW) < 0 || v.compareTo(TypeUtil.INT_HIGH) > 0) && opts.hasFeature(Feature.BrowserCompatible)) {
-                    writeValString(opts, sBuf, sVal, false);
+                if (sVal.length() > 16 && (v.compareTo(TypeUtil.INT_LOW) < 0 || v.compareTo(TypeUtil.INT_HIGH) > 0) && ctx.options.hasFeature(Feature.BrowserCompatible)) {
+                    writeValString(ctx, sBuf, sVal, false);
                 } else {
                     sBuf.append(sVal);
                 }
@@ -183,12 +229,12 @@ public class JsonToer implements Toer {
             BigDecimal v = (BigDecimal) val;
             String sVal = v.toPlainString();
 
-            if (opts.hasFeature(Feature.WriteNumberUseString)) {
-                writeValString(opts, sBuf, sVal, false);
+            if (ctx.options.hasFeature(Feature.WriteNumberUseString)) {
+                writeValString(ctx, sBuf, sVal, false);
             } else {
                 //数字太大时，可用string来表示；
-                if (sVal.length() > 16 && (v.compareTo(TypeUtil.DEC_LOW) < 0 || v.compareTo(TypeUtil.DEC_HIGH) > 0) && opts.hasFeature(Feature.BrowserCompatible)) {
-                    writeValString(opts, sBuf, sVal, false);
+                if (sVal.length() > 16 && (v.compareTo(TypeUtil.DEC_LOW) < 0 || v.compareTo(TypeUtil.DEC_HIGH) > 0) && ctx.options.hasFeature(Feature.BrowserCompatible)) {
+                    writeValString(ctx, sBuf, sVal, false);
                 } else {
                     sBuf.append(sVal);
                 }
@@ -196,8 +242,8 @@ public class JsonToer implements Toer {
             return;
         }
 
-        if (opts.hasFeature(Feature.WriteNumberUseString)) {
-            writeValString(opts, sBuf, val.toString(), false);
+        if (ctx.options.hasFeature(Feature.WriteNumberUseString)) {
+            writeValString(ctx, sBuf, val.toString(), false);
         } else {
             sBuf.append(val.toString());
         }
@@ -206,16 +252,16 @@ public class JsonToer implements Toer {
     /**
      * @param isStr 是否为真实字符串
      */
-    private void writeValString(Options opts, StringBuilder sBuf, String val, boolean isStr) {
+    private void writeValString(Context ctx, StringBuilder sBuf, String val, boolean isStr) {
         //引号开始
-        boolean useSingleQuotes = opts.hasFeature(Feature.UseSingleQuotes);
+        boolean useSingleQuotes = ctx.options.hasFeature(Feature.UseSingleQuotes);
         char quote = (useSingleQuotes ? '\'' : '\"');
         sBuf.append(quote);
 
 
         //内容
         if (isStr) {
-            writeString(opts,sBuf,val, quote);
+            writeString(ctx,sBuf,val, quote);
         } else {
             //非字符串直接添加
             sBuf.append(val);
@@ -225,10 +271,10 @@ public class JsonToer implements Toer {
         sBuf.append(quote);
     }
 
-    private void writeString(Options opts, StringBuilder sBuf, String val, char quote) {
-        boolean isCompatible = opts.hasFeature(Feature.BrowserCompatible);
-        boolean isSecure = opts.hasFeature(Feature.BrowserSecure);
-        boolean isTransfer = opts.hasFeature(Feature.TransferCompatible);
+    private void writeString(Context ctx, StringBuilder sBuf, String val, char quote) {
+        boolean isCompatible = ctx.options.hasFeature(Feature.BrowserCompatible);
+        boolean isSecure = ctx.options.hasFeature(Feature.BrowserSecure);
+        boolean isTransfer = ctx.options.hasFeature(Feature.TransferCompatible);
 
         for (int i = 0, len = val.length(); i < len; i++) {
             char c = val.charAt(i);
