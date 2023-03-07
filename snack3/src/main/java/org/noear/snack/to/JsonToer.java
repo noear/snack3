@@ -69,65 +69,73 @@ public class JsonToer implements Toer {
 
     private void writeArray(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("[");
-        if (ctx.pretty) {
-            ctx.depth++;
-        }
 
-        Iterator<ONode> iterator = d.array.iterator();
-        while (iterator.hasNext()) {
+        if(d.array.size() > 0) {
+            //如果有成员？
+            if (ctx.pretty) {
+                ctx.depth++;
+            }
+
+            Iterator<ONode> iterator = d.array.iterator();
+            while (iterator.hasNext()) {
+                if (ctx.pretty) {
+                    sBuf.append("\n");
+                    printDepth(ctx, sBuf);
+                }
+
+                ONode sub = iterator.next();
+                analyse(ctx, sub, sBuf);
+                if (iterator.hasNext()) {
+                    sBuf.append(",");
+                }
+            }
+
             if (ctx.pretty) {
                 sBuf.append("\n");
+                ctx.depth--;
                 printDepth(ctx, sBuf);
             }
-
-            ONode sub = iterator.next();
-            analyse(ctx, sub, sBuf);
-            if (iterator.hasNext()) {
-                sBuf.append(",");
-            }
         }
 
-        if (ctx.pretty) {
-            sBuf.append("\n");
-            ctx.depth--;
-            printDepth(ctx, sBuf);
-        }
         sBuf.append("]");
     }
 
     private void writeObject(Context ctx, StringBuilder sBuf, ONodeData d) {
         sBuf.append("{");
-        if (ctx.pretty) {
-            ctx.depth++;
-        }
 
+        if(d.object.size() > 0) {
+            //如果有成员
+            if (ctx.pretty) {
+                ctx.depth++;
+            }
 
-        Iterator<String> itr = d.object.keySet().iterator();
-        while (itr.hasNext()) {
-            String k = itr.next();
+            Iterator<String> itr = d.object.keySet().iterator();
+            while (itr.hasNext()) {
+                String k = itr.next();
 
-            if(ctx.pretty) {
+                if (ctx.pretty) {
+                    sBuf.append("\n");
+                    printDepth(ctx, sBuf);
+                }
+
+                writeName(ctx, sBuf, k);
+                sBuf.append(":");
+
+                if (ctx.pretty) {
+                    sBuf.append(" ");
+                }
+
+                analyse(ctx, d.object.get(k), sBuf);
+                if (itr.hasNext()) {
+                    sBuf.append(",");
+                }
+            }
+
+            if (ctx.pretty) {
                 sBuf.append("\n");
+                ctx.depth--;
                 printDepth(ctx, sBuf);
             }
-
-            writeName(ctx, sBuf, k);
-            sBuf.append(":");
-
-            if(ctx.pretty){
-                sBuf.append(" ");
-            }
-
-            analyse(ctx, d.object.get(k), sBuf);
-            if (itr.hasNext()) {
-                sBuf.append(",");
-            }
-        }
-
-        if (ctx.pretty) {
-            sBuf.append("\n");
-            ctx.depth--;
-            printDepth(ctx, sBuf);
         }
 
         sBuf.append("}");
