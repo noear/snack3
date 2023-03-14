@@ -31,6 +31,9 @@ public enum  Feature {
     /** 输出：数字用字符串 */
     WriteNumberUseString,
 
+    /** 解析：整型使用长整 */
+    ParseIntegerUseLong,
+
     /** 输出:浏览器安全处理（不输出<>） */
     BrowserSecure,
 

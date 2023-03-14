@@ -309,7 +309,7 @@ public class JsonFromer implements Fromer {
                         }
                     } else {
                         Long sval2 = Long.parseLong(sval);
-                        if (sval2 > Integer.MAX_VALUE) {
+                        if (sval2 > Integer.MAX_VALUE || ctx.options.hasFeature(Feature.ParseIntegerUseLong)) {
                             oval.setNumber(sval2);
                         } else {
                             oval.setNumber(sval2.intValue());
