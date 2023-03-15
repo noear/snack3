@@ -1,12 +1,10 @@
 package features;
 
-import _models.CModel;
-import _models.OrderModel;
-import _models.UserGroupModel;
-import _models.UserModel;
+import _models.*;
 import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
+import org.noear.solon.Utils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -251,5 +249,17 @@ public class SerializationTest {
 
         assert n instanceof Map;
         assert ((Map)n).size() == 3;
+    }
+
+    @Test
+    public void test7() throws Exception {
+        String json = Utils.getResourceAsString("ResultTree.json");
+        ResultTree rst = ONode.deserialize(json, ResultTree.class);
+
+        System.out.println(rst);
+        assert rst != null;
+
+        String json2 = ONode.stringify(rst);
+        assert json2 != null;
     }
 }
