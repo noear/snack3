@@ -41,10 +41,14 @@ public class ClassWrap {
     private Constructor _recordConstructor;
     private Parameter[] _recordParams;
 
+    private boolean _isMemberClass;
+
 
     protected ClassWrap(Class<?> clz) {
         _clz = clz;
         _recordable = true;
+
+        _isMemberClass = clz.isMemberClass();
 
         Map<String, FieldWrap> map = new LinkedHashMap<>();
         scanAllFields(clz, map::containsKey, map::put);
@@ -107,6 +111,11 @@ public class ClassWrap {
 
             if (!Modifier.isStatic(mod)
                     && !Modifier.isTransient(mod)) {
+
+                if(_isMemberClass && f.getName().equals("this$0")){
+                    continue;
+                }
+
                 if (checker.test(f.getName()) == false) {
                     _recordable &= Modifier.isFinal(mod);
                     consumer.accept(f.getName(), new FieldWrap(clz, f, Modifier.isFinal(mod)));
