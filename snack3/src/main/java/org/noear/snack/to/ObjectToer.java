@@ -49,6 +49,10 @@ public class ObjectToer implements Toer {
             }
         }
 
+        if(o.isNull()){
+            return null;
+        }
+
         //提前找到@type类型，便于自定义解码器定位
         if (o.isObject() || o.isArray()) {
             clz = getTypeByNode(ctx, o, clz);
