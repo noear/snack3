@@ -201,8 +201,8 @@ public static <T> T deserialize(String source, Class<?> clz) {
 }
 ```
 
-### 五、使用Snack3导出null值、格式化输出、日期时间
-一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Options。
+### 五、使用Snack3的Options和Feature
+一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Options 和 Feature。
 
 Options 从名字上看它是一个提供配置的类，要想改变ONode默认的设置必须使用该类进行配置。用法：　
 ```java
@@ -211,17 +211,33 @@ Options.def().add(..).sub(..)       //在默认配置基础上，添加或减少
 Options.serialize().add(..).sub(..) //在序列化配置基础上，添加或减少特性
 ```
 
-#### （1）Snack3在默认情况下是不动导出值null的键的，如：
+#### （1）例：Snack3在默认情况下是不动导出值null的键的
 ```java
 User user = new User("张三", 24);
 System.out.println(ONode.stringify(user)); //{"name":"张三","age":24}
 
-
+//使用 Options(支持高级定制)
 Options opts = Options.def().add(Feature.SerializeNulls); //导出null
 System.out.println(ONode.load(user, cfg).toJson()); //{"name":"张三","age":24,"emailAddress":null}
+
+//使用 Feature(快捷)
+System.out.println(ONode.load(user, Feature.SerializeNulls).toJson()); 
 ```
 
-#### （2）格式化输出、日期时间及其它（是用于输出的）：
+#### （2）例：自动解析 json 内的 json string
+
+```java
+String json = "{a:1,b:{l:'[{c:1},{c:2}]'}}";
+
+//使用 Options(支持高级定制)
+Options opts = Options.def().add(Feature.StringJsonToNode); //导出null
+System.out.println(ONode.load(json, cfg).toJson()); //{a:1,b:{l:[{c:1},{c:2}]}}
+
+//使用 Feature(快捷)
+System.out.println(ONode.load(user, Feature.StringJsonToNode).toJson()); 
+```
+
+#### （3）例：格式化输出、日期时间及其它（是用于输出的）
 ```java
 Date date = new Date();
 
