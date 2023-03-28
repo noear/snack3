@@ -2,7 +2,7 @@
 
 JSON 是一种文本形式的数据交换格式，从Ajax的时候开始流行，它比XML更轻量、比二进制容易阅读和编写；解析和生成的方式很多，Java中最常用的类库有：JSON-Java、Gson、Jackson、FastJson、Snack3等。
 
-Snack3 基于jdk8，60kb大小，非常小巧。
+Snack3 基于jdk8，80kb大小，非常小巧。
 
 ```xml
 <dependency>
