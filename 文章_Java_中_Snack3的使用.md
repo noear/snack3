@@ -1,5 +1,4 @@
 # Java 中 Snack3的使用
-> 网上看了一篇Java 中 Gson的使用，所以也跟着写篇Java 中 Snack3的使用
 
 JSON 是一种文本形式的数据交换格式，从Ajax的时候开始流行，它比XML更轻量、比二进制容易阅读和编写；解析和生成的方式很多，Java中最常用的类库有：JSON-Java、Gson、Jackson、FastJson、Snack3等。
 
@@ -70,7 +69,7 @@ User user = ONode.deserialize(json, User.class);//JSON反序列化
 
 ### 二、序列化事项补充说明
 
-从上面示例可以看出json的字段和值是的名称和类型是一一对应的，Snack3不支持直接改名称，但可以通过`transient`关键字进行排序，例：
+从上面示例可以看出json的字段和值是的名称和类型是一一对应的，Snack3不支持直接改名称，但可以通过`transient`关键字进行排除，例：
 ```java
 public class User {
     public String name;
@@ -96,8 +95,8 @@ Snack3在序列化和反序列化时需要使用反射，且只对字段进行�
 ###### 特性总结：
 
 * 只对字段进行序列化（包括私有）
-* 使用`transient` 对字段排序
-* 加载后可进行重命名字段
+* 使用`transient` 对字段排除
+* 加载后可进行修改（重命名，改值，删除）
 
 
 ### 三、Snack3中使用泛型
@@ -118,11 +117,11 @@ String[] strings = ONode.deserialize(jsonArray,String[].class);
 
 ```java
 String jsonArray = "[\"Android\",\"Java\",\"PHP\"]";
-ONode ary0 			  = ONode.load(jsonArray);
+ONode ary0 		  = ONode.load(jsonArray);
 List<String> ary1 = ONode.deserialize(jsonArray,(new ArrayList<String>(){}).getClass());
 List<String> ary2 = ONode.deserialize(jsonArray,(new TypeRef<List<String>>(){}).getClass());
 
-//(new ArrayList<String>(){}).getClass() 			//方式1，通过临时类形（最终都是产生Class）
+//(new ArrayList<String>(){}).getClass() 	    //方式1，通过临时类形（最终都是产生Class）
 //(new TypeRef<List<String>>(){}).getClass() 	//方式2，通过TypeRef（最终都是产生Class）
 ```
 
@@ -153,7 +152,7 @@ public class Result<T> {
 
 ### 四、Snack3的序列化与反序列化
 
-####（1）自动方式
+#### （1）自动方式
 Snack3提供了`serialize(obj)`和`deserialize(str,clz)` 前者实现序列化，后者实现了反序列化。
 ```java
 ONode.serialize(obj);       //序列化
