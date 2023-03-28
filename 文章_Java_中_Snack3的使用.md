@@ -1,4 +1,4 @@
-# Java 中 Snack3的使用
+# Java 中 Snack3 的使用
 
 JSON 是一种文本形式的数据交换格式，从Ajax的时候开始流行，它比XML更轻量、比二进制容易阅读和编写；解析和生成的方式很多，Java中最常用的类库有：JSON-Java、Gson、Jackson、FastJson、Snack3等。
 
@@ -19,7 +19,7 @@ Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 - 高性能`Json path`查询（兼容性和性能很赞）
 - 支持`序列化、反序列化`
 
-### 一、Snack3的基本用法
+### 一、Snack3 的基本用法
 
 `Snack3`提供了几个快捷函数：
 
@@ -99,7 +99,7 @@ Snack3在序列化和反序列化时需要使用反射，且只对字段进行�
 * 加载后可进行修改（重命名，改值，删除）
 
 
-### 三、Snack3中使用泛型
+### 三、Snack3 中使用泛型
 
 例如：JSON字符串数组：`["Android","Java","PHP"]`
 
@@ -150,7 +150,7 @@ public class Result<T> {
 } 
 ```
 
-### 四、Snack3的序列化与反序列化
+### 四、Snack3 的序列化与反序列化
 
 #### （1）自动方式
 Snack3提供了`serialize(obj)`和`deserialize(str,clz)` 前者实现序列化，后者实现了反序列化。
@@ -200,7 +200,7 @@ public static <T> T deserialize(String source, Class<?> clz) {
 }
 ```
 
-### 五、使用Snack3的Options和Feature
+### 五、使用 Snack3 的 Options 和 Feature
 一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Options 和 Feature。
 
 Options 从名字上看它是一个提供配置的类，要想改变ONode默认的设置必须使用该类进行配置。用法：　
@@ -246,7 +246,7 @@ Options cfg = Options.of(Feature.WriteDateUseFormat) //使用格式化特性（�
 System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
 ```
 
-### 六、使用Snack3进行JSONPath查询
+### 六、使用 Snack3 进行 JSONPath 查询
 在网上找了一份经典的JSON样本：
 ```json
 {
@@ -272,7 +272,8 @@ System.out.println(ONode.load(date, cfg).toJson()); //2019-12-06
     }
 }
 ```
-Snack3可以提供高速的JSONPath查询，JSONPath更给日常的查询节省了大量代码：
+Snack3 可以提供高速的 JSONPath 查询，JSONPath 更给日常的查询节省了大量代码：
+
 ```java
 ONode o = ONode.load(jsonStr);
 
@@ -311,7 +312,7 @@ ONode read = o.select("$.store.bicycle['color','price']");
 System.out.println("bicycle的color和price属性值=::" + read);
 ```
 
-#### （1）支持的JSONPath语法
+#### （1）支持的 JSONPath 语法
 
 * 字符串使用单引号，例：\['name']
 * 过滤操作用空隔号隔开，例：\[?(@.type == 1)]
@@ -353,6 +354,7 @@ System.out.println("bicycle的color和price属性值=::" + read);
 ```java 
 $.store.book[0].title //建议使用这种
 ```
+
 ```java
 $['store']['book'][0]['title']
 ```
