@@ -23,6 +23,11 @@ public @interface ONodeAttr {
     String format() default "";
 
     /**
+     * 时区
+     * */
+    String timezone() default "";
+
+    /**
      * 忽略（相当于：serialize=false, deserialize=false）
      */
     boolean ignore() default false;

@@ -8,6 +8,8 @@ import org.noear.snack.core.utils.StringUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 /**
  * 字段包装
@@ -20,6 +22,7 @@ public class FieldWrap {
 
     private String name;
     private String format;
+    private TimeZone timeZone;
     private boolean serialize = true;
     private boolean deserialize = true;
     private boolean incNull = true;
@@ -47,6 +50,11 @@ public class FieldWrap {
             name = attr.name();
             format = attr.format();
             incNull = attr.incNull();
+
+
+            if(StringUtil.isEmpty(attr.timezone()) == false) {
+                timeZone = TimeZone.getTimeZone(ZoneId.of(attr.timezone()));
+            }
 
 
             if (attr.ignore()) {
@@ -82,6 +90,13 @@ public class FieldWrap {
      */
     public String getFormat() {
         return format;
+    }
+
+    /**
+     * @since 3.2
+     * */
+    public TimeZone getTimeZone() {
+        return timeZone;
     }
 
     /**

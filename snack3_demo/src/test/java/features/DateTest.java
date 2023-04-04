@@ -2,8 +2,11 @@ package features;
 
 import _models.DateModel;
 import _models.DateModel2;
+import _models.DateModel3;
 import org.junit.Test;
 import org.noear.snack.ONode;
+
+import java.util.Date;
 
 /**
  * @author noear 2021/6/13 created
@@ -65,5 +68,20 @@ public class DateTest {
 
 
         assert dateModel.date1.equals(dateModel2.date1);
+    }
+
+    @Test
+    public void test5(){
+        DateModel3  dateModel3 = new DateModel3();
+        dateModel3.date1 = new Date(1680602276520L);
+        dateModel3.date2 = dateModel3.date1 ;
+        dateModel3.date3 = dateModel3.date1 ;
+
+        String json = ONode.stringify(dateModel3);
+
+        System.out.println(json);
+
+        assert json.contains("2023-04-04 17:57:56");
+        assert json.contains("2023-04-04 16:57:56");
     }
 }

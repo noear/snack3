@@ -341,25 +341,40 @@ public class ObjectFromer implements Fromer {
 
             if (StringUtil.isEmpty(f.getFormat()) == false) {
                 if (val instanceof Date) {
-                    String val2 = DateUtil.format((Date) val, f.getFormat());
+                    String val2 = DateUtil.format((Date) val, f.getFormat(), f.getTimeZone());
                     rst.set(f.getName(), val2);
                     continue;
                 }
 
                 if (val instanceof LocalDateTime) {
-                    String val2 = ((LocalDateTime) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
+                    if(f.getTimeZone() != null){
+                        fmt.withZone(f.getTimeZone().toZoneId());
+                    }
+
+                    String val2 = ((LocalDateTime) val).format(fmt);
                     rst.set(f.getName(), val2);
                     continue;
                 }
 
                 if (val instanceof LocalDate) {
-                    String val2 = ((LocalDate) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
+                    if(f.getTimeZone() != null){
+                        fmt.withZone(f.getTimeZone().toZoneId());
+                    }
+
+                    String val2 = ((LocalDate) val).format(fmt);
                     rst.set(f.getName(), val2);
                     continue;
                 }
 
                 if (val instanceof LocalTime) {
-                    String val2 = ((LocalTime) val).format(DateTimeFormatter.ofPattern(f.getFormat()));
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
+                    if(f.getTimeZone() != null){
+                        fmt.withZone(f.getTimeZone().toZoneId());
+                    }
+
+                    String val2 = ((LocalTime) val).format(fmt);
                     rst.set(f.getName(), val2);
                     continue;
                 }

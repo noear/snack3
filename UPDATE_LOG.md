@@ -1,3 +1,6 @@
+#### 3.2.63
+* NodeAttr 增加时区支持
+
 #### 3.2.62
 * 修复 {names:null} ，转为 A{names:List} 时, 会变成 A{names:List=[null]}
 
