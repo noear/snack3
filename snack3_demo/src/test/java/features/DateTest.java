@@ -77,6 +77,7 @@ public class DateTest {
         dateModel3.date2 = dateModel3.date1 ;
         dateModel3.date3 = dateModel3.date1 ;
 
+
         String json = ONode.stringify(dateModel3);
 
         System.out.println(json);
