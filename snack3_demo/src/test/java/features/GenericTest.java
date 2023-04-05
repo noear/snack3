@@ -206,4 +206,31 @@ public class GenericTest {
         UserModel userModel = request.getData();
         assert userModel.id == 5;
     }
+
+    @Test
+    public void test10(){
+        String json = "[[1],[3,5],[6,3,1]]";
+       List<List<Long>> list = ONode.deserialize(json,new TypeRef<List<List<Long>>>(){}.getType());
+
+       assert list != null;
+       assert list.get(0).get(0) instanceof Long;
+    }
+
+    @Test
+    public void test10_2(){
+        String json = "{list:[[1],[3,5],[6,3,1]]}";
+        List<List<Long>> list = ONode.load(json).get("list").toObject(new TypeRef<List<List<Long>>>(){}.getType());
+
+        assert list != null;
+        assert list.get(0).get(0) instanceof Long;
+    }
+
+    @Test
+    public void test11(){
+        String json = "{a:[1],b:[2,4]}";
+        Map<String,List<Long>> map  = ONode.deserialize(json,new TypeRef<Map<String,List<Long>>>(){}.getType());
+
+        assert map != null;
+        assert map.get("a").get(0) instanceof Long;
+    }
 }

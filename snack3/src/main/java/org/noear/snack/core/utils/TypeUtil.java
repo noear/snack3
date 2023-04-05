@@ -128,9 +128,9 @@ public class TypeUtil {
             return upperBounds.length > 0 ? upperBounds[0] : Object.class;
         }
 
-        if (type instanceof ParameterizedType) {
-            return ((ParameterizedType) type).getRawType();
-        }
+//        if (type instanceof ParameterizedType) {
+//            return ((ParameterizedType) type).getRawType();
+//        }
 
         return type;
     }

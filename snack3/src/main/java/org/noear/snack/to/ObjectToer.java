@@ -339,9 +339,16 @@ public class ObjectToer implements Toer {
             return null;
         }
 
+        Class<?> itemClz = null;
         Type itemType = null;
         if (ctx.target_type != null) {
             itemType = TypeUtil.getCollectionItemType(type);
+
+            if(itemType instanceof Class){
+                itemClz = (Class<?>)itemType;
+            } else if(itemType instanceof ParameterizedType){
+                itemClz = (Class<?>) ((ParameterizedType)itemType).getRawType();
+            }
         }
 
         //解决无法识别的范型
@@ -350,7 +357,7 @@ public class ObjectToer implements Toer {
         }
 
         for (ONode o1 : o.nodeData().array) {
-            list.add(analyse(ctx, o1, null, (Class<?>) itemType, itemType, genericInfo));
+            list.add(analyse(ctx, o1, null, itemClz, itemType, genericInfo));
         }
 
         return list;
@@ -409,22 +416,25 @@ public class ObjectToer implements Toer {
             ParameterizedType ptt = ((ParameterizedType) type);
             Type kType = ptt.getActualTypeArguments()[0];
             Type vType = ptt.getActualTypeArguments()[1];
+            Class<?> vClass = null;
 
             if (kType instanceof ParameterizedType) {
                 kType = ((ParameterizedType) kType).getRawType();
             }
 
-            if (vType instanceof ParameterizedType) {
-                vType = ((ParameterizedType) vType).getRawType();
+            if(vType instanceof Class){
+                vClass = (Class<?>) vType;
+            } else if (vType instanceof ParameterizedType) {
+                vClass = (Class<?>) ((ParameterizedType) vType).getRawType();
             }
 
             if (kType == String.class) {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, (Class<?>) vType, vType, genericInfo));
+                    map.put(kv.getKey(), analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
                 }
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), null, (Class<?>) vType, vType, genericInfo));
+                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
                 }
             }
         } else {
