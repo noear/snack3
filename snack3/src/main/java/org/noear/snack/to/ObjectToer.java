@@ -11,6 +11,7 @@ import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.*;
 import org.noear.snack.exception.SnackException;
 
+import java.io.File;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -226,6 +227,8 @@ public class ObjectToer implements Toer {
             return analyseEnum(ctx, d, clz);
         } else if (is(Class.class, clz)) {
             return ctx.options.loadClass(v.getString());
+        } else if (is(File.class, clz)){
+            return new File(v.getString());
         } else if (is(Object.class, clz)) {
             Object val = v.getRaw();
 
