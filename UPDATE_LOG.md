@@ -1,3 +1,6 @@
+#### 3.2.65
+* 增加 File 反序化支持
+
 #### 3.2.64
 * 增加泛型多层嵌套支持: List<List<Long>>、Map<String,List<Long>>
 
