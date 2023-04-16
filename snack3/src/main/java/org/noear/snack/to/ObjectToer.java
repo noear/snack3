@@ -16,6 +16,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -229,6 +230,8 @@ public class ObjectToer implements Toer {
             return ctx.options.loadClass(v.getString());
         } else if (is(File.class, clz)){
             return new File(v.getString());
+        } else if (is(Charset.class, clz)){
+            return Charset.forName(v.getString());
         } else if (is(Object.class, clz)) {
             Object val = v.getRaw();
 
