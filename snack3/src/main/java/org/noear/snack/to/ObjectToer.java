@@ -500,17 +500,25 @@ public class ObjectToer implements Toer {
                 throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName(), e);
             }
         } else {
+            //排除字段
+            Set<String> excNames = null;
+
             if (rst == null) {
                 if(clzWrap.recordConstructor() == null) {
                     rst = BeanUtil.newInstance(clz);
                 }else{
-                    //只有带参数的构造函（像 kotlin data）
+                    //只有带参数的构造函（像 java record, kotlin data）
+                    excNames = new LinkedHashSet<>();
                     Parameter[] argsP = clzWrap.recordParams();
                     Object[] argsV = new Object[argsP.length];
 
                     for (int j = 0; j < argsP.length; j++) {
                         Parameter f = argsP[j];
                         String fieldK = f.getName();
+
+                        //构造参数有的，进入排除
+                        excNames.add(fieldK);
+
                         if (o.contains(fieldK)) {
                             Class fieldT = f.getType();
                             Type fieldGt = f.getParameterizedType();
@@ -538,8 +546,13 @@ public class ObjectToer implements Toer {
                 if (f.isDeserialize() == false) {
                     continue;
                 }
-
                 String fieldK = f.getName();
+
+                if(excNames != null && excNames.contains(fieldK)){
+                    continue;
+                }
+
+
                 if (o.contains(fieldK)) {
                     Class fieldT = f.type;
                     Type fieldGt = f.genericType;
