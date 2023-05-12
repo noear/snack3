@@ -1,5 +1,6 @@
 package features;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -182,5 +183,19 @@ public class JsonPathTest2 {
         ONode rst = oNode.select("$..data[?(@.value == 1)].name");
 
         System.out.println(rst.toJson());
+    }
+
+    @Test
+    public void test8(){
+        String test = "{\"1\":{\"a1\":[{\"id\":\"a1\"},{\"id\":\"a2\"}],\"b1\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]},\"2\":{\"a2\":[{\"id\":\"a1\",\"id1\":\"a11\",\"userId\":\"a12\"},{\"id\":\"a2\"}],\"b2\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]}}";
+        String jsonPath = "$..*[?(@.id)]";
+        String json1 = ONode.load(test).select(jsonPath).toJson();
+        System.out.println("org.noear.snack: " + json1);
+
+        Object documentContext = JsonPath.read(test, jsonPath);
+        String json2 = ONode.stringify(documentContext);
+        System.out.println("com.jayway.jsonpath: " + json2);
+
+        assert json1.length() == json2.length();
     }
 }

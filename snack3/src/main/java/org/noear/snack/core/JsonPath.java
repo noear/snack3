@@ -604,10 +604,12 @@ public class JsonPath {
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
-                    if(do_get(n1,s.left,true, usd, orNew).isNull() == false){
+                    if(n1.isObject() && do_get(n1,s.left,true, usd, orNew).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
                 }
+            } else{
+                return null;
             }
         } else {
             if (tmp.isObject()) {
