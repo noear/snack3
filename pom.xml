@@ -29,5 +29,4 @@
             <url>http://maven.data.zm/repository/maven-public/</url>
         </repository>
     </repositories>
-
 </project>
