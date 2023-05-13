@@ -637,33 +637,51 @@ public class JsonPath {
             }
         } else {
             if (tmp.isObject()) {
-                if("@".equals(s.left)){
+                if ("@".equals(s.left)) {
                     return null;
                 }
 
-                ONode leftO = do_get(tmp,s.left,true, usd, orNew);
+                ONode leftO = do_get(tmp, s.left, true, usd, orNew);
                 if (compare(root, tmp, leftO, s.op, s.right, usd, orNew) == false) {
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.options()).asArray();
-                if("@".equals(s.left)){
+                if ("@".equals(s.left)) {
                     for (ONode n1 : tmp.ary()) {
-                        if (compare(root, n1, n1, s.op, s.right, usd, orNew)) {
-                            tmp2.addNode(n1);
+                        if (n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (compare(root, n2, n2, s.op, s.right, usd, orNew)) {
+                                    tmp2.addNode(n2);
+                                }
+                            }
+                        } else {
+                            if (compare(root, n1, n1, s.op, s.right, usd, orNew)) {
+                                tmp2.addNode(n1);
+                            }
                         }
                     }
-                }else {
+                } else {
                     for (ONode n1 : tmp.ary()) {
-                        ONode leftO = do_get(n1,s.left,true, usd, orNew);
+                        if (n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                ONode leftO = do_get(n2, s.left, true, usd, orNew);
 
-                        if (compare(root, n1, leftO, s.op, s.right, usd, orNew)) {
-                            tmp2.addNode(n1);
+                                if (compare(root, n2, leftO, s.op, s.right, usd, orNew)) {
+                                    tmp2.addNode(n2);
+                                }
+                            }
+                        } else {
+                            ONode leftO = do_get(n1, s.left, true, usd, orNew);
+
+                            if (compare(root, n1, leftO, s.op, s.right, usd, orNew)) {
+                                tmp2.addNode(n1);
+                            }
                         }
                     }
                 }
-            } else if(tmp.isValue()){
-                if("@".equals(s.left)){
+            } else if (tmp.isValue()) {
+                if ("@".equals(s.left)) {
                     if (compare(root, tmp, tmp, s.op, s.right, usd, orNew) == false) {
                         return null;
                     }

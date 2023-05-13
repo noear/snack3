@@ -161,4 +161,20 @@ public class JsonPathTest4 {
 
         assert json1.length() == json2.length();
     }
+
+    @Test
+    public void test7(){
+        String test = "[{\"field\":\"l1-field-1\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]},{\"field\":\"l1-field-2\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]}]";
+
+        String jsonPath = "$.[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')]"; //$.[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')]
+        String json1 = ONode.load(test).select(jsonPath).toJson();
+        System.out.println("org.noear.snack: " + json1);
+
+        Object documentContext = JsonPath.read(test, jsonPath);
+        String json2 = ONode.stringify(documentContext);
+        System.out.println("com.jayway.jsonpath: " + json2);
+
+        assert json1.length() == json2.length();
+
+    }
 }
