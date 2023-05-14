@@ -1,6 +1,7 @@
 
-#### 3.2.70
+#### 3.2.71
 * 优化 `$.[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')]` 兼容性
+* 优化 `$[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')].fields[*]` 兼容性
 
 #### 3.2.69
 * 优化 `$.*.*.*` 的兼容性
