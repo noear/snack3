@@ -1,3 +1,5 @@
+#### 3.2.72
+* 修复 bindTo(obj) 可能会返回 null 的问题
 
 #### 3.2.71
 * 优化 `$.[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')]` 兼容性

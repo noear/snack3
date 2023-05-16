@@ -1005,7 +1005,9 @@ public class ONode {
     public <T> T bindTo(T target) {
         Context ctx = new Context(_o, this, target.getClass());
         ctx.target = target;
-        return (T) ctx.handle(DEFAULTS.DEF_OBJECT_TOER).target;
+        ctx.handle(DEFAULTS.DEF_OBJECT_TOER);
+
+        return target;
     }
 
 

@@ -42,7 +42,7 @@ public class ObjectToer implements Toer {
 
     private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         if (o == null) {
-            return null;
+            return rst;
         }
 
         if (clz != null) {
@@ -52,7 +52,7 @@ public class ObjectToer implements Toer {
         }
 
         if(o.isNull()){
-            return null;
+            return rst;
         }
 
         //提前找到@type类型，便于自定义解码器定位
@@ -133,7 +133,7 @@ public class ObjectToer implements Toer {
                     return analyseCollection(ctx, o, rst, clz, type, genericInfo);
                 }
             default:
-                return null;
+                return rst;
         }
     }
 
@@ -342,7 +342,7 @@ public class ObjectToer implements Toer {
         }
 
         if (list == null) {
-            return null;
+            return rst;
         }
 
         Class<?> itemClz = null;
