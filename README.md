@@ -83,6 +83,10 @@ Snack3 借鉴了 `Javascript` 所有变量由 `var` 申明，及 `Xml dom` 一�
 //demo0::字符串化
 String json = ONode.stringify(user); 
 
+//美化格式的字符串化
+String json = ONode.load(user, Feature.PrettyFormat).toJson();
+
+
 //demo1::序列化
 // -- 输出带@type
 String json = ONode.serialize(user); 
