@@ -186,6 +186,9 @@ options.addEncoder(Date.class, (data, node) -> {
 String json = ONode.loadObj(orderModel, options).toJson();
 ```
 
+
+
+
 ## 关于序列化的特点
 #### 对象（可以带type）
 ```json
@@ -198,6 +201,39 @@ String json = ONode.loadObj(orderModel, options).toJson();
 [1,2,3]
 //或
 [{"@type":"...","a":1,"b":"2"},{"@type":"...","a":2,"b":"10"}]
+```
+
+#### 序列化注解定制
+
+```java
+public enum BookType {
+    NOVEL(2,"小说"),
+    CLASSICS(3,"名著"),
+    ;
+
+    @ONodeAttr public final int code; //使用 code 做为序列化的字段
+    public final String des;
+    BookType(int code, String des){this.code=code; this.des=des;}
+}
+
+public class Book {
+    String name;
+    BookType type;
+    @ONodeAttr(serialize=false) String author; //不序列化
+    @ONodeAttr(format="yyyy-MM-dd") Date releaseTime; //格式化时间输出
+}
+```
+
+#### 序列化编解码定制
+
+```java
+Options options = Options.def();
+options.addEncoder(Date.class, (data, node) -> {
+    node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
+});
+options.addDecoder(Date.class, ...);
+
+String json = ONode.loadObj(orderModel, options).toJson();
 ```
 
 ## 关于Json path的支持
