@@ -51,7 +51,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        if(o.isNull()){
+        if (o.isNull()) {
             return rst;
         }
 
@@ -228,9 +228,9 @@ public class ObjectToer implements Toer {
             return analyseEnum(ctx, d, clz);
         } else if (is(Class.class, clz)) {
             return ctx.options.loadClass(v.getString());
-        } else if (is(File.class, clz)){
+        } else if (is(File.class, clz)) {
             return new File(v.getString());
-        } else if (is(Charset.class, clz)){
+        } else if (is(Charset.class, clz)) {
             return Charset.forName(v.getString());
         } else if (is(Object.class, clz)) {
             Object val = v.getRaw();
@@ -256,6 +256,10 @@ public class ObjectToer implements Toer {
 
     public Object analyseEnum(Context ctx, ONodeData d, Class<?> target) {
         EnumWrap ew = TypeUtil.createEnum(target);
+        Enum code = ew.getCode(target.getName() + d.value.getString());
+        if (code != null) {
+            return code;
+        }
         if (d.value.type() == OValueType.String) {
             return ew.get(d.value.getString());
         } else {
@@ -335,9 +339,9 @@ public class ObjectToer implements Toer {
 
     public Object analyseCollection(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
         Collection list = null;
-        if(rst instanceof Collection){
-            list = (Collection)rst;
-        }else {
+        if (rst instanceof Collection) {
+            list = (Collection) rst;
+        } else {
             list = TypeUtil.createCollection(clz, false);
         }
 
@@ -350,10 +354,10 @@ public class ObjectToer implements Toer {
         if (ctx.target_type != null) {
             itemType = TypeUtil.getCollectionItemType(type);
 
-            if(itemType instanceof Class){
-                itemClz = (Class<?>)itemType;
-            } else if(itemType instanceof ParameterizedType){
-                itemClz = (Class<?>) ((ParameterizedType)itemType).getRawType();
+            if (itemType instanceof Class) {
+                itemClz = (Class<?>) itemType;
+            } else if (itemType instanceof ParameterizedType) {
+                itemClz = (Class<?>) ((ParameterizedType) itemType).getRawType();
             }
         }
 
@@ -428,7 +432,7 @@ public class ObjectToer implements Toer {
                 kType = ((ParameterizedType) kType).getRawType();
             }
 
-            if(vType instanceof Class){
+            if (vType instanceof Class) {
                 vClass = (Class<?>) vType;
             } else if (vType instanceof ParameterizedType) {
                 vClass = (Class<?>) ((ParameterizedType) vType).getRawType();
@@ -496,17 +500,17 @@ public class ObjectToer implements Toer {
 
             try {
                 rst = clzWrap.recordConstructor().newInstance(argsV);
-            }catch (IllegalArgumentException e){
-                throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName(), e);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("The constructor missing parameters: " + clz.getName(), e);
             }
         } else {
             //排除字段
             Set<String> excNames = null;
 
             if (rst == null) {
-                if(clzWrap.recordConstructor() == null) {
+                if (clzWrap.recordConstructor() == null) {
                     rst = BeanUtil.newInstance(clz);
-                }else{
+                } else {
                     //只有带参数的构造函（像 java record, kotlin data）
                     excNames = new LinkedHashSet<>();
                     Parameter[] argsP = clzWrap.recordParams();
@@ -530,8 +534,8 @@ public class ObjectToer implements Toer {
 
                     try {
                         rst = clzWrap.recordConstructor().newInstance(argsV);
-                    }catch (IllegalArgumentException e){
-                        throw new IllegalArgumentException("The constructor missing parameters: " +clz.getName(), e);
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException("The constructor missing parameters: " + clz.getName(), e);
                     }
                 }
             }
@@ -548,7 +552,7 @@ public class ObjectToer implements Toer {
                 }
                 String fieldK = f.getName();
 
-                if(excNames != null && excNames.contains(fieldK)){
+                if (excNames != null && excNames.contains(fieldK)) {
                     continue;
                 }
 
