@@ -203,7 +203,7 @@ String json = ONode.loadObj(orderModel, options).toJson();
 [{"@type":"...","a":1,"b":"2"},{"@type":"...","a":2,"b":"10"}]
 ```
 
-#### 序列化注解定制
+#### 注解定制
 
 ```java
 public enum BookType {
@@ -224,7 +224,7 @@ public class Book {
 }
 ```
 
-#### 序列化编解码定制
+#### 编解码定制
 
 ```java
 Options options = Options.def();
