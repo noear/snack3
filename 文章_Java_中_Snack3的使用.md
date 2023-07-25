@@ -200,6 +200,39 @@ public static <T> T deserialize(String source, Class<?> clz) {
 }
 ```
 
+#### (3)使用 ONodeAttr 定制
+
+定制枚举
+
+```java
+public enum BookType {
+    NOVEL(2,"小说"),
+    CLASSICS(3,"名著"),
+    ;
+
+    @ONodeAttr
+    public final int code; //使用 code 做为序列化的字段
+    public final String des;
+    BookType(int code, String des){this.code=code; this.des=des;}
+}
+```
+
+定制实体
+
+```java
+public class Book {
+    String name;
+    
+    BookType type;
+    
+    @ONodeAttr(serialize=false)
+    String author;
+    
+    @ONodeAttr(format="yyyy-MM-dd")
+    Date releaseTime;
+}
+```
+
 ### 五、使用 Snack3 的 Options 和 Feature
 一般情况下ONode类提供的 API已经能满足大部分的使用场景，但有时需要更多特殊、强大的功能时，这时候就引入一个新的类 Options 和 Feature。
 
