@@ -256,13 +256,19 @@ public class ObjectToer implements Toer {
 
     public Object analyseEnum(Context ctx, ONodeData d, Class<?> target) {
         EnumWrap ew = TypeUtil.createEnum(target);
-        Enum code = ew.getCode(target.getName() + d.value.getString());
-        if (code != null) {
-            return code;
+
+        //尝试自定义获取
+        String valString = d.value.getString();
+        Enum eCustom = ew.getCustom(valString);
+        if (eCustom != null) {
+            return eCustom;
         }
+
         if (d.value.type() == OValueType.String) {
-            return ew.get(d.value.getString());
+            //按名字获取
+            return ew.get(valString);
         } else {
+            //按顺序位获取
             return ew.get(d.value.getInt());
         }
     }
