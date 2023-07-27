@@ -101,7 +101,7 @@ public class ObjectFromer implements Fromer {
         } else if (clz.isEnum() || Enum.class.isAssignableFrom(clz)) { //新补充的类型 //clz.isEnum() 继随接口后，没法实别了
             Enum em = (Enum) source;
             EnumWrap ew = TypeUtil.createEnum(source.getClass());
-            Object o = ew.getCodeFiledValue(em);
+            Object o = ew.getCustomValue(em);
             //如果为空代表该枚举没有被标注继续采用常规序列化方式
             if(o != null){
                 rst.val().set(o);
