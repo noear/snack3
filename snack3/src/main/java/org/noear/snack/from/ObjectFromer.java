@@ -4,10 +4,12 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Options;
 import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
+import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.core.utils.StringUtil;
+import org.noear.snack.core.utils.TypeUtil;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -98,12 +100,19 @@ public class ObjectFromer implements Fromer {
 
         } else if (clz.isEnum() || Enum.class.isAssignableFrom(clz)) { //新补充的类型 //clz.isEnum() 继随接口后，没法实别了
             Enum em = (Enum) source;
-
-            if (opt.hasFeature(Feature.EnumUsingName)) {
-                rst.val().setString(em.name());
-            } else {
-                rst.val().setNumber(em.ordinal());
+            EnumWrap ew = TypeUtil.createEnum(source.getClass());
+            Object o = ew.getCodeFiledValue(em);
+            //如果为空代表该枚举没有被标注继续采用常规序列化方式
+            if(o != null){
+                rst.val().set(o);
+            }else {
+                if (opt.hasFeature(Feature.EnumUsingName)) {
+                    rst.val().setString(em.name());
+                } else {
+                    rst.val().setNumber(em.ordinal());
+                }
             }
+
         } else if (source instanceof Map) {
             //为序列化添加特性支持 //todo: 改用新的特性 WriteMapClassName,by 202301
             if (opt.hasFeature(Feature.WriteClassName)) {
