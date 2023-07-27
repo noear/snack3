@@ -3,6 +3,7 @@ package org.noear.snack.core.exts;
 import org.noear.snack.annotation.ONodeAttr;
 import org.noear.snack.exception.SnackException;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,8 @@ public class EnumWrap {
 
     protected final Enum[] enumOrdinal;
     protected final Class<?> enumClass;
+
+    protected Field oNodeAttrFiled;
 
     public EnumWrap(Class<?> enumClass) {
         this.enumClass = enumClass;
@@ -39,6 +42,7 @@ public class EnumWrap {
 
                 try {
                     Object custom = field.get(e);
+                    oNodeAttrFiled=field;
                     enumCustomMap.put(enumClass.getName() + "#" + custom, e);
                 } catch (IllegalAccessException ex) {
                     throw new SnackException(ex);
@@ -66,5 +70,20 @@ public class EnumWrap {
      * */
     public Enum getCustom(String custom) {
         return enumCustomMap.get(enumClass.getName() + "#" + custom);
+    }
+
+    /**
+     * 获取该枚举所被标记的字段的值
+     * @return 如果没有被ONodeAttr标记则返回空，否则返回对应值
+     */
+    public Object getCodeFiledValue(Object o){
+        try {
+            if(oNodeAttrFiled == null){
+                return null;
+            }
+            return oNodeAttrFiled.get(o);
+        } catch (IllegalAccessException e) {
+            throw new SnackException(e);
+        }
     }
 }
