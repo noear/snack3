@@ -543,6 +543,13 @@ public class JsonPath {
                     return new ONode(tmp.options()).val(tmp.count());
                 }
             }
+            case "keys()": {
+                if (tmp.isObject()) {
+                    return new ONode(tmp.options()).addAll(tmp.obj().keySet());
+                } else {
+                    return null;
+                }
+            }
             case "min()": {
                 if (tmp.isArray()) {
                     ONode min_n = null;
