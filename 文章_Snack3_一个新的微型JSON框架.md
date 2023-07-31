@@ -131,15 +131,15 @@ o.get("data").get("list").fill("[{a:1,b:2},{a:2,c:3}]");
 ```java
 public static void push(Collection<String> alias_ary, String text)  {
     ONode data = new ONode().build((d)->{
-        d.get("platform").val("all");
+        d.getOrNew("platform").val("all");
 
-        d.get("audience").get("alias").addAll(alias_ary);
+        d.getOrNew("audience").getOrNew("alias").addAll(alias_ary);
 
-        d.get("options")
+        d.getOrNew("options")
                 .set("apns_production",false);
 
-        d.get("notification").build(n->{
-            n.get("ios")
+        d.getOrNew("notification").build(n->{
+            n.getOrNew("ios")
                     .set("alert",text)
                     .set("badge",0)
                     .set("sound","happy");
