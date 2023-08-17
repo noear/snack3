@@ -153,30 +153,83 @@ public class ObjectToer implements Toer {
             return v.getRaw();
         }
 
-        if (is(Byte.class, clz) || clz == Byte.TYPE) {
+
+        if (clz == Byte.TYPE) {
             return (byte) v.getLong();
-        } else if (is(Short.class, clz) || clz == Short.TYPE) {
+        } else if (clz == Short.TYPE) {
             return v.getShort();
-        } else if (is(Integer.class, clz) || clz == Integer.TYPE) {
+        } else if (clz == Integer.TYPE) {
             return v.getInt();
-        } else if (is(Long.class, clz) || clz == Long.TYPE) {
+        } else if (clz == Long.TYPE) {
             return v.getLong();
-        } else if (is(LongAdder.class, clz)) {
+        } else if (clz == Float.TYPE) {
+            return v.getFloat();
+        } else if (clz == Double.TYPE) {
+            return v.getDouble();
+        } else if (clz == Boolean.TYPE) {
+            return v.getBoolean();
+        } else if (clz == Character.TYPE) {
+            return v.getChar();
+        }
+
+        if (is(Byte.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return (byte) v.getLong();
+            }
+        } else if (is(Short.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getShort();
+            }
+        } else if (is(Integer.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getInt();
+            }
+        } else if (is(Long.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getLong();
+            }
+        } else if (is(Float.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getFloat();
+            }
+        } else if (is(Double.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getDouble();
+            }
+        } else if (is(Boolean.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getBoolean();
+            }
+        } else if (is(Character.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return v.getChar();
+            }
+        }
+
+        if (is(LongAdder.class, clz)) {
             LongAdder tmp = new LongAdder();
             tmp.add(v.getLong());
             return tmp;
-        } else if (is(Float.class, clz) || clz == Float.TYPE) {
-            return v.getFloat();
-        } else if (is(Double.class, clz) || clz == Double.TYPE) {
-            return v.getDouble();
         } else if (is(DoubleAdder.class, clz)) {
             DoubleAdder tmp = new DoubleAdder();
             tmp.add(v.getDouble());
             return tmp;
-        } else if (is(Boolean.class, clz) || clz == Boolean.TYPE) {
-            return v.getBoolean();
-        } else if (is(Character.class, clz) || clz == Character.TYPE) {
-            return v.getChar();
         } else if (is(String.class, clz)) {
             return v.getString();
         } else if (is(java.sql.Timestamp.class, clz)) {

@@ -2,6 +2,7 @@ package org.noear.snack;
 
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.utils.DateUtil;
+import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.exception.SnackException;
 
 import java.math.BigDecimal;
@@ -140,6 +141,14 @@ public class OValue {
 
     public boolean isNull() {
         return _type == OValueType.Null;
+    }
+
+    public boolean isEmpty() {
+        if (_type == OValueType.String) {
+            return StringUtil.isEmpty(_string);
+        } else {
+            return isNull();
+        }
     }
 
     /**

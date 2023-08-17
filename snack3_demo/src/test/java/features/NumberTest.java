@@ -129,4 +129,17 @@ public class NumberTest {
 
         assert json.equals(json2);
     }
+
+
+    @Test
+    public void test10() {
+        String json = "{num15_2:''}";
+        NumberModel tmp1 = ONode.deserialize(json, NumberModel.class);
+        assert tmp1.getNum15_2() == null;
+
+
+        json = "{num15_2:'1'}";
+        tmp1 = ONode.deserialize(json, NumberModel.class);
+        assert tmp1.getNum15_2() == 1D;
+    }
 }
