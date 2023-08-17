@@ -38,8 +38,6 @@ public class FieldWrap {
         genericType = f.getGenericType();
         readonly = isFinal;
 
-        field.setAccessible(true);
-
         NodeName anno = f.getAnnotation(NodeName.class);
         if (anno != null) {
             name = anno.value();
@@ -132,6 +130,10 @@ public class FieldWrap {
 
         try {
             if (_setter == null || disFun) {
+                if (field.isAccessible() == false) {
+                    field.setAccessible(true);
+                }
+
                 field.set(tObj, val);
             } else {
                 _setter.invoke(tObj, new Object[]{val});
@@ -155,6 +157,10 @@ public class FieldWrap {
 
     public Object getValue(Object tObj) {
         try {
+            if (field.isAccessible() == false) {
+                field.setAccessible(true);
+            }
+
             return field.get(tObj);
         } catch (IllegalAccessException ex) {
             throw new SnackException(ex);
