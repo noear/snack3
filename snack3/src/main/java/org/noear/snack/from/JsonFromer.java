@@ -28,6 +28,18 @@ public class JsonFromer implements Fromer {
         ctx.target = do_handle(ctx, (String) ctx.source);
     }
 
+    private CharBuffer getBuffer(Context ctx){
+        CharBuffer sBuf = null;
+        if (ctx.options.hasFeature(Feature.DisThreadLocal)) {
+            sBuf = new CharBuffer();//
+        } else {
+            sBuf = tlBuilder.get(); //
+            sBuf.setLength(0);
+        }
+
+        return sBuf;
+    }
+
     private ONode do_handle(Context ctx, String text) throws IOException {
         if (text == null) {
             return new ONode(ctx.options);
@@ -50,13 +62,7 @@ public class JsonFromer implements Fromer {
                     || (prefix == '[' && suffix == ']')) {
                 //object or array
                 //
-                CharBuffer sBuf = null;
-                if (ctx.options.hasFeature(Feature.DisThreadLocal)) {
-                    sBuf = new CharBuffer();//
-                } else {
-                    sBuf = tlBuilder.get(); //
-                    sBuf.setLength(0);
-                }
+                CharBuffer sBuf = getBuffer(ctx);
 
                 node = new ONode(ctx.options);
                 analyse(ctx, new CharReader(text), sBuf, node);
@@ -66,7 +72,11 @@ public class JsonFromer implements Fromer {
                             (prefix == '\'' && suffix == '\''))) {
                 //string
                 //
-                node = analyse_val(ctx, text.substring(1, len - 1), true, false);
+                CharBuffer sBuf = getBuffer(ctx);
+                CharReader sReader = new CharReader(text);
+                sReader.read();
+                scanString(sReader, sBuf, prefix);
+                node = analyse_val(ctx, sBuf.toString(), true, false);
             } else if (prefix != '<' && len < 40) {
                 //null,num,bool,other
                 //
