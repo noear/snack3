@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Options;
+import org.noear.snack.exception.SnackException;
 import org.noear.snack.from.ObjectFromer;
 
 
@@ -40,8 +41,23 @@ public class EnumTest {
         book.setName("西游记");
         book.setDict(BookType.CLASSICS);
         ObjectFromer objectFromer = new ObjectFromer();
-        Context context = new Context(Options.def(),book);
+        Context context = new Context(Options.def(), book);
         objectFromer.handle(context);
-        assert context.source==book;
+        assert context.source == book;
+    }
+
+    /**
+     * 序列化测试2
+     */
+    @Test
+    public void demo2() {
+        String json = "{name:'demo',dict:'9'}";
+
+        try {
+            ONode.deserialize(json, Book.class);
+            assert false;
+        } catch (SnackException e) {
+            assert true;
+        }
     }
 }

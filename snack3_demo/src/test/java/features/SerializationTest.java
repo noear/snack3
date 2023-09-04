@@ -4,7 +4,6 @@ import _models.*;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.noear.snack.ONode;
-import org.noear.snack.core.TypeRef;
 import org.noear.solon.Utils;
 
 import java.math.BigDecimal;

@@ -1,17 +1,21 @@
 package features;
 
 import _model4.QueryParamEntity;
-import _models.UserGroupModel;
-import _models.UserGroupModel2;
-import _models.UserModel;
+import _models.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
+import org.noear.solon.Solon;
+import org.noear.solon.test.SolonJUnit4ClassRunner;
+import org.noear.solon.test.SolonTest;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
+@RunWith(SolonJUnit4ClassRunner.class)
+@SolonTest
 public class SerializationsTest2 {
 
     public Object buildObj() {
@@ -132,5 +136,16 @@ public class SerializationsTest2 {
         assert entity.getSorts().size() > 0;
         assert entity.getTerms().size() > 0;
         assert entity.getExcludes().size() == 1;
+    }
+
+    @Test
+    public void test4() {
+        Properties properties = Solon.cfg().getProp("test1");
+        PersonColl tmp = ONode.load(properties).toObject(PersonColl.class);
+
+        assert tmp != null;
+        assert tmp.getUsers() != null;
+        assert tmp.getUsers().size() == 2;
+        assert tmp.getUsers().get("user1") instanceof Person;
     }
 }

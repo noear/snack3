@@ -278,7 +278,11 @@ public class ObjectToer implements Toer {
 
             return new BigInteger(v.getString());
         } else if (clz.isEnum()) {
-            return analyseEnum(ctx, d, clz);
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                return analyseEnum(ctx, d, clz);
+            }
         } else if (is(Class.class, clz)) {
             return ctx.options.loadClass(v.getString());
         } else if (is(File.class, clz)) {
@@ -312,18 +316,27 @@ public class ObjectToer implements Toer {
 
         //尝试自定义获取
         String valString = d.value.getString();
-        Enum eCustom = ew.getCustom(valString);
-        if (eCustom != null) {
-            return eCustom;
+
+        Enum eItem;
+
+        if (ew.hasCustom()) {
+            //按自定义获取
+            eItem = ew.getCustom(valString);
+        } else {
+            if (d.value.type() == OValueType.String) {
+                //按名字获取
+                eItem = ew.get(valString);
+            } else {
+                //按顺序位获取
+                eItem = ew.get(d.value.getInt());
+            }
         }
 
-        if (d.value.type() == OValueType.String) {
-            //按名字获取
-            return ew.get(valString);
-        } else {
-            //按顺序位获取
-            return ew.get(d.value.getInt());
+        if (eItem == null) {
+            throw new SnackException("Deserialize failure for '" + ew.enumClass().getName() + "' from value: " + valString);
         }
+
+        return eItem;
     }
 
     public Object analyseArray(Context ctx, ONodeData d, Class<?> target) throws Exception {

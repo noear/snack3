@@ -19,6 +19,13 @@ public class EnumWrap {
 
     protected Field enumCustomFiled;
 
+    /**
+     * 返回枚举原始类
+     * */
+    public Class<?> enumClass(){
+        return enumClass;
+    }
+
     public EnumWrap(Class<?> enumClass) {
         this.enumClass = enumClass;
         this.enumOrdinal = (Enum[]) enumClass.getEnumConstants();
@@ -69,6 +76,13 @@ public class EnumWrap {
      */
     public Enum getCustom(String custom) {
         return enumCustomMap.get(enumClass.getName() + "#" + custom);
+    }
+
+    /**
+     * 是否有定义
+     * */
+    public boolean hasCustom(){
+        return enumCustomMap.size() > 0;
     }
 
     /**
