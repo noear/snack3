@@ -33,6 +33,7 @@
 -select(jpath:String) -> new:ONode 	                    //使用JsonPath表达式选择节点（默认缓存路径编译）
 -select(jpath:String, useStandard:boolean)-> new:ONode  //useStandard:使用标准模式,默认非标准
 -select(jpath:String, useStandard:boolean, cacheJpath:boolean)-> new:ONode   //cacheJpath:是否缓存javaPath编译成果，默认缓存
+-selectOrNew(path:jpath) -> new:ONode //使用JsonPath表达式选择节点，如果没有自动构建默认节点（默认缓存路径编译）
 
 -exists(jpath:String) -> bool //使用JsonPath表达式查检节点是否存在（默认缓存路径编译）
 
