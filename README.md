@@ -153,6 +153,8 @@ o.getOrNew("list2").fill("[1,2,3,4,5,5,6]");
 o.select("$..mobile[?(@ =~ /^187/)]").forEach(n->n.val("186")).toJson();
 //找到data.list[1]下的的mobile字段，并转为long
 o.select("$.data.list[1].mobile").getLong();
+//如果没有则创建，并赋值
+o.selectOrNew("$.test.list[2]").val(12);        
 
 //查找所有手机号，并转为List<String> 
 List<String> list = o.select("$..mobile").toObject(List.class);
