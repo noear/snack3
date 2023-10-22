@@ -97,7 +97,9 @@ UserModel user = ONode.deserialize(json);
 // -- json 可以不带@type (clz 申明了)
 UserModel user = ONode.deserialize(json, UserModel.class); 
 // -- json 可以不带@type，泛型方式输出（类型是已知的）
-List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass()); 
+List<UserModel> list = ONode.deserialize(json, (new ArrayList<UserModel>(){}).getClass());
+// -- 或者
+List<UserModel> list = ONode.deserialize(json, (new TypeRef<List<UserModel>>(){}).getType());
 
 //demo3::转为ONode
 ONode o = ONode.loadStr(json); //将json String 转为 ONode
