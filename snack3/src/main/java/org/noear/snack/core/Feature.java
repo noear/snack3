@@ -81,6 +81,8 @@ public enum  Feature {
     StringDoubleToDecimal,
     /** 漂亮格式化 */
     PrettyFormat,
+    /** 禁用类名读取 */
+    DisableClassNameRead,
     ;
 
     Feature(){

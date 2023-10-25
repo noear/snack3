@@ -1,3 +1,7 @@
+#### 3.2.82
+* 增加特性：Feature.DisableClassNameRead
+
+
 #### 3.2.81
 * 优化 recordable 识别，避免构造函数可能索引超界的问题
 
