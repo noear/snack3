@@ -197,7 +197,7 @@ options.addDecoder(Date.class, ...);
 options.add(Feature.PrettyFormat);
 
 //移除特性
-options.add(Feature.PrettyFormat);
+options.remove(Feature.PrettyFormat);
 
 //设置日期格式附
 options.add(Feature.WriteDateUseFormat); //使用日期格式
