@@ -179,17 +179,34 @@ o.forEach((k,v)->{
 o.forEach((v)->{
   //...
 });
+```
 
 
-//demo8:自定义编码（ addDecoder 是添加解析器，用于反序列化 ）
+#### 高级定制
+
+```java
 Options options = Options.def();
+//添加编码器
 options.addEncoder(Date.class, (data, node) -> {
     node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
 });
+//添加解码器
+options.addDecoder(Date.class, ...);
+
+//添加特性
+options.add(Feature.PrettyFormat);
+
+//移除特性
+options.add(Feature.PrettyFormat);
+
+//设置日期格式附
+options.add(Feature.WriteDateUseFormat); //使用日期格式
+options.setDateFormat("yyyy-MM");
+
+//..
 
 String json = ONode.loadObj(orderModel, options).toJson();
 ```
-
 
 
 
@@ -226,18 +243,6 @@ public class Book {
     @ONodeAttr(serialize=false) String author; //不序列化
     @ONodeAttr(format="yyyy-MM-dd") Date releaseTime; //格式化时间输出
 }
-```
-
-#### 编解码定制
-
-```java
-Options options = Options.def();
-options.addEncoder(Date.class, (data, node) -> {
-    node.val().setString(DateUtil.format(data, "yyyy-MM-dd"));
-});
-options.addDecoder(Date.class, ...);
-
-String json = ONode.loadObj(orderModel, options).toJson();
 ```
 
 ## 关于Json path的支持
