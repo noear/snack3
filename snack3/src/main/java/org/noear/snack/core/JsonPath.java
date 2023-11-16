@@ -73,6 +73,7 @@ public class JsonPath {
 
         char token = 0;
         char c = 0;
+        char c_last = 0;
         CharBuffer buffer = tlBuilder.get();
         buffer.setLength(0);
         CharReader reader = new CharReader(jpath2);
@@ -113,7 +114,7 @@ public class JsonPath {
                 case '[':
                     if (token == 0) {
                         token = c;
-                        if (buffer.length() > 0) {
+                        if (buffer.length() > 0 && c_last != '^') {
                             jsonPath.segments.add(new Segment(buffer.toString()));
                             buffer.clear();
                         }
@@ -137,6 +138,8 @@ public class JsonPath {
                     buffer.append(c);
                     break;
             }
+
+            c_last = c;
         }
 
         return jsonPath;
@@ -192,6 +195,30 @@ public class JsonPath {
             return new ONode(source.options());
         } else {
             return tmp;
+        }
+    }
+
+    /**
+     * 深度扫描
+     * */
+    private static void scanByExpr(ONode source, List<ONode> target, Segment s, Boolean ranged, ONode root, ONode tmp, Boolean usd, Boolean orNew) {
+        if (source.isObject()) {
+            ONode tmp2 = handler_ary_exp.run(s, ranged, root, source, usd, orNew);
+            if (tmp2 != null) {
+                target.add(tmp2);
+            }
+
+            for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
+                scanByExpr(kv.getValue(), target, s, ranged, root, tmp, usd, orNew);
+            }
+            return;
+        }
+
+        if (source.isArray()) {
+            for (ONode n1 : source.ary()) {
+                scanByExpr(n1, target, s, ranged, root, tmp, usd, orNew);
+            }
+            return;
         }
     }
 
@@ -433,6 +460,8 @@ public class JsonPath {
             ONode tmp2 = new ONode(root.options()).asArray();
             if ("*".equals(s.name)) {
                 scanByAll(s.name, tmp, true, tmp2.ary());
+            } else if (s.name.startsWith("?")) {
+                scanByExpr(tmp, tmp2.ary(), s,ranged,root,tmp,usd,orNew);
             } else {
                 scanByName(s.name, tmp, tmp2.ary());
             }
@@ -971,7 +1000,11 @@ public class JsonPath {
             }
 
             if (cmd.endsWith("]")) {
-                this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
+                if(cmdHasUnline){
+                    this.cmdAry = cmd.substring(1, cmd.length() - 1).trim();
+                }else{
+                    this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
+                }
 
                 if (cmdAry.startsWith("?")) {
                     String s2 = cmdAry.substring(2, cmdAry.length() - 1);//=>@.a == 1, @.a ==
