@@ -972,9 +972,9 @@ public class JsonPath {
     private static class Segment {
         public final String cmd;
         public String cmdAry;
-        public final boolean cmdHasQuote;
-        public final boolean cmdHasUnline;
-        public final boolean ranging;
+        public final boolean cmdHasQuote; //是否有引号
+        public final boolean cmdHasUnline; //是否为**（指令里用_表达）
+        public final boolean ranging;//是否有范围选择
         public List<Integer> indexS;
         public List<String> nameS;
 
@@ -1001,6 +1001,7 @@ public class JsonPath {
 
             if (cmd.endsWith("]")) {
                 if(cmdHasUnline){
+                    //如要前面是..
                     this.cmdAry = cmd.substring(1, cmd.length() - 1).trim();
                 }else{
                     this.cmdAry = cmd.substring(0, cmd.length() - 1).trim();
@@ -1049,7 +1050,6 @@ public class JsonPath {
                         start = Integer.parseInt(cmdAry);
                     }
                 }
-
             }
 
             //$指令
