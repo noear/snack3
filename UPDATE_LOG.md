@@ -1,3 +1,6 @@
+#### 3.2.83
+* 解决 `$..[?(@.treePath)]` 表达式的兼容问题
+
 #### 3.2.82
 * 增加特性：Feature.DisableClassNameRead
 
