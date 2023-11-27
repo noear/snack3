@@ -67,6 +67,10 @@ public class ClassWrap {
                 //如果合字段只读
                 _recordConstructor = constructors[0];
                 _recordParams = _recordConstructor.getParameters();
+
+                if(_recordParams.length == 0){
+                    _recordable = false;
+                }
             } else {
                 if (constructors[0].getParameterCount() > 0) {
                     //如果合字段只读

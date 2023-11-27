@@ -106,7 +106,7 @@ public class ObjectToer implements Toer {
                 if (Properties.class.isAssignableFrom(clz)) {
                     return analyseProps(ctx, o, (Properties) rst, clz, type, genericInfo);
                 } else if (Map.class.isAssignableFrom(clz)) {
-                    return analyseMap(ctx, o, clz, type, genericInfo);
+                    return analyseMap(ctx, o, (Map<Object, Object>) rst, clz, type, genericInfo);
                 } else if (StackTraceElement.class.isAssignableFrom(clz)) {
                     String declaringClass = o.get("declaringClass").getString();
                     if (declaringClass == null) {
@@ -491,8 +491,10 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseMap(Context ctx, ONode o, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        Map<Object, Object> map = TypeUtil.createMap(clz);
+    public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+        if (map == null) {
+            map = TypeUtil.createMap(clz);
+        }
 
         if (type instanceof ParameterizedType) { //这里还要再研究下
             ParameterizedType ptt = ((ParameterizedType) type);

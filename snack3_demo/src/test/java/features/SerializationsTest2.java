@@ -148,4 +148,14 @@ public class SerializationsTest2 {
         assert tmp.getUsers().size() == 2;
         assert tmp.getUsers().get("user1") instanceof Person;
     }
+
+    @Test
+    public void test5() {
+        String json = "{data:{a:1,b:2}}";
+        MapModel mapModel = ONode.deserialize(json, MapModel.class);
+
+        assert mapModel != null;
+        assert mapModel.data != null;
+        assert mapModel.data.size() == 2;
+    }
 }
