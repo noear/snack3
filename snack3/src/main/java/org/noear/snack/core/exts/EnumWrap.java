@@ -29,6 +29,9 @@ public class EnumWrap {
     public EnumWrap(Class<?> enumClass) {
         this.enumClass = enumClass;
         this.enumOrdinal = (Enum[]) enumClass.getEnumConstants();
+        if(null == this.enumOrdinal){
+            return;
+        }
 
         for (int i = 0; i < enumOrdinal.length; ++i) {
             Enum e = enumOrdinal[i];
