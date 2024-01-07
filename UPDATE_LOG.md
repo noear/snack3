@@ -1,3 +1,6 @@
+#### 3.2.85
+* 修复 EnumWrap 构造时 getEnumConstants 可能为 null 的问题
+
 #### 3.2.84
 * 修复 C{final data:Map} 反序列化时 data 无数据的问题
 

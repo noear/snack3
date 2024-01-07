@@ -91,4 +91,11 @@ public class StringTest {
         String typeName2 = jsonNode2.select("$.value[?(iotType == 'main')]").get(0).get("unitTypeName").getString();
         System.out.println("------ typeName:{}" + typeName2);
     }
+
+    @Test
+    public void test5() {
+        String json = "'1a'";
+        System.out.println(ONode.loadStr(json).getString());
+        System.out.println(ONode.loadStr(json).toJson());
+    }
 }
