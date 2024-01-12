@@ -79,7 +79,7 @@ public class ObjectToer implements Toer {
             case Value:
                 if (clz != null && Collection.class.isAssignableFrom(clz)) {
                     //如果接收对象为集合???尝试做为item
-                    if (rst == null) {
+                    if(rst == null || ctx.options.hasFeature(Feature.DisableDefaults)){
                         rst = TypeUtil.createCollection(clz, false);
                     }
 
@@ -130,7 +130,11 @@ public class ObjectToer implements Toer {
                 if (clz.isArray()) {
                     return analyseArray(ctx, o.nodeData(), clz);
                 } else {
-                    return analyseCollection(ctx, o, rst, clz, type, genericInfo);
+                    if (rst instanceof Collection) {
+                        return analyseCollection(ctx, o, (Collection) rst, clz, type, genericInfo);
+                    } else {
+                        return analyseCollection(ctx, o, null, clz, type, genericInfo);
+                    }
                 }
             default:
                 return rst;
@@ -409,16 +413,13 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseCollection(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        Collection list = null;
-        if (rst instanceof Collection) {
-            list = (Collection) rst;
-        } else {
-            list = TypeUtil.createCollection(clz, false);
+    public Object analyseCollection(Context ctx, ONode o, Collection coll, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+        if(coll == null || ctx.options.hasFeature(Feature.DisableDefaults)){
+            coll = TypeUtil.createCollection(clz, false);
         }
 
-        if (list == null) {
-            return rst;
+        if (coll == null) {
+            return coll;
         }
 
         Class<?> itemClz = null;
@@ -439,10 +440,10 @@ public class ObjectToer implements Toer {
         }
 
         for (ONode o1 : o.nodeData().array) {
-            list.add(analyse(ctx, o1, null, itemClz, itemType, genericInfo));
+            coll.add(analyse(ctx, o1, null, itemClz, itemType, genericInfo));
         }
 
-        return list;
+        return coll;
     }
 
     public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
@@ -492,8 +493,12 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        if (map == null) {
+        if(map == null || ctx.options.hasFeature(Feature.DisableDefaults)){
             map = TypeUtil.createMap(clz);
+        }
+
+        if(map == null){
+            return map;
         }
 
         if (type instanceof ParameterizedType) { //这里还要再研究下
