@@ -84,7 +84,7 @@ public enum  Feature {
     /** 禁用类名读取 */
     DisableClassNameRead,
     /** 禁用集合默认值 */
-    DisableDefaults,
+    DisableCollectionDefaults,
     ;
 
     Feature(){
