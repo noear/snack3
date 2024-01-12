@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
@@ -244,6 +245,13 @@ public class ObjectToer implements Toer {
             return new java.sql.Time(v.getLong());
         } else if (is(Date.class, clz)) {
             return v.getDate();
+        }else if (is(ZonedDateTime.class, clz)) {
+            Date date = v.getDate();
+            if (null == date) {
+                return null;
+            } else {
+                return ZonedDateTime.ofInstant(date.toInstant(), DEFAULTS.DEF_TIME_ZONE.toZoneId());
+            }
         } else if (is(LocalDateTime.class, clz)) {
             Date date = v.getDate();
             if (date == null) {

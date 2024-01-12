@@ -18,10 +18,7 @@ import java.sql.Clob;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -79,6 +76,8 @@ public class ObjectFromer implements Fromer {
             rst.val().setString(((UUID) source).toString());
         } else if (source instanceof Date) {
             rst.val().setDate((Date) source);
+        } else if (source instanceof ZonedDateTime) {
+            rst.val().setDate(Date.from(((ZonedDateTime) source).toInstant()));
         } else if (source instanceof LocalDateTime) {
             Instant instant = ((LocalDateTime) source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
