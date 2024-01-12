@@ -1,3 +1,6 @@
+#### 3.2.86
+* 新增 特性 DisableCollectionDefaults
+
 #### 3.2.85
 * 修复 EnumWrap 构造时 getEnumConstants 可能为 null 的问题
 
