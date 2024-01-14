@@ -1,9 +1,6 @@
 package _models;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Date;
 
 /**
@@ -20,4 +17,5 @@ public class DateModel2 {
     public Date date8;
     public LocalTime date9;
     public ZonedDateTime date10;
+    public OffsetDateTime date11;
 }
