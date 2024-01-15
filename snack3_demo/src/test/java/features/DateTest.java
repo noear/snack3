@@ -32,7 +32,7 @@ public class DateTest {
 
     @Test
     public void test3() {
-        String json = "{date1:'2021-06-13T20:54:51.566Z', date2:'2021-06-13T20:54:51', date3:'2021-06-13 20:54:51', date4:'20210613205451566+0800', date5:'2021-06-13', date6:'2021-06-13T20:54:51.566+08:00', date7:'2021-06-13 20:54:51,566', date8:'2021-06-13 20:54:51.566', date9:'20:54:51', date10:'2021-06-13T20:54:51.566+08:00'}";
+        String json = "{date1:'2021-06-13T20:54:51.566Z', date2:'2021-06-13T20:54:51', date3:'2021-06-13 20:54:51', date4:'20210613205451566+0800', date5:'2021-06-13', date6:'2021-06-13T20:54:51.566+08:00', date7:'2021-06-13 20:54:51,566', date8:'2021-06-13 20:54:51.566', date9:'20:54:51', date10:'2021-06-13T20:54:51.566+08:00', date11:'2021-06-13T20:54:51.566+08:00'}";
 
         DateModel dateModel0 = ONode.deserialize(json, DateModel.class);
         DateModel2 dateModel = ONode.deserialize(json, DateModel2.class);
@@ -53,6 +53,7 @@ public class DateTest {
         assert dateModel.date8.equals(dateModel2.date8);
         assert dateModel.date9.equals(dateModel2.date9);
         assert dateModel.date10.equals(dateModel2.date10);
+        assert dateModel.date11.equals(dateModel2.date11);
     }
 
     @Test

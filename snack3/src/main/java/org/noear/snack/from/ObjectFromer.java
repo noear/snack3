@@ -78,6 +78,8 @@ public class ObjectFromer implements Fromer {
             rst.val().setDate((Date) source);
         } else if (source instanceof ZonedDateTime) {
             rst.val().setDate(Date.from(((ZonedDateTime) source).toInstant()));
+        }else if (source instanceof OffsetDateTime) {
+            rst.val().setDate(Date.from(((OffsetDateTime) source).toInstant()));
         } else if (source instanceof LocalDateTime) {
             Instant instant = ((LocalDateTime) source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date((instant.getEpochSecond() * 1000) + (instant.getNano() / 1000_000)));
