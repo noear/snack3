@@ -1,3 +1,6 @@
+#### 3.2.88
+* 添加 OffsetDateTime 时间类型的处理
+
 #### 3.2.87
 * 添加 ZonedDateTime 时间类型的处理
 
