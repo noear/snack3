@@ -16,6 +16,7 @@ import java.util.TimeZone;
  */
 public class DateUtil {
     public static final String FORMAT_29 = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    public static final String FORMAT_25 = "yyyy-MM-dd'T'HH:mm:ss+HH:mm";
     public static final String FORMAT_24_ISO08601 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String FORMAT_23_a = "yyyy-MM-dd HH:mm:ss,SSS";
     public static final String FORMAT_23_b = "yyyy-MM-dd HH:mm:ss.SSS";
@@ -38,9 +39,9 @@ public class DateUtil {
 
     /**
      * 解析时间
-     * */
+     */
     public static Date parse(String val) throws ParseException {
-        if(val == null){
+        if (val == null) {
             return null;
         }
 
@@ -52,6 +53,8 @@ public class DateUtil {
             if (val.charAt(26) == ':' && val.charAt(28) == '0') {
                 ft = FORMAT_29;
             }
+        } else if (len == 25) {
+            ft = FORMAT_25;
         } else if (len == 24) {
             if (val.charAt(10) == 'T') {
                 ft = FORMAT_24_ISO08601;
