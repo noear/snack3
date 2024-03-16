@@ -34,7 +34,7 @@ ONode 即 `One node` 之意；借签了 `Javascript` 所有变量由 `var` 申�
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.2.88</version>
+  <version>3.2.89</version>
 </dependency>
 ```
 

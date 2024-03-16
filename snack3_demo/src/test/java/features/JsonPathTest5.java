@@ -56,4 +56,17 @@ public class JsonPathTest5 {
         System.out.println(tmp2);
         assert tmp2.count() == 3;
     }
+
+    @Test
+    public void test4(){
+        String json = "{\"request1\":{\"result\":[{\"relTickers\":[{\"tickerId\":1},{\"tickerId\":1.1}],\"accountId\":400006},{\"relTickers\":[{\"tickerId\":2},{\"tickerId\":2.2}]},{\"relTickers\":[{\"tickerId\":3}]},{\"relTickers\":[{\"tickerId\":4}]},{\"relTickers\":[{\"tickerId\":5}]},{\"relTickers\":[{\"tickerId\":6}]}]}}\n";
+
+        ONode tmp;
+
+         tmp = ONode.load(json).select("request1.result.relTickers");
+        System.out.println(tmp);
+
+        tmp = ONode.load(json).select("request1.result[0].relTickers[0].tickerId");
+        System.out.println(tmp);
+    }
 }
