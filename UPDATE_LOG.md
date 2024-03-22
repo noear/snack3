@@ -1,3 +1,9 @@
+#### 3.2.90
+* 修复 request1.result[*].relTickers[0].tickerId 表达式兼容问题
+
+#### 3.2.89
+* 添加 时间解析格式 "yyyy-MM-dd'T'HH:mm:ss+HH:mm"
+
 #### 3.2.88
 * 添加 OffsetDateTime 时间类型的处理
 
