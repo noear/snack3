@@ -61,20 +61,19 @@ public class JsonPathTest5 {
     public void test4() {
         String json = "{\"request1\":{\"result\":[{\"relTickers\":[{\"tickerId\":1},{\"tickerId\":1.1}],\"accountId\":400006},{\"relTickers\":[{\"tickerId\":2},{\"tickerId\":2.2}]},{\"relTickers\":[{\"tickerId\":3}]},{\"relTickers\":[{\"tickerId\":4}]},{\"relTickers\":[{\"tickerId\":5}]},{\"relTickers\":[{\"tickerId\":6}]}]}}\n";
 
-
         String jsonpathStr1 = "request1.result[*]";
         String jsonpathStr2 = "request1.result[*].relTickers";
         String jsonpathStr3 = "request1.result[*].relTickers[0]";
         String jsonpathStr4 = "request1.result[*].relTickers[0].tickerId";
 
-        test4_do(1, json, jsonpathStr1);
-        test4_do(2, json, jsonpathStr2);
-        test4_do(3, json, jsonpathStr3);
-        test4_do(4, json, jsonpathStr4);
+        compatible_do("1", json, jsonpathStr1);
+        compatible_do("2", json, jsonpathStr2);
+        compatible_do("3", json, jsonpathStr3);
+        compatible_do("4", json, jsonpathStr4);
     }
 
-    private void test4_do(int idx, String json, String jsonpathStr) {
-        System.out.println("::::" + idx);
+    private void compatible_do(String hint, String json, String jsonpathStr) {
+        System.out.println("::::" + hint);
         Object tmp = ONode.load(json).select(jsonpathStr);
         System.out.println(tmp);
 
