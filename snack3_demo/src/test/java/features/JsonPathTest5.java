@@ -58,15 +58,29 @@ public class JsonPathTest5 {
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         String json = "{\"request1\":{\"result\":[{\"relTickers\":[{\"tickerId\":1},{\"tickerId\":1.1}],\"accountId\":400006},{\"relTickers\":[{\"tickerId\":2},{\"tickerId\":2.2}]},{\"relTickers\":[{\"tickerId\":3}]},{\"relTickers\":[{\"tickerId\":4}]},{\"relTickers\":[{\"tickerId\":5}]},{\"relTickers\":[{\"tickerId\":6}]}]}}\n";
 
-        ONode tmp;
 
-         tmp = ONode.load(json).select("request1.result.relTickers");
+        String jsonpathStr1 = "request1.result[*]";
+        String jsonpathStr2 = "request1.result[*].relTickers";
+        String jsonpathStr3 = "request1.result[*].relTickers[0]";
+        String jsonpathStr4 = "request1.result[*].relTickers[0].tickerId";
+
+        test4_do(1, json, jsonpathStr1);
+        test4_do(2, json, jsonpathStr2);
+        test4_do(3, json, jsonpathStr3);
+        test4_do(4, json, jsonpathStr4);
+    }
+
+    private void test4_do(int idx, String json, String jsonpathStr) {
+        System.out.println("::::" + idx);
+        Object tmp = ONode.load(json).select(jsonpathStr);
         System.out.println(tmp);
 
-        tmp = ONode.load(json).select("request1.result[0].relTickers[0].tickerId");
-        System.out.println(tmp);
+        Object tmp2 = JsonPath.read(json, jsonpathStr);
+        System.out.println(tmp2);
+
+        assert tmp.toString().equals(tmp2.toString());
     }
 }

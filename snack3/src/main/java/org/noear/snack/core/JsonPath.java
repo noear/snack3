@@ -150,8 +150,9 @@ public class JsonPath {
      * */
     private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard, boolean getOrNew) {
         ONode tmp = source;
+        Segment last = null;
         boolean branch_do = false;
-        boolean ranged = false;
+        boolean regroup = false;
         for (Segment s : jsonPath.segments) {
             if (tmp == null) {//多次转换后，可能为null
                 break;
@@ -161,8 +162,8 @@ public class JsonPath {
                 ONode tmp2 = new ONode(source.options()).asArray();
 
 
-                for(ONode n1 : tmp.ary()){
-                    ONode n2 = s.handler.run(s, ranged, source, n1, useStandard, getOrNew);
+                for (ONode n1 : tmp.ary()) {
+                    ONode n2 = s.handler.run(last, s, regroup, source, n1, useStandard, getOrNew);
                     if (n2 != null) {
                         if (s.cmdAry != null) {
                             if (n2.isArray()) {
@@ -182,13 +183,17 @@ public class JsonPath {
                     branch_do = false;
                 }
             } else {
-                tmp = s.handler.run(s, ranged, source, tmp, useStandard, getOrNew);
+                tmp = s.handler.run(last, s, regroup, source, tmp, useStandard, getOrNew);
                 branch_do = s.cmdHasUnline;
             }
 
-            if(ranged == false) {
-                ranged = s.ranging;
+            if (s.regroup) {
+                regroup = true;
+            } else if (s.ranged) {
+                regroup = false;//如果有匹间选择，则重组解除
             }
+
+            last = s;
         }
 
         if (tmp == null) {
@@ -201,22 +206,22 @@ public class JsonPath {
     /**
      * 深度扫描
      * */
-    private static void scanByExpr(ONode source, List<ONode> target, Segment s, Boolean ranged, ONode root, ONode tmp, Boolean usd, Boolean orNew) {
+    private static void scanByExpr(ONode source, List<ONode> target,Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, Boolean orNew) {
         if (source.isObject()) {
-            ONode tmp2 = handler_ary_exp.run(s, ranged, root, source, usd, orNew);
+            ONode tmp2 = handler_ary_exp.run(bef, s, regroup, root, source, usd, orNew);
             if (tmp2 != null) {
                 target.add(tmp2);
             }
 
             for (Map.Entry<String, ONode> kv : source.obj().entrySet()) {
-                scanByExpr(kv.getValue(), target, s, ranged, root, tmp, usd, orNew);
+                scanByExpr(kv.getValue(), target, bef, s, regroup, root, tmp, usd, orNew);
             }
             return;
         }
 
         if (source.isArray()) {
             for (ONode n1 : source.ary()) {
-                scanByExpr(n1, target, s, ranged, root, tmp, usd, orNew);
+                scanByExpr(n1, target, bef, s, regroup, root, tmp, usd, orNew);
             }
             return;
         }
@@ -451,17 +456,17 @@ public class JsonPath {
     /**
      * "$"
      * */
-    private static Resolver handler_$=(s, ranged, root, tmp, usd, orNew)->{ return tmp;};
+    private static Resolver handler_$=(bef, s, regroup, root, tmp, usd, orNew)->{ return tmp;};
     /**
      * ".."
      * */
-    private static Resolver handler_xx=(s, ranged, root, tmp, usd, orNew)-> {
+    private static Resolver handler_xx=(bef, s, regroup, root, tmp, usd, orNew)-> {
         if (s.name.length() > 0) {
             ONode tmp2 = new ONode(root.options()).asArray();
             if ("*".equals(s.name)) {
                 scanByAll(s.name, tmp, true, tmp2.ary());
             } else if (s.name.startsWith("?")) {
-                scanByExpr(tmp, tmp2.ary(), s,ranged,root,tmp,usd,orNew);
+                scanByExpr(tmp, tmp2.ary(), bef, s, regroup, root, tmp, usd, orNew);
             } else {
                 scanByName(s.name, tmp, tmp2.ary());
             }
@@ -477,7 +482,7 @@ public class JsonPath {
     /**
      * ".*"
      * */
-    private static Resolver handler_x=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_x=(bef, s, regroup, root, tmp, usd, orNew)->{
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
@@ -486,7 +491,7 @@ public class JsonPath {
             if (tmp.isObject()) {
                 tmp2.addAll(tmp.obj().values());
             } else if(tmp.isArray()){
-                if(ranged){
+                if(regroup){
                     for(ONode n1 : tmp.ary()){
                         if(n1.isObject()){
                             tmp2.addAll(n1.obj().values());
@@ -506,7 +511,7 @@ public class JsonPath {
     /**
      * ".name"指令
      * */
-    private static Resolver handler_prop=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_prop=(bef, s, regroup, root, tmp, usd, orNew)->{
 
         if (tmp.isObject()) {
             if(orNew){
@@ -531,7 +536,7 @@ public class JsonPath {
                     }
                 }
 
-                if (ranged && n1.isArray()) {
+                if (regroup && n1.isArray()) {
                     for (ONode n2 : n1.ary()) {
                         if (n2.isObject()) {
                             if (orNew) {
@@ -560,7 +565,7 @@ public class JsonPath {
     /**
      * ".fun()" 指令
      * */
-    private static Resolver handler_fun=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_fun=(bef, s, regroup, root, tmp, usd, orNew)->{
         switch (s.cmd) {
             case "size()":{
                 return new ONode(tmp.options()).val(tmp.count());
@@ -591,7 +596,7 @@ public class JsonPath {
                             }
                         }
 
-                        if(ranged && n1.isArray()){
+                        if(regroup && n1.isArray()){
                             for(ONode n2 : n1.ary()){
                                 if(n2.isValue()) {
                                     if (min_n == null) {
@@ -621,7 +626,7 @@ public class JsonPath {
                             }
                         }
 
-                        if(ranged && n1.isArray()){
+                        if(regroup && n1.isArray()){
                             for(ONode n2 : n1.ary()){
                                 if(n2.isValue()) {
                                     if(max_n == null){
@@ -653,7 +658,7 @@ public class JsonPath {
                             num++;
                         }
 
-                        if(ranged && n1.isArray()){
+                        if(regroup && n1.isArray()){
                             for(ONode n2 : n1.ary()){
                                 if(n2.isValue()) {
                                     sum += n2.getDouble();
@@ -679,7 +684,7 @@ public class JsonPath {
                             sum += n1.getDouble();
                         }
 
-                        if(ranged && n1.isArray()){
+                        if(regroup && n1.isArray()){
                             for(ONode n2 : n1.ary()){
                                 if(n2.isValue()) {
                                     sum += n2.getDouble();
@@ -701,11 +706,11 @@ public class JsonPath {
     /**
      * ".*]" 指令
      * */
-    private static Resolver handler_ary_x=(s, ranged, root, tmp, usd, orNew)-> {
+    private static Resolver handler_ary_x=(bef, s, regroup, root, tmp, usd, orNew)-> {
         ONode tmp2 = null;
 
         if (tmp.isArray()) {
-            if(ranged){
+            if(regroup){
                 tmp2 = new ONode(tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
                     if (n1.isObject()) {
@@ -730,7 +735,7 @@ public class JsonPath {
     /**
      * ".[?()]" 指令
      * */
-    private static Resolver handler_ary_exp=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_ary_exp=(bef, s, regroup, root, tmp, usd, orNew)->{
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
@@ -745,7 +750,7 @@ public class JsonPath {
                         tmp2.nodeData().array.add(n1);
                     }
 
-                    if(ranged && n1.isArray()){
+                    if(regroup && n1.isArray()){
                         for(ONode n2 : n1.ary()){
                             if(n2.isObject() && do_get(n2,s.left,true, usd, orNew).isNull() == false){
                                 tmp2.nodeData().array.add(n2);
@@ -813,7 +818,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_ref=(s, ranged, root, tmp, usd, orNew)-> {
+    private static Resolver handler_ary_ref=(bef, s, regroup, root, tmp, usd, orNew)-> {
         ONode tmp2 = null;
 
         if(tmp.isObject()) {
@@ -833,7 +838,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_multi=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_ary_multi=(bef, s, regroup, root, tmp, usd, orNew)->{
         ONode tmp2 = null;
 
         if(s.cmdAry.indexOf("'")>=0){
@@ -885,7 +890,7 @@ public class JsonPath {
         return tmp2;
     };
 
-    private static Resolver handler_ary_range=(s, ranged, root, tmp, usd, orNew)->{
+    private static Resolver handler_ary_range=(bef, s, regroup, root, tmp, usd, orNew)->{
         if (tmp.isArray()) {
             int count = tmp.count();
             int start = s.start;
@@ -916,7 +921,7 @@ public class JsonPath {
         }
     };
 
-    private static Resolver handler_ary_prop=(s, ranged, root, tmp, usd, orNew)-> {
+    private static Resolver handler_ary_prop=(bef, s, regroup, root, tmp, usd, orNew)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
             if(tmp.isObject()) {
@@ -939,17 +944,37 @@ public class JsonPath {
 
             return null;
         } else {
-            if (s.start < 0) {
-                if(orNew){
-                    return tmp.getOrNew(tmp.count() + s.start);//倒数位
-                }else {
-                    return tmp.getOrNull(tmp.count() + s.start);//倒数位
+            if (regroup) {
+                ONode tmp2 = new ONode(tmp.options()).asArray();
+                for (ONode n1 : tmp.ary()) {
+                    if (s.start < 0) {
+                        if (orNew) {
+                            tmp2.add(n1.getOrNew(n1.count() + s.start));//倒数位
+                        } else {
+                            tmp2.add(n1.getOrNull(n1.count() + s.start));//倒数位
+                        }
+                    } else {
+                        if (orNew) {
+                            tmp2.add(n1.getOrNew(s.start));
+                        } else {
+                            tmp2.add(n1.getOrNull(s.start));//正数位
+                        }
+                    }
                 }
+                return tmp2;
             } else {
-                if (orNew) {
-                    return tmp.getOrNew(s.start);
+                if (s.start < 0) {
+                    if (orNew) {
+                        return tmp.getOrNew(tmp.count() + s.start);//倒数位
+                    } else {
+                        return tmp.getOrNull(tmp.count() + s.start);//倒数位
+                    }
                 } else {
-                    return tmp.getOrNull(s.start);//正数位
+                    if (orNew) {
+                        return tmp.getOrNew(s.start);
+                    } else {
+                        return tmp.getOrNull(s.start);//正数位
+                    }
                 }
             }
         }
@@ -959,13 +984,13 @@ public class JsonPath {
     private interface Resolver {
         /**
          * @param s      指令片断
-         * @param ranged 范围的
+         * @param regroup 组重的
          * @param root   根节点
          * @param tmp    上一次处理结果
          * @param usd    是否用标准处理
          * @param orNew  是否尝试新建
          */
-        ONode run(Segment s, Boolean ranged, ONode root, ONode tmp, Boolean usd, Boolean orNew);
+        ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, Boolean orNew);
     }
 
 
@@ -974,13 +999,14 @@ public class JsonPath {
         public String cmdAry;
         public final boolean cmdHasQuote; //是否有引号
         public final boolean cmdHasUnline; //是否为**（指令里用_表达）
-        public final boolean ranging;//是否有范围选择
+        public final boolean regroup;//是否有重组（外层会再套个数组）
         public List<Integer> indexS;
         public List<String> nameS;
 
         public String name;
         public int start = 0;
         public int end = 0;
+        public boolean ranged = false;
 
         public String left;
         public String op;
@@ -993,7 +1019,7 @@ public class JsonPath {
             cmdHasQuote = cmd.indexOf("'")>=0;
             cmdHasUnline = cmd.startsWith("^");
 
-            ranging = cmd.contains("?") || cmd.startsWith("*");
+            regroup = cmd.contains("?") || cmd.startsWith("*");
 
             if(cmdHasUnline){
                 name = cmd.substring(1);
@@ -1026,6 +1052,7 @@ public class JsonPath {
                     if (iAry[1].length() > 0) {
                         end = Integer.parseInt(iAry[1]);
                     }
+                    ranged = true;
                 } else if (cmdAry.indexOf(",") > 0) {
                     if (cmdAry.indexOf("'") >= 0) {
                         nameS = new ArrayList<>();
@@ -1048,6 +1075,7 @@ public class JsonPath {
                         name = cmdAry.substring(1, cmdAry.length() - 1);
                     } else if (StringUtil.isInteger(cmdAry)) {
                         start = Integer.parseInt(cmdAry);
+                        ranged = true;
                     }
                 }
             }
