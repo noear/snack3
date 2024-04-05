@@ -1,3 +1,6 @@
+#### 3.2.91
+* 添加 ONodeAttr::asString
+
 #### 3.2.90
 * 修复 request1.result[*].relTickers[0].tickerId 表达式兼容问题
 

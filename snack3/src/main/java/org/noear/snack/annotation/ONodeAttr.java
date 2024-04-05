@@ -24,8 +24,13 @@ public @interface ONodeAttr {
 
     /**
      * 时区
-     * */
+     */
     String timezone() default "";
+
+    /**
+     * 作为字符串
+     */
+    boolean asString() default false;
 
     /**
      * 忽略（相当于：serialize=false, deserialize=false）
@@ -44,6 +49,6 @@ public @interface ONodeAttr {
 
     /**
      * 包函null
-     * */
+     */
     boolean incNull() default true;
 }

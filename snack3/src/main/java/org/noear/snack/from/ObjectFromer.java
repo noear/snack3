@@ -397,6 +397,11 @@ public class ObjectFromer implements Fromer {
                 }
             }
 
+            if(f.isAsString()){
+                rst.set(f.getName(), val.toString());
+                continue;
+            }
+
             rst.setNode(f.getName(), analyse(cfg, val));
         }
 

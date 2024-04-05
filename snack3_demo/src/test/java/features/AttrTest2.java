@@ -1,5 +1,6 @@
 package features;
 
+import _models.AttrModel;
 import _models.UserModel3;
 import org.junit.Test;
 import org.noear.snack.ONode;
@@ -68,5 +69,19 @@ public class AttrTest2 {
         assert user.id == 1;
         assert user.name == null;
         assert user.note == null;
+    }
+
+    @Test
+    public void test3_asString() {
+        AttrModel attrModel = new AttrModel();
+        attrModel.id=1;
+        attrModel.traceId=2;
+        attrModel.name = "noear";
+
+        String json = ONode.stringify(attrModel);
+
+        System.out.println(json);
+
+        assert "{\"id\":1,\"traceId\":\"2\",\"name\":\"noear\"}".equals(json);
     }
 }

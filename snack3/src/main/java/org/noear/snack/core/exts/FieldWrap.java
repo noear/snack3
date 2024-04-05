@@ -23,6 +23,7 @@ public class FieldWrap {
     private String name;
     private String format;
     private TimeZone timeZone;
+    private boolean asString = false;
     private boolean serialize = true;
     private boolean deserialize = true;
     private boolean incNull = true;
@@ -48,6 +49,7 @@ public class FieldWrap {
             name = attr.name();
             format = attr.format();
             incNull = attr.incNull();
+            asString = attr.asString();
 
 
             if(StringUtil.isEmpty(attr.timezone()) == false) {
@@ -116,6 +118,13 @@ public class FieldWrap {
      * */
     public boolean isIncNull() {
         return incNull;
+    }
+
+    /**
+     * @since 3.2.90
+     * */
+    public boolean isAsString() {
+        return asString;
     }
 
     public void setValue(Object tObj, Object val) {
