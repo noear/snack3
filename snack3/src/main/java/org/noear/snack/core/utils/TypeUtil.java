@@ -171,7 +171,7 @@ public class TypeUtil {
                 list = (Collection) rawClass.getDeclaredConstructor().newInstance();
             } catch (Throwable e) {
                 if (isThrow) {
-                    throw new SnackException("create instance error, class " + rawClass.getName(), e);
+                    throw new SnackException("the instantiation failed, class=" + rawClass.getName(), e);
                 } else {
                     return null;
                 }

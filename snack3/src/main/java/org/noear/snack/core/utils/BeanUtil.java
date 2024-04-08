@@ -85,7 +85,7 @@ public class BeanUtil {
                 return clz.getDeclaredConstructor().newInstance();
             }
         } catch (Throwable e) {
-            throw new SnackException("create instance error, class " + clz.getName(), e);
+            throw new SnackException("the instantiation failed, class " + clz.getName(), e);
         }
     }
 }
