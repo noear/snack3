@@ -65,7 +65,7 @@ public class OValue {
             return;
         }
 
-        throw new SnackException("unsupport type class" + val.getClass().getName());
+        throw new SnackException("Unsupport type, class: " + val.getClass().getName());
     }
 
     public void setNull() {

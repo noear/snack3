@@ -323,7 +323,7 @@ public class ObjectToer implements Toer {
 
             return val;
         } else {
-            throw new SnackException("unsupport type " + clz.getName());
+            throw new SnackException("Unsupport type, class: " + clz.getName());
         }
     }
 
@@ -420,7 +420,7 @@ public class ObjectToer implements Toer {
             }
             return val;
         } else {
-            throw new SnackException("unsupport type " + target.getName());
+            throw new SnackException("Unsupport type, class: " + target.getName());
         }
     }
 
@@ -594,7 +594,7 @@ public class ObjectToer implements Toer {
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("the constructor missing parameters: " + clz.getName(), e);
             } catch (Throwable e) {
-                throw new SnackException("the instantiation failed, class=" + clz.getName(), e);
+                throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
             }
         } else {
             //排除字段
@@ -628,9 +628,9 @@ public class ObjectToer implements Toer {
                     try {
                         rst = clzWrap.recordConstructor().newInstance(argsV);
                     } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("the constructor missing parameters: " + clz.getName(), e);
+                        throw new IllegalArgumentException("The constructor missing parameters: " + clz.getName(), e);
                     } catch (Throwable e) {
-                        throw new SnackException("the instantiation failed, class=" + clz.getName(), e);
+                        throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
                     }
                 }
             }
@@ -765,12 +765,12 @@ public class ObjectToer implements Toer {
                     typeStr.startsWith("com.sun.") ||
                     typeStr.startsWith("javax.") ||
                     typeStr.startsWith("jdk.")) {
-                throw new SnackException("Unsupported type: " + typeStr);
+                throw new SnackException("Unsupported type, class: " + typeStr);
             }
 
             Class<?> clz = ctx.options.loadClass(typeStr);
             if (clz == null) {
-                throw new SnackException("Unsupported type: " + typeStr);
+                throw new SnackException("Unsupported type, class: " + typeStr);
             } else {
                 return clz;
             }

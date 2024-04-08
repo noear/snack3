@@ -31,7 +31,7 @@ public class TypeUtil {
         } else if (Long.class.isAssignableFrom(clz) || Long.TYPE == clz) {
             return Long.parseLong(str);
         } else {
-            throw new SnackException("unsupport type " + str);
+            throw new SnackException("Unsupport type '" + str + "', to: " + clz.getName());
         }
     }
 
@@ -171,7 +171,7 @@ public class TypeUtil {
                 list = (Collection) rawClass.getDeclaredConstructor().newInstance();
             } catch (Throwable e) {
                 if (isThrow) {
-                    throw new SnackException("the instantiation failed, class=" + rawClass.getName(), e);
+                    throw new SnackException("The instantiation failed, class: " + rawClass.getName(), e);
                 } else {
                     return null;
                 }
@@ -233,13 +233,13 @@ public class TypeUtil {
 
         Class<?> clazz = (Class<?>) type;
         if (clazz.isInterface()) {
-            throw new SnackException("unsupport type " + type);
+            throw new SnackException("Unsupport type, class: " + type);
         }
 
         try {
             return (Map) clazz.getDeclaredConstructor().newInstance();
         } catch (Throwable e) {
-            throw new SnackException("unsupport type " + type, e);
+            throw new SnackException("Unsupport type, class: " + type, e);
         }
     }
 
@@ -249,7 +249,7 @@ public class TypeUtil {
         } else if (type instanceof ParameterizedType) {
             return getRawClass(((ParameterizedType) type).getRawType());
         } else {
-            throw new SnackException("unsupport type " + type);
+            throw new SnackException("Unsupport type, class: " + type);
         }
     }
 

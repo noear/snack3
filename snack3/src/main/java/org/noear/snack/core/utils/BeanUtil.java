@@ -61,7 +61,7 @@ public class BeanUtil {
                 buf.append(chars, 0, len);
             }
         } catch (Throwable e) {
-            throw new SnackException("read string from reader error", e);
+            throw new SnackException("Read string from reader error", e);
         }
 
         String text = buf.toString();
@@ -70,7 +70,7 @@ public class BeanUtil {
             try {
                 reader.close();
             } catch (Throwable e) {
-                throw new SnackException("read string from reader error", e);
+                throw new SnackException("Read string from reader error", e);
             }
         }
 
@@ -85,7 +85,7 @@ public class BeanUtil {
                 return clz.getDeclaredConstructor().newInstance();
             }
         } catch (Throwable e) {
-            throw new SnackException("the instantiation failed, class " + clz.getName(), e);
+            throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
         }
     }
 }
