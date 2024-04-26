@@ -263,7 +263,8 @@ public class ObjectFromer implements Fromer {
                 String p1 = keySegments[i];
 
                 if (p1.endsWith("]")) {
-                    int idx = Integer.parseInt(p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1));
+                    String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
+                    int idx = tmp.length() >0 ? Integer.parseInt(tmp) : 0;
                     p1 = p1.substring(0, p1.lastIndexOf('['));
 
                     if(p1.length() > 0) {

@@ -61,7 +61,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         Properties props = new Properties();
         props.setProperty("typeA", "_model5.TypeAImpl");
         props.setProperty("typeB", "_model5.TypeBImpl");
@@ -71,5 +71,17 @@ public class PropertiesTest {
         System.out.println(typeC.typeA);
         assert typeC.typeB != null;
         System.out.println(typeC.typeB);
+    }
+
+    @Test
+    public void test3() {
+        Properties props = new Properties();
+        props.setProperty("type[]", "_model5.TypeAImpl");
+
+        ONode tmp = ONode.loadObj(props).get("type");
+        System.out.println(tmp.toJson());
+
+        assert tmp.isArray();
+        assert tmp.count() == 1;
     }
 }
