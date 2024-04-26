@@ -97,6 +97,8 @@ public class ObjectFromer implements Fromer {
             analyseBean(opt, rst, clz, source);
         } else if (source instanceof Properties) {
             analyseProps(opt, rst, clz, source);
+        } else if (source instanceof NameValues){
+            analyseNameValues(opt, rst, clz, source);
         } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
 
         } else if (clz.isEnum() || Enum.class.isAssignableFrom(clz)) { //新补充的类型 //clz.isEnum() 继随接口后，没法实别了
@@ -256,31 +258,75 @@ public class ObjectFromer implements Fromer {
         for (String key : keyVector) {
             String val = props.getProperty(key);
 
-            String[] keySegments = key.split("\\.");
-            ONode n1 = rst;
-
-            for (int i = 0; i < keySegments.length; i++) {
-                String p1 = keySegments[i];
-
-                if (p1.endsWith("]")) {
-                    String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
-                    int idx = tmp.length() >0 ? Integer.parseInt(tmp) : 0;
-                    p1 = p1.substring(0, p1.lastIndexOf('['));
-
-                    if(p1.length() > 0) {
-                        n1 = n1.getOrNew(p1).getOrNew(idx);
-                    }else{
-                        n1 = n1.getOrNew(idx);
-                    }
-                } else {
-                    n1 = n1.getOrNew(p1);
-                }
-            }
-
-            n1.val(val);
+            analysePropsItem(rst, key, val);
         }
 
         return true;
+    }
+
+    private boolean analyseNameValues(Options cfg, ONode rst, Class<?> clz, Object obj) {
+        NameValues props = (NameValues) obj;
+
+        if (props.size() == 0) {
+            rst.asNull();
+            return true;
+        }
+
+
+        //对key排序，确保数组有序
+        props.sort();
+
+        //确定类型
+        if (props.get(0).getKey().startsWith("[")) {
+            rst.asArray();
+        } else {
+            rst.asObject();
+        }
+
+        for (Map.Entry<String, String> kv : props.getItems()) {
+            String key = kv.getKey();
+            String val = kv.getValue();
+
+            analysePropsItem(rst, key, val);
+        }
+
+        return true;
+    }
+
+    private void analysePropsItem(ONode rst, String key, String val){
+        /**
+         *  ("title", "test");
+         *  ("debug", "true");
+         *  ("user.id", "1");
+         *  ("user.name", "noear");
+         *  ("server.urls[0]", "http://x.x.x");
+         *  ("server.urls[1]", "http://y.y.y");
+         *  ("user.orders[0].items[0].name", "手机");
+         *  ("type[]", "a");
+         *  ("type[]", "b");
+         * */
+        String[] keySegments = key.split("\\.");
+        ONode n1 = rst;
+
+        for (int i = 0; i < keySegments.length; i++) {
+            String p1 = keySegments[i];
+
+            if (p1.endsWith("]")) {
+                String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
+                int idx = tmp.length() >0 ? Integer.parseInt(tmp) : 0;
+                p1 = p1.substring(0, p1.lastIndexOf('['));
+
+                if(p1.length() > 0) {
+                    n1 = n1.getOrNew(p1).getOrNew(idx);
+                }else{
+                    n1 = n1.getOrNew(idx);
+                }
+            } else {
+                n1 = n1.getOrNew(p1);
+            }
+        }
+
+        n1.val(val);
     }
 
     private boolean analyseBean(Options cfg, ONode rst, Class<?> clz, Object obj) {

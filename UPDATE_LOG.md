@@ -1,5 +1,6 @@
 #### 3.2.93
 * 添加 Properties "type[]" 风格的支持
+* 添加 Properties 增强模式（NameValues）转换
 
 #### 3.2.92
 * 优化 实例化异常提示

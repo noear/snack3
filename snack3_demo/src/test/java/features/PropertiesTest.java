@@ -3,6 +3,7 @@ package features;
 import _model5.TypeC;
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.NameValues;
 
 import java.util.Properties;
 
@@ -83,5 +84,24 @@ public class PropertiesTest {
 
         assert tmp.isArray();
         assert tmp.count() == 1;
+    }
+
+    @Test
+    public void test4(){
+        NameValues nameValues = new NameValues();
+        nameValues.add("title", "test");
+        nameValues.add("debug", "true");
+        nameValues.add("user.id", "1");
+        nameValues.add("user.name", "noear");
+        nameValues.add("server.urls[0]", "http://x.x.x");
+        nameValues.add("server.urls[1]", "http://y.y.y");
+        nameValues.add("user.orders[0].items[0].name", "手机");
+        nameValues.add("type[]", "a");
+        nameValues.add("type[]", "b");
+
+        String json = ONode.loadObj(nameValues).toJson();
+        System.out.println(json);
+
+        assert "{\"debug\":\"true\",\"server\":{\"urls\":[\"http://x.x.x\",\"http://y.y.y\"]},\"title\":\"test\",\"type\":[\"b\"],\"user\":{\"id\":\"1\",\"name\":\"noear\",\"orders\":[{\"items\":[{\"name\":\"手机\"}]}]}}".equals(json);
     }
 }
