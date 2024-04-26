@@ -102,6 +102,6 @@ public class PropertiesTest {
         String json = ONode.loadObj(nameValues).toJson();
         System.out.println(json);
 
-        assert "{\"debug\":\"true\",\"server\":{\"urls\":[\"http://x.x.x\",\"http://y.y.y\"]},\"title\":\"test\",\"type\":[\"b\"],\"user\":{\"id\":\"1\",\"name\":\"noear\",\"orders\":[{\"items\":[{\"name\":\"手机\"}]}]}}".equals(json);
+        assert "{\"debug\":\"true\",\"server\":{\"urls\":[\"http://x.x.x\",\"http://y.y.y\"]},\"title\":\"test\",\"type\":[\"a\",\"b\"],\"user\":{\"id\":\"1\",\"name\":\"noear\",\"orders\":[{\"items\":[{\"name\":\"手机\"}]}]}}".equals(json);
     }
 }

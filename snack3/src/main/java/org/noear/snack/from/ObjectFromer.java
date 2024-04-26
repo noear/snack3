@@ -293,7 +293,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private void analysePropsItem(ONode rst, String key, String val){
+    private void analysePropsItem(ONode rst, String key, String val) {
         /**
          *  ("title", "test");
          *  ("debug", "true");
@@ -313,14 +313,23 @@ public class ObjectFromer implements Fromer {
 
             if (p1.endsWith("]")) {
                 String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
-                int idx = tmp.length() >0 ? Integer.parseInt(tmp) : 0;
+                int idx = tmp.length() > 0 ? Integer.parseInt(tmp) : -1;
                 p1 = p1.substring(0, p1.lastIndexOf('['));
 
-                if(p1.length() > 0) {
-                    n1 = n1.getOrNew(p1).getOrNew(idx);
-                }else{
-                    n1 = n1.getOrNew(idx);
+                if (idx < 0) {
+                    if (p1.length() > 0) {
+                        n1 = n1.getOrNew(p1).addNew();
+                    } else {
+                        n1 = n1.addNew();
+                    }
+                } else {
+                    if (p1.length() > 0) {
+                        n1 = n1.getOrNew(p1).getOrNew(idx);
+                    } else {
+                        n1 = n1.getOrNew(idx);
+                    }
                 }
+
             } else {
                 n1 = n1.getOrNew(p1);
             }
