@@ -1,13 +1,17 @@
 package org.noear.snack.core.utils;
 
 public class StringUtil {
-    /** 检查字符串是否为null or 空 */
+    /**
+     * 检查字符串是否为null or 空
+     */
     public static boolean isEmpty(String s) {
         return s == null || s.length() == 0;
     }
 
-    /** 是否为数字 */
-    public static boolean isInteger(String str){
+    /**
+     * 是否为数字
+     */
+    public static boolean isInteger(String str) {
         return isNumberDo(str, false);
     }
 
@@ -20,16 +24,15 @@ public class StringUtil {
      */
     private static boolean isNumberDo(String str, boolean incDot) {
         if (str != null && str.length() != 0) {
-            char[] chars = str.toCharArray();
-            int l = chars.length;
+            int l = str.length();
 
-            int start = chars[0] != '-' && chars[0] != '+' ? 0 : 1;
+            int start = str.charAt(0) != '-' && str.charAt(0) != '+' ? 0 : 1;
             boolean hasDot = false;
 
             for (int i = start; i < l; ++i) {
-                int ch = chars[i];
+                int ch = str.charAt(i);
 
-                if(incDot) {
+                if (incDot) {
                     if (ch == 46) {
                         if (hasDot) {
                             return false;
@@ -51,4 +54,3 @@ public class StringUtil {
         }
     }
 }
-

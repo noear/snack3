@@ -313,20 +313,32 @@ public class ObjectFromer implements Fromer {
 
             if (p1.endsWith("]")) {
                 String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
-                int idx = tmp.length() > 0 ? Integer.parseInt(tmp) : -1;
                 p1 = p1.substring(0, p1.lastIndexOf('['));
 
-                if (idx < 0) {
+                if (tmp.length() > 0) {
+                    if(StringUtil.isInteger(tmp)) {
+                        //[1]
+                        int idx = Integer.parseInt(tmp);
+
+                        if (p1.length() > 0) {
+                            n1 = n1.getOrNew(p1).getOrNew(idx);
+                        } else {
+                            n1 = n1.getOrNew(idx);
+                        }
+                    }else{
+                        //[a]
+                        if (p1.length() > 0) {
+                            n1 = n1.getOrNew(p1).getOrNew(tmp);
+                        } else {
+                            n1 = n1.getOrNew(tmp);
+                        }
+                    }
+                } else {
+                    //[]
                     if (p1.length() > 0) {
                         n1 = n1.getOrNew(p1).addNew();
                     } else {
                         n1 = n1.addNew();
-                    }
-                } else {
-                    if (p1.length() > 0) {
-                        n1 = n1.getOrNew(p1).getOrNew(idx);
-                    } else {
-                        n1 = n1.getOrNew(idx);
                     }
                 }
 
