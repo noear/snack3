@@ -104,4 +104,18 @@ public class PropertiesTest {
 
         assert "{\"debug\":\"true\",\"server\":{\"urls\":[\"http://x.x.x\",\"http://y.y.y\"]},\"title\":\"test\",\"type\":[\"a\",\"b\"],\"user\":{\"id\":\"1\",\"name\":\"noear\",\"orders\":[{\"items\":[{\"name\":\"手机\"}]}]}}".equals(json);
     }
+
+    @Test
+    public void test5(){
+        NameValues nameValues = new NameValues();
+        nameValues.add("title", "test");
+        nameValues.add("debug", "true");
+        nameValues.add("user[id]", "1");
+        nameValues.add("user[name]", "noear");
+
+        String json = ONode.loadObj(nameValues).toJson();
+        System.out.println(json);
+
+        assert "{\"debug\":\"true\",\"title\":\"test\",\"user\":{\"id\":\"1\",\"name\":\"noear\"}}".equals(json);
+    }
 }

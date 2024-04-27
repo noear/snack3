@@ -1,3 +1,6 @@
+#### 3.2.95
+* 添加 Properties "type[a]" 风格的支持
+
 #### 3.2.94
 * 添加 Properties "type[]" 风格的支持
 * 添加 Properties 增强模式（NameValues）转换
