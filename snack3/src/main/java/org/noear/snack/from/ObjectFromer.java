@@ -312,11 +312,11 @@ public class ObjectFromer implements Fromer {
             String p1 = keySegments[i];
 
             if (p1.endsWith("]")) {
-                String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);
-                p1 = p1.substring(0, p1.lastIndexOf('['));
+                String tmp = p1.substring(p1.lastIndexOf('[') + 1, p1.length() - 1);//?=$[?]
+                p1 = p1.substring(0, p1.lastIndexOf('[')); //?=?[$]
 
                 if (tmp.length() > 0) {
-                    if(StringUtil.isInteger(tmp)) {
+                    if (StringUtil.isInteger(tmp)) {
                         //[1]
                         int idx = Integer.parseInt(tmp);
 
@@ -325,7 +325,11 @@ public class ObjectFromer implements Fromer {
                         } else {
                             n1 = n1.getOrNew(idx);
                         }
-                    }else{
+                    } else {
+                        if (tmp.length() > 2 && (tmp.indexOf('\'') == 0 || tmp.indexOf('"') == 0)) {
+                            tmp = tmp.substring(1, tmp.length() - 1);
+                        }
+
                         //[a]
                         if (p1.length() > 0) {
                             n1 = n1.getOrNew(p1).getOrNew(tmp);

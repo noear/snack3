@@ -3,6 +3,7 @@ package features;
 import _model5.TypeC;
 import org.junit.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.NameValues;
 
 import java.util.Properties;
@@ -117,5 +118,19 @@ public class PropertiesTest {
         System.out.println(json);
 
         assert "{\"debug\":\"true\",\"title\":\"test\",\"user\":{\"id\":\"1\",\"name\":\"noear\"}}".equals(json);
+    }
+
+    @Test
+    public void test6(){
+        NameValues nameValues = new NameValues();
+        nameValues.add("title", "test");
+        nameValues.add("debug", "true");
+        nameValues.add("user['id']", "1");
+        nameValues.add("user[\"name\"]", "noear");
+
+        String json = ONode.loadObj(nameValues).toJson();
+        System.out.println(json);
+
+        assert "{\"debug\":\"true\",\"title\":\"test\",\"user\":{\"name\":\"noear\",\"id\":\"1\"}}".equals(json);
     }
 }
