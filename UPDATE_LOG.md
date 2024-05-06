@@ -1,3 +1,6 @@
+#### 3.2.96
+* 添加 Properties "type['a']" 风格的支持
+
 #### 3.2.95
 * 添加 Properties "type[a]" 风格的支持
 
