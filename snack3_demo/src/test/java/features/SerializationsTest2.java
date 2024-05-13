@@ -158,4 +158,12 @@ public class SerializationsTest2 {
         assert mapModel.data != null;
         assert mapModel.data.size() == 2;
     }
+
+    @Test
+    public void test6() {
+        String json = "{user-name:'noear',userName:'noear'}";
+        NameModel nameModel = ONode.deserialize(json, NameModel.class);
+        System.out.println(nameModel);
+        assert "noear".equals(nameModel.getUserName());
+    }
 }
