@@ -11,6 +11,7 @@ public class CharReader {
     private int _length;
     private int _next = 0;
     private char _val;
+    private char _last=0;
 
     public CharReader(String s) {
         this.chars  = s;
@@ -21,9 +22,14 @@ public class CharReader {
         if (_next >= _length) {
             return false;
         }else {
+            _last = _val;
             _val = chars.charAt(_next++);
             return true;
         }
+    }
+
+    public char last() {
+        return _last;
     }
 
     public char next(){

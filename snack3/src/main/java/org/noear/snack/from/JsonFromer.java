@@ -95,6 +95,7 @@ public class JsonFromer implements Fromer {
         String name = null;
 
         boolean read_space1 = false;
+
         // 读入字符
         while (sr.read()) {
             char c = sr.value();
@@ -102,6 +103,11 @@ public class JsonFromer implements Fromer {
             // 根据字符
             switch (c) {
                 case '"':
+                    if(sBuf.length() > 0){
+                        //发现 " 之前，不应该有内容
+                        throw new SnackException("Json string format is invalid: " + ctx.source);
+                    }
+
                     scanString(sr, sBuf, '"');
                     if (analyse_buf(ctx, p, name, sBuf)) {
                         name = null;
@@ -116,6 +122,10 @@ public class JsonFromer implements Fromer {
                     break;
 
                 case '{':
+                    if(sr.last() == '{'){
+                        throw new SnackException("Json string format is invalid: " + ctx.source);
+                    }
+
                     if (p.isObject()) {
                         analyse(ctx, sr, sBuf, p.getNew(name).asObject());
                         name = null;
