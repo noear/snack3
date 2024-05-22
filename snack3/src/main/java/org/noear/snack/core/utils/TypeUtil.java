@@ -135,6 +135,14 @@ public class TypeUtil {
         return type;
     }
 
+    public static boolean isEmptyCollection(Object obj) {
+        if (obj == null || obj == Collections.EMPTY_MAP || obj == Collections.EMPTY_LIST || obj == Collections.EMPTY_SET) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static Collection createCollection(Type type, boolean isThrow) {
         if (type == null) {
             return new ArrayList();
@@ -252,5 +260,4 @@ public class TypeUtil {
             throw new SnackException("Unsupport type, class: " + type);
         }
     }
-
 }

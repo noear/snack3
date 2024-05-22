@@ -77,7 +77,7 @@ public class ObjectToer implements Toer {
             case Value:
                 if (clz != null && Collection.class.isAssignableFrom(clz)) {
                     //如果接收对象为集合???尝试做为item
-                    if(rst == null || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+                    if(TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
                         rst = TypeUtil.createCollection(clz, false);
                     }
 
@@ -426,7 +426,7 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseCollection(Context ctx, ONode o, Collection coll, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        if(coll == null || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+        if(TypeUtil.isEmptyCollection(coll) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
             coll = TypeUtil.createCollection(clz, false);
         }
 
@@ -505,7 +505,7 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        if(map == null || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+        if(TypeUtil.isEmptyCollection(map) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
             map = TypeUtil.createMap(clz);
         }
 
