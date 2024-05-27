@@ -8,7 +8,7 @@ Snack3 基于jdk8，80kb大小，非常小巧。
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.2.98</version>
+  <version>3.2.99</version>
 </dependency>
 ```
 

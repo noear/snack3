@@ -1,3 +1,6 @@
+### 3.2.99
+* 添加 ThData::clear 接口，用于清理 ThreadLocal 缓存
+
 ### 3.2.98
 * 添加 Collections.EMPTY_MAP 等空集合的赋值支持
 
