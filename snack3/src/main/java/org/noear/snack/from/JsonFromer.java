@@ -23,6 +23,13 @@ import java.util.Date;
 public class JsonFromer implements Fromer {
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(() -> new CharBuffer());
 
+    /**
+     * 清空线程缓存
+     * */
+    public static void clear(){
+        tlBuilder.remove();
+    }
+
     @Override
     public void handle(Context ctx) throws IOException {
         ctx.target = do_handle(ctx, (String) ctx.source);

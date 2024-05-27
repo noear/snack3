@@ -22,6 +22,12 @@ import java.util.Iterator;
  * */
 public class JsonToer implements Toer {
     private static final ThData<StringBuilder> tlBuilder = new ThData(() -> new StringBuilder(1024 * 5));
+    /**
+     * 清空线程缓存
+     * */
+    public static void clear(){
+        tlBuilder.remove();
+    }
 
     @Override
     public void handle(Context ctx) {

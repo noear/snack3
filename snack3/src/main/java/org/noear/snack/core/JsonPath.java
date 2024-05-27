@@ -59,6 +59,14 @@ public class JsonPath {
     private static final ThData<TmpCache> tlCache = new ThData<>(()->new TmpCache());
 
     /**
+     * 清空线程缓存
+     * */
+    public static void clear(){
+        tlBuilder.remove();
+        tlCache.remove();
+    }
+
+    /**
      * 编译jpath指令
      * */
     private List<Segment> segments;
