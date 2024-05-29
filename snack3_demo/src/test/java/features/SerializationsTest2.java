@@ -5,6 +5,7 @@ import _models.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.TypeRef;
 import org.noear.solon.Solon;
 import org.noear.solon.test.SolonJUnit4ClassRunner;
@@ -165,5 +166,28 @@ public class SerializationsTest2 {
         NameModel nameModel = ONode.deserialize(json, NameModel.class);
         System.out.println(nameModel);
         assert "noear".equals(nameModel.getUserName());
+    }
+
+    @Test
+    public void test7(){
+        SModel sModel = new SModel();
+        sModel.age = 11;
+        sModel.name = "test";
+
+        String json = ONode.load(sModel, Feature.UseOnlyGetter, Feature.UseOnlySetter).toJson();
+        System.out.println(json);
+        assert json.contains("name") == false;
+        assert json.contains("age");
+    }
+
+    @Test
+    public void test8(){
+        String json = "{age:11,name:'test'}";
+
+        SModel sModel = ONode.load(json, Feature.UseOnlyGetter, Feature.UseOnlySetter).toObject(SModel.class);
+        System.out.println(sModel);
+
+        assert sModel.name == null;
+        assert sModel.age == 11;
     }
 }
