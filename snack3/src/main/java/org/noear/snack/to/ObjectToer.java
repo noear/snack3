@@ -639,12 +639,29 @@ public class ObjectToer implements Toer {
                 return null;
             }
 
-            boolean disSetter = !ctx.options.hasFeature(Feature.UseSetter);
+            boolean useSetter = ctx.options.hasFeature(Feature.UseSetter);
+            boolean useOnlySetter = ctx.options.hasFeature(Feature.UseOnlySetter);
+            if(useOnlySetter){
+                useSetter = true;
+            }
+
+            boolean useGetter = ctx.options.hasFeature(Feature.UseGetter);
+            boolean useOnlyGetter = ctx.options.hasFeature(Feature.UseOnlyGetter);
+            if(useOnlyGetter){
+                useGetter = true;
+            }
 
             for (FieldWrap f : clzWrap.fieldAllWraps()) {
                 if (f.isDeserialize() == false) {
+                    //不做序列化
                     continue;
                 }
+
+                if(useOnlySetter && f.hasSetter == false){
+                    //只用setter
+                    continue;
+                }
+
                 String fieldK = f.getName();
 
                 if (excNames != null && excNames.contains(fieldK)) {
@@ -657,11 +674,11 @@ public class ObjectToer implements Toer {
                     Type fieldGt = f.genericType;
 
                     if (f.readonly) {
-                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
+                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
                     } else {
 
 
-                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst), genericInfo);
+                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
 
                         if (val == null) {
                             //null string 是否以 空字符处理
@@ -670,7 +687,7 @@ public class ObjectToer implements Toer {
                             }
                         }
 
-                        f.setValue(rst, val, disSetter);
+                        f.setValue(rst, val, useSetter);
                     }
                 }
             }

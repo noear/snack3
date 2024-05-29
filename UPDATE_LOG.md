@@ -1,3 +1,6 @@
+### 3.2.100
+* 添加 UseOnlySetter, UseGetter, UseOnlyGetter 特性
+
 ### 3.2.99
 * 添加 ThData::clear 接口，用于清理 ThreadLocal 缓存
 

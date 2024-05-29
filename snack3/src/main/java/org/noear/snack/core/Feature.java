@@ -70,6 +70,18 @@ public enum  Feature {
      * 使用设置属性
      * */
     UseSetter,
+    /**
+     * 只使用设置属性
+     * */
+    UseOnlySetter,
+    /**
+     * 使用获取属性
+     * */
+    UseGetter,
+    /**
+     * 只使用获取属性
+     * */
+    UseOnlyGetter,
 
     /** 禁止线程缓存 */
     DisThreadLocal,

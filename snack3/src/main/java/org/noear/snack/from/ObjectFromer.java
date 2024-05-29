@@ -364,6 +364,11 @@ public class ObjectFromer implements Fromer {
 
         // 遍历每个字段
         Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
+        boolean useGetter = cfg.hasFeature(Feature.UseGetter);
+        boolean useOnlyGetter = cfg.hasFeature(Feature.UseOnlyGetter);
+        if(useOnlyGetter){
+            useGetter = true;
+        }
 
         for (FieldWrap f : list) {
             if (f.isSerialize() == false) {
@@ -371,7 +376,12 @@ public class ObjectFromer implements Fromer {
                 continue;
             }
 
-            Object val = f.getValue(obj);
+            if(useOnlyGetter && f.hasGetter == false){
+                //只用getter
+                continue;
+            }
+
+            Object val = f.getValue(obj, useGetter);
 
             //如果是null
             if (val == null) {

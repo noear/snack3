@@ -19,6 +19,8 @@ public class FieldWrap {
     public final Class<?> type;
     public final Type genericType;
     public final boolean readonly;
+    public final boolean hasSetter;
+    public final boolean hasGetter;
 
     private String name;
     private String format;
@@ -28,10 +30,10 @@ public class FieldWrap {
     private boolean deserialize = true;
     private boolean incNull = true;
 
-    /**
-     * 值设置器
-     */
+    //值设置器
     private Method _setter;
+    //值获取器
+    private Method _getter;
 
     public FieldWrap(Class<?> clz, Field f, boolean isFinal) {
         field = f;
@@ -52,7 +54,7 @@ public class FieldWrap {
             asString = attr.asString();
 
 
-            if(StringUtil.isEmpty(attr.timezone()) == false) {
+            if (StringUtil.isEmpty(attr.timezone()) == false) {
                 timeZone = TimeZone.getTimeZone(ZoneId.of(attr.timezone()));
             }
 
@@ -71,6 +73,10 @@ public class FieldWrap {
         }
 
         _setter = doFindSetter(clz, f);
+        _getter = doFindGetter(clz, f);
+
+        hasSetter = _setter != null;
+        hasGetter = _getter != null;
     }
 
     @Deprecated
@@ -94,7 +100,7 @@ public class FieldWrap {
 
     /**
      * @since 3.2
-     * */
+     */
     public TimeZone getTimeZone() {
         return timeZone;
     }
@@ -115,41 +121,41 @@ public class FieldWrap {
 
     /**
      * @since 3.2
-     * */
+     */
     public boolean isIncNull() {
         return incNull;
     }
 
     /**
      * @since 3.2.90
-     * */
+     */
     public boolean isAsString() {
         return asString;
     }
 
     public void setValue(Object tObj, Object val) {
         //别的地方要用，不要去掉
-        setValue(tObj, val, true);
+        setValue(tObj, val, false);
     }
 
-    public void setValue(Object tObj, Object val, boolean disFun) {
+    public void setValue(Object tObj, Object val, boolean useSetter) {
         if (readonly) {
             return;
         }
 
         try {
-            if (_setter == null || disFun) {
+            if (_setter != null && useSetter) {
+                _setter.invoke(tObj, new Object[]{val});
+            } else {
                 if (field.isAccessible() == false) {
                     field.setAccessible(true);
                 }
 
                 field.set(tObj, val);
-            } else {
-                _setter.invoke(tObj, new Object[]{val});
             }
         } catch (IllegalArgumentException ex) {
             if (val == null) {
-                throw new IllegalArgumentException(field.getName() + "(" + field.getType().getSimpleName() + ") Type receive failur!", ex);
+                throw new IllegalArgumentException(field.getName() + "(" + field.getType().getSimpleName() + ") Type receive failure!", ex);
             }
 
             throw new IllegalArgumentException(
@@ -164,15 +170,23 @@ public class FieldWrap {
         }
     }
 
-    public Object getValue(Object tObj) {
+    public Object getValue(Object tObj, boolean useGetter) {
         try {
-            if (field.isAccessible() == false) {
-                field.setAccessible(true);
-            }
+            if (_getter != null && useGetter) {
+                return _getter.invoke(tObj);
+            } else {
+                if (field.isAccessible() == false) {
+                    field.setAccessible(true);
+                }
 
-            return field.get(tObj);
-        } catch (IllegalAccessException ex) {
-            throw new SnackException(ex);
+                return field.get(tObj);
+            }
+        } catch (IllegalAccessException e) {
+            throw new SnackException(e);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -188,6 +202,29 @@ public class FieldWrap {
             Method setFun = tCls.getMethod(setMethodName, new Class[]{field.getType()});
             if (setFun != null) {
                 return setFun;
+            }
+        } catch (NoSuchMethodException e) {
+            //正常情况，不用管
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    /**
+     * 查找设置器
+     */
+    private static Method doFindGetter(Class<?> tCls, Field field) {
+        String fieldName = field.getName();
+        String firstLetter = fieldName.substring(0, 1).toUpperCase();
+        String setMethodName = "get" + firstLetter + fieldName.substring(1);
+
+        try {
+            Method getFun = tCls.getMethod(setMethodName);
+            if (getFun != null) {
+                return getFun;
             }
         } catch (NoSuchMethodException e) {
             //正常情况，不用管
