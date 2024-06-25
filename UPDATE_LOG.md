@@ -1,3 +1,6 @@
+### 3.2.101
+* 优化 反序列化时传入的类型优先
+
 ### 3.2.100
 * 添加 UseOnlySetter, UseGetter, UseOnlyGetter 特性
 
