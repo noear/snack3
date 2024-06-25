@@ -720,6 +720,10 @@ public class ObjectToer implements Toer {
 
 
     private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
+        // 如果自定义了类型，则自定义的类型优先
+        if (def != null && def != Object.class) {
+            return def;
+        }
         //
         // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
         //
