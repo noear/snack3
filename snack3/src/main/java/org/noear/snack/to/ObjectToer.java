@@ -743,7 +743,9 @@ public class ObjectToer implements Toer {
     private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
         // 如果自定义了类型，则自定义的类型优先
         if (def != null) {
-            if (def != Object.class && def.isInterface() == false) {
+            if (def != Object.class
+                    && def.isInterface() == false
+                    && Modifier.isAbstract(def.getModifiers()) == false) {
                 return def;
             }
         }
