@@ -1,5 +1,6 @@
 package features;
 
+import _models.Point;
 import org.junit.Test;
 import org.noear.snack.ONode;
 
@@ -31,13 +32,29 @@ public class ThrowableTest2 {
         ((Throwable) tmp).printStackTrace();
 
 
-
         System.out.println("---------------------------");
-
 
 
         json2 = ONode.serialize(tmp);
 
         System.out.println(json2);
+    }
+
+    @Test
+    public void test1() {
+        Object tmp = ONode.deserialize(json);
+
+        assert tmp instanceof Throwable;
+
+        ((Throwable) tmp).printStackTrace();
+    }
+
+    @Test
+    public void test2() {
+        Object tmp = ONode.deserialize(json, Point.class);
+
+        assert tmp instanceof Throwable;
+
+        ((Throwable) tmp).printStackTrace();
     }
 }

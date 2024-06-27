@@ -741,6 +741,12 @@ public class ObjectToer implements Toer {
 
 
     private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
+        Class<?> clz0 = getTypeByNode0(ctx, o, def);
+
+        if(Throwable.class.isAssignableFrom(clz0)){
+            return clz0;
+        }
+
         // 如果自定义了类型，则自定义的类型优先
         if (def != null) {
             if (def != Object.class
@@ -750,6 +756,10 @@ public class ObjectToer implements Toer {
             }
         }
 
+        return clz0;
+    }
+
+    private Class<?> getTypeByNode0(Context ctx, ONode o, Class<?> def) {
         //
         // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
         //
