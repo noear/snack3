@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * ZoneDateTime序列化测试
+ * OffsetDateTime序列化测试
  * @author hans
  */
 public class OffsetDateTimeTest {
