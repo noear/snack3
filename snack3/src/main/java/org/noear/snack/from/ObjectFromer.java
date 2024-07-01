@@ -89,6 +89,9 @@ public class ObjectFromer implements Fromer {
         } else if (source instanceof LocalTime) {
             Instant instant = ((LocalTime) source).atDate(LocalDate.of(1970, 1, 1)).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
             rst.val().setDate(new Date(instant.getEpochSecond() * 1000));
+        } else if (source instanceof OffsetTime) {
+            Instant instant = ((OffsetTime) source).atDate(LocalDate.of(1970, 1, 1)).toInstant();
+            rst.val().setDate(Date.from(instant));
         } else if (source instanceof Boolean) {
             rst.val().setBool((boolean) source);
         } else if (source instanceof Number) {

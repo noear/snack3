@@ -18,4 +18,5 @@ public class DateModel2 {
     public LocalTime date9;
     public ZonedDateTime date10;
     public OffsetDateTime date11;
+    public OffsetTime date12;
 }
