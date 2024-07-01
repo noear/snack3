@@ -7,6 +7,9 @@ import org.noear.snack.to.JsonToer;
 import org.noear.snack.to.ObjectToer;
 import org.noear.snack.to.Toer;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -21,6 +24,8 @@ public class DEFAULTS {
 
     /** 默认时区 */
     public static final TimeZone  DEF_TIME_ZONE = TimeZone.getDefault();
+    /** 默认偏移时区 */
+    public static final ZoneOffset  DEF_OFFSET = OffsetDateTime.now().getOffset();
     /** 默认地区 */
     public static final Locale    DEF_LOCALE    = Locale.getDefault();
     /** 默认时间格式器 */

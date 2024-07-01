@@ -1,5 +1,6 @@
 package org.noear.snack.to;
 
+import com.sun.scenario.effect.Offset;
 import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;
@@ -277,6 +278,20 @@ public class ObjectToer implements Toer {
             } else {
                 return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
             }
+        }else if (is(OffsetTime.class, clz)) {
+            // 可能无法通过v.getDate()获取时间，因为OffsetTime格式带有时区信息
+            Date date = v.getDate();
+            if(date != null){
+                return date.toInstant().atOffset(DEFAULTS.DEF_OFFSET).toOffsetTime();
+            }
+            // 获取不到则可能是"HH:mm:ss"或者"HH:mm:ssZ"等字符串格式
+            String dateStr = v.getString();
+            boolean haveOffset=dateStr.contains("+") || dateStr.contains("-") || dateStr.contains("Z");
+            if(haveOffset){
+                return OffsetTime.parse(dateStr);
+            }
+            // 如果不带时区字符则拼接一个
+            return OffsetTime.parse(dateStr+DEFAULTS.DEF_OFFSET);
         } else if (is(BigDecimal.class, clz)) {
             if (v.type() == OValueType.Number) {
                 if (v.getRawNumber() instanceof BigDecimal) {

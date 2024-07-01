@@ -8,15 +8,11 @@ import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.TypeRef;
 import org.noear.solon.Solon;
-import org.noear.solon.test.SolonJUnit4ClassRunner;
-import org.noear.solon.test.SolonTest;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
-@RunWith(SolonJUnit4ClassRunner.class)
-@SolonTest
 public class SerializationsTest2 {
 
     public Object buildObj() {
