@@ -2,7 +2,7 @@ package features;
 
 import _model3.Server;
 import _models.DateModel2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 /**

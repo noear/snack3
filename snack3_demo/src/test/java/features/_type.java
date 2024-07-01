@@ -2,7 +2,7 @@ package features;
 
 import _models.UserModel;
 import com.alibaba.fastjson.JSON;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;

@@ -3,7 +3,7 @@ package features;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import net.minidev.json.JSONArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 /**

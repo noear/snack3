@@ -1,7 +1,7 @@
 package features;
 
 import com.alibaba.fastjson.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 

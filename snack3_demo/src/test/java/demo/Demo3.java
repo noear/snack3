@@ -1,7 +1,6 @@
 package demo;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Options;
 import org.noear.snack.core.Feature;
@@ -10,6 +9,9 @@ import org.noear.snack.core.TypeRef;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class Demo3 {
     @Test
@@ -55,9 +57,9 @@ public class Demo3 {
         String jsonBoolean = ONode.load(false).toJson();    // false
         String jsonString = ONode.load("String").toString(); //"String"
 
-        Assert.assertEquals(jsonNumber, "100");
-        Assert.assertEquals(jsonBoolean, "false");
-        Assert.assertEquals(jsonString, "\"String\"");
+        assertEquals(jsonNumber, "100");
+        assertEquals(jsonBoolean, "false");
+        assertEquals(jsonString, "\"String\"");
     }
 
     @Test
@@ -92,7 +94,7 @@ public class Demo3 {
         String jsonArray = "[\"Android\",\"Java\",\"PHP\"]";
 
         ONode ary0 		  = ONode.load(jsonArray);
-        Assert.assertNotNull(ary0);
+        assertNotNull(ary0);
 
         List<String> ary1 = ONode.deserialize(jsonArray,(new ArrayList<String>(){}).getClass());
         List<String> ary2 = ONode.deserialize(jsonArray,(new TypeRef<List<String>>(){}).getClass());

@@ -1,6 +1,6 @@
 package demo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 public class JsonPath2 {

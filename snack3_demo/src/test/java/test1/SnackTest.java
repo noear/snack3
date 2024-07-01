@@ -1,6 +1,6 @@
 package test1;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;

@@ -3,7 +3,7 @@ package features;
 import _models.DateModel;
 import _models.DateModel2;
 import _models.DateModel3;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.util.Date;

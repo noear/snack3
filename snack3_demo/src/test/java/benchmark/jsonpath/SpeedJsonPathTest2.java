@@ -1,6 +1,6 @@
 package benchmark.jsonpath;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 public class SpeedJsonPathTest2 {

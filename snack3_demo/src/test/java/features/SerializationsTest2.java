@@ -2,17 +2,18 @@ package features;
 
 import _model4.QueryParamEntity;
 import _models.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
 import org.noear.snack.core.TypeRef;
 import org.noear.solon.Solon;
+import org.noear.solon.test.SolonTest;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
 
+@SolonTest
 public class SerializationsTest2 {
 
     public Object buildObj() {

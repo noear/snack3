@@ -2,7 +2,7 @@ package features;
 
 import _models.*;
 import com.alibaba.fastjson.JSON;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.solon.Utils;
 

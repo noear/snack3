@@ -2,7 +2,7 @@ package features;
 
 import _models.AnnoTreeDTO;
 import _models.UserModel2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.util.Arrays;

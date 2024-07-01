@@ -4,7 +4,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class SpeedJaywayJsonPathTest {

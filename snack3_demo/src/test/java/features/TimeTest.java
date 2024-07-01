@@ -1,7 +1,7 @@
 package features;
 
 import _models.TimeModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.time.LocalDate;

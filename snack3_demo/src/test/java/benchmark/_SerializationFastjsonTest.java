@@ -6,7 +6,7 @@ import _models.CModel;
 import _models.OrderModel;
 import _models.UserGroupModel;
 import _models.UserModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 

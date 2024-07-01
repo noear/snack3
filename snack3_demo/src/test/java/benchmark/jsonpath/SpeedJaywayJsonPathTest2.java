@@ -2,7 +2,7 @@ package benchmark.jsonpath;
 
 import com.jayway.jsonpath.JsonPath;
 import net.minidev.json.JSONArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

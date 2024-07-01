@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class SpeedFastjson2JsonPathTest {

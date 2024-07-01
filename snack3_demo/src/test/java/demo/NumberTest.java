@@ -2,7 +2,7 @@ package demo;
 
 import _models.NumberModel;
 import com.alibaba.fastjson.JSON;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.math.BigDecimal;

@@ -4,7 +4,7 @@ import _models.BookModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.util.TypeUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author noear 2021/5/19 created

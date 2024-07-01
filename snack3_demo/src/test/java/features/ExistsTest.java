@@ -1,7 +1,7 @@
 package features;
 
 import _models.UserModel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.ONodeType;
 import org.noear.snack.core.Feature;

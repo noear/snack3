@@ -7,7 +7,7 @@ import _model3.MessageListItem;
 import _models.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.TypeRef;
 

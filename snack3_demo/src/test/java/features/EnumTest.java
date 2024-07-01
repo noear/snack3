@@ -2,7 +2,7 @@ package features;
 
 import demo.Book;
 import demo.enums.BookType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Options;

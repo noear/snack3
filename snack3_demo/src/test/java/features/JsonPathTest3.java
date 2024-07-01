@@ -1,12 +1,11 @@
 package features;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.util.*;
-import java.util.stream.StreamSupport;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonPathTest3 {
     public static class Entity {

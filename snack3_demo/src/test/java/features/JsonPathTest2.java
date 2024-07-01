@@ -1,7 +1,7 @@
 package features;
 
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 
 import java.util.List;
