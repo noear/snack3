@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -56,7 +57,11 @@ public class ObjectToer implements Toer {
 
         //提前找到@type类型，便于自定义解码器定位
         if (o.isObject() || o.isArray()) {
-            clz = getTypeByNode(ctx, o, clz);
+            AtomicReference<ONode> oRef = new AtomicReference<>(o);
+            clz = getTypeByNode(ctx, oRef, clz);
+
+            //有可能会改动（比如 array）
+            o = oRef.get();
         }
 
         if (clz != null) {
@@ -755,8 +760,8 @@ public class ObjectToer implements Toer {
     }
 
 
-    private Class<?> getTypeByNode(Context ctx, ONode o, Class<?> def) {
-        Class<?> clz0 = getTypeByNode0(ctx, o, def);
+    private Class<?> getTypeByNode(Context ctx, AtomicReference<ONode> oRef, Class<?> def) {
+        Class<?> clz0 = getTypeByNode0(ctx, oRef, def);
 
         if(Throwable.class.isAssignableFrom(clz0)){
             return clz0;
@@ -774,10 +779,11 @@ public class ObjectToer implements Toer {
         return clz0;
     }
 
-    private Class<?> getTypeByNode0(Context ctx, ONode o, Class<?> def) {
+    private Class<?> getTypeByNode0(Context ctx, AtomicReference<ONode> oRef, Class<?> def) {
         //
         // 下面使用 .ary(), .oby(), .val() 可以减少检查；从而提高性能
         //
+        ONode o = oRef.get();
         if (ctx.target_type == null) {
             if (o.isObject()) {
                 return LinkedHashMap.class;
@@ -799,6 +805,8 @@ public class ObjectToer implements Toer {
                     ONode n1 = o1.obj().get(ctx.options.getTypePropertyName());
                     if (n1 != null) {
                         typeStr = n1.val().getString();
+                        ONode o2 = o.ary().get(1);
+                        oRef.set(o2);
                     }
                 }
             }

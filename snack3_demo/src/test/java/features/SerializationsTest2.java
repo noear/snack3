@@ -5,6 +5,7 @@ import _models.*;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Feature;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.TypeRef;
 import org.noear.solon.Solon;
 import org.noear.solon.test.SolonTest;
@@ -166,7 +167,7 @@ public class SerializationsTest2 {
     }
 
     @Test
-    public void test7(){
+    public void test7() {
         SModel sModel = new SModel();
         sModel.age = 11;
         sModel.name = "test";
@@ -178,7 +179,7 @@ public class SerializationsTest2 {
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         String json = "{age:11,name:'test'}";
 
         SModel sModel = ONode.load(json, Feature.UseOnlyGetter, Feature.UseOnlySetter).toObject(SModel.class);
@@ -186,5 +187,41 @@ public class SerializationsTest2 {
 
         assert sModel.name == null;
         assert sModel.age == 11;
+    }
+
+
+    @Test
+    public void testb_10() {
+        Set<String> sets = new HashSet<>();
+        sets.add("1");
+        sets.add("2");
+        sets.add("3");
+
+        String json = ONode.serialize(sets);
+        System.out.println(json);
+
+        Set<String> sets2 = ONode.deserialize(json, Set.class);
+        System.out.println(ONode.serialize(sets2));
+
+        assert sets2.size() == sets.size();
+    }
+
+    @Test
+    public void testb_11() {
+        Set<String> sets = new HashSet<>();
+        sets.add("1");
+        sets.add("2");
+        sets.add("3");
+
+        Options options = Options.serialize();
+        options.add(Feature.WriteArrayClassName);
+
+        String json = ONode.load(sets, options).toJson();
+        System.out.println(json);
+
+        Set<String> sets2 = ONode.load(json, options).toObject();
+        System.out.println(ONode.load(sets2, options).toJson());
+
+        assert sets2.size() == sets.size();
     }
 }
