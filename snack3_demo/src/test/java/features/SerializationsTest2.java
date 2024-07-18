@@ -12,6 +12,8 @@ import org.noear.solon.test.SolonTest;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.OffsetTime;
 import java.util.*;
 
 @SolonTest
@@ -223,5 +225,18 @@ public class SerializationsTest2 {
         System.out.println(ONode.load(sets2, options).toJson());
 
         assert sets2.size() == sets.size();
+    }
+
+    @Test
+    public void testc_10(){
+        FoodRestarurantHoursPageVO tmp = new FoodRestarurantHoursPageVO();
+        tmp.setId(1L);
+        tmp.setHoursName("entity");
+        tmp.setDate(LocalDate.now());
+        tmp.setEndTime(OffsetTime.now());
+        tmp.setStartTime(OffsetTime.now());
+
+        String json2 = ONode.load(tmp).toJson();
+        System.out.println(json2);
     }
 }
