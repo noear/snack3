@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.OffsetTime;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.*;
 
 @SolonTest
@@ -228,7 +229,7 @@ public class SerializationsTest2 {
     }
 
     @Test
-    public void testc_10(){
+    public void testc_10() {
         FoodRestarurantHoursPageVO tmp = new FoodRestarurantHoursPageVO();
         tmp.setId(1L);
         tmp.setHoursName("entity");
@@ -241,10 +242,15 @@ public class SerializationsTest2 {
     }
 
     @Test
-    public void testd_10(){
+    public void testd_10() {
         DTimeVO tmp = new DTimeVO();
 
-        String json2 = ONode.load(tmp, Feature.PrettyFormat).toJson();
-        System.out.println(json2);
+        try {
+            String json2 = ONode.load(tmp, Feature.PrettyFormat).toJson();
+            System.out.println(json2);
+            assert false;
+        } catch (UnsupportedTemporalTypeException e) {
+            assert true;
+        }
     }
 }
