@@ -51,9 +51,4 @@ public @interface ONodeAttr {
      * 包函null
      */
     boolean incNull() default true;
-
-    /**
-     * 翻译器
-     * */
-    String translator() default "";
 }
