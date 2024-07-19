@@ -1,3 +1,6 @@
+### 3.2.107
+* 取消 LocalDateTime XXX 格式符支持（不合理）
+
 ### 3.2.106
 * 添加 LocalDateTime XXX 格式符支持（之前只支持 Date）
 
