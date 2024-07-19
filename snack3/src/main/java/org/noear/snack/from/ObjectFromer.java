@@ -443,12 +443,26 @@ public class ObjectFromer implements Fromer {
 
                 if (val instanceof LocalDateTime) {
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
-                    if(f.getTimeZone() != null){
-                        fmt.withZone(f.getTimeZone().toZoneId());
+
+                    if (f.getFormat().contains("XXX")) {
+                        //通过 atZone 转时区
+                        String val2;
+                        if (f.getTimeZone() != null) {
+                            val2 = ((LocalDateTime) val).atZone(f.getTimeZone().toZoneId()).format(fmt);
+                        } else {
+                            val2 = ((LocalDateTime) val).atZone(ZoneId.systemDefault()).format(fmt);
+                        }
+
+                        rst.set(f.getName(), val2);
+                    } else {
+                        if (f.getTimeZone() != null) {
+                            fmt.withZone(f.getTimeZone().toZoneId());
+                        }
+
+                        String val2 = ((LocalDateTime) val).format(fmt);
+                        rst.set(f.getName(), val2);
                     }
 
-                    String val2 = ((LocalDateTime) val).format(fmt);
-                    rst.set(f.getName(), val2);
                     continue;
                 }
 

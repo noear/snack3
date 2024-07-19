@@ -1,3 +1,6 @@
+### 3.2.106
+* 添加 LocalDateTime XXX 格式符支持（之前只支持 Date）
+
 ### 3.2.105
 * 修复 WriteArrayClassName 还原失效的问题
 

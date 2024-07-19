@@ -239,4 +239,12 @@ public class SerializationsTest2 {
         String json2 = ONode.load(tmp).toJson();
         System.out.println(json2);
     }
+
+    @Test
+    public void testd_10(){
+        DTimeVO tmp = new DTimeVO();
+
+        String json2 = ONode.load(tmp, Feature.PrettyFormat).toJson();
+        System.out.println(json2);
+    }
 }
