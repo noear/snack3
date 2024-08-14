@@ -283,4 +283,10 @@ public class SerializationTest {
 
         assert "好人".equals(str);
     }
+
+    @Test
+    public void test9() {
+        String json = ONode.serialize(new BigDecimal("0.1"));
+        System.out.println(json);
+    }
 }

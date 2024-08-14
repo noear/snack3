@@ -1,3 +1,6 @@
+### 3.2.108
+* 优化 solon.mvc kotlin data class 带默认值的反序列化支持
+
 ### 3.2.107
 * 取消 LocalDateTime XXX 格式符支持（不合理）
 
