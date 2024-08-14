@@ -1,7 +1,5 @@
 package org.noear.snack.core.exts;
 
-import org.noear.snack.ONode;
-
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -62,13 +60,13 @@ public class ClassWrap {
         //支持 kotlin data 类型
         Constructor<?>[] constructors = clz.getConstructors();
 
-        if (constructors.length == 1) {
+        if (constructors.length > 0) {
             if (_recordable) {
                 //如果合字段只读
-                _recordConstructor = constructors[0];
+                _recordConstructor = constructors[constructors.length - 1];
                 _recordParams = _recordConstructor.getParameters();
 
-                if(_recordParams.length == 0){
+                if (_recordParams.length == 0) {
                     _recordable = false;
                 }
             } else {
