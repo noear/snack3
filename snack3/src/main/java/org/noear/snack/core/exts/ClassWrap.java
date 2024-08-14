@@ -70,10 +70,12 @@ public class ClassWrap {
                     _recordable = false;
                 }
             } else {
-                if (constructors[0].getParameterCount() > 0) {
-                    //如果合字段只读
-                    _recordConstructor = constructors[0];
-                    _recordParams = _recordConstructor.getParameters();
+                if (constructors.length == 1) {
+                    if (constructors[0].getParameterCount() > 0) {
+                        //如果合字段只读
+                        _recordConstructor = constructors[0];
+                        _recordParams = _recordConstructor.getParameters();
+                    }
                 }
             }
         } else {
