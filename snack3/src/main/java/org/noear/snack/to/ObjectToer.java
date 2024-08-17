@@ -17,6 +17,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -240,6 +241,8 @@ public class ObjectToer implements Toer {
             return tmp;
         } else if (is(String.class, clz)) {
             return v.getString();
+        } else if (is(URI.class, clz)) {
+            return URI.create(v.getString());
         } else if (is(java.sql.Timestamp.class, clz)) {
             return new java.sql.Timestamp(v.getLong());
         } else if (is(java.sql.Date.class, clz)) {
