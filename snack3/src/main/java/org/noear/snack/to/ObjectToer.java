@@ -84,7 +84,7 @@ public class ObjectToer implements Toer {
             case Value:
                 if (clz != null && Collection.class.isAssignableFrom(clz)) {
                     //如果接收对象为集合???尝试做为item
-                    if(TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+                    if (TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
                         rst = TypeUtil.createCollection(clz, false);
                     }
 
@@ -229,6 +229,21 @@ public class ObjectToer implements Toer {
             } else {
                 return v.getChar();
             }
+        } else if (is(Duration.class, clz)) {
+            if (v.isEmpty()) {
+                return null;
+            } else {
+                String tmp = v.getString().toUpperCase();
+                if (tmp.indexOf('P') != 0) {
+                    if (tmp.indexOf('D') > 0) {
+                        tmp = "P" + tmp;
+                    } else {
+                        tmp = "PT" + tmp;
+                    }
+                }
+
+                return Duration.parse(tmp);
+            }
         }
 
         if (is(LongAdder.class, clz)) {
@@ -251,14 +266,14 @@ public class ObjectToer implements Toer {
             return new java.sql.Time(v.getLong());
         } else if (is(Date.class, clz)) {
             return v.getDate();
-        }else if (is(OffsetDateTime.class, clz)) {
+        } else if (is(OffsetDateTime.class, clz)) {
             Date date = v.getDate();
             if (null == date) {
                 return null;
             } else {
                 return OffsetDateTime.ofInstant(date.toInstant(), DEFAULTS.DEF_TIME_ZONE.toZoneId());
             }
-        }else if (is(ZonedDateTime.class, clz)) {
+        } else if (is(ZonedDateTime.class, clz)) {
             Date date = v.getDate();
             if (null == date) {
                 return null;
@@ -286,20 +301,20 @@ public class ObjectToer implements Toer {
             } else {
                 return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
             }
-        }else if (is(OffsetTime.class, clz)) {
+        } else if (is(OffsetTime.class, clz)) {
             // 可能无法通过v.getDate()获取时间，因为OffsetTime格式带有时区信息
             Date date = v.getDate();
-            if(date != null){
+            if (date != null) {
                 return date.toInstant().atOffset(DEFAULTS.DEF_OFFSET).toOffsetTime();
             }
             // 获取不到则可能是"HH:mm:ss"或者"HH:mm:ssZ"等字符串格式
             String dateStr = v.getString();
-            boolean haveOffset=dateStr.contains("+") || dateStr.contains("-") || dateStr.contains("Z");
-            if(haveOffset){
+            boolean haveOffset = dateStr.contains("+") || dateStr.contains("-") || dateStr.contains("Z");
+            if (haveOffset) {
                 return OffsetTime.parse(dateStr);
             }
             // 如果不带时区字符则拼接一个
-            return OffsetTime.parse(dateStr+DEFAULTS.DEF_OFFSET);
+            return OffsetTime.parse(dateStr + DEFAULTS.DEF_OFFSET);
         } else if (is(BigDecimal.class, clz)) {
             if (v.type() == OValueType.Number) {
                 if (v.getRawNumber() instanceof BigDecimal) {
@@ -449,7 +464,7 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseCollection(Context ctx, ONode o, Collection coll, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        if(TypeUtil.isEmptyCollection(coll) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+        if (TypeUtil.isEmptyCollection(coll) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
             coll = TypeUtil.createCollection(clz, false);
         }
 
@@ -528,11 +543,11 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
-        if(TypeUtil.isEmptyCollection(map) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)){
+        if (TypeUtil.isEmptyCollection(map) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
             map = TypeUtil.createMap(clz);
         }
 
-        if(map == null){
+        if (map == null) {
             return map;
         }
 
@@ -664,13 +679,13 @@ public class ObjectToer implements Toer {
 
             boolean useSetter = ctx.options.hasFeature(Feature.UseSetter);
             boolean useOnlySetter = ctx.options.hasFeature(Feature.UseOnlySetter);
-            if(useOnlySetter){
+            if (useOnlySetter) {
                 useSetter = true;
             }
 
             boolean useGetter = ctx.options.hasFeature(Feature.UseGetter);
             boolean useOnlyGetter = ctx.options.hasFeature(Feature.UseOnlyGetter);
-            if(useOnlyGetter){
+            if (useOnlyGetter) {
                 useGetter = true;
             }
 
@@ -680,7 +695,7 @@ public class ObjectToer implements Toer {
                     continue;
                 }
 
-                if(useOnlySetter && f.hasSetter == false){
+                if (useOnlySetter && f.hasSetter == false) {
                     //只用setter
                     continue;
                 }
@@ -766,7 +781,7 @@ public class ObjectToer implements Toer {
     private Class<?> getTypeByNode(Context ctx, AtomicReference<ONode> oRef, Class<?> def) {
         Class<?> clz0 = getTypeByNode0(ctx, oRef, def);
 
-        if(Throwable.class.isAssignableFrom(clz0)){
+        if (Throwable.class.isAssignableFrom(clz0)) {
             return clz0;
         }
 
@@ -798,7 +813,7 @@ public class ObjectToer implements Toer {
         }
 
         String typeStr = null;
-        if(ctx.options.hasFeature(Feature.DisableClassNameRead) == false) {
+        if (ctx.options.hasFeature(Feature.DisableClassNameRead) == false) {
             if (o.isArray() && o.ary().size() == 2) {
                 ONode o1 = o.ary().get(0);
                 if (o1.isObject() && o1.obj().size() == 1) { //如果只有一个成员，则可能为list的类型节点
@@ -823,7 +838,7 @@ public class ObjectToer implements Toer {
         }
 
         if (StringUtil.isEmpty(typeStr) == false) {
-            if(typeStr.startsWith("sun.") ||
+            if (typeStr.startsWith("sun.") ||
                     typeStr.startsWith("com.sun.") ||
                     typeStr.startsWith("javax.") ||
                     typeStr.startsWith("jdk.")) {
