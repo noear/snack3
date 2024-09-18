@@ -1,6 +1,5 @@
 package org.noear.snack.to;
 
-import com.sun.scenario.effect.Offset;
 import org.noear.snack.*;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.DEFAULTS;

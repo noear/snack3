@@ -6,7 +6,7 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3</artifactId>
-    <version>3.2.110</version>
+    <version>3.2.111</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -39,6 +39,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+
+        <maven-compiler.version>3.13.0</maven-compiler.version>
+        <maven-assembly.version>3.7.1</maven-assembly.version>
     </properties>
 
     <profiles>
@@ -131,7 +134,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-compiler.version}</version>
                 <configuration>
                     <compilerArgument>-parameters</compilerArgument>
                     <source>${java.version}</source>
@@ -143,7 +146,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${maven-assembly.version}</version>
                 <configuration>
                     <finalName>${project.artifactId}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
