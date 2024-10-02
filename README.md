@@ -111,9 +111,15 @@ UserModel user = o.get("user").toObject(UserModel.class);
 
 
 //demo4:构建json数据(极光推送的rest api调用)
+ONode data = new ONode();
+data.set("platform","val");
+data.getOrNew("audience").getOrNew("alias").addAll(alias_ary);
+data.getOrNew("options").set("apns_production", false);
+String message = data.toJson();
+//或者....用 build 表达式单行构建
 public static void push(Collection<String> alias_ary, String text)  {
     ONode data = new ONode().build((d)->{
-        d.getOrNew("platform").val("all");
+        d.set("platform", "all");
 
         d.getOrNew("audience").getOrNew("alias").addAll(alias_ary);
 
