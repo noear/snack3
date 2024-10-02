@@ -27,10 +27,10 @@ public class JsonPath {
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath, CRUD crud) {
         tlCache.get().clear();
-        return do_get(source, jpath, cacheJpath, useStandard, crud);
+        return evalDo(source, jpath, cacheJpath, useStandard, crud);
     }
 
-    private static ONode do_get(ONode source, String jpath, boolean cacheJpath, boolean useStandard, CRUD crud) {
+    private static ONode evalDo(ONode source, String jpath, boolean cacheJpath, boolean useStandard, CRUD crud) {
         //解析出指令
         JsonPath jsonPath = null;
         if (cacheJpath) {
@@ -158,9 +158,9 @@ public class JsonPath {
      * */
     private static ONode exec(JsonPath jsonPath, ONode source, boolean useStandard, CRUD crud) {
         ONode tmp = source;
-        Segment last = null;
-        boolean branch_do = false;
-        boolean regroup = false;
+        Segment last = null; //最后执行的片段（做为前片段参数）
+        boolean branch_do = false; //分支标志
+        boolean regroup = false; //重组标志
         for (Segment s : jsonPath.segments) {
             if (tmp == null) {//多次转换后，可能为null
                 break;
@@ -168,7 +168,6 @@ public class JsonPath {
 
             if (branch_do && (useStandard || s.cmdAry != null)) { //..a[x] 下属进行分支处理 //s.cmdAry != null
                 ONode tmp2 = new ONode(source.options()).asArray();
-
 
                 for (ONode n1 : tmp.ary()) {
                     ONode n2 = s.handler.run(last, s, regroup, source, n1, useStandard, crud);
@@ -297,13 +296,13 @@ public class JsonPath {
             //全局描扫的数据，进行缓存
             rightO = tlCache.get().get(right);
             if (rightO == null) {
-                rightO = do_get(root, right, true, useStandard, crud);
+                rightO = evalDo(root, right, true, useStandard, crud);
                 tlCache.get().put(right, rightO);
             }
         }
 
         if(right.startsWith("@")){
-            rightO = do_get(parent,right,true, useStandard, crud);
+            rightO = evalDo(parent,right,true, useStandard, crud);
         }
 
         if(rightO != null) {
@@ -775,20 +774,20 @@ public class JsonPath {
         ONode tmp2 = tmp;
         if (s.op == null) {
             if (tmp.isObject()) {
-                if(do_get(tmp,s.left,true, usd, crud).isNull()){
+                if(evalDo(tmp,s.left,true, usd, crud).isNull()){
                     return null;
                 }
             } else if (tmp.isArray()) {
                 tmp2 = new ONode(tmp.options()).asArray();
 
                 for (ONode n1 : tmp.ary()) {
-                    if(n1.isObject() && do_get(n1,s.left,true, usd, crud).isNull() == false){
+                    if(n1.isObject() && evalDo(n1,s.left,true, usd, crud).isNull() == false){
                         tmp2.nodeData().array.add(n1);
                     }
 
                     if(regroup && n1.isArray()){
                         for(ONode n2 : n1.ary()){
-                            if(n2.isObject() && do_get(n2,s.left,true, usd, crud).isNull() == false){
+                            if(n2.isObject() && evalDo(n2,s.left,true, usd, crud).isNull() == false){
                                 tmp2.nodeData().array.add(n2);
                             }
                         }
@@ -803,7 +802,7 @@ public class JsonPath {
                     return null;
                 }
 
-                ONode leftO = do_get(tmp, s.left, true, usd, crud);
+                ONode leftO = evalDo(tmp, s.left, true, usd, crud);
                 if (compare(root, tmp, leftO, s.op, s.right, usd, crud) == false) {
                     return null;
                 }
@@ -827,14 +826,14 @@ public class JsonPath {
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isArray()) {
                             for (ONode n2 : n1.ary()) {
-                                ONode leftO = do_get(n2, s.left, true, usd, crud);
+                                ONode leftO = evalDo(n2, s.left, true, usd, crud);
 
                                 if (compare(root, n2, leftO, s.op, s.right, usd, crud)) {
                                     tmp2.addNode(n2);
                                 }
                             }
                         } else {
-                            ONode leftO = do_get(n1, s.left, true, usd, crud);
+                            ONode leftO = evalDo(n1, s.left, true, usd, crud);
 
                             if (compare(root, n1, leftO, s.op, s.right, usd, crud)) {
                                 tmp2.addNode(n1);
@@ -859,9 +858,9 @@ public class JsonPath {
 
         if(tmp.isObject()) {
             if (s.cmdAry.startsWith("$")) {
-                tmp2 = do_get(root, s.cmdAry, true, usd, crud);
+                tmp2 = evalDo(root, s.cmdAry, true, usd, crud);
             } else {
-                tmp2 = do_get(tmp, s.cmdAry, true, usd, crud);
+                tmp2 = evalDo(tmp, s.cmdAry, true, usd, crud);
             }
 
             if (tmp2.isValue()) {
@@ -1019,7 +1018,8 @@ public class JsonPath {
     @FunctionalInterface
     private interface Resolver {
         /**
-         * @param s       指令片断
+         * @param bef     之前指令片断
+         * @param s       当前指令片断
          * @param regroup 组重的
          * @param root    根节点
          * @param tmp     上一次处理结果

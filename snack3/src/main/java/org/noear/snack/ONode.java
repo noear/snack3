@@ -100,9 +100,9 @@ public class ONode {
      *
      * @param jpath json path express
      * */
-    public void delete(String jpath){
-        JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.REMOVE);
-    }
+//    public void delete(String jpath){
+//        JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.REMOVE);
+//    }
 
     /**
      * Json path exists
