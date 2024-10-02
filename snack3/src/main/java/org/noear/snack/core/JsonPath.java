@@ -464,6 +464,7 @@ public class JsonPath {
      * "$"
      * */
     private static Resolver handler_$=(bef, s, regroup, root, tmp, usd, orNew)->{ return tmp;};
+
     /**
      * ".."
      * */
@@ -853,6 +854,9 @@ public class JsonPath {
         return tmp2;
     };
 
+    /**
+     * "[$.xxx] [@.xxx]" 指令
+     * */
     private static Resolver handler_ary_ref=(bef, s, regroup, root, tmp, usd, crud)-> {
         ONode tmp2 = null;
 
@@ -873,6 +877,9 @@ public class JsonPath {
         return tmp2;
     };
 
+    /**
+     * "[1,4,6] //['p1','p2']" 指令
+     * */
     private static Resolver handler_ary_multi=(bef, s, regroup, root, tmp, usd, crud)->{
         ONode tmp2 = null;
 
@@ -925,6 +932,9 @@ public class JsonPath {
         return tmp2;
     };
 
+    /**
+     * "[2:4]" 指令
+     * */
     private static Resolver handler_ary_range=(bef, s, regroup, root, tmp, usd, crud)->{
         if (tmp.isArray()) {
             int count = tmp.count();
@@ -956,9 +966,13 @@ public class JsonPath {
         }
     };
 
+    /**
+     * "[2] [-2] ['p1']" 索引指令
+     * */
     private static Resolver handler_ary_prop=(bef, s, regroup, root, tmp, usd, crud)-> {
         //如果是value,会返回null
         if (s.cmdHasQuote) {
+            //['p1']
             if(tmp.isObject()) {
                 return tmp.getOrNull(s.name);
             }
@@ -979,23 +993,30 @@ public class JsonPath {
 
             return null;
         } else {
+            //[1]
             if (regroup) {
                 ONode tmp2 = new ONode(tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
+                    ONode n2 = null;
                     if (s.start < 0) {
                         if (crud == CRUD.GET_OR_NEW) {
-                            tmp2.add(n1.getOrNew(n1.count() + s.start));//倒数位
+                            n2 = n1.getOrNew(n1.count() + s.start);//倒数位
                         } else {
-                            tmp2.add(n1.getOrNull(n1.count() + s.start));//倒数位
+                            n2 = n1.getOrNull(n1.count() + s.start);//倒数位
                         }
                     } else {
                         if (crud == CRUD.GET_OR_NEW) {
-                            tmp2.add(n1.getOrNew(s.start));
+                            n2 = n1.getOrNew(s.start);
                         } else {
-                            tmp2.add(n1.getOrNull(s.start));//正数位
+                            n2 = n1.getOrNull(s.start);//正数位
                         }
                     }
+
+                    if (n2 != null) {
+                        tmp2.add(n2);
+                    }
                 }
+
                 return tmp2;
             } else {
                 if (s.start < 0) {
