@@ -575,13 +575,13 @@ public class JsonPath {
      * */
     private static Resolver handler_fun=(bef, s, regroup, root, tmp, usd, orNew)->{
         switch (s.cmd) {
-            case "size()":{
+            case "size()": {
                 return new ONode(tmp.options()).val(tmp.count());
             }
-            case "length()":{
-                if(tmp.isValue()){
+            case "length()": {
+                if (tmp.isValue()) {
                     return new ONode(tmp.options()).val(tmp.getString().length());
-                }else{
+                } else {
                     return new ONode(tmp.options()).val(tmp.count());
                 }
             }
@@ -596,7 +596,7 @@ public class JsonPath {
                 if (tmp.isArray()) {
                     ONode min_n = null;
                     for (ONode n1 : tmp.ary()) {
-                        if(n1.isValue()) {
+                        if (n1.isValue()) {
                             if (min_n == null) {
                                 min_n = n1;
                             } else if (n1.getDouble() < min_n.getDouble()) {
@@ -604,9 +604,9 @@ public class JsonPath {
                             }
                         }
 
-                        if(regroup && n1.isArray()){
-                            for(ONode n2 : n1.ary()){
-                                if(n2.isValue()) {
+                        if (regroup && n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (n2.isValue()) {
                                     if (min_n == null) {
                                         min_n = n2;
                                     } else if (n2.getDouble() < min_n.getDouble()) {
@@ -622,24 +622,24 @@ public class JsonPath {
                 return null;
             }
 
-            case "max()":{
-                if(tmp.isArray()){
+            case "max()": {
+                if (tmp.isArray()) {
                     ONode max_n = null;
-                    for(ONode n1 : tmp.ary()){
-                        if(n1.isValue()) {
-                            if(max_n == null){
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isValue()) {
+                            if (max_n == null) {
                                 max_n = n1;
-                            }else if (n1.getDouble() > max_n.getDouble()) {
+                            } else if (n1.getDouble() > max_n.getDouble()) {
                                 max_n = n1;
                             }
                         }
 
-                        if(regroup && n1.isArray()){
-                            for(ONode n2 : n1.ary()){
-                                if(n2.isValue()) {
-                                    if(max_n == null){
+                        if (regroup && n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (n2.isValue()) {
+                                    if (max_n == null) {
                                         max_n = n2;
-                                    }else if (n2.getDouble() > max_n.getDouble()) {
+                                    } else if (n2.getDouble() > max_n.getDouble()) {
                                         max_n = n2;
                                     }
                                 }
@@ -666,9 +666,9 @@ public class JsonPath {
                             num++;
                         }
 
-                        if(regroup && n1.isArray()){
-                            for(ONode n2 : n1.ary()){
-                                if(n2.isValue()) {
+                        if (regroup && n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (n2.isValue()) {
                                     sum += n2.getDouble();
                                     num++;
                                 }
@@ -676,7 +676,7 @@ public class JsonPath {
                         }
                     }
 
-                    if(num>0) {
+                    if (num > 0) {
                         return new ONode(tmp.options()).val(sum / num);
                     }
                 }
@@ -684,24 +684,52 @@ public class JsonPath {
                 return null;
             }
 
-            case "sum()":{
-                if(tmp.isArray()){
+            case "sum()": {
+                if (tmp.isArray()) {
                     double sum = 0;
-                    for(ONode n1 : tmp.ary()) {
+                    for (ONode n1 : tmp.ary()) {
                         if (n1.isValue()) {
                             sum += n1.getDouble();
                         }
 
-                        if(regroup && n1.isArray()){
-                            for(ONode n2 : n1.ary()){
-                                if(n2.isValue()) {
+                        if (regroup && n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (n2.isValue()) {
                                     sum += n2.getDouble();
                                 }
                             }
                         }
                     }
                     return new ONode(tmp.options()).val(sum);
-                }else {
+                } else {
+                    return null;
+                }
+            }
+
+            case "first()": {
+                if (tmp.isArray()) {
+                    ONode n1 = tmp.get(0);
+
+                    if (regroup && n1.isArray()) {
+                        return n1.get(0);
+                    } else {
+                        return n1;
+                    }
+                } else {
+                    return null;
+                }
+            }
+
+            case "last()": {
+                if (tmp.isArray()) {
+                    ONode n1 = tmp.get(tmp.count() - 1);
+
+                    if (regroup && n1.isArray()) {
+                        return n1.get(n1.count() - 1);
+                    } else {
+                        return n1;
+                    }
+                } else {
                     return null;
                 }
             }

@@ -9,7 +9,7 @@ import org.noear.snack.ONode;
 /**
  * @author noear 2023/11/3 created
  */
-public class JsonPathTest5 {
+public class JsonPathCompatibleTest1 {
     @Test
     public void test1() {
         String json = "[{\"id\":0,\"treePath\":\"1\",\"a\":[{\"id\":1,\"treePath\":\"123\",\"subItem\":[{\"id\":3,\"treePath\":\"123\"}]}],\"b\":\"a\"},{\"id\":2}]";
@@ -71,6 +71,7 @@ public class JsonPathTest5 {
         compatible_do("3", json, jsonpathStr3);
         compatible_do("4", json, jsonpathStr4);
     }
+
 
     private void compatible_do(String hint, String json, String jsonpathStr) {
         System.out.println("::::" + hint);
