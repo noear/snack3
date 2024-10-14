@@ -9,7 +9,7 @@ import org.noear.snack.ONode;
  */
 public class JsonPathTest4 {
     @Test
-    public void test1(){
+    public void test1() {
         String test = "{\"1\":{\"a1\":[{\"id\":\"a1\"},{\"id\":\"a2\"}],\"b1\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]},\"2\":{\"a2\":[{\"id\":\"a1\",\"id1\":\"a11\",\"userId\":\"a12\"},{\"id\":\"a2\"}],\"b2\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]}}";
         String jsonPath = "$..*[?(@.id)]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -23,7 +23,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         String test = "{\"1\":{\"a1\":[{\"id\":\"a1\"},{\"id\":\"a2\"}],\"b1\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]},\"2\":{\"a2\":[{\"id\":\"a1\",\"id1\":\"a11\",\"userId\":\"a12\"},{\"id\":\"a2\"}],\"b2\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]}}";
         String jsonPath = "$.*.*";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -37,7 +37,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test2_2(){
+    public void test2_2() {
         String test = "{\"1\":{\"a1\":[{\"id\":\"a1\"},{\"id\":\"a2\"}],\"b1\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]},\"2\":{\"a2\":[{\"id\":\"a1\",\"id1\":\"a11\",\"userId\":\"a12\"},{\"id\":\"a2\"}],\"b2\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]}}";
         String jsonPath = "$.*.*.*";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -51,7 +51,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test2_2_2(){
+    public void test2_2_2() {
         String test = "{\"1\":{\"a1\":[{\"id\":\"a1\"},{\"id\":\"a2\"}],\"b1\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]},\"2\":{\"a2\":[{\"id\":\"a1\",\"id1\":\"a11\",\"userId\":\"a12\"},{\"id\":\"a2\"}],\"b2\":[{\"id\":\"b1\"},{\"id\":\"b2\"}]}}";
         String jsonPath = "$.[*].[*].[*]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -65,7 +65,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         String test = "[1,2,3]";
         String jsonPath = "$.*";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -79,7 +79,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test3_2(){
+    public void test3_2() {
         String test = "[1,2,3]";
         String jsonPath = "$.[*]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -93,7 +93,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         String test = "[{a:1},{a:2},{a:3}]";
         String jsonPath = "$.*";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -107,7 +107,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test4_2(){
+    public void test4_2() {
         String test = "[{a:1},{a:2},{a:3}]";
         String jsonPath = "$.[*]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -121,7 +121,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         String test = "[{a:1},{a:2},{a:3}]";
         String jsonPath = "$.*.*";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -135,7 +135,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test5_2(){
+    public void test5_2() {
         String test = "[{a:1},{a:2},{a:3}]";
         String jsonPath = "$.[*].[*]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -149,7 +149,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test6(){
+    public void test6() {
         String test = "[{a:1},{a:2},{a:3}]";
         String jsonPath = "$.*.[*]";
         String json1 = ONode.load(test).select(jsonPath).toJson();
@@ -163,7 +163,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test7(){
+    public void test7() {
         String test = "[{\"field\":\"l1-field-1\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]},{\"field\":\"l1-field-2\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]}]";
 
         String jsonPath = "$.[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')]";
@@ -179,7 +179,7 @@ public class JsonPathTest4 {
     }
 
     @Test
-    public void test8(){
+    public void test8() {
         String test = "[{\"field\":\"l1-field-1\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]},{\"field\":\"l1-field-2\",\"children\":[{\"field\":\"l2-field-1\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]},{\"field\":\"l2-field-2\",\"fields\":[{\"field\":\"l3-field-1\"},{\"field\":\"l3-field-2\"}]}]}]";
 
         String jsonPath = "$[?(@.field == 'l1-field-1')].children[?(@.field == 'l2-field-1')].fields[*]";
@@ -226,5 +226,35 @@ public class JsonPathTest4 {
         System.out.println(tmp);
 
         assert tmp.toString().equals(hint.toString());
+    }
+
+    @Test
+    public void test10_1() {
+        String json = "{\"result\":[]}";
+
+        ONode oNode = ONode.load(json).select("$.result[*].amount.sum()");
+        System.out.println(oNode.toString());
+
+        assert oNode.getLong() == 0L;
+    }
+
+    @Test
+    public void test10_2() {
+        String json = "{\"result\":[]}";
+
+        ONode oNode = ONode.load(json).select("$.result[*].amount.min()");
+        System.out.println(oNode.toString());
+
+        assert oNode.getLong() == 0L;
+    }
+
+    @Test
+    public void test10_3() {
+        String json = "{\"result\":[]}";
+
+        ONode oNode = ONode.load(json).select("$.result[*].amount.max()");
+        System.out.println(oNode.toString());
+
+        assert oNode.getLong() == 0L;
     }
 }

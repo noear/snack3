@@ -594,6 +594,10 @@ public class JsonPath {
             }
             case "min()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     ONode min_n = null;
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isValue()) {
@@ -624,6 +628,10 @@ public class JsonPath {
 
             case "max()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     ONode max_n = null;
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isValue()) {
@@ -658,6 +666,10 @@ public class JsonPath {
 
             case "avg()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     double sum = 0;
                     int num = 0;
                     for (ONode n1 : tmp.ary()) {
@@ -686,6 +698,10 @@ public class JsonPath {
 
             case "sum()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     double sum = 0;
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isValue()) {
@@ -708,6 +724,10 @@ public class JsonPath {
 
             case "first()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     ONode n1 = tmp.get(0);
 
                     if (regroup && n1.isArray()) {
@@ -722,6 +742,10 @@ public class JsonPath {
 
             case "last()": {
                 if (tmp.isArray()) {
+                    if(tmp.count() == 0){
+                        return null;
+                    }
+
                     ONode n1 = tmp.get(tmp.count() - 1);
 
                     if (regroup && n1.isArray()) {
