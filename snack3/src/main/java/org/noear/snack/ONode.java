@@ -36,22 +36,22 @@ public class ONode {
     public ONode(Options options) {
         _d = new ONodeData(this);
 
-        if(options ==null){
+        if (options == null) {
             _o = Options.def();
-        }else {
+        } else {
             _o = options;
         }
     }
 
-    public static ONode newValue(){
+    public static ONode newValue() {
         return new ONode().asValue();
     }
 
-    public static ONode newObject(){
+    public static ONode newObject() {
         return new ONode().asObject();
     }
 
-    public static ONode newArray(){
+    public static ONode newArray() {
         return new ONode().asArray();
     }
 
@@ -59,21 +59,21 @@ public class ONode {
     /**
      * Json path select
      *
-     * @param jpath json path express
+     * @param jpath       json path express
      * @param useStandard use standard mode(default: false)
-     * @param cacheJpath cache json path parsing results
+     * @param cacheJpath  cache json path parsing results
      */
-    public ONode select(String jpath,  boolean useStandard, boolean cacheJpath) {
+    public ONode select(String jpath, boolean useStandard, boolean cacheJpath) {
         return JsonPath.eval(this, jpath, useStandard, cacheJpath);
     }
 
     /**
      * Json path select
      *
-     * @param jpath json path express
+     * @param jpath       json path express
      * @param useStandard use standard mode(default: false)
      */
-    public ONode select(String jpath,  boolean useStandard) {
+    public ONode select(String jpath, boolean useStandard) {
         return select(jpath, useStandard, true);
     }
 
@@ -91,8 +91,12 @@ public class ONode {
      *
      * @param jpath json path express
      */
-    public ONode selectOrNew(String jpath){
+    public ONode selectOrNew(String jpath) {
         return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_OR_NEW);
+    }
+
+    public ONode pathList(String jpath) {
+        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_PATHLIST);
     }
 
     /**
@@ -109,7 +113,7 @@ public class ONode {
      *
      * @param jpath json path express
      */
-    public boolean exists(String jpath){
+    public boolean exists(String jpath) {
         return select(jpath).isUndefined() == false;
     }
 
@@ -188,7 +192,7 @@ public class ONode {
 
     /**
      * 定制选项
-     * */
+     */
     public ONode options(Consumer<Options> custom) {
         custom.accept(_o);
         return this;
@@ -196,8 +200,8 @@ public class ONode {
 
     /**
      * 获取选项
-     * */
-    public Options options(){
+     */
+    public Options options() {
         return _o;
     }
 
@@ -378,7 +382,7 @@ public class ONode {
     /**
      * 获取节点的值并以 rawString 输出
      * 如果节点不是值类型，则输出null
-     * */
+     */
     public String getRawString() {
         if (isValue()) {
             return _d.value.getRawString();
@@ -390,7 +394,7 @@ public class ONode {
     /**
      * 获取节点的值并以 rawNumber 输出
      * 如果节点不是值类型，则输出null
-     * */
+     */
     public Number getRawNumber() {
         if (isValue())
             return _d.value.getRawNumber();
@@ -401,7 +405,7 @@ public class ONode {
     /**
      * 获取节点的值并以 rawBoolean 输出
      * 如果节点不是值类型，则输出null
-     * */
+     */
     public Boolean getRawBoolean() {
         if (isValue())
             return _d.value.getRawBoolean();
@@ -412,7 +416,7 @@ public class ONode {
     /**
      * 获取节点的值并以 rawDate 输出
      * 如果节点不是值类型，则输出null
-     * */
+     */
     public Date getRawDate() {
         if (isValue())
             return _d.value.getRawDate();
@@ -480,7 +484,7 @@ public class ONode {
 
     /**
      * 重命名一个子节点（如果不存在则跳过）
-     * */
+     */
     public ONode rename(String key, String newKey) {
         if (key == null || newKey == null) {
             return this;
@@ -499,7 +503,7 @@ public class ONode {
         return this;
     }
 
-    private static void rename_do(ONode n,String key, String newKey) {
+    private static void rename_do(ONode n, String key, String newKey) {
         if (n.isObject()) {
             ONode tmp = n._d.object.get(key);
             if (tmp != null) {
@@ -553,9 +557,9 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getOrNull(String key) {
-        if(isObject()) {
+        if (isObject()) {
             return _d.object.get(key);
-        }else{
+        } else {
             return null;
         }
     }
@@ -665,7 +669,7 @@ public class ONode {
      * 移除对象的子节点 (搞不清楚是自身还是被移除的，所以不返回)
      */
     public void remove(String key) {
-        if(isObject()) {
+        if (isObject()) {
             _d.object.remove(key);
         }
     }
@@ -732,7 +736,7 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getOrNull(int index) {
-        if(isArray()) {
+        if (isArray()) {
             if (index >= 0 && _d.array.size() > index) {
                 return _d.array.get(index);
             }
@@ -838,8 +842,8 @@ public class ONode {
 
     /**
      * 检查节点是否未定义
-     * */
-    public boolean isUndefined(){
+     */
+    public boolean isUndefined() {
         return _d.nodeType == ONodeType.Null;
     }
 
@@ -957,7 +961,7 @@ public class ONode {
 
     /**
      * 将当前ONode 转为 java object
-     *
+     * <p>
      * clz = Object.class   => auto typ
      */
     public <T> T toObject() {
@@ -966,7 +970,7 @@ public class ONode {
 
     /**
      * 将当前ONode 转为 java object
-     *
+     * <p>
      * clz = XxxModel.class => XxxModel
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
@@ -978,15 +982,15 @@ public class ONode {
 
     /**
      * 将当前ONode 转为 java list
-     *
+     * <p>
      * clz = XxxModel.class => XxxModel
      * clz = Object.class   => auto type
      * clz = null           => Map or List or Value
      */
-    public<T> List<T> toObjectList(Class<T> clz){
+    public <T> List<T> toObjectList(Class<T> clz) {
         List<T> list = new ArrayList<>();
 
-        for(ONode n: ary()){
+        for (ONode n : ary()) {
             list.add(n.toObject(clz));
         }
 
@@ -994,7 +998,7 @@ public class ONode {
     }
 
     @Deprecated
-    public<T> List<T> toArray(Class<T> clz){
+    public <T> List<T> toArray(Class<T> clz) {
         return toObjectList(clz);
     }
 
@@ -1004,13 +1008,14 @@ public class ONode {
     public <T> T to(Toer toer, Type clz) {
         return (T) (new Context(_o, this, clz).handle(toer).target);
     }
+
     public <T> T to(Toer toer) {
         return to(toer, null);
     }
 
     /**
      * 绑定到
-     * */
+     */
     public <T> T bindTo(T target) {
         Context ctx = new Context(_o, this, target.getClass());
         ctx.target = target;
@@ -1031,7 +1036,7 @@ public class ONode {
         return this;
     }
 
-    public ONode fill(Object source,  Feature... features) {
+    public ONode fill(Object source, Feature... features) {
         val(doLoad(source, source instanceof String, Options.def().add(features), null));
         return this;
     }
@@ -1064,30 +1069,29 @@ public class ONode {
 
     /**
      * @param features 特性
-     * */
+     */
     public static ONode load(Object source, Feature... features) {
         return load(source, Options.def().add(features), null);
     }
 
     /**
      * @param opts 常数配置
-     * */
+     */
     public static ONode load(Object source, Options opts) {
         return load(source, opts, null);
     }
 
 
-
     /**
      * @param fromer 来源处理器
-     * */
+     */
     public static ONode load(Object source, Options opts, Fromer fromer) {
         return doLoad(source, source instanceof String, opts, fromer);
     }
 
     /**
      * 加载string并生成新节点
-     * */
+     */
     public static ONode loadStr(String source) {
         return doLoad(source, true, null, null);
     }
@@ -1102,7 +1106,7 @@ public class ONode {
 
     /**
      * 加载java object并生成新节点
-     * */
+     */
     public static ONode loadObj(Object source) {
         return doLoad(source, false, null, null);
     }
@@ -1115,7 +1119,6 @@ public class ONode {
     public static ONode loadObj(Object source, Feature... features) {
         return doLoad(source, false, Options.def().add(features), null);
     }
-
 
 
     private static ONode doLoad(Object source, boolean isString, Options opts, Fromer fromer) {
@@ -1152,7 +1155,7 @@ public class ONode {
 
     /**
      * @deprecated 3.2.40
-     * */
+     */
     @Deprecated
     public static String stringify(Object source, Feature... features) {
         if (features.length > 0) {
@@ -1166,7 +1169,7 @@ public class ONode {
      * 字会串化 （由序列化器决定格式）
      *
      * @param source java object
-     * @param opts    常量配置
+     * @param opts   常量配置
      * @throws Exception
      */
     public static String stringify(Object source, Options opts) {
@@ -1209,7 +1212,7 @@ public class ONode {
      */
     public static <T> T deserialize(String source, Type clz) {
         //加载String，不需指定Fromer
-        return load(source,  Options.serialize(), null).toObject(clz);
+        return load(source, Options.serialize(), null).toObject(clz);
     }
 
 
@@ -1223,7 +1226,7 @@ public class ONode {
             return isNull();
         }
 
-        if(isArray()) {
+        if (isArray()) {
             if (o instanceof ONode) {
                 return Objects.equals(ary(), ((ONode) o).ary());
             } else {
@@ -1231,7 +1234,7 @@ public class ONode {
             }
         }
 
-        if(isObject()) {
+        if (isObject()) {
             if (o instanceof ONode) {
                 return Objects.equals(obj(), ((ONode) o).obj());
             } else {
@@ -1239,7 +1242,7 @@ public class ONode {
             }
         }
 
-        if(isValue()){
+        if (isValue()) {
             if (o instanceof ONode) {
                 return Objects.equals(val(), ((ONode) o).val());
             } else {
@@ -1248,9 +1251,9 @@ public class ONode {
         }
 
         //最后是null type
-        if(o instanceof ONode){
+        if (o instanceof ONode) {
             return ((ONode) o).isNull(); //都是 null
-        }else{
+        } else {
             return false;
         }
     }

@@ -27,7 +27,20 @@ public class JsonPath {
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath, CRUD crud) {
         tlCache.get().clear();
-        return evalDo(source, jpath, cacheJpath, useStandard, crud);
+
+        if (crud == CRUD.GET_PATHLIST || crud == CRUD.GET_ADD_PATH) {
+            pushPath("$", source);
+        }
+
+        ONode rst = evalDo(source, jpath, cacheJpath, useStandard, crud);
+
+        if (crud == CRUD.GET_PATHLIST) {
+            ONode pathList = new ONode(source.options()).asArray();
+            pullPath(pathList, rst);
+            return pathList;
+        } else {
+            return rst;
+        }
     }
 
     private static ONode evalDo(ONode source, String jpath, boolean cacheJpath, boolean useStandard, CRUD crud) {
@@ -40,7 +53,7 @@ public class JsonPath {
                     jsonPath = _jpathCache.get(jpath);
                     if (jsonPath == null) {
                         jsonPath = compile(jpath);
-                        if(_jpathCache.size() < _cacheSize) {
+                        if (_jpathCache.size() < _cacheSize) {
                             _jpathCache.put(jpath, jsonPath);
                         }
                     }
@@ -53,6 +66,39 @@ public class JsonPath {
 
         //执行指令
         return exec(jsonPath, source, useStandard, crud);
+    }
+
+    public static void pushPath(String path, ONode oNode) {
+        oNode.attrSet("$PATH", path);
+
+        if (oNode.isArray()) {
+            for (int i = 0; i < oNode.count(); i++) {
+                pushPath(path + "[" + i + "]", oNode.get(i));
+            }
+        } else if (oNode.isObject()) {
+            for (Map.Entry<String, ONode> kv : oNode.obj().entrySet()) {
+                //用[]可支持有空隔的 key 或 特殊符号的 key
+                pushPath(path + "['" + kv.getKey() + "']", kv.getValue());
+            }
+        }
+    }
+
+    public static void pullPath(ONode paths, ONode oNode) {
+        String path = oNode.attrGet("$PATH");
+
+        if (StringUtil.isEmpty(path)) {
+            if (oNode.isArray()) {
+                for (int i = 0; i < oNode.count(); i++) {
+                    pullPath(paths, oNode.get(i));
+                }
+            } else if (oNode.isObject()) {
+                for (Map.Entry<String, ONode> kv : oNode.obj().entrySet()) {
+                    pullPath(paths, kv.getValue());
+                }
+            }
+        } else {
+            paths.addNew().val().set(path);
+        }
     }
 
     private static final ThData<CharBuffer> tlBuilder = new ThData<>(()->new CharBuffer());
@@ -1239,6 +1285,8 @@ public class JsonPath {
     public static enum CRUD {
         GET, //获取
         GET_OR_NEW, //获取或新构
+        GET_PATHLIST,
+        GET_ADD_PATH,
         REMOVE, // 移除
     }
 }
