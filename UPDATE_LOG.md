@@ -1,4 +1,8 @@
 
+### 3.2.116
+
+* 添加 ONode.parent(), ONode.parents(depth)
+
 ### 3.2.115
 
 新增接口
