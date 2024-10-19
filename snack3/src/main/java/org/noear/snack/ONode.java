@@ -20,6 +20,8 @@ public class ONode {
     protected Options _o;
     //内部数据
     protected ONodeData _d;
+    //父节点
+    protected ONode _p;
 
     /**
      * @return 版本信息
@@ -29,11 +31,15 @@ public class ONode {
     }
 
     public ONode() {
-        _o = Options.def();
-        _d = new ONodeData(this);
+        this(null, null);
     }
 
     public ONode(Options options) {
+        this(null, options);
+    }
+
+    public ONode(ONode parent, Options options) {
+        _p = parent;
         _d = new ONodeData(this);
 
         if (options == null) {
@@ -55,6 +61,30 @@ public class ONode {
         return new ONode().asArray();
     }
 
+    /**
+     * 父节点（可能为 null）
+     * */
+    public ONode parent(){
+        return _p;
+    }
+
+    /**
+     * 深度父节点（可能为 null）
+     * */
+    public ONode parents(int depth) {
+        ONode tmp = _p;
+        while (depth > 0) {
+            if (tmp == null) {
+                break;
+            } else {
+                tmp = tmp.parent();
+            }
+
+            depth--;
+        }
+
+        return tmp;
+    }
 
     /**
      * Json path select
@@ -546,7 +576,7 @@ public class ONode {
 
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
-            return new ONode(_o);
+            return new ONode(this, _o);
         } else {
             return tmp;
         }
@@ -561,7 +591,7 @@ public class ONode {
 
         ONode tmp = _d.object.get(key);
         if (tmp == null) {
-            tmp = new ONode(_o);
+            tmp = new ONode(this, _o);
             if (newNodeType == ONodeType.Object) {
                 tmp.asObject();
             } else if (newNodeType == ONodeType.Array) {
@@ -593,7 +623,7 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getNew(String key) {
-        ONode tmp = new ONode(_o);
+        ONode tmp = new ONode(this, _o);
         _d.object.put(key, tmp);
 
         return tmp;
@@ -601,16 +631,16 @@ public class ONode {
 
     private ONode buildVal(Object val) {
         if (val instanceof Map) {
-            return new ONode(_o).setAll((Map<String, ?>) val);
+            return new ONode(this, _o).setAll((Map<String, ?>) val);
         } else if (val instanceof Collection) {
-            return new ONode(_o).addAll((Collection<?>) val);
+            return new ONode(this, _o).addAll((Collection<?>) val);
         } else {
             //可能会影响性能...
             //
             if (val != null && val.getClass().isArray()) {
-                return new ONode(_o).addAll(Arrays.asList((Object[]) val));
+                return new ONode(this, _o).addAll(Arrays.asList((Object[]) val));
             }
-            return new ONode(_o).val(val);
+            return new ONode(this, _o).val(val);
         }
     }
 
@@ -624,9 +654,9 @@ public class ONode {
         _d.tryInitObject();
 
         if (val instanceof ONode) {
-            _d.object.put(key, ((ONode) val));
+            setNode(key, ((ONode) val));
         } else {
-            _d.object.put(key, buildVal(val));
+            setNode(key, buildVal(val));
         }
 
         return this;
@@ -639,6 +669,11 @@ public class ONode {
      */
     public ONode setNode(String key, ONode val) {
         _d.object.put(key, val);
+
+        if (val._p == null) {
+            val._p = this;
+        }
+
         return this;
     }
 
@@ -652,7 +687,9 @@ public class ONode {
         _d.tryInitObject();
 
         if (obj != null && obj.isObject()) {
-            _d.object.putAll(obj._d.object);
+            for (Map.Entry<String, ONode> kv : obj._d.object.entrySet()) {
+                setNode(kv.getKey(), kv.getValue());
+            }
         }
 
         return this;
@@ -724,7 +761,7 @@ public class ONode {
             return _d.array.get(index);
         }
 
-        return new ONode(_o);
+        return new ONode(this, _o);
     }
 
     public ONode getOrNew(int index) {
@@ -739,7 +776,7 @@ public class ONode {
         } else {
             ONode tmp = null;
             for (int i = _d.array.size(); i <= index; i++) {
-                tmp = new ONode(_o);
+                tmp = new ONode(this, _o);
 
                 if (newNodeType == ONodeType.Object) {
                     tmp.asObject();
@@ -784,7 +821,7 @@ public class ONode {
      */
     public ONode addNew() {
         _d.tryInitArray();
-        ONode n = new ONode(_o);
+        ONode n = new ONode(this, _o);
         _d.array.add(n);
         return n;
     }
@@ -799,9 +836,9 @@ public class ONode {
         _d.tryInitArray();
 
         if (val instanceof ONode) {
-            _d.array.add((ONode) val);
+            addNode((ONode) val);
         } else {
-            _d.array.add(buildVal(val));
+            addNode(buildVal(val));
         }
 
         return this;
@@ -814,6 +851,10 @@ public class ONode {
      */
     public ONode addNode(ONode val) {
         _d.array.add(val);
+        if (val._p == null) {
+            val._p = this;
+        }
+
         return this;
     }
 
@@ -827,7 +868,10 @@ public class ONode {
         _d.tryInitArray();
 
         if (ary != null && ary.isArray()) {
-            _d.array.addAll(ary._d.array);
+            for (ONode n1 : ary._d.array) {
+                //_p
+                addNode(n1);
+            }
         }
 
         return this;

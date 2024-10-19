@@ -209,7 +209,7 @@ public class JsonPath {
             }
 
             if (branch_do && (useStandard || s.cmdAry != null)) { //..a[x] 下属进行分支处理 //s.cmdAry != null
-                ONode tmp2 = new ONode(source.options()).asArray();
+                ONode tmp2 = new ONode(null, source.options()).asArray();
 
                 for (ONode n1 : tmp.ary()) {
                     ONode n2 = s.handler.run(last, s, regroup, source, n1, useStandard, crud);
@@ -246,7 +246,7 @@ public class JsonPath {
         }
 
         if (tmp == null) {
-            return new ONode(source.options());
+            return new ONode(null, source.options());
         } else {
             return tmp;
         }
@@ -512,7 +512,7 @@ public class JsonPath {
      * */
     private static Resolver handler_xx=(bef, s, regroup, root, tmp, usd, orNew)-> {
         if (s.name.length() > 0) {
-            ONode tmp2 = new ONode(root.options()).asArray();
+            ONode tmp2 = new ONode(null, root.options()).asArray();
             if ("*".equals(s.name)) {
                 scanByAll(s.name, tmp, true, tmp2.ary());
             } else if (s.name.startsWith("?")) {
@@ -536,7 +536,7 @@ public class JsonPath {
         ONode tmp2 = null;
 
         if (tmp.count() > 0) {
-            tmp2 = new ONode(tmp.options()).asArray();//有节点时，才初始化
+            tmp2 = new ONode(null, tmp.options()).asArray();//有节点时，才初始化
 
             if (tmp.isObject()) {
                 tmp2.addAll(tmp.obj().values());
@@ -572,7 +572,7 @@ public class JsonPath {
         }
 
         if (tmp.isArray()) {
-            ONode tmp2 = new ONode(tmp.options()).asArray();
+            ONode tmp2 = new ONode(null, tmp.options()).asArray();
 
             for (ONode n1 : tmp.ary()) {
                 if (n1.isObject()) {
@@ -618,18 +618,18 @@ public class JsonPath {
     private static Resolver handler_fun=(bef, s, regroup, root, tmp, usd, crud)->{
         switch (s.cmd) {
             case "size()": {
-                return new ONode(tmp.options()).val(tmp.count());
+                return new ONode(null,tmp.options()).val(tmp.count());
             }
             case "length()": {
                 if (tmp.isValue()) {
-                    return new ONode(tmp.options()).val(tmp.getString().length());
+                    return new ONode(null,tmp.options()).val(tmp.getString().length());
                 } else {
-                    return new ONode(tmp.options()).val(tmp.count());
+                    return new ONode(null,tmp.options()).val(tmp.count());
                 }
             }
             case "keys()": {
                 if (tmp.isObject()) {
-                    return new ONode(tmp.options()).addAll(tmp.obj().keySet());
+                    return new ONode(null,tmp.options()).addAll(tmp.obj().keySet());
                 } else {
                     return null;
                 }
@@ -731,7 +731,7 @@ public class JsonPath {
                     }
 
                     if (num > 0) {
-                        return new ONode(tmp.options()).val(sum / num);
+                        return new ONode(null,tmp.options()).val(sum / num);
                     }
                 }
 
@@ -758,7 +758,7 @@ public class JsonPath {
                             }
                         }
                     }
-                    return new ONode(tmp.options()).val(sum);
+                    return new ONode(null,tmp.options()).val(sum);
                 } else {
                     return null;
                 }
@@ -813,7 +813,7 @@ public class JsonPath {
 
         if (tmp.isArray()) {
             if(regroup){
-                tmp2 = new ONode(tmp.options()).asArray();
+                tmp2 = new ONode(null,tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
                     if (n1.isObject()) {
                         tmp2.addAll(n1.obj().values());
@@ -827,7 +827,7 @@ public class JsonPath {
         }
 
         if (tmp.isObject()) {
-            tmp2 = new ONode(tmp.options()).asArray();
+            tmp2 = new ONode(null,tmp.options()).asArray();
             tmp2.addAll(tmp.obj().values());
         }
 
@@ -845,7 +845,7 @@ public class JsonPath {
                     return null;
                 }
             } else if (tmp.isArray()) {
-                tmp2 = new ONode(tmp.options()).asArray();
+                tmp2 = new ONode(null,tmp.options()).asArray();
 
                 for (ONode n1 : tmp.ary()) {
                     if(n1.isObject() && evalDo(n1,s.left,true, usd, crud).isNull() == false){
@@ -874,7 +874,7 @@ public class JsonPath {
                     return null;
                 }
             } else if (tmp.isArray()) {
-                tmp2 = new ONode(tmp.options()).asArray();
+                tmp2 = new ONode(null,tmp.options()).asArray();
                 if ("@".equals(s.left)) {
                     for (ONode n1 : tmp.ary()) {
                         if (n1.isArray()) {
@@ -955,7 +955,7 @@ public class JsonPath {
                     ONode n1 = tmp.obj().get(k);
                     if (n1 != null) {
                         if(tmp2 == null){
-                            tmp2 = new ONode(tmp.options()).asArray();
+                            tmp2 = new ONode(null,tmp.options()).asArray();
                         }
 
                         tmp2.addNode(n1);
@@ -965,7 +965,7 @@ public class JsonPath {
 
             //不知道，该不访加::??
             if(tmp.isArray()) {
-                tmp2 = new ONode(tmp.options()).asArray();
+                tmp2 = new ONode(null,tmp.options()).asArray();
 
                 for(ONode tmp1 : tmp.ary()){
                     if(tmp1.isObject()){
@@ -986,7 +986,7 @@ public class JsonPath {
                 for (int idx : s.indexS) {
                     if (idx >= 0 && idx < len2) {
                         if(tmp2 == null){
-                            tmp2 = new ONode(tmp.options()).asArray();
+                            tmp2 = new ONode(null,tmp.options()).asArray();
                         }
 
                         tmp2.addNode(list2.get(idx));
@@ -1026,7 +1026,7 @@ public class JsonPath {
                 end = count;
             }
 
-            return new ONode(tmp.options()).addAll(tmp.ary().subList(start, end));
+            return new ONode(null,tmp.options()).addAll(tmp.ary().subList(start, end));
         } else {
             return null;
         }
@@ -1045,7 +1045,7 @@ public class JsonPath {
 
             //不知道，该不访加::??
             if(tmp.isArray()) {
-                ONode tmp2 = new ONode(tmp.options()).asArray();
+                ONode tmp2 = new ONode(null,tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
                     if (n1.isObject()) {
                         ONode n2 = n1.nodeData().object.get(s.name);
@@ -1061,7 +1061,7 @@ public class JsonPath {
         } else {
             //[1]
             if (regroup) {
-                ONode tmp2 = new ONode(tmp.options()).asArray();
+                ONode tmp2 = new ONode(null,tmp.options()).asArray();
                 for (ONode n1 : tmp.ary()) {
                     ONode n2 = null;
                     if (s.start < 0) {

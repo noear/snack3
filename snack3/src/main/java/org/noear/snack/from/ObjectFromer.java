@@ -33,7 +33,7 @@ public class ObjectFromer implements Fromer {
 
     private ONode analyse(Options opt, Object source) {
 
-        ONode rst = new ONode(opt);
+        ONode rst = new ONode(null, opt);
 
         if (source == null) {
             return rst;
@@ -62,12 +62,12 @@ public class ObjectFromer implements Fromer {
                     otmp = ONode.loadStr(sval, opt);
                 }
 
-                if(otmp == null) {
+                if (otmp == null) {
                     rst.val().setString(sval);
-                }else{
+                } else {
                     rst.val(otmp);
                 }
-            }else{
+            } else {
                 rst.val().setString((String) source);
             }
 
@@ -78,7 +78,7 @@ public class ObjectFromer implements Fromer {
             rst.val().setDate((Date) source);
         } else if (source instanceof ZonedDateTime) {
             rst.val().setDate(Date.from(((ZonedDateTime) source).toInstant()));
-        }else if (source instanceof OffsetDateTime) {
+        } else if (source instanceof OffsetDateTime) {
             rst.val().setDate(Date.from(((OffsetDateTime) source).toInstant()));
         } else if (source instanceof LocalDateTime) {
             Instant instant = ((LocalDateTime) source).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toInstant();
@@ -100,7 +100,7 @@ public class ObjectFromer implements Fromer {
             analyseBean(opt, rst, clz, source);
         } else if (source instanceof Properties) {
             analyseProps(opt, rst, clz, source);
-        } else if (source instanceof NameValues){
+        } else if (source instanceof NameValues) {
             analyseNameValues(opt, rst, clz, source);
         } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
 
@@ -109,9 +109,9 @@ public class ObjectFromer implements Fromer {
             EnumWrap ew = TypeUtil.createEnum(source.getClass());
             Object o = ew.getCustomValue(em);
             //如果为空代表该枚举没有被标注继续采用常规序列化方式
-            if(o != null){
+            if (o != null) {
                 rst.val().set(o);
-            }else {
+            } else {
                 if (opt.hasFeature(Feature.EnumUsingName)) {
                     rst.val().setString(em.name());
                 } else {
@@ -145,7 +145,7 @@ public class ObjectFromer implements Fromer {
             ONode ary = rst;
             //为序列化添加特性支持
             if (opt.hasFeature(Feature.WriteArrayClassName)) {
-                rst.add(typeSet(opt, new ONode(opt), clz));
+                rst.add(typeSet(opt, new ONode(null, opt), clz));
                 ary = rst.addNew().asArray();
             }
 
@@ -236,7 +236,7 @@ public class ObjectFromer implements Fromer {
     private boolean analyseProps(Options cfg, ONode rst, Class<?> clz, Object obj) {
         Properties props = (Properties) obj;
 
-        if(props.size() ==0){
+        if (props.size() == 0) {
             rst.asNull();
             return true;
         }
@@ -252,9 +252,9 @@ public class ObjectFromer implements Fromer {
         Collections.sort(keyVector);
 
         //确定类型
-        if(keyVector.get(0).startsWith("[")){
+        if (keyVector.get(0).startsWith("[")) {
             rst.asArray();
-        }else{
+        } else {
             rst.asObject();
         }
 
@@ -369,7 +369,7 @@ public class ObjectFromer implements Fromer {
         Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
         boolean useGetter = cfg.hasFeature(Feature.UseGetter);
         boolean useOnlyGetter = cfg.hasFeature(Feature.UseOnlyGetter);
-        if(useOnlyGetter){
+        if (useOnlyGetter) {
             useGetter = true;
         }
 
@@ -379,7 +379,7 @@ public class ObjectFromer implements Fromer {
                 continue;
             }
 
-            if(useOnlyGetter && f.hasGetter == false){
+            if (useOnlyGetter && f.hasGetter == false) {
                 //只用getter
                 continue;
             }
@@ -414,14 +414,14 @@ public class ObjectFromer implements Fromer {
 
                     if (cfg.hasFeature(Feature.ArrayNullAsEmpty)) {
                         if (Collection.class.isAssignableFrom(f.type) || f.type.isArray()) {
-                            rst.setNode(f.getName(), new ONode(cfg).asArray());
+                            rst.setNode(f.getName(), new ONode(null, cfg).asArray());
                             continue;
                         }
                     }
 
                     //null是否输出
                     if (cfg.hasFeature(Feature.SerializeNulls)) {
-                        rst.setNode(f.getName(), new ONode(cfg).asValue());//不能用未初始化的类型填充
+                        rst.setNode(f.getName(), new ONode(null, cfg).asValue());//不能用未初始化的类型填充
                         continue;
                     }
                 }
@@ -443,7 +443,7 @@ public class ObjectFromer implements Fromer {
 
                 if (val instanceof LocalDateTime) {
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
-                    if(f.getTimeZone() != null){
+                    if (f.getTimeZone() != null) {
                         fmt.withZone(f.getTimeZone().toZoneId());
                     }
 
@@ -454,7 +454,7 @@ public class ObjectFromer implements Fromer {
 
                 if (val instanceof LocalDate) {
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
-                    if(f.getTimeZone() != null){
+                    if (f.getTimeZone() != null) {
                         fmt.withZone(f.getTimeZone().toZoneId());
                     }
 
@@ -465,7 +465,7 @@ public class ObjectFromer implements Fromer {
 
                 if (val instanceof LocalTime) {
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern(f.getFormat());
-                    if(f.getTimeZone() != null){
+                    if (f.getTimeZone() != null) {
                         fmt.withZone(f.getTimeZone().toZoneId());
                     }
 
@@ -482,7 +482,7 @@ public class ObjectFromer implements Fromer {
                 }
             }
 
-            if(f.isAsString()){
+            if (f.isAsString()) {
                 rst.set(f.getName(), val.toString());
                 continue;
             }

@@ -46,6 +46,8 @@ public class JsonPathTest {
 
         ONode ary2_a2 = n.usePaths().select("data.ary2[*].b.c");
         assert ary2_a2.count() == 1;
+        assert ary2_a2.get(0).parent().parent().parent().equals(ary2_a2.get(0).parents(2));
+        assert "{\"a\":3,\"b\":{\"c\":\"ddd\"}}".equals(ary2_a2.get(0).parents(1).toJson());
 
         ONode ary2_b = n.select("..b");
 

@@ -25,8 +25,8 @@ public class JsonFromer implements Fromer {
 
     /**
      * 清空线程缓存
-     * */
-    public static void clear(){
+     */
+    public static void clear() {
         tlBuilder.remove();
     }
 
@@ -35,7 +35,7 @@ public class JsonFromer implements Fromer {
         ctx.target = do_handle(ctx, (String) ctx.source);
     }
 
-    private CharBuffer getBuffer(Context ctx){
+    private CharBuffer getBuffer(Context ctx) {
         CharBuffer sBuf = null;
         if (ctx.options.hasFeature(Feature.DisThreadLocal)) {
             sBuf = new CharBuffer();//
@@ -49,7 +49,7 @@ public class JsonFromer implements Fromer {
 
     private ONode do_handle(Context ctx, String text) throws IOException {
         if (text == null) {
-            return new ONode(ctx.options);
+            return new ONode(null, ctx.options);
         } else {
             text = text.trim();//去除两边的空隔
         }
@@ -60,7 +60,7 @@ public class JsonFromer implements Fromer {
         //完整的处理（支持像："xx",'xx',12,true,{...},[],null,undefined 等）
         //
         if (len == 0) {
-            node = new ONode(ctx.options);
+            node = new ONode(null, ctx.options);
         } else {
             char prefix = text.charAt(0);
             char suffix = text.charAt(text.length() - 1);
@@ -71,7 +71,7 @@ public class JsonFromer implements Fromer {
                 //
                 CharBuffer sBuf = getBuffer(ctx);
 
-                node = new ONode(ctx.options);
+                node = new ONode(null, ctx.options);
                 analyse(ctx, new CharReader(text), sBuf, node);
 
             } else if (len >= 2 && (
@@ -90,7 +90,7 @@ public class JsonFromer implements Fromer {
                 node = analyse_val(ctx, text, false, true);
             } else {
                 //普通的字符串
-                node = new ONode(ctx.options);
+                node = new ONode(null, ctx.options);
                 node.val().setString(text);
             }
         }
@@ -110,7 +110,7 @@ public class JsonFromer implements Fromer {
             // 根据字符
             switch (c) {
                 case '"':
-                    if(sBuf.length() > 0){
+                    if (sBuf.length() > 0) {
                         //发现 " 之前，不应该有内容
                         throw new SnackException("Json string format is invalid: " + ctx.source);
                     }
@@ -129,7 +129,7 @@ public class JsonFromer implements Fromer {
                     break;
 
                 case '{':
-                    if(sr.last() == '{'){
+                    if (sr.last() == '{') {
                         throw new SnackException("Json string format is invalid: " + ctx.source);
                     }
 
@@ -295,11 +295,11 @@ public class JsonFromer implements Fromer {
             }
 
             if (orst == null) {
-                orst = new ONode(ctx.options);
+                orst = new ONode(null, ctx.options);
                 orst.val().setString(sval);
             }
         } else {
-            orst = new ONode(ctx.options);
+            orst = new ONode(null, ctx.options);
             OValue oval = orst.val();
 
             char c = sval.charAt(0);
