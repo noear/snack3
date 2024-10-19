@@ -202,7 +202,7 @@ o.forEach((v)->{
 #### 路径树接口
 
 ```java
-ONode o = ONode.loadStr(json).usePaths();
+ONode o = ONode.loadStr(json).usePaths(); //会为每个子节点，生成 path 属性
 
 ONode rst = o.select("$.data.list[*].mobile");
 List<String> rstPaths = rst.pathList(); //获取结果节点的路径列表
