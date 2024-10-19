@@ -296,10 +296,8 @@ public class ONode {
         if (val == null) {
             _d.tryInitNull();
         } else if (val instanceof ONode) { //支持数据直接copy
-            _d.tryInitNull();
             _d = ((ONode) val)._d;
         } else if (val instanceof Map || val instanceof Collection || val.getClass().isArray()) {
-            _d.tryInitNull();
             _d = buildVal(val)._d;
         } else {
             _d.tryInitValue();
