@@ -114,9 +114,10 @@ public class ONode {
     }
 
     /**
-     * 使用路径（在根级使用）
+     * 使用路径（从根级开始深度生成每个节点的路径）
      * */
     public ONode usePaths(){
+        //一般只在根据生成一次
         JsonPath.resolvePath("$", this);
         return this;
     }
