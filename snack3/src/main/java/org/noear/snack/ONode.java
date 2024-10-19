@@ -131,7 +131,7 @@ public class ONode {
     }
 
     /**
-     * 获取节点路径列表
+     * 获取节点路径列表（如果是临时集合，会提取多个路径）
      * */
     public List<String> pathList() {
         //usePaths 后有效
