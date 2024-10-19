@@ -37,6 +37,10 @@
 
 -exists(jpath:String) -> bool //使用JsonPath表达式查检节点是否存在（默认缓存路径编译）
 
+-usePaths() -> self:ONode   //使用路径（把当前作为根级，深度生成每个子节点的路径）。一般只在根级生成一次 
+-path() -> String           //获取路径属性（可能为 null；比如临时集合，或者未生成）
+-pathList() -> List<String> //获取节点路径列表（如果是临时集合，会提取多个路径）
+
 -clear()                    //清除子节点，对象或数组有效
 -count() -> int             //子节点数量，对象或数组有效
 -readonly() -> self:ONode   //只读形态（get时，不添加子节点）
