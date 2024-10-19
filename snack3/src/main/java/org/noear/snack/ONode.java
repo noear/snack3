@@ -114,10 +114,10 @@ public class ONode {
     }
 
     /**
-     * 使用路径（从根级开始深度生成每个节点的路径）
+     * 使用路径（把当前作为根级，深度生成每个子节点的路径）
      * */
     public ONode usePaths(){
-        //一般只在根据生成一次
+        //一般只在根级生成一次
         JsonPath.resolvePath("$", this);
         return this;
     }
