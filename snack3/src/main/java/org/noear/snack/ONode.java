@@ -122,9 +122,18 @@ public class ONode {
     }
 
     /**
-     * 获取当前节点路径列表
+     * 获取路径属性（可能为 null；比如临时集合）
+     * */
+    public String path(){
+        //usePaths 后有效
+        return this.attrGet("$PATH");
+    }
+
+    /**
+     * 获取节点路径列表
      * */
     public List<String> pathList() {
+        //usePaths 后有效
         List<String> rst = new ArrayList<>();
         JsonPath.extractPath(rst, this);
         return rst;
