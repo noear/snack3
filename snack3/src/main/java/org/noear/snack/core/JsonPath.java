@@ -68,7 +68,7 @@ public class JsonPath {
         return exec(jsonPath, source, useStandard, crud);
     }
 
-    public static void pushPath(String path, ONode oNode) {
+    private static void pushPath(String path, ONode oNode) {
         oNode.attrSet("$PATH", path);
 
         if (oNode.isArray()) {
@@ -83,7 +83,7 @@ public class JsonPath {
         }
     }
 
-    public static void pullPath(ONode paths, ONode oNode) {
+    private static void pullPath(ONode paths, ONode oNode) {
         String path = oNode.attrGet("$PATH");
 
         if (StringUtil.isEmpty(path)) {

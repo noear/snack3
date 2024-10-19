@@ -74,7 +74,17 @@ public class ONode {
      * @param useStandard use standard mode(default: false)
      */
     public ONode select(String jpath, boolean useStandard) {
-        return select(jpath, useStandard, true);
+        return JsonPath.eval(this, jpath, useStandard, true, JsonPath.CRUD.GET);
+    }
+
+    /**
+     * Json path select and add path
+     *
+     * @param jpath       json path express
+     * @param useStandard use standard mode(default: false)
+     */
+    public ONode selectAddPath(String jpath, boolean useStandard) {
+        return JsonPath.eval(this, jpath, useStandard, true, JsonPath.CRUD.GET_ADD_PATH);
     }
 
     /**
@@ -83,7 +93,16 @@ public class ONode {
      * @param jpath json path express
      */
     public ONode select(String jpath) {
-        return select(jpath, false);
+        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET);
+    }
+
+    /**
+     * Json path select and add path
+     *
+     * @param jpath json path express
+     */
+    public ONode selectAddPath(String jpath) {
+        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_ADD_PATH);
     }
 
     /**
@@ -95,7 +114,10 @@ public class ONode {
         return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_OR_NEW);
     }
 
-    public ONode pathList(String jpath) {
+    /**
+     * Json path select path-list
+     * */
+    public ONode selectPathList(String jpath) {
         return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_PATHLIST);
     }
 

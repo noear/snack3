@@ -258,7 +258,7 @@ public class JsonPathTest4 {
         assert oNode.getLong() == 0L;
 
 
-        System.out.println(ONode.load(json).pathList("$.result[*].amount.max()"));
-        assert ONode.load(json).pathList("$.result[*].amount.max()").count() == 0;
+        System.out.println(ONode.load(json).selectPathList("$.result[*].amount.max()"));
+        assert ONode.load(json).selectPathList("$.result[*].amount.max()").count() == 0;
     }
 }
