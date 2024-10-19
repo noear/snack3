@@ -202,12 +202,18 @@ o.forEach((v)->{
 #### 路径树接口
 
 ```java
-ONode rst = o.usePaths().select("$.data.list[*].mobile");
+ONode o = ONode.loadStr(json).usePaths();
+
+ONode rst = o.select("$.data.list[*].mobile");
 List<String> rstPaths = rst.pathList(); //获取结果节点的路径列表
 for(ONode n1 : rst.ary()) {
    n1.path(); //当前路径
    n1.parent(); //父级节点
 }
+
+ONode rst = o.get("data").get("list").get(2);
+rst.path();
+rst.parent();
 ```
 
 
