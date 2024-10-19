@@ -1,7 +1,7 @@
 
 ### 3.2.116
 
-* 添加 ONode.parent(), ONode.parents(depth)
+* 添加 oNode.parent(), oNode.parents(depth)
 
 ### 3.2.115
 
