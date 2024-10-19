@@ -64,7 +64,7 @@ public class ONode {
      * @param cacheJpath  cache json path parsing results
      */
     public ONode select(String jpath, boolean useStandard, boolean cacheJpath) {
-        return JsonPath.eval(this, jpath, useStandard, cacheJpath);
+        return JsonPath.eval(this, jpath, useStandard, cacheJpath, JsonPath.CRUD.GET);
     }
 
     /**
@@ -74,17 +74,7 @@ public class ONode {
      * @param useStandard use standard mode(default: false)
      */
     public ONode select(String jpath, boolean useStandard) {
-        return JsonPath.eval(this, jpath, useStandard, true, JsonPath.CRUD.GET);
-    }
-
-    /**
-     * Json path select and add path
-     *
-     * @param jpath       json path express
-     * @param useStandard use standard mode(default: false)
-     */
-    public ONode selectAddPath(String jpath, boolean useStandard) {
-        return JsonPath.eval(this, jpath, useStandard, true, JsonPath.CRUD.GET_ADD_PATH);
+        return select(jpath, useStandard, true);
     }
 
     /**
@@ -93,16 +83,7 @@ public class ONode {
      * @param jpath json path express
      */
     public ONode select(String jpath) {
-        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET);
-    }
-
-    /**
-     * Json path select and add path
-     *
-     * @param jpath json path express
-     */
-    public ONode selectAddPath(String jpath) {
-        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_ADD_PATH);
+        return select(jpath, false);
     }
 
     /**
@@ -112,13 +93,6 @@ public class ONode {
      */
     public ONode selectOrNew(String jpath) {
         return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_OR_NEW);
-    }
-
-    /**
-     * Json path select path-list
-     * */
-    public ONode selectPathList(String jpath) {
-        return JsonPath.eval(this, jpath, false, true, JsonPath.CRUD.GET_PATHLIST);
     }
 
     /**
@@ -137,6 +111,23 @@ public class ONode {
      */
     public boolean exists(String jpath) {
         return select(jpath).isUndefined() == false;
+    }
+
+    /**
+     * 使用路径（在根级使用）
+     * */
+    public ONode usePaths(){
+        JsonPath.resolvePath("$", this);
+        return this;
+    }
+
+    /**
+     * 获取当前节点路径列表
+     * */
+    public List<String> pathList() {
+        List<String> rst = new ArrayList<>();
+        JsonPath.extractPath(rst, this);
+        return rst;
     }
 
     /**

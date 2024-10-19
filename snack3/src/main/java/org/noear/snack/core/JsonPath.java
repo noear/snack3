@@ -27,20 +27,7 @@ public class JsonPath {
 
     public static ONode eval(ONode source, String jpath,  boolean useStandard, boolean cacheJpath, CRUD crud) {
         tlCache.get().clear();
-
-        if (crud == CRUD.GET_PATHLIST || crud == CRUD.GET_ADD_PATH) {
-            pushPath("$", source);
-        }
-
-        ONode rst = evalDo(source, jpath, cacheJpath, useStandard, crud);
-
-        if (crud == CRUD.GET_PATHLIST) {
-            ONode pathList = new ONode(source.options()).asArray();
-            pullPath(pathList, rst);
-            return pathList;
-        } else {
-            return rst;
-        }
+        return evalDo(source, jpath, cacheJpath, useStandard, crud);
     }
 
     private static ONode evalDo(ONode source, String jpath, boolean cacheJpath, boolean useStandard, CRUD crud) {
@@ -68,36 +55,45 @@ public class JsonPath {
         return exec(jsonPath, source, useStandard, crud);
     }
 
-    private static void pushPath(String path, ONode oNode) {
-        oNode.attrSet("$PATH", path);
+    /**
+     * 分析路径
+     *
+     * @param parentPath 父路径
+     * @param parentNode 父节点
+     * */
+    public static void resolvePath(String parentPath, ONode parentNode) {
+        parentNode.attrSet("$PATH", parentPath);
 
-        if (oNode.isArray()) {
-            for (int i = 0; i < oNode.count(); i++) {
-                pushPath(path + "[" + i + "]", oNode.get(i));
+        if (parentNode.isArray()) {
+            for (int i = 0; i < parentNode.count(); i++) {
+                resolvePath(parentPath + "[" + i + "]", parentNode.get(i));
             }
-        } else if (oNode.isObject()) {
-            for (Map.Entry<String, ONode> kv : oNode.obj().entrySet()) {
+        } else if (parentNode.isObject()) {
+            for (Map.Entry<String, ONode> kv : parentNode.obj().entrySet()) {
                 //用[]可支持有空隔的 key 或 特殊符号的 key
-                pushPath(path + "['" + kv.getKey() + "']", kv.getValue());
+                resolvePath(parentPath + "['" + kv.getKey() + "']", kv.getValue());
             }
         }
     }
 
-    private static void pullPath(ONode paths, ONode oNode) {
+    /**
+     * 提取路径
+     * */
+    public static void extractPath(List<String> paths, ONode oNode) {
         String path = oNode.attrGet("$PATH");
 
         if (StringUtil.isEmpty(path)) {
             if (oNode.isArray()) {
                 for (int i = 0; i < oNode.count(); i++) {
-                    pullPath(paths, oNode.get(i));
+                    extractPath(paths, oNode.get(i));
                 }
             } else if (oNode.isObject()) {
                 for (Map.Entry<String, ONode> kv : oNode.obj().entrySet()) {
-                    pullPath(paths, kv.getValue());
+                    extractPath(paths, kv.getValue());
                 }
             }
         } else {
-            paths.addNew().val().set(path);
+            paths.add(path);
         }
     }
 
@@ -1285,8 +1281,6 @@ public class JsonPath {
     public static enum CRUD {
         GET, //获取
         GET_OR_NEW, //获取或新构
-        GET_PATHLIST,
-        GET_ADD_PATH,
         REMOVE, // 移除
     }
 }

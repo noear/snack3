@@ -35,8 +35,8 @@ public class JsonPathTest3 {
         assert n.select("$.id").getInt() == 123;
         assert n.select("$.*").count() == 2;//因为 StringNullAsEmpty，使 name 变成了 ""
 
-        System.out.println(n.selectPathList("$.*"));
-        assert n.selectPathList("$.*").count() == 2;
+        System.out.println(n.usePaths().select("$.*"));
+        assert n.usePaths().select("$.*").pathList().size() == 2;
     }
 
     @Test
@@ -49,8 +49,8 @@ public class JsonPathTest3 {
         List<String> names = n.select("$.name").toObject(List.class);
         assert names.size() == 2;
 
-        System.out.println(n.selectPathList("$.name"));
-        assert n.selectPathList("$.name").count() == 2;
+        System.out.println(n.usePaths().select("$.name"));
+        assert n.usePaths().select("$.name").pathList().size() == 2;
     }
 
     @Test
@@ -66,8 +66,8 @@ public class JsonPathTest3 {
         assert result.size() == 2;
 
 
-        System.out.println(n.selectPathList("$[1,2]"));
-        assert n.selectPathList("$[1,2]").count() == 2;
+        System.out.println(n.usePaths().select("$[1,2]"));
+        assert n.usePaths().select("$[1,2]").pathList().size() == 2;
     }
 
     @Test
@@ -82,8 +82,8 @@ public class JsonPathTest3 {
         }).getClass());
         assert result.size() == 2;
 
-        System.out.println(n.selectPathList("$[0:2]"));
-        assert n.selectPathList("$[0:2]").count() == 2;
+        System.out.println(n.usePaths().select("$[0:2]"));
+        assert n.usePaths().select("$[0:2]").pathList().size() == 2;
     }
 
     @Test
@@ -98,8 +98,8 @@ public class JsonPathTest3 {
         ONode rst = n.select("$[?($.id in [1001,1002])]");
         assert rst.count() == 2;
 
-        System.out.println(n.selectPathList("$[?($.id in [1001,1002])]"));
-        assert n.selectPathList("$[?($.id in [1001,1002])]").count() == 2;
+        System.out.println(n.usePaths().select("$[?($.id in [1001,1002])]"));
+        assert n.usePaths().select("$[?($.id in [1001,1002])]").pathList().size() == 2;
     }
 
     @Test
@@ -172,8 +172,8 @@ public class JsonPathTest3 {
         System.out.println("books=::" + books);
         assert books.isArray();
         assert books.count() == 2;
-        System.out.println(o.selectPathList("$.store.book"));
-        assert o.selectPathList("$.store.book").count() == 1;
+        System.out.println(o.usePaths().select("$.store.book"));
+        assert o.usePaths().select("$.store.book").pathList().size() == 1;
 
 
         //得到所有的书名
@@ -184,15 +184,15 @@ public class JsonPathTest3 {
         ONode title = o.select("$.store.book[0].title");
         System.out.println("title=::" + title);
 
-        System.out.println(o.selectPathList("$.store.book[0].title"));
-        assert o.selectPathList("$.store.book[0].title").count() == 1;
+        System.out.println(o.usePaths().select("$.store.book[0].title"));
+        assert o.usePaths().select("$.store.book[0].title").pathList().size() == 1;
 
         //倒数第一本书title
         ONode title2 = o.select("$.store.book[-1].title");
         System.out.println("title=::" + title2);
         //assert "go语言实战".equals(title2);
-        System.out.println(o.selectPathList("$.store.book[-1].title"));
-        assert o.selectPathList("$.store.book[-1].title").count() == 1;
+        System.out.println(o.usePaths().select("$.store.book[-1].title"));
+        assert o.usePaths().select("$.store.book[-1].title").pathList().size() == 1;
 
         //price大于10元的book
         ONode list = o.select("$.store.book[?(price > 10)]");
@@ -232,8 +232,8 @@ public class JsonPathTest3 {
         oNode1 = oNode.select("$.school[?(@.name == '清华')].grade[0]");
         System.out.println(oNode1.toJson());
         assert oNode1.get(0).get("class").getString().equals("二");
-        System.out.println(oNode.selectPathList("$.school[?(@.name == '清华')].grade[0]"));
-        assert  oNode.selectPathList("$.school[?(@.name == '清华')].grade[0]").count()==1;
+        System.out.println(oNode.usePaths().select("$.school[?(@.name == '清华')].grade[0]"));
+        assert oNode.usePaths().select("$.school[?(@.name == '清华')].grade[0]").pathList().size() == 1;
 
 
         oNode1 = oNode.select("$.school[?(@.name == '清华')].grade[0][?(@.class == '一班')]");

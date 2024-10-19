@@ -14,13 +14,16 @@ public class JsonPathTest {
 
         //2.取一个属性的值
         String msg = n.get("msg").getString();
+        assert "Hello world".equals(msg);
 
         //3.取列表里的一项
         int li2  = n.get("data").get("list").get(2).getInt();
+        assert li2 == 3;
 
         //4.获取一个数组
         //List<Integer> list = n.get("data").get("list").toObject(List.class);
         List<Integer> list = n.select("data.list").toObject(List.class);
+        assert list.size() == 5;
 
 
 
@@ -29,8 +32,20 @@ public class JsonPathTest {
 
         List<Integer> list2 = n.select("data.list[2,4]").toObject(List.class);
         List<Integer> list3 = n.select("data.list[2:4]").toObject(List.class);
+        assert list2.size() == 2;
+        assert list3.size() == 2;
+
+
+        List<Integer> list22 = n.usePaths().select("data.list[2,4]").toObject(List.class);
+        List<Integer> list32 = n.usePaths().select("data.list[2:4]").toObject(List.class);
+        assert list22.size() == 2;
+        assert list32.size() == 2;
 
         ONode ary2_a = n.select("data.ary2[*].b.c");
+        assert ary2_a.count() == 1;
+
+        ONode ary2_a2 = n.usePaths().select("data.ary2[*].b.c");
+        assert ary2_a2.count() == 1;
 
         ONode ary2_b = n.select("..b");
 
