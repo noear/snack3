@@ -621,6 +621,8 @@ public class ONode {
      * @return child:ONode
      */
     public ONode getNew(String key) {
+        _d.tryInitObject();
+
         ONode tmp = new ONode(this, _o);
         _d.object.put(key, tmp);
 
@@ -819,6 +821,7 @@ public class ONode {
      */
     public ONode addNew() {
         _d.tryInitArray();
+
         ONode n = new ONode(this, _o);
         _d.array.add(n);
         return n;

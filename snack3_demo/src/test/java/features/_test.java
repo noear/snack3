@@ -119,6 +119,19 @@ public class _test {
     }
 
     @Test
+    public void test4_2() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("a", 1);
+        map.put("b", "1");
+
+        ONode oNode = new ONode();
+
+        oNode.getNew("test").fill(map);
+
+        assert oNode.get("test").isObject();
+    }
+
+    @Test
     public void test5() {
         List<UserModel> list = new ArrayList<>();
         UserModel u1 = new UserModel();
