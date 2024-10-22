@@ -29,6 +29,7 @@ public class FieldWrap {
     private boolean serialize = true;
     private boolean deserialize = true;
     private boolean incNull = true;
+    private boolean flat = false;
 
     //值设置器
     private Method _setter;
@@ -51,6 +52,7 @@ public class FieldWrap {
             name = attr.name();
             format = attr.format();
             incNull = attr.incNull();
+            flat = attr.flat();
             asString = attr.asString();
 
 
@@ -124,6 +126,13 @@ public class FieldWrap {
      */
     public boolean isIncNull() {
         return incNull;
+    }
+
+    /**
+     * 
+     */
+    public boolean isFlat() {
+        return flat;
     }
 
     /**

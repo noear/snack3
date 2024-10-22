@@ -51,4 +51,9 @@ public @interface ONodeAttr {
      * 包函null
      */
     boolean incNull() default true;
+
+    /**
+     * 扁平化
+     */
+    boolean flat() default false;
 }
