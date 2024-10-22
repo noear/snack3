@@ -487,7 +487,17 @@ public class ObjectFromer implements Fromer {
                 continue;
             }
 
-            rst.setNode(f.getName(), analyse(cfg, val));
+            ONode analysed = analyse(cfg, val);
+
+            // 扁平化处理
+            if (f.isFlat() && analysed.isObject()) {
+                analysed.forEach((key, node) -> {
+                    rst.setNode(key, node);
+                });
+                continue;
+            }
+
+            rst.setNode(f.getName(), analysed);
         }
 
         return true;

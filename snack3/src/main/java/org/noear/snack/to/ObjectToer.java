@@ -705,6 +705,25 @@ public class ObjectToer implements Toer {
                     continue;
                 }
 
+                if (f.isFlat()) {// 扁平化处理
+                    Class fieldT = f.type;
+                    Type fieldGt = f.genericType;
+
+                    if (f.readonly) {
+                        analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                    } else {
+                        Object val = analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                        if (val == null) {
+                            //null string 是否以 空字符处理
+                            if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                                val = "";
+                            }
+                        }
+
+                        f.setValue(rst, val, useSetter);
+                    }
+                    continue;
+                }
 
                 if (o.contains(fieldK)) {
                     Class fieldT = f.type;
@@ -773,6 +792,10 @@ public class ObjectToer implements Toer {
             }
         }
 
+        if (fieldK == null) { // key为空，代表扁平化处理
+            return analyse(ctx, o, rst, fieldT, fieldGt, genericInfo);    
+        }
+        
         return analyse(ctx, o.get(fieldK), rst, fieldT, fieldGt, genericInfo);
     }
 
