@@ -20,6 +20,7 @@ public class DateUtil {
     public static final String FORMAT_24_ISO08601 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String FORMAT_23_a = "yyyy-MM-dd HH:mm:ss,SSS";
     public static final String FORMAT_23_b = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static final String FORMAT_23_t = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     public static final String FORMAT_22 = "yyyyMMddHHmmssSSSZ";//z: +0000
     public static final String FORMAT_19_ISO = "yyyy-MM-dd'T'HH:mm:ss";
     public static final String FORMAT_19_a = "yyyy-MM-dd HH:mm:ss";
@@ -30,6 +31,7 @@ public class DateUtil {
     public static final String FORMAT_16_b = "yyyy/MM/dd HH:mm";
     public static final String FORMAT_16_c = "yyyy.MM.dd HH:mm";
     public static final String FORMAT_14 = "yyyyMMddHHmmss";
+    public static final String FORMAT_12 = "HH:mm:ss.SSS";
     public static final String FORMAT_10_a = "yyyy-MM-dd";
     public static final String FORMAT_10_b = "yyyy/MM/dd";
     public static final String FORMAT_10_c = "yyyy.MM.dd";
@@ -60,7 +62,9 @@ public class DateUtil {
                 ft = FORMAT_24_ISO08601;
             }
         } else if (len == 23) {
-            if (val.charAt(19) == ',') {
+            if (val.charAt(10) == 'T') {
+                ft = FORMAT_23_t;
+            } else if (val.charAt(19) == ',') {
                 ft = FORMAT_23_a;
             } else {
                 ft = FORMAT_23_b;
@@ -93,6 +97,8 @@ public class DateUtil {
             }
         } else if (len == 14) {
             ft = FORMAT_14;
+        } else if (len == 12) {
+            ft = FORMAT_12;
         } else if (len == 10) {
             char c1 = val.charAt(4);
             if (c1 == '/') {
@@ -142,14 +148,14 @@ public class DateUtil {
 
     /**
      * 格式化时间
-     * */
+     */
     public static String format(Date date, String dateFormat) {
         return format(date, dateFormat, null);
     }
 
     /**
      * 格式化时间
-     * */
+     */
     public static String format(Date date, String dateFormat, TimeZone timeZone) {
         DateFormat df = new SimpleDateFormat(dateFormat, DEFAULTS.DEF_LOCALE);
         if (timeZone != null) {
