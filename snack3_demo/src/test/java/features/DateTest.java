@@ -5,7 +5,9 @@ import _models.DateModel2;
 import _models.DateModel3;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.utils.DateUtil;
 
+import java.time.*;
 import java.util.Date;
 
 /**
@@ -74,11 +76,11 @@ public class DateTest {
     }
 
     @Test
-    public void test5(){
-        DateModel3  dateModel3 = new DateModel3();
+    public void test5() {
+        DateModel3 dateModel3 = new DateModel3();
         dateModel3.date1 = new Date(1680602276520L);
-        dateModel3.date2 = dateModel3.date1 ;
-        dateModel3.date3 = dateModel3.date1 ;
+        dateModel3.date2 = dateModel3.date1;
+        dateModel3.date3 = dateModel3.date1;
 
 
         String json = ONode.stringify(dateModel3);
@@ -87,5 +89,16 @@ public class DateTest {
 
         assert json.contains("2023-04-04 17:57:56");
         assert json.contains("2023-04-04 16:57:56");
+    }
+
+    @Test
+    public void test6() throws Exception {
+        DateUtil.parse(LocalDateTime.now().toString());
+        DateUtil.parse(LocalDate.now().toString());
+        DateUtil.parse(LocalTime.now().toString());
+
+        DateUtil.parse(ZonedDateTime.now().toString());
+        DateUtil.parse(OffsetDateTime.now().toString());
+        DateUtil.parse(OffsetTime.now().toString());
     }
 }
