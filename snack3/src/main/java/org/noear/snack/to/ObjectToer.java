@@ -688,21 +688,51 @@ public class ObjectToer implements Toer {
                 useGetter = true;
             }
 
-            for (FieldWrap f : clzWrap.fieldAllWraps()) {
-                if (useOnlySetter && f.hasSetter == false) {
-                    //只用setter
-                    continue;
-                }
+            if (useSetter) {
+                for (Map.Entry<String, ONode> kv : o.obj().entrySet()) {
+                    FieldWrap f = clzWrap.getFieldWrap(kv.getKey());
+                    if (f != null) {
+                        if (useOnlySetter && f.hasSetter == false) {
+                            //只用setter
+                            continue;
+                        }
 
-                setValueForField(ctx, o, rst, genericInfo, f, useSetter, useGetter, excNames);
+                        setValueForField(ctx, o, rst, genericInfo, f, useSetter, useGetter, excNames);
+                    } else {
+                        Method m = clzWrap.getProperty(kv.getKey());
+                        if (m != null) {
+                            setValueForMethod(ctx, o, rst, genericInfo, kv.getKey(), m);
+                        }
+                    }
+                }
+            } else {
+                for (FieldWrap f : clzWrap.fieldAllWraps()) {
+                    if (useOnlySetter && f.hasSetter == false) {
+                        //只用setter
+                        continue;
+                    }
+
+                    setValueForField(ctx, o, rst, genericInfo, f, useSetter, useGetter, excNames);
+                }
             }
         }
 
         return rst;
     }
 
-    private void setValueForMethod(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo, Method method, boolean useSetter,  boolean useGetter, Set<String> excNames){
+    private void setValueForMethod(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo, String name, Method method) throws Exception {
+        Class<?> fieldT = method.getParameterTypes()[0];
 
+        Object val = analyseBeanOfValue(name, fieldT, null, ctx, o, null, genericInfo);
+
+        if (val == null) {
+            //null string 是否以 空字符处理
+            if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && fieldT == String.class) {
+                val = "";
+            }
+        }
+
+        method.invoke(rst, val);
     }
 
     private void setValueForField(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo,FieldWrap f,  boolean useSetter,  boolean useGetter, Set<String> excNames) throws Exception {

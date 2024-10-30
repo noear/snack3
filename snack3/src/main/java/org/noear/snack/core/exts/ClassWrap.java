@@ -32,7 +32,8 @@ public class ClassWrap {
     //clz //与函数同名，_开头
     private final Class<?> _clz;
     //clz.all_fieldS
-    private final Collection<FieldWrap> _fieldAllWraps;
+    private final Map<String, FieldWrap> _fieldAllWraps;
+    private final Map<String, Method> _propertyAll;
 
     //for record
     private boolean _recordable;
@@ -47,11 +48,18 @@ public class ClassWrap {
         _recordable = true;
 
         _isMemberClass = clz.isMemberClass();
+        _fieldAllWraps = new LinkedHashMap<>();
+        _propertyAll = new LinkedHashMap<>();
 
-        Map<String, FieldWrap> map = new LinkedHashMap<>();
-        scanAllFields(clz, map::containsKey, map::put);
+        scanAllFields(clz, _fieldAllWraps::containsKey, _fieldAllWraps::put);
 
-        _fieldAllWraps = map.values();
+        for(Method m : clz.getMethods()) {
+            if (m.getName().startsWith("set") && m.getName().length() > 3 && m.getParameterCount() == 1) {
+                String name = m.getName().substring(3);
+                name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                _propertyAll.put(name, m);
+            }
+        }
 
         if (_fieldAllWraps.size() == 0) {
             _recordable = false;
@@ -89,7 +97,15 @@ public class ClassWrap {
 
 
     public Collection<FieldWrap> fieldAllWraps() {
-        return _fieldAllWraps;
+        return _fieldAllWraps.values();
+    }
+
+    public FieldWrap getFieldWrap(String fieldName) {
+        return _fieldAllWraps.get(fieldName);
+    }
+
+    public Method getProperty(String name) {
+        return _propertyAll.get(name);
     }
 
 

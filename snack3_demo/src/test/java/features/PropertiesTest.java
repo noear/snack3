@@ -88,7 +88,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         NameValues nameValues = new NameValues();
         nameValues.add("title", "test");
         nameValues.add("debug", "true");
@@ -107,7 +107,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         NameValues nameValues = new NameValues();
         nameValues.add("title", "test");
         nameValues.add("debug", "true");
@@ -121,7 +121,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void test6(){
+    public void test6() {
         NameValues nameValues = new NameValues();
         nameValues.add("title", "test");
         nameValues.add("debug", "true");
@@ -132,5 +132,28 @@ public class PropertiesTest {
         System.out.println(json);
 
         assert "{\"debug\":\"true\",\"title\":\"test\",\"user\":{\"name\":\"noear\",\"id\":\"1\"}}".equals(json);
+    }
+
+    @Test
+    public void test7() {
+        String json = "{'userName':'a'}";
+        UserModel userModel = ONode.deserialize(json, UserModel.class);
+        assert userModel.getUserName() == null;
+
+
+        userModel = ONode.load(json, Feature.UseSetter).toObject(UserModel.class);
+        assert "a".equals(userModel.getUserName());
+    }
+
+    public static class UserModel {
+        private String name;
+
+        public String getUserName() {
+            return name;
+        }
+
+        public void setUserName(String name) {
+            this.name = name;
+        }
     }
 }
