@@ -718,26 +718,10 @@ public class ObjectToer implements Toer {
         }
 
         if (f.isFlat()) {// 扁平化处理
-            Class fieldT = f.type;
-            Type fieldGt = f.genericType;
-
-            if (f.readonly) {
-                analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-            } else {
-                Object val = analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-                if (val == null) {
-                    //null string 是否以 空字符处理
-                    if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
-                        val = "";
-                    }
-                }
-
-                f.setValue(rst, val, useSetter);
-            }
-            return;
+            fieldK = null;
         }
 
-        if (o.contains(fieldK)) {
+        if (f.isFlat() || o.contains(fieldK)) {
             Class fieldT = f.type;
             Type fieldGt = f.genericType;
 
