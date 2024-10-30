@@ -689,67 +689,73 @@ public class ObjectToer implements Toer {
             }
 
             for (FieldWrap f : clzWrap.fieldAllWraps()) {
-                if (f.isDeserialize() == false) {
-                    //不做序列化
-                    continue;
-                }
-
                 if (useOnlySetter && f.hasSetter == false) {
                     //只用setter
                     continue;
                 }
 
-                String fieldK = f.getName();
-
-                if (excNames != null && excNames.contains(fieldK)) {
-                    continue;
-                }
-
-                if (f.isFlat()) {// 扁平化处理
-                    Class fieldT = f.type;
-                    Type fieldGt = f.genericType;
-
-                    if (f.readonly) {
-                        analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-                    } else {
-                        Object val = analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-                        if (val == null) {
-                            //null string 是否以 空字符处理
-                            if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
-                                val = "";
-                            }
-                        }
-
-                        f.setValue(rst, val, useSetter);
-                    }
-                    continue;
-                }
-
-                if (o.contains(fieldK)) {
-                    Class fieldT = f.type;
-                    Type fieldGt = f.genericType;
-
-                    if (f.readonly) {
-                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-                    } else {
-
-
-                        Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
-
-                        if (val == null) {
-                            //null string 是否以 空字符处理
-                            if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
-                                val = "";
-                            }
-                        }
-
-                        f.setValue(rst, val, useSetter);
-                    }
-                }
+                setValueForField(ctx, o, rst, genericInfo, f, useSetter, useGetter, excNames);
             }
         }
 
         return rst;
+    }
+
+    private void setValueForMethod(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo, Method method, boolean useSetter,  boolean useGetter, Set<String> excNames){
+
+    }
+
+    private void setValueForField(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo,FieldWrap f,  boolean useSetter,  boolean useGetter, Set<String> excNames) throws Exception {
+        if (f.isDeserialize() == false) {
+            //不做序列化
+            return;
+        }
+
+        String fieldK = f.getName();
+
+        if (excNames != null && excNames.contains(fieldK)) {
+            return;
+        }
+
+        if (f.isFlat()) {// 扁平化处理
+            Class fieldT = f.type;
+            Type fieldGt = f.genericType;
+
+            if (f.readonly) {
+                analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+            } else {
+                Object val = analyseBeanOfValue(null, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                if (val == null) {
+                    //null string 是否以 空字符处理
+                    if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                        val = "";
+                    }
+                }
+
+                f.setValue(rst, val, useSetter);
+            }
+            return;
+        }
+
+        if (o.contains(fieldK)) {
+            Class fieldT = f.type;
+            Type fieldGt = f.genericType;
+
+            if (f.readonly) {
+                analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+            } else {
+                Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+
+                if (val == null) {
+                    //null string 是否以 空字符处理
+                    if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                        val = "";
+                    }
+                }
+
+                f.setValue(rst, val, useSetter);
+            }
+        }
     }
 
 
