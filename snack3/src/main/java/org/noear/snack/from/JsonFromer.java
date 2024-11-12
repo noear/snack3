@@ -328,7 +328,7 @@ public class JsonFromer implements Fromer {
                         oval.setNumber(new BigInteger(sval));
                     }
                 } else { //小于16位长度；采用常规数字处理
-                    if (sval.indexOf('.') > 0) {
+                    if (sval.indexOf('.') > 0 || sval.indexOf('E') > 0) {
                         if (ctx.options.hasFeature(Feature.StringDoubleToDecimal)) {
                             oval.setNumber(new BigDecimal(sval));
                         } else {

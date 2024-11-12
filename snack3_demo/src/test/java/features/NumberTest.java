@@ -51,6 +51,17 @@ public class NumberTest {
     }
 
     @Test
+    public void test4_2() {
+        System.out.println(0E-10);
+
+        String json = "{num:0E-10}";
+        ONode node = ONode.load(json);
+
+        System.out.println(node.toJson());
+        assert 0E-10 == node.get("num").getDouble();
+    }
+
+    @Test
     public void test5() {
         Map<String, Object> map = new LinkedHashMap<>();
 
