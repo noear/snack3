@@ -73,7 +73,7 @@ public class JsonPathCompatibleTest1 {
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         String json = "{\"questionAnswerListMap\":{\"Q1\":[{\"qCode\":\"Q1\",\"qaIndex\":1,\"answerItem\":{\"qIndex\":1,\"qRow\":0,\"qColumn\":1,\"title\":\"1) Q1 . 姓名___\",\"itemValue\":0.0,\"answerText\":\"测试\"}},{\"qCode\":\"Q1\",\"qaIndex\":2,\"answerItem\":{\"qIndex\":1,\"qRow\":0,\"qColumn\":2,\"title\":\"2) 手机号___\",\"itemValue\":0.0,\"answerText\":\"15812341234\"}}],\"A10103A\":[{\"qCode\":\"A10103A\",\"qaIndex\":1,\"answerItem\":{\"qIndex\":4,\"qRow\":0,\"qColumn\":1,\"title\":\"1) A10103A.   1.身体形态，体质指数（BMI）（kg/m2）  当前体重___\",\"itemValue\":0.0,\"answerText\":\"70\"}}],\"A10104\":[{\"qCode\":\"A10104\",\"qaIndex\":0,\"answerItem\":{\"qIndex\":5,\"qRow\":0,\"qColumn\":0,\"title\":\"A10104.最近一个月体重波动？\",\"itemIndex\":[1],\"itemValue\":1.0,\"answerText\":\"A. 升高\"}},{\"qCode\":\"A10104\",\"qaIndex\":1,\"answerItem\":{\"qIndex\":5,\"qRow\":0,\"qColumn\":1,\"title\":\"A10104.最近一个月体重波动？\",\"itemValue\":1.0,\"answerText\":\"A. 升高〖1〗\"}}]}}";
 
         String jsonpathStr1 = "$..Q1[?(@.qaIndex == 1)].answerItem.answerText";
@@ -83,6 +83,17 @@ public class JsonPathCompatibleTest1 {
         compatible_do("1", json, jsonpathStr1);
         compatible_do("2", json, jsonpathStr2);
         compatible_do("3", json, jsonpathStr3);
+    }
+
+    @Test
+    public void test6() {
+        String json = "{\"numbers\":[1,3,4,7,-1]}";
+
+        String jsonpathStr1 = "$.numbers.sum()";
+        compatible_do("1", json, jsonpathStr1);
+
+        String jsonpathStr2 = "$.numbers.avg()";
+        compatible_do("2", json, jsonpathStr2);
     }
 
 
