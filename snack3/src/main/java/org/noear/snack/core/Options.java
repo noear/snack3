@@ -88,14 +88,14 @@ public class Options {
 
     /**
      * 获取特性码
-     * */
+     */
     public final int getFeatures() {
         return features;
     }
 
     /**
      * 重新设置特性码
-     * */
+     */
     public final void setFeatures(Feature... features) {
         this.features = Feature.of(features);
     }
@@ -217,26 +217,17 @@ public class Options {
         this.classLoader = classLoader;
     }
 
-    private final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
-
-    public  Class<?> loadClass( String clzName) {
+    public Class<?> loadClass(String clzName) {
         if (StringUtil.isEmpty(clzName)) {
             return null;
         }
 
         try {
-            Class<?> clz = clzCached.get(clzName);
-            if (clz == null) {
-                if(classLoader == null) {
-                    clz = Class.forName(clzName);
-                }else{
-                    clz = classLoader.loadClass(clzName);
-                }
-
-                clzCached.put(clzName, clz);
+            if (classLoader == null) {
+                return Class.forName(clzName);
+            } else {
+                return classLoader.loadClass(clzName);
             }
-
-            return clz;
         } catch (RuntimeException e) {
             throw e;
         } catch (Throwable e) {

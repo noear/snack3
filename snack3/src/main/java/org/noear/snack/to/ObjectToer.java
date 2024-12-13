@@ -104,7 +104,6 @@ public class ObjectToer implements Toer {
 
                 return analyseVal(ctx, o.nodeData(), clz);
             case Object:
-                //clz = getTypeByNode(ctx, o, clz);
                 o.remove(ctx.options.getTypePropertyName());//尝试移除类型内容
 
                 if (Properties.class.isAssignableFrom(clz)) {
@@ -626,13 +625,7 @@ public class ObjectToer implements Toer {
                 }
             }
 
-            try {
-                rst = clzWrap.recordConstructor().newInstance(argsV);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("the constructor missing parameters: " + clz.getName(), e);
-            } catch (Throwable e) {
-                throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
-            }
+            rst = BeanUtil.newInstance(clzWrap.recordConstructor(), argsV);
         } else {
             //排除字段
             Set<String> excNames = null;
@@ -662,13 +655,7 @@ public class ObjectToer implements Toer {
                         }
                     }
 
-                    try {
-                        rst = clzWrap.recordConstructor().newInstance(argsV);
-                    } catch (IllegalArgumentException e) {
-                        throw new IllegalArgumentException("The constructor missing parameters: " + clz.getName(), e);
-                    } catch (Throwable e) {
-                        throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
-                    }
+                    rst = BeanUtil.newInstance(clzWrap.recordConstructor(), argsV);
                 }
             }
 
@@ -720,7 +707,7 @@ public class ObjectToer implements Toer {
         return rst;
     }
 
-    private void setValueForMethod(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo, String name, Method method) throws Exception {
+    private void setValueForMethod(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, String name, Method method) throws Exception {
         Class<?> fieldT = method.getParameterTypes()[0];
 
         Object val = analyseBeanOfValue(name, fieldT, null, ctx, o, null, genericInfo);
@@ -735,7 +722,7 @@ public class ObjectToer implements Toer {
         method.invoke(rst, val);
     }
 
-    private void setValueForField(Context ctx, ONode o, Object rst,  Map<String, Type> genericInfo,FieldWrap f,  boolean useSetter,  boolean useGetter, Set<String> excNames) throws Exception {
+    private void setValueForField(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, FieldWrap f, boolean useSetter, boolean useGetter, Set<String> excNames) throws Exception {
         if (f.isDeserialize() == false) {
             //不做序列化
             return;
@@ -813,9 +800,9 @@ public class ObjectToer implements Toer {
         }
 
         if (fieldK == null) { // key为空，代表扁平化处理
-            return analyse(ctx, o, rst, fieldT, fieldGt, genericInfo);    
+            return analyse(ctx, o, rst, fieldT, fieldGt, genericInfo);
         }
-        
+
         return analyse(ctx, o.get(fieldK), rst, fieldT, fieldGt, genericInfo);
     }
 

@@ -3,6 +3,7 @@ package org.noear.snack.core.utils;
 import org.noear.snack.exception.SnackException;
 
 import java.io.Reader;
+import java.lang.reflect.Constructor;
 import java.sql.Clob;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +17,7 @@ public class BeanUtil {
 
     /**
      * @deprecated 3.2.55
-     * */
+     */
     @Deprecated
     public static Class<?> loadClass(String clzName) {
         if (StringUtil.isEmpty(clzName)) {
@@ -77,7 +78,7 @@ public class BeanUtil {
         return text;
     }
 
-    public static Object newInstance(Class<?> clz) {
+    public static Object newInstance(Class<?> clz) throws SnackException {
         try {
             if (clz.isInterface()) {
                 return null;
@@ -85,7 +86,19 @@ public class BeanUtil {
                 return clz.getDeclaredConstructor().newInstance();
             }
         } catch (Throwable e) {
-            throw new SnackException("The instantiation failed, class: " + clz.getName(), e);
+            throw new SnackException("Instantiation failed: " + clz.getName(), e);
+        }
+    }
+
+    public static Object newInstance(Constructor constructor, Object[] args) throws SnackException {
+        if (constructor == null) {
+            throw new IllegalArgumentException("constructor is null");
+        }
+
+        try {
+            return constructor.newInstance(args);
+        } catch (Throwable e) {
+            throw new SnackException("Instantiation failed: " + constructor.getDeclaringClass().getName(), e);
         }
     }
 }
