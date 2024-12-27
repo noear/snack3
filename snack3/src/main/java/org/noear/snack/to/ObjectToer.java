@@ -81,24 +81,30 @@ public class ObjectToer implements Toer {
 
         switch (o.nodeType()) {
             case Value:
-                if (clz != null && Collection.class.isAssignableFrom(clz)) {
-                    //如果接收对象为集合???尝试做为item
-                    if (TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
-                        rst = TypeUtil.createCollection(clz, false);
-                    }
-
-                    if (rst != null) {
-                        //todo::
-                        Type type1 = TypeUtil.getCollectionItemType(type);
-                        if (type1 instanceof Class) {
-                            Object val1 = analyseVal(ctx, o.nodeData(), (Class<?>) type1);
-                            ((Collection) rst).add(val1);
-                            return rst;
-                        } else {
-                            Object val1 = analyseVal(ctx, o.nodeData(), null);
-                            ((Collection) rst).add(val1);
-                            return rst;
+                if (clz != null) {
+                    if (Collection.class.isAssignableFrom(clz)) {
+                        //如果接收对象为集合???尝试做为item
+                        if (TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
+                            rst = TypeUtil.createCollection(clz, false);
                         }
+
+                        if (rst != null) {
+                            //todo::
+                            Type type1 = TypeUtil.getCollectionItemType(type);
+                            if (type1 instanceof Class) {
+                                Object val1 = analyseVal(ctx, o.nodeData(), (Class<?>) type1);
+                                ((Collection) rst).add(val1);
+                                return rst;
+                            } else {
+                                Object val1 = analyseVal(ctx, o.nodeData(), null);
+                                ((Collection) rst).add(val1);
+                                return rst;
+                            }
+                        }
+                    } else if (clz.isArray()) {
+                        ONode d1 = new ONode(ctx.options);
+                        d1.add(o);
+                        return analyseArray(ctx, d1.nodeData(), clz);
                     }
                 }
 
