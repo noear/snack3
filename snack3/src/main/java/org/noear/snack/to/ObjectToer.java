@@ -1,10 +1,7 @@
 package org.noear.snack.to;
 
 import org.noear.snack.*;
-import org.noear.snack.core.Context;
-import org.noear.snack.core.DEFAULTS;
-import org.noear.snack.core.Feature;
-import org.noear.snack.core.NodeDecoderEntity;
+import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
@@ -66,9 +63,14 @@ public class ObjectToer implements Toer {
 
         if (clz != null) {
             //自定义解析
-            for (NodeDecoderEntity decoder : ctx.options.decoders()) {
-                if (decoder.isDecodable(clz)) {
-                    return decoder.decode(o, clz);
+            if (NodeDecoder.class.isAssignableFrom(clz)) {
+                NodeDecoder decoder = (NodeDecoder) BeanUtil.getInstance(clz);
+                return decoder.decode(o, clz);
+            } else {
+                for (NodeDecoderEntity decoder : ctx.options.decoders()) {
+                    if (decoder.isDecodable(clz)) {
+                        return decoder.decode(o, clz);
+                    }
                 }
             }
         }

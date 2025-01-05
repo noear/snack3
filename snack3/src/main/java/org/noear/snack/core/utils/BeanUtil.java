@@ -24,19 +24,13 @@ public class BeanUtil {
             return null;
         }
 
-        try {
-            Class<?> clz = clzCached.get(clzName);
-            if (clz == null) {
-                clz = Class.forName(clzName);
-                clzCached.put(clzName, clz);
+        return clzCached.computeIfAbsent(clzName, k -> {
+            try {
+                return Class.forName(k);
+            } catch (Throwable e) {
+                throw new SnackException("Failed to load class: " + clzName, e);
             }
-
-            return clz;
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new SnackException("Failed to load class: " + clzName, e);
-        }
+        });
     }
 
     /////////////////
@@ -78,6 +72,18 @@ public class BeanUtil {
         return text;
     }
 
+    private static final Map<Class<?>, Object> insCached = new ConcurrentHashMap<>();
+
+    /**
+     * 获取实体
+     */
+    public static Object getInstance(Class<?> clz) {
+        return insCached.computeIfAbsent(clz, k -> newInstance(k));
+    }
+
+    /**
+     * 新建实例
+     */
     public static Object newInstance(Class<?> clz) throws SnackException {
         try {
             if (clz.isInterface()) {

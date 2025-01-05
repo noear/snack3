@@ -42,10 +42,15 @@ public class ObjectFromer implements Fromer {
         Class<?> clz = source.getClass();
 
         //尝试自定义编码
-        for (NodeEncoderEntity encoder : opt.encoders()) {
-            if (encoder.isEncodable(clz)) {
-                encoder.encode(source, rst);
-                return rst;
+        if (source instanceof NodeEncoder) {
+            ((NodeEncoder) source).encode(source, rst);
+            return rst;
+        } else {
+            for (NodeEncoderEntity encoder : opt.encoders()) {
+                if (encoder.isEncodable(clz)) {
+                    encoder.encode(source, rst);
+                    return rst;
+                }
             }
         }
 
