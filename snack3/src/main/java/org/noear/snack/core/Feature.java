@@ -25,9 +25,6 @@ public enum  Feature {
     /** 输出:Bool用0或1替代 */
     WriteBoolUse01,
 
-    /** 输出：对斜杠’/’进行转义 */
-    WriteSlashAsSpecial,
-
     /** 输出：数字用字符串 */
     WriteNumberUseString,
 
