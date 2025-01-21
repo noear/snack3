@@ -1,3 +1,9 @@
+### 3.2.125
+
+* 优化 JsonPath 数字表达式处理添加 string 解析排除（解析出错）
+* 优化 对 asc 码 0到7 进行 unicode 编码（避免 web 不兼容）
+* 移除 WriteSlashAsSpecial 特性，没用到
+
 ### 3.2.124
 
 * 添加 自体编码与解码支持

@@ -361,13 +361,17 @@ public class JsonPath {
 
         switch (op) {
             case "==": {
-                if(right == null){
+                if (right == null) {
                     return false;
                 }
 
                 if (right.startsWith("'")) {
                     return left.getString().equals(right.substring(1, right.length() - 1));
                 } else {
+                    if (left.type() == OValueType.String) {
+                        return false;
+                    }
+
                     return left.getDouble() == Double.parseDouble(right);
                 }
             }
@@ -379,11 +383,19 @@ public class JsonPath {
                 if (right.startsWith("'")) {
                     return left.getString().equals(right.substring(1, right.length() - 1)) == false;
                 } else {
+                    if (left.type() == OValueType.String) {
+                        return false;
+                    }
+
                     return left.getDouble() != Double.parseDouble(right);
                 }
             }
             case "<": {
                 if (right == null) {
+                    return false;
+                }
+
+                if (left.type() == OValueType.String) {
                     return false;
                 }
 
@@ -394,6 +406,10 @@ public class JsonPath {
                     return false;
                 }
 
+                if (left.type() == OValueType.String) {
+                    return false;
+                }
+
                 return left.getDouble() <= Double.parseDouble(right);
             }
             case ">": {
@@ -401,10 +417,18 @@ public class JsonPath {
                     return false;
                 }
 
+                if (left.type() == OValueType.String) {
+                    return false;
+                }
+
                 return left.getDouble() > Double.parseDouble(right);
             }
             case ">=": {
                 if (right == null) {
+                    return false;
+                }
+
+                if (left.type() == OValueType.String) {
                     return false;
                 }
 
