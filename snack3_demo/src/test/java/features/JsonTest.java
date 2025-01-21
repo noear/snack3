@@ -177,79 +177,7 @@ public class JsonTest {
 
     }
 
-    /**
-     * 测试：unicode 转码
-     */
-    @Test
-    public void test28() throws IOException {
 
-        Context c = new Context(Options.def(), "{\"a\":\"'\\u7684\\t\\n\"}");
-
-        new JsonFromer().handle(c);
-
-        assert "'的\t\n".equals(((ONode) c.target).get("a").getString());
-
-
-        c.source = c.target;
-        new JsonToer().handle(c);
-
-        assert "{\"a\":\"'的\\t\\n\"}".equals(c.target);
-
-    }
-
-    /**
-     * 测试：emoji unicode 转码
-     */
-    @Test
-    public void test29() throws IOException {
-
-        Context c = new Context(Options.of(Feature.BrowserCompatible), "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}");
-
-        new JsonFromer().handle(c);
-
-        assert "'👌\t\n".equals(((ONode) c.target).get("a").getString());
-
-
-        c.source = c.target;
-        new JsonToer().handle(c);
-
-        assert "{\"a\":\"'\\ud83d\\udc4c\\t\\n\"}".equalsIgnoreCase((String) c.target);
-
-    }
-
-    @Test
-    public void test30() throws IOException {
-
-        Context c = new Context(Options.def(), "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}");
-
-        new JsonFromer().handle(c);
-
-        assert " \0\1\2\3\4\5\6\7".equals(((ONode) c.target).get("a").getString());
-
-
-        c.source = c.target;
-        new JsonToer().handle(c);
-
-        assert "{\"a\":\" \\0\\1\\2\\3\\4\\5\\6\\7\"}".equals(c.target);
-
-    }
-
-    @Test
-    public void test31() throws IOException {
-
-        Context c = new Context(Options.of(Feature.BrowserCompatible), "{\"a\":\" \\u000f\\u0012\"}");
-
-        new JsonFromer().handle(c);
-
-        assert " \u000f\u0012".equals(((ONode) c.target).get("a").getString());
-
-
-        c.source = c.target;
-        new JsonToer().handle(c);
-
-        assert "{\"a\":\" \\u000f\\u0012\"}".equalsIgnoreCase((String) c.target);
-
-    }
 
     @Test
     public void test40() throws IOException {

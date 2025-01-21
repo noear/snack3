@@ -292,8 +292,14 @@ public class JsonToer implements Toer {
         for (int i = 0, len = val.length(); i < len; i++) {
             char c = val.charAt(i);
 
+            if(c >= '\0' && c <= '\7'){
+                sBuf.append("\\u000");
+                sBuf.append(IOUtil.CHARS_MARK[(int) c]);
+                continue;
+            }
+
             //引号转义处理 + 特殊字符必须码 // 去掉 c == '\\' ,不然 "\a" 会变成 "\\a" //移到 isCompatible
-            if (c == quote || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b' || (c >= '\0' && c <= '\7')) {
+            if (c == quote || c == '\n' || c == '\r' || c == '\t' || c == '\f' || c == '\b') {
                 sBuf.append("\\");
                 sBuf.append(IOUtil.CHARS_MARK[(int) c]);
                 continue;
