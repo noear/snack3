@@ -257,7 +257,7 @@ public class JsonPath {
      * */
     private static void scanByExpr(ONode source, List<ONode> target,Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
         if (source.isObject()) {
-            ONode tmp2 = handler_ary_exp.run(bef, s, regroup, root, source, usd, crud);
+            ONode tmp2 = handler_ary_exp.instance.run(bef, s, regroup, root, source, usd, crud);
             if (tmp2 != null) {
                 target.add(tmp2);
             }
@@ -393,18 +393,21 @@ public class JsonPath {
                 if (right == null) {
                     return false;
                 }
+
                 return left.getDouble() <= Double.parseDouble(right);
             }
             case ">": {
                 if (right == null) {
                     return false;
                 }
+
                 return left.getDouble() > Double.parseDouble(right);
             }
             case ">=": {
                 if (right == null) {
                     return false;
                 }
+
                 return left.getDouble() >= Double.parseDouble(right);
             }
             case "=~": {
@@ -505,98 +508,538 @@ public class JsonPath {
     /**
      * "$"
      * */
-    private static Resolver handler_$=(bef, s, regroup, root, tmp, usd, orNew)->{ return tmp;};
+    private static class handler_$ implements Resolver{
+        static final handler_$ instance = new handler_$();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            return tmp;
+        }
+    }
 
     /**
      * ".."
      * */
-    private static Resolver handler_xx=(bef, s, regroup, root, tmp, usd, orNew)-> {
-        if (s.name.length() > 0) {
-            ONode tmp2 = new ONode(null, root.options()).asArray();
-            if ("*".equals(s.name)) {
-                scanByAll(s.name, tmp, true, tmp2.ary());
-            } else if (s.name.startsWith("?")) {
-                scanByExpr(tmp, tmp2.ary(), bef, s, regroup, root, tmp, usd, orNew);
-            } else {
-                scanByName(s.name, tmp, tmp2.ary());
+    private static class handler_xx implements Resolver {
+        static final handler_xx instance = new handler_xx();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD orNew) {
+            if (s.name.length() > 0) {
+                ONode tmp2 = new ONode(null, root.options()).asArray();
+                if ("*".equals(s.name)) {
+                    scanByAll(s.name, tmp, true, tmp2.ary());
+                } else if (s.name.startsWith("?")) {
+                    scanByExpr(tmp, tmp2.ary(), bef, s, regroup, root, tmp, usd, orNew);
+                } else {
+                    scanByName(s.name, tmp, tmp2.ary());
+                }
+
+                if (tmp2.count() > 0) {
+                    return tmp2;
+                }
             }
 
-            if (tmp2.count() > 0) {
-                return tmp2;
-            }
+            return null;
         }
-
-        return null;
-    };
+    }
 
     /**
      * ".*"
      * */
-    private static Resolver handler_x=(bef, s, regroup, root, tmp, usd, orNew)->{
-        ONode tmp2 = null;
+    private static class handler_x implements Resolver{
+        static final handler_x instance = new handler_x();
 
-        if (tmp.count() > 0) {
-            tmp2 = new ONode(null, tmp.options()).asArray();//有节点时，才初始化
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            ONode tmp2 = null;
 
+            if (tmp.count() > 0) {
+                tmp2 = new ONode(null, tmp.options()).asArray();//有节点时，才初始化
+
+                if (tmp.isObject()) {
+                    tmp2.addAll(tmp.obj().values());
+                } else if(tmp.isArray()){
+                    if(regroup){
+                        for(ONode n1 : tmp.ary()){
+                            if(n1.isObject()){
+                                tmp2.addAll(n1.obj().values());
+                            }else{
+                                tmp2.addAll(n1.ary());
+                            }
+                        }
+                    }else {
+                        tmp2.addAll(tmp.ary());
+                    }
+                }
+            }
+
+            return tmp2;
+        }
+    }
+
+    /**
+     * ".name"指令
+     * */
+    private static class handler_prop implements  Resolver{
+        static final handler_prop instance = new handler_prop();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
             if (tmp.isObject()) {
-                tmp2.addAll(tmp.obj().values());
-            } else if(tmp.isArray()){
+                if(crud == CRUD.GET_OR_NEW){
+                    return tmp.getOrNew(s.cmd);
+                }else {
+                    return tmp.getOrNull(s.cmd);
+                }
+            }
+
+            if (tmp.isArray()) {
+                ONode tmp2 = new ONode(null, tmp.options()).asArray();
+
+                for (ONode n1 : tmp.ary()) {
+                    if (n1.isObject()) {
+                        if (crud == CRUD.GET_OR_NEW) {
+                            tmp2.add(n1.getOrNew(s.cmd));
+                        } else {
+                            ONode n2 = n1.nodeData().object.get(s.cmd);
+                            if (n2 != null) {
+                                tmp2.add(n2);
+                            }
+                        }
+                    }
+
+                    if (regroup && n1.isArray()) {
+                        for (ONode n2 : n1.ary()) {
+                            if (n2.isObject()) {
+                                if (crud == CRUD.GET_OR_NEW) {
+                                    tmp2.add(n2.getOrNew(s.cmd));
+                                } else {
+                                    ONode n3 = n2.nodeData().object.get(s.cmd);
+                                    if (n3 != null) {
+                                        tmp2.add(n3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return tmp2;
+            }
+
+            if(crud == CRUD.GET_OR_NEW && tmp.isNull()){
+                return tmp.getOrNew(s.cmd);
+            }
+
+            return null;
+        }
+    }
+
+    /**
+     * ".fun()" 指令
+     * */
+    private static class handler_fun implements  Resolver{
+        static final handler_fun instance = new handler_fun();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            switch (s.cmd) {
+                case "size()": {
+                    return new ONode(null,tmp.options()).val(tmp.count());
+                }
+                case "length()": {
+                    if (tmp.isValue()) {
+                        return new ONode(null,tmp.options()).val(tmp.getString().length());
+                    } else {
+                        return new ONode(null,tmp.options()).val(tmp.count());
+                    }
+                }
+                case "keys()": {
+                    if (tmp.isObject()) {
+                        return new ONode(null,tmp.options()).addAll(tmp.obj().keySet());
+                    } else {
+                        return null;
+                    }
+                }
+                case "min()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        ONode min_n = null;
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isValue()) {
+                                if (min_n == null) {
+                                    min_n = n1;
+                                } else if (n1.getDouble() < min_n.getDouble()) {
+                                    min_n = n1;
+                                }
+                            }
+
+                            if (regroup && n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    if (n2.isValue()) {
+                                        if (min_n == null) {
+                                            min_n = n2;
+                                        } else if (n2.getDouble() < min_n.getDouble()) {
+                                            min_n = n2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return min_n;
+                    }
+
+                    return null;
+                }
+
+                case "max()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        ONode max_n = null;
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isValue()) {
+                                if (max_n == null) {
+                                    max_n = n1;
+                                } else if (n1.getDouble() > max_n.getDouble()) {
+                                    max_n = n1;
+                                }
+                            }
+
+                            if (regroup && n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    if (n2.isValue()) {
+                                        if (max_n == null) {
+                                            max_n = n2;
+                                        } else if (n2.getDouble() > max_n.getDouble()) {
+                                            max_n = n2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return max_n;
+                    }
+
+//                if(tmp.isValue()){
+//                    return tmp;
+//                }
+
+                    return null;
+                }
+
+                case "avg()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        double sum = 0;
+                        int num = 0;
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isValue()) {
+                                sum += n1.getDouble();
+                                num++;
+                            }
+
+                            if (regroup && n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    if (n2.isValue()) {
+                                        sum += n2.getDouble();
+                                        num++;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (num > 0) {
+                            return new ONode(null,tmp.options()).val(sum / num);
+                        }
+                    }
+
+                    return null;
+                }
+
+                case "sum()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        double sum = 0;
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isValue()) {
+                                sum += n1.getDouble();
+                            }
+
+                            if (regroup && n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    if (n2.isValue()) {
+                                        sum += n2.getDouble();
+                                    }
+                                }
+                            }
+                        }
+                        return new ONode(null,tmp.options()).val(sum);
+                    } else {
+                        return null;
+                    }
+                }
+
+                case "first()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        ONode n1 = tmp.get(0);
+
+                        if (regroup && n1.isArray()) {
+                            return n1.get(0);
+                        } else {
+                            return n1;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+
+                case "last()": {
+                    if (tmp.isArray()) {
+                        if(tmp.count() == 0){
+                            return null;
+                        }
+
+                        ONode n1 = tmp.get(tmp.count() - 1);
+
+                        if (regroup && n1.isArray()) {
+                            return n1.get(n1.count() - 1);
+                        } else {
+                            return n1;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+
+                default:
+                    return null;
+            }
+        }
+    }
+
+    /**
+     * ".*]" 指令
+     * */
+    private static class handler_ary_x implements Resolver {
+        static final handler_ary_x instance = new handler_ary_x();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            ONode tmp2 = null;
+
+            if (tmp.isArray()) {
                 if(regroup){
-                    for(ONode n1 : tmp.ary()){
-                        if(n1.isObject()){
+                    tmp2 = new ONode(null,tmp.options()).asArray();
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isObject()) {
                             tmp2.addAll(n1.obj().values());
                         }else{
                             tmp2.addAll(n1.ary());
                         }
                     }
-                }else {
-                    tmp2.addAll(tmp.ary());
+                } else {
+                    tmp2 = tmp;
                 }
             }
-        }
 
-        return tmp2;
-    };
+            if (tmp.isObject()) {
+                tmp2 = new ONode(null,tmp.options()).asArray();
+                tmp2.addAll(tmp.obj().values());
+            }
+
+            return tmp2;
+        }
+    }
 
     /**
-     * ".name"指令
+     * ".[?()]" 指令
      * */
-    private static Resolver handler_prop=(bef, s, regroup, root, tmp, usd, crud)->{
+    private static class handler_ary_exp implements  Resolver {
+        static final handler_ary_exp instance = new handler_ary_exp();
 
-        if (tmp.isObject()) {
-            if(crud == CRUD.GET_OR_NEW){
-                return tmp.getOrNew(s.cmd);
-            }else {
-                return tmp.getOrNull(s.cmd);
-            }
-        }
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            ONode tmp2 = tmp;
+            if (s.op == null) {
+                if (tmp.isObject()) {
+                    if (evalDo(tmp, s.left, true, usd, crud).isNull()) {
+                        return null;
+                    }
+                } else if (tmp.isArray()) {
+                    tmp2 = new ONode(null, tmp.options()).asArray();
 
-        if (tmp.isArray()) {
-            ONode tmp2 = new ONode(null, tmp.options()).asArray();
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isObject() && evalDo(n1, s.left, true, usd, crud).isNull() == false) {
+                            tmp2.nodeData().array.add(n1);
+                        }
 
-            for (ONode n1 : tmp.ary()) {
-                if (n1.isObject()) {
-                    if (crud == CRUD.GET_OR_NEW) {
-                        tmp2.add(n1.getOrNew(s.cmd));
+                        if (regroup && n1.isArray()) {
+                            for (ONode n2 : n1.ary()) {
+                                if (n2.isObject() && evalDo(n2, s.left, true, usd, crud).isNull() == false) {
+                                    tmp2.nodeData().array.add(n2);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                if (tmp.isObject()) {
+                    if ("@".equals(s.left)) {
+                        return null;
+                    }
+
+                    ONode leftO = evalDo(tmp, s.left, true, usd, crud);
+                    if (compare(root, tmp, leftO, s.op, s.right, usd, crud) == false) {
+                        return null;
+                    }
+                } else if (tmp.isArray()) {
+                    tmp2 = new ONode(null, tmp.options()).asArray();
+                    if ("@".equals(s.left)) {
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    if (compare(root, n2, n2, s.op, s.right, usd, crud)) {
+                                        tmp2.addNode(n2);
+                                    }
+                                }
+                            } else {
+                                if (compare(root, n1, n1, s.op, s.right, usd, crud)) {
+                                    tmp2.addNode(n1);
+                                }
+                            }
+                        }
                     } else {
-                        ONode n2 = n1.nodeData().object.get(s.cmd);
-                        if (n2 != null) {
-                            tmp2.add(n2);
+                        for (ONode n1 : tmp.ary()) {
+                            if (n1.isArray()) {
+                                for (ONode n2 : n1.ary()) {
+                                    ONode leftO = evalDo(n2, s.left, true, usd, crud);
+
+                                    if (compare(root, n2, leftO, s.op, s.right, usd, crud)) {
+                                        tmp2.addNode(n2);
+                                    }
+                                }
+                            } else {
+                                ONode leftO = evalDo(n1, s.left, true, usd, crud);
+
+                                if (compare(root, n1, leftO, s.op, s.right, usd, crud)) {
+                                    tmp2.addNode(n1);
+                                }
+                            }
+                        }
+                    }
+                } else if (tmp.isValue()) {
+                    if ("@".equals(s.left)) {
+                        if (compare(root, tmp, tmp, s.op, s.right, usd, crud) == false) {
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
+            return tmp2;
+        }
+    }
+
+    /**
+     * "[$.xxx] [@.xxx]" 指令
+     * */
+    private static class handler_ary_ref implements Resolver {
+        static final handler_ary_ref instance = new handler_ary_ref();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            ONode tmp2 = null;
+
+            if(tmp.isObject()) {
+                if (s.cmdAry.startsWith("$")) {
+                    tmp2 = evalDo(root, s.cmdAry, true, usd, crud);
+                } else {
+                    tmp2 = evalDo(tmp, s.cmdAry, true, usd, crud);
+                }
+
+                if (tmp2.isValue()) {
+                    tmp2 = tmp.get(tmp2.getString());
+                }else{
+                    tmp2 = null;
+                }
+            }
+
+            return tmp2;
+        }
+    }
+
+    /**
+     * "[1,4,6] //['p1','p2']" 指令
+     * */
+    private static class handler_ary_multi implements  Resolver {
+        static final handler_ary_multi instance = new handler_ary_multi();
+
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            ONode tmp2 = null;
+
+            if(s.cmdAry.indexOf("'")>=0){
+                if(tmp.isObject()){
+                    for (String k : s.nameS) {
+                        ONode n1 = tmp.obj().get(k);
+                        if (n1 != null) {
+                            if(tmp2 == null){
+                                tmp2 = new ONode(null,tmp.options()).asArray();
+                            }
+
+                            tmp2.addNode(n1);
                         }
                     }
                 }
 
-                if (regroup && n1.isArray()) {
-                    for (ONode n2 : n1.ary()) {
-                        if (n2.isObject()) {
-                            if (crud == CRUD.GET_OR_NEW) {
-                                tmp2.add(n2.getOrNew(s.cmd));
-                            } else {
-                                ONode n3 = n2.nodeData().object.get(s.cmd);
-                                if (n3 != null) {
-                                    tmp2.add(n3);
+                //不知道，该不访加::??
+                if(tmp.isArray()) {
+                    tmp2 = new ONode(null,tmp.options()).asArray();
+
+                    for(ONode tmp1 : tmp.ary()){
+                        if(tmp1.isObject()){
+                            for (String k : s.nameS) {
+                                ONode n1 = tmp1.obj().get(k);
+                                if (n1 != null) {
+                                    tmp2.addNode(n1);
                                 }
                             }
+                        }
+                    }
+                }
+            }else{
+                if(tmp.isArray()) {
+                    List<ONode> list2 = tmp.nodeData().array;
+                    int len2 = list2.size();
+
+                    for (int idx : s.indexS) {
+                        if (idx >= 0 && idx < len2) {
+                            if(tmp2 == null){
+                                tmp2 = new ONode(null,tmp.options()).asArray();
+                            }
+
+                            tmp2.addNode(list2.get(idx));
                         }
                     }
                 }
@@ -604,503 +1047,121 @@ public class JsonPath {
 
             return tmp2;
         }
-
-        if(crud == CRUD.GET_OR_NEW && tmp.isNull()){
-            return tmp.getOrNew(s.cmd);
-        }
-
-        return null;
-    };
-
-    /**
-     * ".fun()" 指令
-     * */
-    private static Resolver handler_fun=(bef, s, regroup, root, tmp, usd, crud)->{
-        switch (s.cmd) {
-            case "size()": {
-                return new ONode(null,tmp.options()).val(tmp.count());
-            }
-            case "length()": {
-                if (tmp.isValue()) {
-                    return new ONode(null,tmp.options()).val(tmp.getString().length());
-                } else {
-                    return new ONode(null,tmp.options()).val(tmp.count());
-                }
-            }
-            case "keys()": {
-                if (tmp.isObject()) {
-                    return new ONode(null,tmp.options()).addAll(tmp.obj().keySet());
-                } else {
-                    return null;
-                }
-            }
-            case "min()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    ONode min_n = null;
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isValue()) {
-                            if (min_n == null) {
-                                min_n = n1;
-                            } else if (n1.getDouble() < min_n.getDouble()) {
-                                min_n = n1;
-                            }
-                        }
-
-                        if (regroup && n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                if (n2.isValue()) {
-                                    if (min_n == null) {
-                                        min_n = n2;
-                                    } else if (n2.getDouble() < min_n.getDouble()) {
-                                        min_n = n2;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return min_n;
-                }
-
-                return null;
-            }
-
-            case "max()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    ONode max_n = null;
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isValue()) {
-                            if (max_n == null) {
-                                max_n = n1;
-                            } else if (n1.getDouble() > max_n.getDouble()) {
-                                max_n = n1;
-                            }
-                        }
-
-                        if (regroup && n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                if (n2.isValue()) {
-                                    if (max_n == null) {
-                                        max_n = n2;
-                                    } else if (n2.getDouble() > max_n.getDouble()) {
-                                        max_n = n2;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    return max_n;
-                }
-
-//                if(tmp.isValue()){
-//                    return tmp;
-//                }
-
-                return null;
-            }
-
-            case "avg()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    double sum = 0;
-                    int num = 0;
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isValue()) {
-                            sum += n1.getDouble();
-                            num++;
-                        }
-
-                        if (regroup && n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                if (n2.isValue()) {
-                                    sum += n2.getDouble();
-                                    num++;
-                                }
-                            }
-                        }
-                    }
-
-                    if (num > 0) {
-                        return new ONode(null,tmp.options()).val(sum / num);
-                    }
-                }
-
-                return null;
-            }
-
-            case "sum()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    double sum = 0;
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isValue()) {
-                            sum += n1.getDouble();
-                        }
-
-                        if (regroup && n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                if (n2.isValue()) {
-                                    sum += n2.getDouble();
-                                }
-                            }
-                        }
-                    }
-                    return new ONode(null,tmp.options()).val(sum);
-                } else {
-                    return null;
-                }
-            }
-
-            case "first()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    ONode n1 = tmp.get(0);
-
-                    if (regroup && n1.isArray()) {
-                        return n1.get(0);
-                    } else {
-                        return n1;
-                    }
-                } else {
-                    return null;
-                }
-            }
-
-            case "last()": {
-                if (tmp.isArray()) {
-                    if(tmp.count() == 0){
-                        return null;
-                    }
-
-                    ONode n1 = tmp.get(tmp.count() - 1);
-
-                    if (regroup && n1.isArray()) {
-                        return n1.get(n1.count() - 1);
-                    } else {
-                        return n1;
-                    }
-                } else {
-                    return null;
-                }
-            }
-
-            default:
-                return null;
-        }
-    };
-
-    /**
-     * ".*]" 指令
-     * */
-    private static Resolver handler_ary_x=(bef, s, regroup, root, tmp, usd, crud)-> {
-        ONode tmp2 = null;
-
-        if (tmp.isArray()) {
-            if(regroup){
-                tmp2 = new ONode(null,tmp.options()).asArray();
-                for (ONode n1 : tmp.ary()) {
-                    if (n1.isObject()) {
-                        tmp2.addAll(n1.obj().values());
-                    }else{
-                        tmp2.addAll(n1.ary());
-                    }
-                }
-            } else {
-                tmp2 = tmp;
-            }
-        }
-
-        if (tmp.isObject()) {
-            tmp2 = new ONode(null,tmp.options()).asArray();
-            tmp2.addAll(tmp.obj().values());
-        }
-
-        return tmp2;
-    };
-
-    /**
-     * ".[?()]" 指令
-     * */
-    private static Resolver handler_ary_exp=(bef, s, regroup, root, tmp, usd, crud)->{
-        ONode tmp2 = tmp;
-        if (s.op == null) {
-            if (tmp.isObject()) {
-                if(evalDo(tmp,s.left,true, usd, crud).isNull()){
-                    return null;
-                }
-            } else if (tmp.isArray()) {
-                tmp2 = new ONode(null,tmp.options()).asArray();
-
-                for (ONode n1 : tmp.ary()) {
-                    if(n1.isObject() && evalDo(n1,s.left,true, usd, crud).isNull() == false){
-                        tmp2.nodeData().array.add(n1);
-                    }
-
-                    if(regroup && n1.isArray()){
-                        for(ONode n2 : n1.ary()){
-                            if(n2.isObject() && evalDo(n2,s.left,true, usd, crud).isNull() == false){
-                                tmp2.nodeData().array.add(n2);
-                            }
-                        }
-                    }
-                }
-            } else{
-                return null;
-            }
-        } else {
-            if (tmp.isObject()) {
-                if ("@".equals(s.left)) {
-                    return null;
-                }
-
-                ONode leftO = evalDo(tmp, s.left, true, usd, crud);
-                if (compare(root, tmp, leftO, s.op, s.right, usd, crud) == false) {
-                    return null;
-                }
-            } else if (tmp.isArray()) {
-                tmp2 = new ONode(null,tmp.options()).asArray();
-                if ("@".equals(s.left)) {
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                if (compare(root, n2, n2, s.op, s.right, usd, crud)) {
-                                    tmp2.addNode(n2);
-                                }
-                            }
-                        } else {
-                            if (compare(root, n1, n1, s.op, s.right, usd, crud)) {
-                                tmp2.addNode(n1);
-                            }
-                        }
-                    }
-                } else {
-                    for (ONode n1 : tmp.ary()) {
-                        if (n1.isArray()) {
-                            for (ONode n2 : n1.ary()) {
-                                ONode leftO = evalDo(n2, s.left, true, usd, crud);
-
-                                if (compare(root, n2, leftO, s.op, s.right, usd, crud)) {
-                                    tmp2.addNode(n2);
-                                }
-                            }
-                        } else {
-                            ONode leftO = evalDo(n1, s.left, true, usd, crud);
-
-                            if (compare(root, n1, leftO, s.op, s.right, usd, crud)) {
-                                tmp2.addNode(n1);
-                            }
-                        }
-                    }
-                }
-            } else if (tmp.isValue()) {
-                if ("@".equals(s.left)) {
-                    if (compare(root, tmp, tmp, s.op, s.right, usd, crud) == false) {
-                        return null;
-                    }
-                }
-            }
-        }
-
-        return tmp2;
-    };
-
-    /**
-     * "[$.xxx] [@.xxx]" 指令
-     * */
-    private static Resolver handler_ary_ref=(bef, s, regroup, root, tmp, usd, crud)-> {
-        ONode tmp2 = null;
-
-        if(tmp.isObject()) {
-            if (s.cmdAry.startsWith("$")) {
-                tmp2 = evalDo(root, s.cmdAry, true, usd, crud);
-            } else {
-                tmp2 = evalDo(tmp, s.cmdAry, true, usd, crud);
-            }
-
-            if (tmp2.isValue()) {
-                tmp2 = tmp.get(tmp2.getString());
-            }else{
-                tmp2 = null;
-            }
-        }
-
-        return tmp2;
-    };
-
-    /**
-     * "[1,4,6] //['p1','p2']" 指令
-     * */
-    private static Resolver handler_ary_multi=(bef, s, regroup, root, tmp, usd, crud)->{
-        ONode tmp2 = null;
-
-        if(s.cmdAry.indexOf("'")>=0){
-            if(tmp.isObject()){
-                for (String k : s.nameS) {
-                    ONode n1 = tmp.obj().get(k);
-                    if (n1 != null) {
-                        if(tmp2 == null){
-                            tmp2 = new ONode(null,tmp.options()).asArray();
-                        }
-
-                        tmp2.addNode(n1);
-                    }
-                }
-            }
-
-            //不知道，该不访加::??
-            if(tmp.isArray()) {
-                tmp2 = new ONode(null,tmp.options()).asArray();
-
-                for(ONode tmp1 : tmp.ary()){
-                    if(tmp1.isObject()){
-                        for (String k : s.nameS) {
-                            ONode n1 = tmp1.obj().get(k);
-                            if (n1 != null) {
-                                tmp2.addNode(n1);
-                            }
-                        }
-                    }
-                }
-            }
-        }else{
-            if(tmp.isArray()) {
-                List<ONode> list2 = tmp.nodeData().array;
-                int len2 = list2.size();
-
-                for (int idx : s.indexS) {
-                    if (idx >= 0 && idx < len2) {
-                        if(tmp2 == null){
-                            tmp2 = new ONode(null,tmp.options()).asArray();
-                        }
-
-                        tmp2.addNode(list2.get(idx));
-                    }
-                }
-            }
-        }
-
-        return tmp2;
-    };
+    }
 
     /**
      * "[2:4]" 指令
      * */
-    private static Resolver handler_ary_range=(bef, s, regroup, root, tmp, usd, crud)->{
-        if (tmp.isArray()) {
-            int count = tmp.count();
-            int start = s.start;
-            int end = s.end;
+    private static class handler_ary_range implements  Resolver {
+        static final handler_ary_range instance = new handler_ary_range();
 
-            if (start < 0) {//如果是倒数？
-                start = count + start;
-            }
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            if (tmp.isArray()) {
+                int count = tmp.count();
+                int start = s.start;
+                int end = s.end;
 
-            if (end == 0) {
-                end = count;
-            }
+                if (start < 0) {//如果是倒数？
+                    start = count + start;
+                }
 
-            if (end < 0) { //如果是倒数？
-                end = count + end;
-            }
+                if (end == 0) {
+                    end = count;
+                }
 
-            if (start < 0) {
-                start = 0;
-            }
-            if (end > count) {
-                end = count;
-            }
+                if (end < 0) { //如果是倒数？
+                    end = count + end;
+                }
 
-            return new ONode(null,tmp.options()).addAll(tmp.ary().subList(start, end));
-        } else {
-            return null;
+                if (start < 0) {
+                    start = 0;
+                }
+                if (end > count) {
+                    end = count;
+                }
+
+                return new ONode(null, tmp.options()).addAll(tmp.ary().subList(start, end));
+            } else {
+                return null;
+            }
         }
-    };
+    }
 
     /**
      * "[2] [-2] ['p1']" 索引指令
      * */
-    private static Resolver handler_ary_prop=(bef, s, regroup, root, tmp, usd, crud)-> {
-        //如果是value,会返回null
-        if (s.cmdHasQuote) {
-            //['p1']
-            if(tmp.isObject()) {
-                return tmp.getOrNull(s.name);
-            }
+    private static class handler_ary_prop implements Resolver {
+        static final handler_ary_prop instance = new handler_ary_prop();
 
-            //不知道，该不访加::??
-            if(tmp.isArray()) {
-                ONode tmp2 = new ONode(null,tmp.options()).asArray();
-                for (ONode n1 : tmp.ary()) {
-                    if (n1.isObject()) {
-                        ONode n2 = n1.nodeData().object.get(s.name);
+        @Override
+        public ONode run(Segment bef, Segment s, Boolean regroup, ONode root, ONode tmp, Boolean usd, CRUD crud) {
+            //如果是value,会返回null
+            if (s.cmdHasQuote) {
+                //['p1']
+                if(tmp.isObject()) {
+                    return tmp.getOrNull(s.name);
+                }
+
+                //不知道，该不访加::??
+                if(tmp.isArray()) {
+                    ONode tmp2 = new ONode(null,tmp.options()).asArray();
+                    for (ONode n1 : tmp.ary()) {
+                        if (n1.isObject()) {
+                            ONode n2 = n1.nodeData().object.get(s.name);
+                            if (n2 != null) {
+                                tmp2.add(n2);
+                            }
+                        }
+                    }
+                    return tmp2;
+                }
+
+                return null;
+            } else {
+                //[1]
+                if (regroup) {
+                    ONode tmp2 = new ONode(null,tmp.options()).asArray();
+                    for (ONode n1 : tmp.ary()) {
+                        ONode n2 = null;
+                        if (s.start < 0) {
+                            if (crud == CRUD.GET_OR_NEW) {
+                                n2 = n1.getOrNew(n1.count() + s.start);//倒数位
+                            } else {
+                                n2 = n1.getOrNull(n1.count() + s.start);//倒数位
+                            }
+                        } else {
+                            if (crud == CRUD.GET_OR_NEW) {
+                                n2 = n1.getOrNew(s.start);
+                            } else {
+                                n2 = n1.getOrNull(s.start);//正数位
+                            }
+                        }
+
                         if (n2 != null) {
                             tmp2.add(n2);
                         }
                     }
-                }
-                return tmp2;
-            }
 
-            return null;
-        } else {
-            //[1]
-            if (regroup) {
-                ONode tmp2 = new ONode(null,tmp.options()).asArray();
-                for (ONode n1 : tmp.ary()) {
-                    ONode n2 = null;
+                    return tmp2;
+                } else {
                     if (s.start < 0) {
                         if (crud == CRUD.GET_OR_NEW) {
-                            n2 = n1.getOrNew(n1.count() + s.start);//倒数位
+                            return tmp.getOrNew(tmp.count() + s.start);//倒数位
                         } else {
-                            n2 = n1.getOrNull(n1.count() + s.start);//倒数位
+                            return tmp.getOrNull(tmp.count() + s.start);//倒数位
                         }
                     } else {
                         if (crud == CRUD.GET_OR_NEW) {
-                            n2 = n1.getOrNew(s.start);
+                            return tmp.getOrNew(s.start);
                         } else {
-                            n2 = n1.getOrNull(s.start);//正数位
+                            return tmp.getOrNull(s.start);//正数位
                         }
-                    }
-
-                    if (n2 != null) {
-                        tmp2.add(n2);
-                    }
-                }
-
-                return tmp2;
-            } else {
-                if (s.start < 0) {
-                    if (crud == CRUD.GET_OR_NEW) {
-                        return tmp.getOrNew(tmp.count() + s.start);//倒数位
-                    } else {
-                        return tmp.getOrNull(tmp.count() + s.start);//倒数位
-                    }
-                } else {
-                    if (crud == CRUD.GET_OR_NEW) {
-                        return tmp.getOrNew(s.start);
-                    } else {
-                        return tmp.getOrNull(s.start);//正数位
                     }
                 }
             }
         }
-    };
+    }
 
     @FunctionalInterface
     private interface Resolver {
@@ -1205,19 +1266,19 @@ public class JsonPath {
 
             //$指令
             if ("$".equals(this.cmd) || "@".equals(this.cmd)) {
-                handler = handler_$;
+                handler = handler_$.instance;
                 return;
             }
 
             //_指令（即..指令）
             if (this.cmd.startsWith("^")) {
-                handler = handler_xx;
+                handler = handler_xx.instance;
                 return;
             }
 
             //*指令
             if ("*".equals(this.cmd)) {
-                handler = handler_x;
+                handler = handler_x.instance;
                 return;
             }
 
@@ -1226,43 +1287,43 @@ public class JsonPath {
                 if ("*".equals(this.cmdAry)) {
                     //[*]指令
                     //
-                    handler = handler_ary_x;
+                    handler = handler_ary_x.instance;
                     return;
                 } else if (this.cmd.startsWith("?")) {
                     //[?()]指令
                     //
-                    handler = handler_ary_exp;
+                    handler = handler_ary_exp.instance;
                 } else if (this.cmdAry.indexOf(",") > 0) {
                     //[,]指令
                     //
                     //[1,4,6] //['p1','p2']
-                    handler = handler_ary_multi;
+                    handler = handler_ary_multi.instance;
 
                 } else if (this.cmdAry.indexOf(":") >= 0) {
                     //[:]指令
                     //
                     //[2:4]
-                    handler = handler_ary_range;
+                    handler = handler_ary_range.instance;
 
                 } else if(this.cmdAry.startsWith("$.") || this.cmdAry.startsWith("@.")){
                     //[$.xxx] [@.xxx]
-                    handler = handler_ary_ref;
+                    handler = handler_ary_ref.instance;
                 } else {
                     //[x]指令
                     //
                     //[2] [-2] ['p1']
                     //
-                    handler = handler_ary_prop;
+                    handler = handler_ary_prop.instance;
                 }
             }
             else if(this.cmd.endsWith(")")) {
                 //.fun()指令
-                handler = handler_fun;
+                handler = handler_fun.instance;
             } else {
                 //.name 指令
                 //
                 //name
-                handler = handler_prop;
+                handler = handler_prop.instance;
             }
         }
 
