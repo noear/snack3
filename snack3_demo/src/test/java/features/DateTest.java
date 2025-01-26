@@ -101,4 +101,11 @@ public class DateTest {
         DateUtil.parse(OffsetDateTime.now().toString());
         DateUtil.parse(OffsetTime.now().toString());
     }
+
+    @Test
+    public void test7() throws Exception {
+        Date date = new java.sql.Date(DateUtil.parse(LocalDate.now().toString()).getTime());
+        LocalDate day = ONode.load(date).toObject(LocalDate.class);
+        System.out.println(day.toString());
+    }
 }
