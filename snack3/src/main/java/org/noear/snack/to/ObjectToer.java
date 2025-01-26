@@ -277,41 +277,41 @@ public class ObjectToer implements Toer {
             if (null == date) {
                 return null;
             } else {
-                return OffsetDateTime.ofInstant(date.toInstant(), DEFAULTS.DEF_TIME_ZONE.toZoneId());
+                return OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), DEFAULTS.DEF_TIME_ZONE.toZoneId());
             }
         } else if (is(ZonedDateTime.class, clz)) {
             Date date = v.getDate();
             if (null == date) {
                 return null;
             } else {
-                return ZonedDateTime.ofInstant(date.toInstant(), DEFAULTS.DEF_TIME_ZONE.toZoneId());
+                return ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), DEFAULTS.DEF_TIME_ZONE.toZoneId());
             }
         } else if (is(LocalDateTime.class, clz)) {
             Date date = v.getDate();
             if (date == null) {
                 return null;
             } else {
-                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
+                return Instant.ofEpochMilli(date.getTime()).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDateTime();
             }
         } else if (is(LocalDate.class, clz)) {
             Date date = v.getDate();
             if (date == null) {
                 return null;
             } else {
-                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
+                return Instant.ofEpochMilli(date.getTime()).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalDate();
             }
         } else if (is(LocalTime.class, clz)) {
             Date date = v.getDate();
             if (date == null) {
                 return null;
             } else {
-                return date.toInstant().atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
+                return Instant.ofEpochMilli(date.getTime()).atZone(DEFAULTS.DEF_TIME_ZONE.toZoneId()).toLocalTime();
             }
         } else if (is(OffsetTime.class, clz)) {
             // 可能无法通过v.getDate()获取时间，因为OffsetTime格式带有时区信息
             Date date = v.getDate();
             if (date != null) {
-                return date.toInstant().atOffset(DEFAULTS.DEF_OFFSET).toOffsetTime();
+                return Instant.ofEpochMilli(date.getTime()).atOffset(DEFAULTS.DEF_OFFSET).toOffsetTime();
             }
             // 获取不到则可能是"HH:mm:ss"或者"HH:mm:ssZ"等字符串格式
             String dateStr = v.getString();
