@@ -1,3 +1,7 @@
+### 3.2.126
+
+* 修复 ObjectToer 处理 java.sql.Date 转 LocalDate 出错问题
+
 ### 3.2.125
 
 * 优化 JsonPath 数字表达式处理添加 string 解析排除（解析出错）
