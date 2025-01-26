@@ -9,6 +9,8 @@ import org.noear.snack.core.utils.DateUtil;
 
 import java.time.*;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author noear 2021/6/13 created
@@ -105,7 +107,17 @@ public class DateTest {
     @Test
     public void test7() throws Exception {
         Date date = new java.sql.Date(DateUtil.parse(LocalDate.now().toString()).getTime());
-        LocalDate day = ONode.load(date).toObject(LocalDate.class);
-        System.out.println(day.toString());
+        Map map = new HashMap();
+        map.put("date", date);
+        System.out.println(date);
+
+        DateMapModel model = ONode.load(map).toObject(DateMapModel.class);
+        System.out.println(model.date.toString());
+
+        assert date.toString().equals(model.date.toString());
+    }
+
+    public static class DateMapModel {
+        public LocalDate date;
     }
 }
