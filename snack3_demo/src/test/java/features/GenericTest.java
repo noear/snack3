@@ -42,7 +42,7 @@ public class GenericTest {
         //远程方法调用
         model.setPoints(points);
 
-        String json = ONode.serialize(model);
+        String json = ONode.stringify(model);
 
         System.out.println(json);
 
