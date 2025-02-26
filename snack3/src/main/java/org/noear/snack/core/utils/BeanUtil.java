@@ -13,6 +13,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 public class BeanUtil {
 
+    /**
+     * 检查集合是否为空
+     *
+     * @param s 集合
+     */
+    public static boolean isEmpty(Collection s) {
+        return s == null || s.size() == 0;
+    }
+
+    /**
+     * 检查映射是否为空
+     *
+     * @param s 集合
+     */
+    public static boolean isEmpty(Map s) {
+        return s == null || s.size() == 0;
+    }
+
+    //////////////
+
+
     private static final Map<String, Class<?>> clzCached = new ConcurrentHashMap<>();
 
     /**

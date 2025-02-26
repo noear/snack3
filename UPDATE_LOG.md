@@ -1,3 +1,7 @@
+### 3.2.127
+
+* 修复 二级泛型数组类型会丢失泛型的问题
+
 ### 3.2.126
 
 * 修复 ObjectToer 处理 java.sql.Date 转 LocalDate 出错问题

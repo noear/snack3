@@ -1,5 +1,7 @@
 package org.noear.snack.core.exts;
 
+import org.noear.snack.core.utils.GenericUtil;
+
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -12,16 +14,16 @@ import java.util.function.Predicate;
  * @author noear 2021/1/1 created
  */
 public class ClassWrap {
-    private static Map<Class<?>, ClassWrap> cached = new ConcurrentHashMap<>();
+    private static Map<TypeDecl, ClassWrap> cached = new ConcurrentHashMap<>();
 
     /**
      * 根据clz获取一个ClassWrap
      */
-    public static ClassWrap get(Class<?> clz) {
-        ClassWrap cw = cached.get(clz);
+    public static ClassWrap get(TypeDecl typeDecl) {
+        ClassWrap cw = cached.get(typeDecl);
         if (cw == null) {
-            cw = new ClassWrap(clz);
-            ClassWrap l = cached.putIfAbsent(clz, cw);
+            cw = new ClassWrap(typeDecl);
+            ClassWrap l = cached.putIfAbsent(typeDecl, cw);
             if (l != null) {
                 cw = l;
             }
@@ -30,7 +32,7 @@ public class ClassWrap {
     }
 
     //clz //与函数同名，_开头
-    private final Class<?> _clz;
+    private final TypeDecl typeDecl;
     //clz.all_fieldS
     private final Map<String, FieldWrap> _fieldAllWraps;
     private final Map<String, Method> _propertyAll;
@@ -43,17 +45,18 @@ public class ClassWrap {
     private boolean _isMemberClass;
 
 
-    protected ClassWrap(Class<?> clz) {
-        _clz = clz;
+    protected ClassWrap(TypeDecl typeDecl) {
+        this.typeDecl = typeDecl;
+
         _recordable = true;
 
-        _isMemberClass = clz.isMemberClass();
+        _isMemberClass = typeDecl.getType().isMemberClass();
         _fieldAllWraps = new LinkedHashMap<>();
         _propertyAll = new LinkedHashMap<>();
 
-        scanAllFields(clz, _fieldAllWraps::containsKey, _fieldAllWraps::put);
+        scanAllFields(typeDecl, _fieldAllWraps::containsKey, _fieldAllWraps::put);
 
-        for(Method m : clz.getMethods()) {
+        for (Method m : typeDecl.getType().getMethods()) {
             if (m.getName().startsWith("set") && m.getName().length() > 3 && m.getParameterCount() == 1) {
                 String name = m.getName().substring(3);
                 name = name.substring(0, 1).toLowerCase() + name.substring(1);
@@ -66,7 +69,7 @@ public class ClassWrap {
         }
 
         //支持 kotlin data 类型
-        Constructor<?>[] constructors = clz.getConstructors();
+        Constructor<?>[] constructors = typeDecl.getType().getConstructors();
 
         if (constructors.length > 0) {
             if (_recordable) {
@@ -91,8 +94,8 @@ public class ClassWrap {
         }
     }
 
-    public Class<?> clz() {
-        return _clz;
+    public TypeDecl typeDecl() {
+        return typeDecl;
     }
 
 
@@ -114,42 +117,47 @@ public class ClassWrap {
         return _recordable;
     }
 
-    public Constructor recordConstructor(){
+    public Constructor recordConstructor() {
         return _recordConstructor;
     }
 
-    public Parameter[] recordParams(){
+    public Parameter[] recordParams() {
         return _recordParams;
     }
 
     /**
      * 扫描一个类的所有字段
      */
-    private void scanAllFields(Class<?> clz, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
-        if (clz == null) {
+    private void scanAllFields(TypeDecl typeDecl, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
+        if (typeDecl == null) {
             return;
         }
 
-        for (Field f : clz.getDeclaredFields()) {
+        if (typeDecl.getType().isInterface()) {
+            return;
+        }
+
+        for (Field f : typeDecl.getType().getDeclaredFields()) {
             int mod = f.getModifiers();
 
             if (!Modifier.isStatic(mod)
                     && !Modifier.isTransient(mod)) {
 
-                if(_isMemberClass && f.getName().equals("this$0")){
+                if (_isMemberClass && f.getName().equals("this$0")) {
                     continue;
                 }
 
                 if (checker.test(f.getName()) == false) {
                     _recordable &= Modifier.isFinal(mod);
-                    consumer.accept(f.getName(), new FieldWrap(clz, f, Modifier.isFinal(mod)));
+                    consumer.accept(f.getName(), new FieldWrap(typeDecl, f, Modifier.isFinal(mod)));
                 }
             }
         }
 
-        Class<?> sup = clz.getSuperclass();
-        if (sup != Object.class) {
-            scanAllFields(sup, checker, consumer);
+        Class<?> sup = typeDecl.getType().getSuperclass();
+        if (sup != null && sup != Object.class) {
+            Type supInfo = GenericUtil.reviewType(typeDecl.getType().getGenericSuperclass(), typeDecl.getGenericType());
+            scanAllFields(new TypeDecl(sup, supInfo), checker, consumer);
         }
     }
 }

@@ -6,6 +6,7 @@ import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
+import org.noear.snack.core.exts.TypeDecl;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.core.utils.StringUtil;
@@ -371,7 +372,7 @@ public class ObjectFromer implements Fromer {
         }
 
         // 遍历每个字段
-        Collection<FieldWrap> list = ClassWrap.get(clz).fieldAllWraps();
+        Collection<FieldWrap> list = ClassWrap.get(new TypeDecl(clz,clz)).fieldAllWraps();
         boolean useGetter = cfg.hasFeature(Feature.UseGetter);
         boolean useOnlyGetter = cfg.hasFeature(Feature.UseOnlyGetter);
         if (useOnlyGetter) {
@@ -394,22 +395,22 @@ public class ObjectFromer implements Fromer {
             //如果是null
             if (val == null) {
                 if (f.isIncNull()) {
-                    if (cfg.hasFeature(Feature.StringNullAsEmpty) && f.type == String.class) {
+                    if (cfg.hasFeature(Feature.StringNullAsEmpty) && f.getType() == String.class) {
                         rst.setNode(f.getName(), analyse(cfg, ""));
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.BooleanNullAsFalse) && f.type == Boolean.class) {
+                    if (cfg.hasFeature(Feature.BooleanNullAsFalse) && f.getType() == Boolean.class) {
                         rst.setNode(f.getName(), analyse(cfg, false));
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.NumberNullAsZero) && Number.class.isAssignableFrom(f.type)) {
-                        if (f.type == Long.class) {
+                    if (cfg.hasFeature(Feature.NumberNullAsZero) && Number.class.isAssignableFrom(f.getType())) {
+                        if (f.getType() == Long.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0L));
-                        } else if (f.type == Double.class) {
+                        } else if (f.getType() == Double.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0.0D));
-                        } else if (f.type == Float.class) {
+                        } else if (f.getType() == Float.class) {
                             rst.setNode(f.getName(), analyse(cfg, 0.0F));
                         } else {
                             rst.setNode(f.getName(), analyse(cfg, 0));
@@ -418,7 +419,7 @@ public class ObjectFromer implements Fromer {
                     }
 
                     if (cfg.hasFeature(Feature.ArrayNullAsEmpty)) {
-                        if (Collection.class.isAssignableFrom(f.type) || f.type.isArray()) {
+                        if (Collection.class.isAssignableFrom(f.getType()) || f.getType().isArray()) {
                             rst.setNode(f.getName(), new ONode(null, cfg).asArray());
                             continue;
                         }

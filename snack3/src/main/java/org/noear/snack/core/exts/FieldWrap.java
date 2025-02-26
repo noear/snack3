@@ -15,9 +15,11 @@ import java.util.TimeZone;
  * 字段包装
  * */
 public class FieldWrap {
-    public final Field field;
-    public final Class<?> type;
-    public final Type genericType;
+    //所有者类
+    private final TypeDecl owner;
+    //字段
+    private final Field field;
+
     public final boolean readonly;
     public final boolean hasSetter;
     public final boolean hasGetter;
@@ -36,11 +38,10 @@ public class FieldWrap {
     //值获取器
     private Method _getter;
 
-    public FieldWrap(Class<?> clz, Field f, boolean isFinal) {
-        field = f;
-        type = f.getType();
-        genericType = f.getGenericType();
-        readonly = isFinal;
+    public FieldWrap(TypeDecl owner, Field f, boolean isFinal) {
+        this.owner = owner;
+        this.field = f;
+        this.readonly = isFinal;
 
         NodeName anno = f.getAnnotation(NodeName.class);
         if (anno != null) {
@@ -74,8 +75,8 @@ public class FieldWrap {
             name = field.getName();
         }
 
-        _setter = doFindSetter(clz, f);
-        _getter = doFindGetter(clz, f);
+        _setter = doFindSetter(owner.getType(), f);
+        _getter = doFindGetter(owner.getType(), f);
 
         hasSetter = _setter != null;
         hasGetter = _getter != null;
@@ -84,6 +85,14 @@ public class FieldWrap {
     @Deprecated
     public String name() {
         return name;
+    }
+
+    /**
+     * 获取所有者类
+     */
+
+    public TypeDecl getOwner() {
+        return owner;
     }
 
     /**
@@ -129,11 +138,53 @@ public class FieldWrap {
     }
 
     /**
-     * 
+     *
      */
     public boolean isFlat() {
         return flat;
     }
+
+
+    //字段类型包装（懒加载）
+    private TypeWrap typeWrap;
+
+    private TypeWrap getTypeWrap() {
+        if (typeWrap == null) {
+            typeWrap = new TypeWrap(owner.getGenericType(), field.getType(), field.getGenericType());
+
+            if (typeWrap.isInvalid()) {
+                throw new IllegalStateException("Field generic analysis failed: "
+                        + field.getDeclaringClass().getName()
+                        + "."
+                        + field.getName());
+            }
+        }
+
+        return typeWrap;
+    }
+
+    public TypeWrap typeWrapOf(Type genericInfo) {
+        if (genericInfo == null || genericInfo == owner.getType()) {
+            return getTypeWrap();
+        } else {
+            return new TypeWrap(genericInfo, field.getType(), field.getGenericType());
+        }
+    }
+
+    /**
+     * 获取类型
+     */
+    public Class<?> getType() {
+        return getTypeWrap().getType();
+    }
+
+    /**
+     * 获取参数类型
+     */
+    public Type getGenericType() {
+        return getTypeWrap().getGenericType();
+    }
+
 
     /**
      * @since 3.2.90

@@ -5,6 +5,7 @@ import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
+import org.noear.snack.core.exts.TypeDecl;
 import org.noear.snack.core.utils.*;
 import org.noear.snack.exception.SnackException;
 
@@ -614,7 +615,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        ClassWrap clzWrap = ClassWrap.get(clz);
+        ClassWrap clzWrap = ClassWrap.get(new TypeDecl(clz, type));
 
         if (clzWrap.recordable()) {
             //如果所有字段只读,则通过构造函数处理(支持 jdk14+  的 record 类型)
@@ -747,8 +748,8 @@ public class ObjectToer implements Toer {
         }
 
         if (f.isFlat() || o.contains(fieldK)) {
-            Class fieldT = f.type;
-            Type fieldGt = f.genericType;
+            Class fieldT = f.getType();
+            Type fieldGt = f.getGenericType();
 
             if (f.readonly) {
                 analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
@@ -757,7 +758,7 @@ public class ObjectToer implements Toer {
 
                 if (val == null) {
                     //null string 是否以 空字符处理
-                    if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.type == String.class) {
+                    if (ctx.options.hasFeature(Feature.StringFieldInitEmpty) && f.getType() == String.class) {
                         val = "";
                     }
                 }
