@@ -6,7 +6,7 @@ import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
-import org.noear.snack.core.exts.TypeDecl;
+import org.noear.snack.core.exts.Unitype;
 import org.noear.snack.core.utils.BeanUtil;
 import org.noear.snack.core.utils.DateUtil;
 import org.noear.snack.core.utils.StringUtil;
@@ -372,7 +372,7 @@ public class ObjectFromer implements Fromer {
         }
 
         // 遍历每个字段
-        Collection<FieldWrap> list = ClassWrap.get(new TypeDecl(clz,clz)).fieldAllWraps();
+        Collection<FieldWrap> list = ClassWrap.get(new Unitype(clz,clz)).fieldAllWraps();
         boolean useGetter = cfg.hasFeature(Feature.UseGetter);
         boolean useOnlyGetter = cfg.hasFeature(Feature.UseOnlyGetter);
         if (useOnlyGetter) {

@@ -4,15 +4,15 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
- * 类型申明
+ * 统一类型
  *
  * @author noear 2025/2/26 created
  */
-public class TypeDecl {
+public class Unitype {
     private Class<?> type;
     private Type genericType;
 
-    public TypeDecl(Class<?> type, Type genericType) {
+    public Unitype(Class<?> type, Type genericType) {
         this.type = type;
         if (genericType == null) {
             this.genericType = type;
@@ -31,9 +31,9 @@ public class TypeDecl {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof TypeDecl)) return false;
-        TypeDecl typeDecl = (TypeDecl) o;
-        return Objects.equals(type, typeDecl.type) && Objects.equals(genericType, typeDecl.genericType);
+        if (!(o instanceof Unitype)) return false;
+        Unitype unitype = (Unitype) o;
+        return Objects.equals(type, unitype.type) && Objects.equals(genericType, unitype.genericType);
     }
 
     @Override

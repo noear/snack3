@@ -5,7 +5,7 @@ import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
-import org.noear.snack.core.exts.TypeDecl;
+import org.noear.snack.core.exts.Unitype;
 import org.noear.snack.core.utils.*;
 import org.noear.snack.exception.SnackException;
 
@@ -615,7 +615,7 @@ public class ObjectToer implements Toer {
             }
         }
 
-        ClassWrap clzWrap = ClassWrap.get(new TypeDecl(clz, type));
+        ClassWrap clzWrap = ClassWrap.get(new Unitype(clz, type));
 
         if (clzWrap.recordable()) {
             //如果所有字段只读,则通过构造函数处理(支持 jdk14+  的 record 类型)

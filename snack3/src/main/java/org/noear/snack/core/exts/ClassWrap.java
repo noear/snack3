@@ -14,12 +14,12 @@ import java.util.function.Predicate;
  * @author noear 2021/1/1 created
  */
 public class ClassWrap {
-    private static Map<TypeDecl, ClassWrap> cached = new ConcurrentHashMap<>();
+    private static Map<Unitype, ClassWrap> cached = new ConcurrentHashMap<>();
 
     /**
      * 根据clz获取一个ClassWrap
      */
-    public static ClassWrap get(TypeDecl typeDecl) {
+    public static ClassWrap get(Unitype typeDecl) {
         ClassWrap cw = cached.get(typeDecl);
         if (cw == null) {
             cw = new ClassWrap(typeDecl);
@@ -32,7 +32,7 @@ public class ClassWrap {
     }
 
     //clz //与函数同名，_开头
-    private final TypeDecl typeDecl;
+    private final Unitype _unitype;
     //clz.all_fieldS
     private final Map<String, FieldWrap> _fieldAllWraps;
     private final Map<String, Method> _propertyAll;
@@ -45,18 +45,18 @@ public class ClassWrap {
     private boolean _isMemberClass;
 
 
-    protected ClassWrap(TypeDecl typeDecl) {
-        this.typeDecl = typeDecl;
+    protected ClassWrap(Unitype unitype) {
+        this._unitype = unitype;
 
         _recordable = true;
 
-        _isMemberClass = typeDecl.getType().isMemberClass();
+        _isMemberClass = unitype.getType().isMemberClass();
         _fieldAllWraps = new LinkedHashMap<>();
         _propertyAll = new LinkedHashMap<>();
 
-        scanAllFields(typeDecl, _fieldAllWraps::containsKey, _fieldAllWraps::put);
+        scanAllFields(unitype, _fieldAllWraps::containsKey, _fieldAllWraps::put);
 
-        for (Method m : typeDecl.getType().getMethods()) {
+        for (Method m : unitype.getType().getMethods()) {
             if (m.getName().startsWith("set") && m.getName().length() > 3 && m.getParameterCount() == 1) {
                 String name = m.getName().substring(3);
                 name = name.substring(0, 1).toLowerCase() + name.substring(1);
@@ -69,7 +69,7 @@ public class ClassWrap {
         }
 
         //支持 kotlin data 类型
-        Constructor<?>[] constructors = typeDecl.getType().getConstructors();
+        Constructor<?>[] constructors = unitype.getType().getConstructors();
 
         if (constructors.length > 0) {
             if (_recordable) {
@@ -93,11 +93,6 @@ public class ClassWrap {
             _recordable = false;
         }
     }
-
-    public TypeDecl typeDecl() {
-        return typeDecl;
-    }
-
 
     public Collection<FieldWrap> fieldAllWraps() {
         return _fieldAllWraps.values();
@@ -128,16 +123,16 @@ public class ClassWrap {
     /**
      * 扫描一个类的所有字段
      */
-    private void scanAllFields(TypeDecl typeDecl, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
-        if (typeDecl == null) {
+    private void scanAllFields(Unitype unitype, Predicate<String> checker, BiConsumer<String, FieldWrap> consumer) {
+        if (unitype == null) {
             return;
         }
 
-        if (typeDecl.getType().isInterface()) {
+        if (unitype.getType().isInterface()) {
             return;
         }
 
-        for (Field f : typeDecl.getType().getDeclaredFields()) {
+        for (Field f : unitype.getType().getDeclaredFields()) {
             int mod = f.getModifiers();
 
             if (!Modifier.isStatic(mod)
@@ -149,15 +144,15 @@ public class ClassWrap {
 
                 if (checker.test(f.getName()) == false) {
                     _recordable &= Modifier.isFinal(mod);
-                    consumer.accept(f.getName(), new FieldWrap(typeDecl, f, Modifier.isFinal(mod)));
+                    consumer.accept(f.getName(), new FieldWrap(unitype, f, Modifier.isFinal(mod)));
                 }
             }
         }
 
-        Class<?> sup = typeDecl.getType().getSuperclass();
+        Class<?> sup = unitype.getType().getSuperclass();
         if (sup != null && sup != Object.class) {
-            Type supInfo = GenericUtil.reviewType(typeDecl.getType().getGenericSuperclass(), typeDecl.getGenericType());
-            scanAllFields(new TypeDecl(sup, supInfo), checker, consumer);
+            Type supInfo = GenericUtil.reviewType(unitype.getType().getGenericSuperclass(), unitype.getGenericType());
+            scanAllFields(new Unitype(sup, supInfo), checker, consumer);
         }
     }
 }

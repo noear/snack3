@@ -16,7 +16,7 @@ import java.util.TimeZone;
  * */
 public class FieldWrap {
     //所有者类
-    private final TypeDecl owner;
+    private final Unitype owner;
     //字段
     private final Field field;
 
@@ -38,7 +38,7 @@ public class FieldWrap {
     //值获取器
     private Method _getter;
 
-    public FieldWrap(TypeDecl owner, Field f, boolean isFinal) {
+    public FieldWrap(Unitype owner, Field f, boolean isFinal) {
         this.owner = owner;
         this.field = f;
         this.readonly = isFinal;
@@ -91,7 +91,7 @@ public class FieldWrap {
      * 获取所有者类
      */
 
-    public TypeDecl getOwner() {
+    public Unitype getOwner() {
         return owner;
     }
 
