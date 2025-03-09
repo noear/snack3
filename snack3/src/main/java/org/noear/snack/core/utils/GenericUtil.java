@@ -244,15 +244,15 @@ public class GenericUtil {
             if(typeTmp == null){
                 return type;
             }else{
-                return reviewType(typeTmp, genericInfo);
+                return typeTmp;
+                //return reviewType(typeTmp, genericInfo);//存在死循环的可能
             }
         } else if(type instanceof GenericArrayType) {
-
             GenericArrayType typeTmp = (GenericArrayType) type;
 
             if(typeTmp.getGenericComponentType() instanceof Class == false) {
-              Type typCom =  reviewType(typeTmp.getGenericComponentType(), genericInfo);
-              return new GenericArrayTypeImpl(typCom);
+                Type typCom = reviewType(typeTmp.getGenericComponentType(), genericInfo);
+                return new GenericArrayTypeImpl(typCom);
             }
         }
 
