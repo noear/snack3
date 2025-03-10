@@ -1,3 +1,6 @@
+### 3.2.129
+* 优化 GenericUtil.reviewType 泛型深度兼容能力
+
 ### 3.2.128
 * 修复 GenericUtil.reviewType 可能会引起死循环的问题
 
