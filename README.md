@@ -21,6 +21,7 @@ ONode.loadBean(user).toBean(User.class);
 ONode.loadBean(user).toJson();
 
 ONode.loadJson("{}").toBean(User.class);
+ONode.loadJson("[]").toBean(new ArrayList<User>(){}.getClass()); //泛型
 ```
 
 支持 jsonpath 查询、构建、删除（支持多条件过滤、尾部函数）
