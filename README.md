@@ -1,4 +1,4 @@
-# snack v4.0 lab
+# Snack v4.0 lab
 
 ## 特性
 
