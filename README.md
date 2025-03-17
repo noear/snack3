@@ -6,14 +6,14 @@
 
 ```java
 ONode oNode = new ONode();
-oNode.set("id", 1);
+oNode.set("id", 1); //{id:1}
 oNode.getOrNew("layout").build(o -> {
     o.addNew().set("title", "开始").set("type", "start");
     o.addNew().set("title", "结束").set("type", "end");
-});
+}); //{id:1,layout:[{title:"开始",type:"start"},{title:"结束",type:"end"}]}
 
-oNode.get("id").getParent();
-oNode.get("id").getPaths();
+oNode.get("id").getParent(); // {}
+oNode.get("id").getPaths(); // ["$.id"]
 ```
 
 支持序列化、反序列化
