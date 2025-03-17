@@ -23,10 +23,10 @@ ONode.loadBean(user).toJson();
 ONode.loadJson("{}").toBean(User.class);
 ```
 
-支持 jsonpath 查询、构建、删除
+支持 jsonpath 查询、构建、删除（支持多条件过滤、尾部函数）
 
 ```java
-ONode.loadBean(store).select("$..book[?(@.tags contains 'war')]").toBean(Book.class);
+ONode.loadBean(store).select("$..book[?(@.tags contains 'war' && @.id > 100)]").toBean(Book.class);
 ONode.loadJson(store).select("$.store.book.count()");
 
 ONode.loadBean(store).create("$.store.book[0].category").toJson();
