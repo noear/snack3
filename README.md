@@ -29,6 +29,7 @@ ONode.loadJson("[]").toBean(new ArrayList<User>(){}.getClass()); //泛型
 ```java
 ONode.loadBean(store).select("$..book[?(@.tags contains 'war' && @.id > 100)]").toBean(Book.class);
 ONode.loadJson(store).select("$.store.book.count()");
+ONode.loadJson(store).select("$.store.book.count()").getPaths();
 
 ONode.loadBean(store).create("$.store.book[0].category").toJson();
 
