@@ -24,6 +24,9 @@ public class Functions {
         register("size", Functions::size);
         register("first", Functions::first);
         register("last", Functions::last);
+        register("keys", Functions::keys); //获取 object 的 keys
+        register("values", Functions::values); //获取 object 的 values, 或 array 的 items 或 value
+        register("paths", Functions::paths);//获取查询结果的每个节点的路径
 
         register("length", Functions::length);
         register("upper", Functions::upper);
@@ -127,6 +130,20 @@ public class Functions {
         } else {
             throw new PathResolutionException("keys() requires object");
         }
+    }
+
+    static ONode values(ONode node) {
+        if (node.isObject()) {
+            return ONode.loadBean(node.getObject().values());
+        } else if (node.isArray()) {
+            return ONode.loadBean(node.getArray());
+        } else {
+            return node;
+        }
+    }
+
+    static ONode paths(ONode node) {
+        return ONode.loadBean(node.getPaths());
     }
 
     static ONode size(ONode node) {

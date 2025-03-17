@@ -87,6 +87,14 @@ public final class ONode {
         return (Map<String, ONode>) value;
     }
 
+    public List<String> getPaths(){
+        return null;
+    }
+
+    public ONode getParent(){
+        return null;
+    }
+
     public ONode newObject() {
         if (value == null) {
             value = new LinkedHashMap<>();
