@@ -1,3 +1,6 @@
+### 3.2.130
+* 增强 DateUtil 能力，支持解析纯数字的时间cou
+
 ### 3.2.129
 * 优化 GenericUtil.reviewType 泛型深度兼容能力
 
