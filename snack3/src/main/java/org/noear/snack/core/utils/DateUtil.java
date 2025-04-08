@@ -15,7 +15,8 @@ import java.util.TimeZone;
  * @since 3.1
  */
 public class DateUtil {
-    public static final String FORMAT_29 = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    public static final String FORMAT_29 = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";//XXX: +08:00
+    public static final String FORMAT_27 = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX'Z'";
     public static final String FORMAT_25 = "yyyy-MM-dd'T'HH:mm:ss+HH:mm";
     public static final String FORMAT_24_ISO08601 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     public static final String FORMAT_23_a = "yyyy-MM-dd HH:mm:ss,SSS";
@@ -49,20 +50,26 @@ public class DateUtil {
         }
 
         final int len = val.length();
-        String ft = null;
 
+        if (len == 0) {
+            return null;
+        }
+
+        String ft = null;
 
         if (len == 29) {
             if (val.charAt(26) == ':' && val.charAt(28) == '0') {
                 ft = FORMAT_29;
             }
-        } else if (len == 25) {
+        } else if (len == 27 && val.charAt(4) == '-') {
+            ft = FORMAT_27;
+        } else if (len == 25 && val.charAt(4) == '-') {
             ft = FORMAT_25;
-        } else if (len == 24) {
+        } else if (len == 24 && val.charAt(4) == '-') {
             if (val.charAt(10) == 'T') {
                 ft = FORMAT_24_ISO08601;
             }
-        } else if (len == 23) {
+        } else if (len == 23 && val.charAt(4) == '-') {
             if (val.charAt(10) == 'T') {
                 ft = FORMAT_23_t;
             } else if (val.charAt(19) == ',') {
@@ -81,11 +88,11 @@ public class DateUtil {
                     ft = FORMAT_19_b;
                 } else if (c1 == '.') {
                     ft = FORMAT_19_c;
-                } else {
+                } else if (c1 == '-') {
                     ft = FORMAT_19_a;
                 }
             }
-        } else if (len == 18) {
+        } else if (len == 18 && val.charAt(2) == ':') {
             ft = FORMAT_18;
         } else if (len == 17) {
             ft = FORMAT_17;
@@ -95,12 +102,12 @@ public class DateUtil {
                 ft = FORMAT_16_b;
             } else if (c1 == '.') {
                 ft = FORMAT_16_c;
-            } else {
+            } else if (c1 == '-') {
                 ft = FORMAT_16_a;
             }
         } else if (len == 14) {
             ft = FORMAT_14;
-        } else if (len == 12) {
+        } else if (len == 12 && val.charAt(2) == ':') {
             ft = FORMAT_12;
         } else if (len == 10) {
             char c1 = val.charAt(4);
@@ -144,7 +151,13 @@ public class DateUtil {
             df.setTimeZone(DEFAULTS.DEF_TIME_ZONE);
             return df.parse(val);
         } else {
-            return null;
+            for (int i = 0; i < len; i++) {
+                if (Character.isDigit(val.charAt(i)) == false) {
+                    return null;
+                }
+            }
+
+            return new Date(Long.parseLong(val));
         }
     }
 

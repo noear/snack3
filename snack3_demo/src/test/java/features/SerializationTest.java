@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.solon.Utils;
+import org.noear.solon.core.util.ResourceUtil;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -254,7 +255,7 @@ public class SerializationTest {
 
     @Test
     public void test7() throws Exception {
-        String json = Utils.getResourceAsString("ResultTree.json");
+        String json = ResourceUtil.getResourceAsString("ResultTree.json");
         ResultTree rst = ONode.deserialize(json, ResultTree.class);
 
         System.out.println(rst);
