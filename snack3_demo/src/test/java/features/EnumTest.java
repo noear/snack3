@@ -21,7 +21,7 @@ public class EnumTest {
      * 反序列化测试
      */
     @Test
-    public void demo() {
+    public void case1() {
 
         String poc = "{\"name\":\"西游记\",\"dict\":" + BookType.CLASSICS.getCode() + ",}";
         ONode oNode = ONode.loadStr(poc);
@@ -36,7 +36,7 @@ public class EnumTest {
      * 序列化测试
      */
     @Test
-    public void demo1() {
+    public void case2() {
         Book book = new Book();
         book.setName("西游记");
         book.setDict(BookType.CLASSICS);
@@ -50,7 +50,7 @@ public class EnumTest {
      * 序列化测试2
      */
     @Test
-    public void demo2() {
+    public void case3() {
         String json = "{name:'demo',dict:'9'}";
 
         try {
@@ -59,5 +59,28 @@ public class EnumTest {
         } catch (SnackException e) {
             assert true;
         }
+    }
+
+    @Test
+    public void case4() {
+        String s1 = "'input'";
+        String s2 = "'number'";
+        String s3 = "'select'";
+        String s4 = "'switcher'";
+        ConfigControlType type1 = ONode.deserialize(s1, ConfigControlType.class);
+        ConfigControlType type2 = ONode.deserialize(s2, ConfigControlType.class);
+        ConfigControlType type3 = ONode.deserialize(s3, ConfigControlType.class);
+        ConfigControlType type4 = ONode.deserialize(s4, ConfigControlType.class);
+        System.out.println(type1);
+        System.out.println(type2);
+        System.out.println(type3);
+        System.out.println(type4);
+    }
+
+    public static enum ConfigControlType {
+        input,
+        number,
+        select,
+        switcher,
     }
 }
