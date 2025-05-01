@@ -305,19 +305,19 @@ public class JsonFromer implements Fromer {
             char c = sval.charAt(0);
             int len = sval.length();
 
-            if (c == 't' && len == 4) { //true
-                oval.setBool(true);
-            } else if (c == 'f' && len == 5) { //false
-                oval.setBool(false);
-            } else if (c == 'n' && len == 4) { // null or new (new not sup)
+            if (len == 3 && "NaN".equals(sval)) { // NaN
                 oval.setNull();
-            } else if (c == 'n' && sval.indexOf('D') == 4) { //new Date(xxx)
+            } else if (len == 4 && "true".equals(sval)) { //true
+                oval.setBool(true);
+            } else if (len == 4 && "null".equals(sval)) { // null
+                oval.setNull();
+            } else if (len == 5 && "false".equals(sval)) { //false
+                oval.setBool(false);
+            } else if (len == 9 && "undefined".equals(sval)) { // undefined
+                oval.setNull();
+            } else if (len > 9 && sval.startsWith("new Date(")) { //new Date(xxx)
                 long ticks = Long.parseLong(sval.substring(9, sval.length() - 1));
                 oval.setDate(new Date(ticks));
-            } else if (c == 'N' && len == 3) { // NaN
-                oval.setNull();
-            } else if (c == 'u' && len == 9) { // undefined
-                oval.setNull();
             } else if ((c >= '0' && c <= '9') || (c == '-')) { //number
                 if (sval.length() > 16) { //超过16位长度；采用大数字处理
                     if (sval.indexOf('.') > 0) {
