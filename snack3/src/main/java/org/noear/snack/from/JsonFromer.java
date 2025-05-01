@@ -2,6 +2,7 @@ package org.noear.snack.from;
 
 import org.noear.snack.ONode;
 import org.noear.snack.OValue;
+import org.noear.snack.core.utils.StringUtil;
 import org.noear.snack.exception.SnackException;
 import org.noear.snack.core.Context;
 import org.noear.snack.core.Feature;
@@ -302,7 +303,6 @@ public class JsonFromer implements Fromer {
             orst = new ONode(null, ctx.options);
             OValue oval = orst.val();
 
-            char c = sval.charAt(0);
             int len = sval.length();
 
             if (len == 3 && "NaN".equals(sval)) { // NaN
@@ -318,7 +318,7 @@ public class JsonFromer implements Fromer {
             } else if (len > 9 && sval.startsWith("new Date(")) { //new Date(xxx)
                 long ticks = Long.parseLong(sval.substring(9, sval.length() - 1));
                 oval.setDate(new Date(ticks));
-            } else if ((c >= '0' && c <= '9') || (c == '-')) { //number
+            } else if (StringUtil.isNumber(sval)) { //number
                 if (sval.length() > 16) { //超过16位长度；采用大数字处理
                     if (sval.indexOf('.') > 0) {
                         oval.setNumber(new BigDecimal(sval));
