@@ -5,6 +5,7 @@ import demo.enums.BookType;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
 import org.noear.snack.core.Context;
+import org.noear.snack.core.Feature;
 import org.noear.snack.core.Options;
 import org.noear.snack.exception.SnackException;
 import org.noear.snack.from.ObjectFromer;
@@ -101,6 +102,27 @@ public class EnumTest {
         assert type2 == ConfigControlType.number;
         assert type3 == ConfigControlType.select;
         assert type4 == ConfigControlType.switcher;
+    }
+
+    @Test
+    public void case6() {
+        String s1 = "\"input\"";
+        String s2 = "\"number\"";
+        String s3 = "\"select\"";
+        String s4 = "\"switcher\"";
+        String type1 = ONode.stringify(ConfigControlType.input, Feature.EnumUsingName);
+        String type2 = ONode.stringify(ConfigControlType.number, Feature.EnumUsingName);
+        String type3 = ONode.stringify(ConfigControlType.select, Feature.EnumUsingName);
+        String type4 = ONode.stringify(ConfigControlType.switcher, Feature.EnumUsingName);
+        System.out.println(type1);
+        System.out.println(type2);
+        System.out.println(type3);
+        System.out.println(type4);
+
+        assert type1.equals(s1);
+        assert type2.equals(s2);
+        assert type3.equals(s3);
+        assert type4.equals(s4);
     }
 
     public static enum ConfigControlType {
