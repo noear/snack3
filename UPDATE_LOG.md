@@ -1,3 +1,7 @@
+### 3.2.132
+* 优化 analyse_val 增加格式校验
+* 优化 analyse_val 处理，兼容 nummber 这种没有引号的字符串
+
 ### 3.2.130
 * 增强 DateUtil 能力，支持解析纯数字的时间cou
 
