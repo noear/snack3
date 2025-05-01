@@ -75,6 +75,32 @@ public class EnumTest {
         System.out.println(type2);
         System.out.println(type3);
         System.out.println(type4);
+
+        assert type1 == ConfigControlType.input;
+        assert type2 == ConfigControlType.number;
+        assert type3 == ConfigControlType.select;
+        assert type4 == ConfigControlType.switcher;
+    }
+
+    @Test
+    public void case5() {
+        String s1 = "input";
+        String s2 = "number";
+        String s3 = "select";
+        String s4 = "switcher";
+        ConfigControlType type1 = ONode.deserialize(s1, ConfigControlType.class);
+        ConfigControlType type2 = ONode.deserialize(s2, ConfigControlType.class);
+        ConfigControlType type3 = ONode.deserialize(s3, ConfigControlType.class);
+        ConfigControlType type4 = ONode.deserialize(s4, ConfigControlType.class);
+        System.out.println(type1);
+        System.out.println(type2);
+        System.out.println(type3);
+        System.out.println(type4);
+
+        assert type1 == ConfigControlType.input;
+        assert type2 == ConfigControlType.number;
+        assert type3 == ConfigControlType.select;
+        assert type4 == ConfigControlType.switcher;
     }
 
     public static enum ConfigControlType {

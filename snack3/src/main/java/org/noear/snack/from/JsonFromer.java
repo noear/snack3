@@ -309,13 +309,11 @@ public class JsonFromer implements Fromer {
                 oval.setBool(true);
             } else if (c == 'f' && len == 5) { //false
                 oval.setBool(false);
-            } else if (c == 'n') { // null or new (new not sup)
-                if (len == 4) {
-                    oval.setNull();
-                } else if (sval.indexOf('D') == 4) { //new Date(xxx)
-                    long ticks = Long.parseLong(sval.substring(9, sval.length() - 1));
-                    oval.setDate(new Date(ticks));
-                }
+            } else if (c == 'n' && len == 4) { // null or new (new not sup)
+                oval.setNull();
+            } else if (c == 'n' && sval.indexOf('D') == 4) { //new Date(xxx)
+                long ticks = Long.parseLong(sval.substring(9, sval.length() - 1));
+                oval.setDate(new Date(ticks));
             } else if (c == 'N' && len == 3) { // NaN
                 oval.setNull();
             } else if (c == 'u' && len == 9) { // undefined
