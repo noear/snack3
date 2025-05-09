@@ -52,7 +52,7 @@
 <dependency>
   <groupId>org.noear</groupId>
   <artifactId>snack3</artifactId>
-  <version>3.2.132</version>
+  <version>3.2.133</version>
 </dependency>
 ```
 
