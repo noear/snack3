@@ -1,7 +1,6 @@
 package org.noear.snack.from;
 
 import org.noear.snack.ONode;
-import org.noear.snack.core.Options;
 import org.noear.snack.core.*;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
@@ -29,12 +28,12 @@ import java.util.*;
 public class ObjectFromer implements Fromer {
     @Override
     public void handle(Context ctx) {
-        ctx.target = analyse(ctx.options, ctx.source); //如果是null,会返回 ONode.Null
+        ctx.target = analyse(ctx, ctx.source); //如果是null,会返回 ONode.Null
     }
 
-    private ONode analyse(Options opt, Object source) {
+    private ONode analyse(Context ctx, Object source) {
 
-        ONode rst = new ONode(null, opt);
+        ONode rst = new ONode(null, ctx.options);
 
         if (source == null) {
             return rst;
@@ -47,7 +46,7 @@ public class ObjectFromer implements Fromer {
             ((NodeEncoder) source).encode(source, rst);
             return rst;
         } else {
-            for (NodeEncoderEntity encoder : opt.encoders()) {
+            for (NodeEncoderEntity encoder : ctx.options.encoders()) {
                 if (encoder.isEncodable(clz)) {
                     encoder.encode(source, rst);
                     return rst;
@@ -58,14 +57,14 @@ public class ObjectFromer implements Fromer {
         if (source instanceof ONode) {
             rst.val(source);
         } else if (source instanceof String) {
-            if (opt.hasFeature(Feature.StringJsonToNode)) {
+            if (ctx.options.hasFeature(Feature.StringJsonToNode)) {
                 //尝试自动加载 json
                 String sval = (String) source;
                 ONode otmp = null;
 
                 if ((sval.startsWith("{") && sval.endsWith("}")) ||
                         (sval.startsWith("[") && sval.endsWith("]"))) {
-                    otmp = ONode.loadStr(sval, opt);
+                    otmp = ONode.loadStr(sval, ctx.options);
                 }
 
                 if (otmp == null) {
@@ -103,12 +102,12 @@ public class ObjectFromer implements Fromer {
         } else if (source instanceof Number) {
             rst.val().setNumber((Number) source);
         } else if (source instanceof Throwable) { //新补充的类型
-            analyseBean(opt, rst, clz, source);
+            analyseBean(ctx, rst, clz, source);
         } else if (source instanceof Properties) {
-            analyseProps(opt, rst, clz, source);
+            analyseProps(ctx, rst, clz, source);
         } else if (source instanceof NameValues) {
-            analyseNameValues(opt, rst, clz, source);
-        } else if (analyseArray(opt, rst, clz, source)) { //新补充的类型::可适用任何数组
+            analyseNameValues(ctx, rst, clz, source);
+        } else if (analyseArray(ctx, rst, clz, source)) { //新补充的类型::可适用任何数组
 
         } else if (clz.isEnum() || Enum.class.isAssignableFrom(clz)) { //新补充的类型 //clz.isEnum() 继随接口后，没法实别了
             Enum em = (Enum) source;
@@ -118,7 +117,7 @@ public class ObjectFromer implements Fromer {
             if (o != null) {
                 rst.val().set(o);
             } else {
-                if (opt.hasFeature(Feature.EnumUsingName)) {
+                if (ctx.options.hasFeature(Feature.EnumUsingName)) {
                     rst.val().setString(em.name());
                 } else {
                     rst.val().setNumber(em.ordinal());
@@ -127,8 +126,10 @@ public class ObjectFromer implements Fromer {
 
         } else if (source instanceof Map) {
             //为序列化添加特性支持 //todo: 改用新的特性 WriteMapClassName,by 202301
-            if (opt.hasFeature(Feature.WriteClassName)) {
-                typeSet(opt, rst, clz);
+            if (ctx.options.hasFeature(Feature.WriteClassName)) {
+                if ((ctx.options.hasFeature(Feature.NotWriteRootClassName) && ctx.source == source) == false) {
+                    typeSet(ctx, rst, clz);
+                }
             }
 
             rst.asObject();
@@ -137,32 +138,32 @@ public class ObjectFromer implements Fromer {
                 if (k != null) {
                     Object v = map.get(k);
                     if (v == null) {
-                        if (opt.hasFeature(Feature.SerializeNulls) == false
-                                && opt.hasFeature(Feature.SerializeMapNullValues) == false) {
+                        if (ctx.options.hasFeature(Feature.SerializeNulls) == false
+                                && ctx.options.hasFeature(Feature.SerializeMapNullValues) == false) {
                             continue;
                         }
                     }
 
-                    rst.setNode(k.toString(), analyse(opt, v));
+                    rst.setNode(k.toString(), analyse(ctx, v));
                 }
             }
         } else if (source instanceof Iterable) {
             rst.asArray();
             ONode ary = rst;
             //为序列化添加特性支持
-            if (opt.hasFeature(Feature.WriteArrayClassName)) {
-                rst.add(typeSet(opt, new ONode(null, opt), clz));
+            if (ctx.options.hasFeature(Feature.WriteArrayClassName)) {
+                rst.add(typeSet(ctx, new ONode(null, ctx.options), clz));
                 ary = rst.addNew().asArray();
             }
 
             for (Object o : ((Iterable) source)) {
-                ary.addNode(analyse(opt, o));
+                ary.addNode(analyse(ctx, o));
             }
         } else if (source instanceof Enumeration) { //新补充的类型
             rst.asArray();
             Enumeration o = (Enumeration) source;
             while (o.hasMoreElements()) {
-                rst.addNode(analyse(opt, o.nextElement()));
+                rst.addNode(analyse(ctx, o.nextElement()));
             }
         } else {
             String clzName = clz.getName();
@@ -170,9 +171,9 @@ public class ObjectFromer implements Fromer {
             if (clzName.endsWith(".Undefined")) {
                 rst.val().setNull();
             } else {
-                if (analyseOther(opt, rst, clz, source) == false) {
+                if (analyseOther(ctx, rst, clz, source) == false) {
                     if (clzName.startsWith("jdk.") == false) {
-                        analyseBean(opt, rst, clz, source);
+                        analyseBean(ctx, rst, clz, source);
                     }
                 }
             }
@@ -181,56 +182,56 @@ public class ObjectFromer implements Fromer {
         return rst;
     }
 
-    private ONode typeSet(Options cfg, ONode o, Class<?> clz) {
-        return o.set(cfg.getTypePropertyName(), clz.getName());
+    private ONode typeSet(Context ctx, ONode o, Class<?> clz) {
+        return o.set(ctx.options.getTypePropertyName(), clz.getName());
     }
 
 
-    private boolean analyseArray(Options cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseArray(Context ctx, ONode rst, Class<?> clz, Object obj) {
         if (obj instanceof Object[]) {
             rst.asArray();
             for (Object o : ((Object[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof byte[]) {
             rst.asArray();
             for (byte o : ((byte[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof short[]) {
             rst.asArray();
             for (short o : ((short[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof int[]) {
             rst.asArray();
             for (int o : ((int[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof long[]) {
             rst.asArray();
             for (long o : ((long[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof float[]) {
             rst.asArray();
             for (float o : ((float[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof double[]) {
             rst.asArray();
             for (double o : ((double[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof boolean[]) {
             rst.asArray();
             for (boolean o : ((boolean[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else if (obj instanceof char[]) {
             rst.asArray();
             for (char o : ((char[]) obj)) {
-                rst.addNode(analyse(cfg, o));
+                rst.addNode(analyse(ctx, o));
             }
         } else {
             return false;
@@ -239,7 +240,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseProps(Options cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseProps(Context ctx, ONode rst, Class<?> clz, Object obj) {
         Properties props = (Properties) obj;
 
         if (props.size() == 0) {
@@ -273,7 +274,7 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseNameValues(Options cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseNameValues(Context ctx, ONode rst, Class<?> clz, Object obj) {
         NameValues props = (NameValues) obj;
 
         if (props.size() == 0) {
@@ -363,18 +364,21 @@ public class ObjectFromer implements Fromer {
         n1.val(val);
     }
 
-    private boolean analyseBean(Options cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseBean(Context ctx, ONode rst, Class<?> clz, Object obj) {
         rst.asObject();
 
         //为序列化添加特性支持
-        if (cfg.hasFeature(Feature.WriteClassName)) {
-            rst.set(cfg.getTypePropertyName(), clz.getName());
+        if (ctx.options.hasFeature(Feature.WriteClassName)) {
+            if ((ctx.options.hasFeature(Feature.NotWriteRootClassName) && ctx.source == obj) == false) {
+                //rst.set(ctx.options.getTypePropertyName(), clz.getName());
+                typeSet(ctx, rst, clz);
+            }
         }
 
         // 遍历每个字段
         Collection<FieldWrap> list = ClassWrap.get(new Unitype(clz,clz)).fieldAllWraps();
-        boolean useGetter = cfg.hasFeature(Feature.UseGetter);
-        boolean useOnlyGetter = cfg.hasFeature(Feature.UseOnlyGetter);
+        boolean useGetter = ctx.options.hasFeature(Feature.UseGetter);
+        boolean useOnlyGetter = ctx.options.hasFeature(Feature.UseOnlyGetter);
         if (useOnlyGetter) {
             useGetter = true;
         }
@@ -395,39 +399,39 @@ public class ObjectFromer implements Fromer {
             //如果是null
             if (val == null) {
                 if (f.isIncNull()) {
-                    if (cfg.hasFeature(Feature.StringNullAsEmpty) && f.getType() == String.class) {
-                        rst.setNode(f.getName(), analyse(cfg, ""));
+                    if (ctx.options.hasFeature(Feature.StringNullAsEmpty) && f.getType() == String.class) {
+                        rst.setNode(f.getName(), analyse(ctx, ""));
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.BooleanNullAsFalse) && f.getType() == Boolean.class) {
-                        rst.setNode(f.getName(), analyse(cfg, false));
+                    if (ctx.options.hasFeature(Feature.BooleanNullAsFalse) && f.getType() == Boolean.class) {
+                        rst.setNode(f.getName(), analyse(ctx, false));
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.NumberNullAsZero) && Number.class.isAssignableFrom(f.getType())) {
+                    if (ctx.options.hasFeature(Feature.NumberNullAsZero) && Number.class.isAssignableFrom(f.getType())) {
                         if (f.getType() == Long.class) {
-                            rst.setNode(f.getName(), analyse(cfg, 0L));
+                            rst.setNode(f.getName(), analyse(ctx, 0L));
                         } else if (f.getType() == Double.class) {
-                            rst.setNode(f.getName(), analyse(cfg, 0.0D));
+                            rst.setNode(f.getName(), analyse(ctx, 0.0D));
                         } else if (f.getType() == Float.class) {
-                            rst.setNode(f.getName(), analyse(cfg, 0.0F));
+                            rst.setNode(f.getName(), analyse(ctx, 0.0F));
                         } else {
-                            rst.setNode(f.getName(), analyse(cfg, 0));
+                            rst.setNode(f.getName(), analyse(ctx, 0));
                         }
                         continue;
                     }
 
-                    if (cfg.hasFeature(Feature.ArrayNullAsEmpty)) {
+                    if (ctx.options.hasFeature(Feature.ArrayNullAsEmpty)) {
                         if (Collection.class.isAssignableFrom(f.getType()) || f.getType().isArray()) {
-                            rst.setNode(f.getName(), new ONode(null, cfg).asArray());
+                            rst.setNode(f.getName(), new ONode(null, ctx.options).asArray());
                             continue;
                         }
                     }
 
                     //null是否输出
-                    if (cfg.hasFeature(Feature.SerializeNulls)) {
-                        rst.setNode(f.getName(), new ONode(null, cfg).asValue());//不能用未初始化的类型填充
+                    if (ctx.options.hasFeature(Feature.SerializeNulls)) {
+                        rst.setNode(f.getName(), new ONode(null, ctx.options).asValue());//不能用未初始化的类型填充
                         continue;
                     }
                 }
@@ -493,7 +497,7 @@ public class ObjectFromer implements Fromer {
                 continue;
             }
 
-            ONode analysed = analyse(cfg, val);
+            ONode analysed = analyse(ctx, val);
 
             // 扁平化处理
             if (f.isFlat() && analysed.isObject()) {
@@ -509,9 +513,9 @@ public class ObjectFromer implements Fromer {
         return true;
     }
 
-    private boolean analyseOther(Options cfg, ONode rst, Class<?> clz, Object obj) {
+    private boolean analyseOther(Context ctx, ONode rst, Class<?> clz, Object obj) {
         if (obj instanceof SimpleDateFormat) {
-            rst.set(cfg.getTypePropertyName(), clz.getName());
+            rst.set(ctx.options.getTypePropertyName(), clz.getName());
             rst.set("val", ((SimpleDateFormat) obj).toPattern());
         } else if (clz == Class.class) {
             rst.val().setString(clz.getName());
@@ -531,7 +535,7 @@ public class ObjectFromer implements Fromer {
         } else if (obj instanceof Iterator) {
             rst.asArray();
             ((Iterator) obj).forEachRemaining(v -> {
-                rst.add(analyse(cfg, v));
+                rst.add(analyse(ctx, v));
             });
         } else if (obj instanceof Map.Entry) {
             Map.Entry kv = (Map.Entry) obj;
@@ -539,7 +543,7 @@ public class ObjectFromer implements Fromer {
             Object v = kv.getValue();
             rst.asObject();
             if (k != null) {
-                rst.set(k.toString(), analyse(cfg, v));
+                rst.set(k.toString(), analyse(ctx, v));
             }
         } else if (obj instanceof Calendar) {
             rst.val().setDate(((Calendar) obj).getTime());

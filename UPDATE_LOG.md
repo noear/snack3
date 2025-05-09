@@ -1,3 +1,7 @@
+### 3.2.133
+
+* 添加 NotWriteRootClassName 特性
+
 ### 3.2.132
 * 优化 analyse_val 增加格式校验
 * 优化 analyse_val 处理，兼容 nummber 这种没有引号的字符串

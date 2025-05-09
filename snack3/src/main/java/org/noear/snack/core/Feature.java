@@ -13,6 +13,9 @@ public enum  Feature {
     /** 输出:写入类名。反序列化是需用到 */
     WriteClassName,
 
+    /** 输出:不写入根类名 */
+    NotWriteRootClassName,
+
     /** 输出:写入数组类名。反序列化是需用到 */
     WriteArrayClassName,
 
