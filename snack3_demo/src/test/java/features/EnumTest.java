@@ -10,6 +10,12 @@ import org.noear.snack.core.Options;
 import org.noear.snack.exception.SnackException;
 import org.noear.snack.from.ObjectFromer;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * 枚举注解单元测试
@@ -125,10 +131,51 @@ public class EnumTest {
         assert type4.equals(s4);
     }
 
+    @Test
+    public void case7() {
+        Map<A, Integer> map = new LinkedHashMap<>();
+        map.put(A.A,1);
+        map.put(A.B,2);
+        Rec rec = new Rec();
+        rec.i = 1;
+        rec.map = map;
+        rec.set = Collections.singleton(3);
+
+        String json = ONode.load(rec, Feature.PrettyFormat).toJson();
+
+        System.out.println(json);
+        Rec rec2 = ONode.deserialize(json, Rec.class);
+
+        System.out.println(rec2.toString());
+
+        assert "Rec{i=1, map={B=2, A=1}, set=[3]}".equals(rec2.toString()) ||
+                "Rec{i=1, map={A=1, B=2}, set=[3]}".equals(rec2.toString());
+    }
+
     public static enum ConfigControlType {
         input,
         number,
         select,
         switcher,
+    }
+
+    public static enum A {
+        A,
+        B;
+    }
+
+    public static class Rec {
+        int i;
+        Map<A, Integer> map;
+        Set<Integer> set;
+
+        @Override
+        public String toString() {
+            return "Rec{" +
+                    "i=" + i +
+                    ", map=" + map +
+                    ", set=" + set +
+                    '}';
+        }
     }
 }

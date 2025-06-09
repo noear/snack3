@@ -1,3 +1,7 @@
+### 3.2.134
+
+* 优化 string 转 Enum 支持（支持更大泛围）
+
 ### 3.2.133
 
 * 添加 NotWriteRootClassName 特性

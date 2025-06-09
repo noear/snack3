@@ -30,6 +30,8 @@ public class TypeUtil {
             return Integer.parseInt(str);
         } else if (Long.class.isAssignableFrom(clz) || Long.TYPE == clz) {
             return Long.parseLong(str);
+        } else if (Enum.class.isAssignableFrom(clz)) {
+            return Enum.valueOf((Class<? extends Enum>) clz, str);
         } else {
             throw new SnackException("Unsupport type '" + str + "', to: " + clz.getName());
         }
