@@ -49,14 +49,17 @@ public class ONode {
         }
     }
 
+    @Deprecated
     public static ONode newValue() {
         return new ONode().asValue();
     }
 
+    @Deprecated
     public static ONode newObject() {
         return new ONode().asObject();
     }
 
+    @Deprecated
     public static ONode newArray() {
         return new ONode().asArray();
     }

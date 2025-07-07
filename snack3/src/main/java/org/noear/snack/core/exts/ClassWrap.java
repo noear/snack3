@@ -19,6 +19,13 @@ public class ClassWrap {
     /**
      * 根据clz获取一个ClassWrap
      */
+    public static ClassWrap get(Class<?> type) {
+        return get(new Unitype(type, null));
+    }
+
+    /**
+     * 根据clz获取一个ClassWrap
+     */
     public static ClassWrap get(Unitype typeDecl) {
         ClassWrap cw = cached.get(typeDecl);
         if (cw == null) {
