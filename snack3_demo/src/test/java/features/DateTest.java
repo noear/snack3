@@ -3,11 +3,15 @@ package features;
 import _models.DateModel;
 import _models.DateModel2;
 import _models.DateModel3;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.noear.snack.ONode;
+import org.noear.snack.core.Options;
 import org.noear.snack.core.utils.DateUtil;
 
+import java.io.Serializable;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -117,7 +121,34 @@ public class DateTest {
         assert date.toString().equals(model.date.toString());
     }
 
+    @Test
+    public void test8() {
+        String json = "{\n" + "\"patientName\":\"乔宪同\",\n" +
+                "\"studyDatetime\":\"2025-07-23 08:12:33.0\",\n" +
+                "\"sqDatetime\":\"2025-07-23 08:10:54.093\",\n" +
+                "\"reportDatetime\":\"2025-07-23 08:15:31.0\",\n" +
+                "\"shDatetime\":\"2025-07-23 08:15:40\"\n" + "}";
+        Options options = Options.def();
+        //添加编码器
+        options.addEncoder(Date.class, (data, node) -> node.val().setString(DateUtil.format(data, "yyyy-MM-dd HH:mm:ss")));
+        options.addEncoder(LocalDateTime.class, (data, node) -> node.val().setString(data.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+        DemoEntity rxPacsOrder = ONode.load(json, options).toObject(DemoEntity.class);
+        String jsonText = ONode.stringify(rxPacsOrder);
+        System.out.println("1 snack添加编码器" + jsonText);
+
+        assert "{\"patientName\":\"乔宪同\",\"studyDatetime\":1753229553000,\"sqDatetime\":1753229454093,\"reportDatetime\":1753229731000,\"shDatetime\":1753229740000}".equals(jsonText);
+    }
+
     public static class DateMapModel {
         public LocalDate date;
+    }
+
+    @Data
+    public class DemoEntity implements Serializable {
+        private String patientName;
+        private Date studyDatetime;
+        private Date sqDatetime;
+        private LocalDateTime reportDatetime;
+        private LocalDateTime shDatetime;
     }
 }

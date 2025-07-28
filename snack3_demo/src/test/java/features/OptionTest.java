@@ -6,6 +6,7 @@ import org.noear.snack.core.Feature;
 import org.noear.snack.core.NodeDecoder;
 import org.noear.snack.core.NodeEncoder;
 import org.noear.snack.core.Options;
+import org.noear.snack.core.utils.DateUtil;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.TimeZone;
  */
 public class OptionTest {
     @Test
-    public void case1() {
+    public void case1() throws Exception {
         Options options = Options.def();
         options.remove(Feature.WriteDateUseTicks);
         options.add(Feature.WriteNumberUseString);
@@ -42,7 +43,7 @@ public class OptionTest {
         ONode oNode = ONode.load("{}", options);
 
         oNode.selectOrNew("$.num").val(10000L);
-        oNode.selectOrNew("$.date").val(new Date());
+        oNode.selectOrNew("$.date").val(DateUtil.parse("2025-06-25"));
 
         String json = oNode.toJson();
         System.out.println(json);
