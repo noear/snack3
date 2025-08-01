@@ -1,24 +1,55 @@
 package org.noear.snack.to;
 
-import org.noear.snack.*;
-import org.noear.snack.core.*;
+import org.noear.snack.ONode;
+import org.noear.snack.ONodeData;
+import org.noear.snack.OValue;
+import org.noear.snack.OValueType;
+import org.noear.snack.core.Context;
+import org.noear.snack.core.DEFAULTS;
+import org.noear.snack.core.Feature;
+import org.noear.snack.core.NodeDecoder;
+import org.noear.snack.core.NodeDecoderEntity;
 import org.noear.snack.core.exts.ClassWrap;
 import org.noear.snack.core.exts.EnumWrap;
 import org.noear.snack.core.exts.FieldWrap;
 import org.noear.snack.core.exts.Unitype;
-import org.noear.snack.core.utils.*;
+import org.noear.snack.core.utils.BeanUtil;
+import org.noear.snack.core.utils.GenericUtil;
+import org.noear.snack.core.utils.ParameterizedTypeImpl;
+import org.noear.snack.core.utils.StringUtil;
+import org.noear.snack.core.utils.TypeUtil;
 import org.noear.snack.exception.SnackException;
 
-import java.io.File;
-import java.lang.reflect.*;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.InetSocketAddress;
-import java.net.URI;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.time.*;
-import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
@@ -38,7 +69,8 @@ public class ObjectToer implements Toer {
         }
     }
 
-    private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+    private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo)
+        throws Exception {
         if (o == null) {
             return rst;
         }
@@ -87,7 +119,8 @@ public class ObjectToer implements Toer {
                 if (clz != null) {
                     if (Collection.class.isAssignableFrom(clz)) {
                         //如果接收对象为集合???尝试做为item
-                        if (TypeUtil.isEmptyCollection(rst) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
+                        if (TypeUtil.isEmptyCollection(rst) ||
+                            ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
                             rst = TypeUtil.createCollection(clz, false);
                         }
 
@@ -127,10 +160,10 @@ public class ObjectToer implements Toer {
                     }
 
                     return new StackTraceElement(
-                            declaringClass,
-                            o.get("methodName").getString(),
-                            o.get("fileName").getString(),
-                            o.get("lineNumber").getInt());
+                        declaringClass,
+                        o.get("methodName").getString(),
+                        o.get("fileName").getString(),
+                        o.get("lineNumber").getInt());
                 } else {
                     if (type instanceof ParameterizedType) {
                         genericInfo = GenericUtil.getGenericInfo(type);
@@ -278,7 +311,8 @@ public class ObjectToer implements Toer {
             if (null == date) {
                 return null;
             } else {
-                return OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), DEFAULTS.DEF_TIME_ZONE.toZoneId());
+                return OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()),
+                    DEFAULTS.DEF_TIME_ZONE.toZoneId());
             }
         } else if (is(ZonedDateTime.class, clz)) {
             Date date = v.getDate();
@@ -383,6 +417,10 @@ public class ObjectToer implements Toer {
         if (ew.hasCustom()) {
             //按自定义获取
             eItem = ew.getCustom(valString);
+            // 获取不到则按名字获取
+            if (eItem == null) {
+                eItem = ew.get(valString);
+            }
         } else {
             if (d.value.type() == OValueType.String) {
                 //按名字获取
@@ -394,7 +432,8 @@ public class ObjectToer implements Toer {
         }
 
         if (eItem == null) {
-            throw new SnackException("Deserialize failure for '" + ew.enumClass().getName() + "' from value: " + valString);
+            throw new SnackException(
+                "Deserialize failure for '" + ew.enumClass().getName() + "' from value: " + valString);
         }
 
         return eItem;
@@ -470,7 +509,8 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseCollection(Context ctx, ONode o, Collection coll, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+    public Object analyseCollection(Context ctx, ONode o, Collection coll, Class<?> clz, Type type,
+                                    Map<String, Type> genericInfo) throws Exception {
         if (TypeUtil.isEmptyCollection(coll) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
             coll = TypeUtil.createCollection(clz, false);
         }
@@ -503,7 +543,8 @@ public class ObjectToer implements Toer {
         return coll;
     }
 
-    public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+    public Object analyseProps(Context ctx, ONode o, Properties rst, Class<?> clz, Type type,
+                               Map<String, Type> genericInfo) throws Exception {
         if (rst == null) {
             rst = new Properties();
         }
@@ -549,7 +590,8 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+    public Object analyseMap(Context ctx, ONode o, Map<Object, Object> map, Class<?> clz, Type type,
+                             Map<String, Type> genericInfo) throws Exception {
         if (TypeUtil.isEmptyCollection(map) || ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
             map = TypeUtil.createMap(clz);
         }
@@ -580,7 +622,8 @@ public class ObjectToer implements Toer {
                 }
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
-                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType), analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
+                    map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType),
+                        analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
                 }
             }
         } else {
@@ -593,7 +636,8 @@ public class ObjectToer implements Toer {
     }
 
 
-    public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo) throws Exception {
+    public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo)
+        throws Exception {
         if (is(SimpleDateFormat.class, clz)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
@@ -716,7 +760,8 @@ public class ObjectToer implements Toer {
         return rst;
     }
 
-    private void setValueForMethod(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, String name, Method method) throws Exception {
+    private void setValueForMethod(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, String name,
+                                   Method method) throws Exception {
         Class<?> fieldT = method.getParameterTypes()[0];
 
         Object val = analyseBeanOfValue(name, fieldT, null, ctx, o, null, genericInfo);
@@ -731,7 +776,8 @@ public class ObjectToer implements Toer {
         method.invoke(rst, val);
     }
 
-    private void setValueForField(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, FieldWrap f, boolean useSetter, boolean useGetter, Set<String> excNames) throws Exception {
+    private void setValueForField(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, FieldWrap f,
+                                  boolean useSetter, boolean useGetter, Set<String> excNames) throws Exception {
         if (f.isDeserialize() == false) {
             //不做序列化
             return;
@@ -754,7 +800,8 @@ public class ObjectToer implements Toer {
             if (f.readonly) {
                 analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
             } else {
-                Object val = analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                Object val =
+                    analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
 
                 if (val == null) {
                     //null string 是否以 空字符处理
@@ -769,7 +816,8 @@ public class ObjectToer implements Toer {
     }
 
 
-    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst, Map<String, Type> genericInfo) throws Exception {
+    private Object analyseBeanOfValue(String fieldK, Class fieldT, Type fieldGt, Context ctx, ONode o, Object rst,
+                                      Map<String, Type> genericInfo) throws Exception {
         if (genericInfo != null) {
             if (fieldGt instanceof TypeVariable) {
                 Type tmp = genericInfo.get(fieldGt.getTypeName());
@@ -803,7 +851,8 @@ public class ObjectToer implements Toer {
                 }
 
                 if (actualTypesChanged) {
-                    fieldGt = new ParameterizedTypeImpl((Class<?>) fieldGt2.getRawType(), actualTypes, fieldGt2.getOwnerType());
+                    fieldGt = new ParameterizedTypeImpl((Class<?>) fieldGt2.getRawType(), actualTypes,
+                        fieldGt2.getOwnerType());
                 }
             }
         }
@@ -826,8 +875,8 @@ public class ObjectToer implements Toer {
         // 如果自定义了类型，则自定义的类型优先
         if (def != null) {
             if (def != Object.class
-                    && def.isInterface() == false
-                    && Modifier.isAbstract(def.getModifiers()) == false) {
+                && def.isInterface() == false
+                && Modifier.isAbstract(def.getModifiers()) == false) {
                 return def;
             }
         }
@@ -877,9 +926,9 @@ public class ObjectToer implements Toer {
 
         if (StringUtil.isEmpty(typeStr) == false) {
             if (typeStr.startsWith("sun.") ||
-                    typeStr.startsWith("com.sun.") ||
-                    typeStr.startsWith("javax.") ||
-                    typeStr.startsWith("jdk.")) {
+                typeStr.startsWith("com.sun.") ||
+                typeStr.startsWith("javax.") ||
+                typeStr.startsWith("jdk.")) {
                 throw new SnackException("Unsupported type, class: " + typeStr);
             }
 
