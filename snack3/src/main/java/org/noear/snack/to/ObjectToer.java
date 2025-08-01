@@ -70,7 +70,7 @@ public class ObjectToer implements Toer {
     }
 
     private Object analyse(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo)
-        throws Exception {
+            throws Exception {
         if (o == null) {
             return rst;
         }
@@ -120,7 +120,7 @@ public class ObjectToer implements Toer {
                     if (Collection.class.isAssignableFrom(clz)) {
                         //如果接收对象为集合???尝试做为item
                         if (TypeUtil.isEmptyCollection(rst) ||
-                            ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
+                                ctx.options.hasFeature(Feature.DisableCollectionDefaults)) {
                             rst = TypeUtil.createCollection(clz, false);
                         }
 
@@ -160,10 +160,10 @@ public class ObjectToer implements Toer {
                     }
 
                     return new StackTraceElement(
-                        declaringClass,
-                        o.get("methodName").getString(),
-                        o.get("fileName").getString(),
-                        o.get("lineNumber").getInt());
+                            declaringClass,
+                            o.get("methodName").getString(),
+                            o.get("fileName").getString(),
+                            o.get("lineNumber").getInt());
                 } else {
                     if (type instanceof ParameterizedType) {
                         genericInfo = GenericUtil.getGenericInfo(type);
@@ -312,7 +312,7 @@ public class ObjectToer implements Toer {
                 return null;
             } else {
                 return OffsetDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()),
-                    DEFAULTS.DEF_TIME_ZONE.toZoneId());
+                        DEFAULTS.DEF_TIME_ZONE.toZoneId());
             }
         } else if (is(ZonedDateTime.class, clz)) {
             Date date = v.getDate();
@@ -433,7 +433,7 @@ public class ObjectToer implements Toer {
 
         if (eItem == null) {
             throw new SnackException(
-                "Deserialize failure for '" + ew.enumClass().getName() + "' from value: " + valString);
+                    "Deserialize failure for '" + ew.enumClass().getName() + "' from value: " + valString);
         }
 
         return eItem;
@@ -623,7 +623,7 @@ public class ObjectToer implements Toer {
             } else {
                 for (Map.Entry<String, ONode> kv : o.nodeData().object.entrySet()) {
                     map.put(TypeUtil.strTo(kv.getKey(), (Class<?>) kType),
-                        analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
+                            analyse(ctx, kv.getValue(), null, vClass, vType, genericInfo));
                 }
             }
         } else {
@@ -637,7 +637,7 @@ public class ObjectToer implements Toer {
 
 
     public Object analyseBean(Context ctx, ONode o, Object rst, Class<?> clz, Type type, Map<String, Type> genericInfo)
-        throws Exception {
+            throws Exception {
         if (is(SimpleDateFormat.class, clz)) {
             return new SimpleDateFormat(o.get("val").getString());
         }
@@ -801,7 +801,7 @@ public class ObjectToer implements Toer {
                 analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
             } else {
                 Object val =
-                    analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
 
                 if (val == null) {
                     //null string 是否以 空字符处理
@@ -852,7 +852,7 @@ public class ObjectToer implements Toer {
 
                 if (actualTypesChanged) {
                     fieldGt = new ParameterizedTypeImpl((Class<?>) fieldGt2.getRawType(), actualTypes,
-                        fieldGt2.getOwnerType());
+                            fieldGt2.getOwnerType());
                 }
             }
         }
@@ -875,8 +875,8 @@ public class ObjectToer implements Toer {
         // 如果自定义了类型，则自定义的类型优先
         if (def != null) {
             if (def != Object.class
-                && def.isInterface() == false
-                && Modifier.isAbstract(def.getModifiers()) == false) {
+                    && def.isInterface() == false
+                    && Modifier.isAbstract(def.getModifiers()) == false) {
                 return def;
             }
         }
@@ -926,9 +926,9 @@ public class ObjectToer implements Toer {
 
         if (StringUtil.isEmpty(typeStr) == false) {
             if (typeStr.startsWith("sun.") ||
-                typeStr.startsWith("com.sun.") ||
-                typeStr.startsWith("javax.") ||
-                typeStr.startsWith("jdk.")) {
+                    typeStr.startsWith("com.sun.") ||
+                    typeStr.startsWith("javax.") ||
+                    typeStr.startsWith("jdk.")) {
                 throw new SnackException("Unsupported type, class: " + typeStr);
             }
 
