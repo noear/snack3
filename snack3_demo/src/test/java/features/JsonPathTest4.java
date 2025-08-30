@@ -261,4 +261,30 @@ public class JsonPathTest4 {
         System.out.println(ONode.load(json).usePaths().select("$.result[*].amount.max()").pathList());
         assert ONode.load(json).usePaths().select("$.result[*].amount.max()").pathList().size() == 0;
     }
+
+    @Test
+    public void test11() {
+        //示例代码：
+        ONode oNode = ONode.load("{\n" +
+                "  \"projectCode\" : \"IS0101\",\n" +
+                "  \"columns\" : [ {\n" +
+                "    \"columnCode\" : \"#YEAR(-1)#YTD#Period#Actual#ACCOUNT#[ICP None]#[None]#[None]#REPORT#PRCTotal\",\n" +
+                "    \"value\" : \"1\"\n" +
+                "  } ]\n" +
+                "}");
+
+        Object rst1 = oNode.select("$.columns[?(@.columnCode == '#YEAR(-1)#YTD#Period#Actual#ACCOUNT#[ICP None]#[None]#[None]#REPORT#PRCTotal')].first()");
+
+        System.out.println(rst1);
+
+        //使用JsonPath正常
+        Object rst2 = com.jayway.jsonpath.JsonPath.parse("   {\n" +
+                "  \"projectCode\" : \"IS0101\",\n" +
+                "  \"columns\" : [ {\n" +
+                "    \"columnCode\" : \"#YEAR(-1)#YTD#Period#Actual#ACCOUNT#[ICP None]#[None]#[None]#REPORT#PRCTotal\",\n" +
+                "    \"value\" : \"1\"\n" +
+                "  } ]\n" +
+                "}").read("$.columns[?(@.columnCode == '#YEAR(-1)#YTD#Period#Actual#ACCOUNT#[ICP None]#[None]#[None]#REPORT#PRCTotal')]");
+        System.out.println(rst2);
+    }
 }
