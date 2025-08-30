@@ -731,6 +731,7 @@ public class ObjectToer implements Toer {
             if (useSetter) {
                 for (Map.Entry<String, ONode> kv : o.obj().entrySet()) {
                     FieldWrap f = clzWrap.getFieldWrap(kv.getKey());
+
                     if (f != null) {
                         if (useOnlySetter && f.hasSetter == false) {
                             //只用setter
@@ -741,7 +742,7 @@ public class ObjectToer implements Toer {
                     } else {
                         Method m = clzWrap.getProperty(kv.getKey());
                         if (m != null) {
-                            setValueForMethod(ctx, o, rst, genericInfo, kv.getKey(), m);
+                            setValueForMethod(ctx, o, rst, genericInfo, f, kv.getKey(), m);
                         }
                     }
                 }
@@ -760,11 +761,25 @@ public class ObjectToer implements Toer {
         return rst;
     }
 
-    private void setValueForMethod(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, String name,
+    private void setValueForMethod(Context ctx, ONode o, Object rst, Map<String, Type> genericInfo, FieldWrap f, String name,
                                    Method method) throws Exception {
+        if (f.isDeserialize() == false) {
+            //不做序列化
+            return;
+        }
+
         Class<?> fieldT = method.getParameterTypes()[0];
 
-        Object val = analyseBeanOfValue(name, fieldT, null, ctx, o, null, genericInfo);
+        Object val = null;
+
+        if (StringUtil.isEmpty(f.getFormat()) == false) {
+            //如果有格式符，直接解码（不会触发解码器）
+            val = analyseVal(ctx, o.nodeData(), f.getType());
+        }
+
+        if (val == null) {
+            val = analyseBeanOfValue(name, fieldT, null, ctx, o, null, genericInfo);
+        }
 
         if (val == null) {
             //null string 是否以 空字符处理
@@ -780,6 +795,14 @@ public class ObjectToer implements Toer {
                                   boolean useSetter, boolean useGetter, Set<String> excNames) throws Exception {
         if (f.isDeserialize() == false) {
             //不做序列化
+            return;
+        }
+
+        if (StringUtil.isEmpty(f.getFormat()) == false) {
+            //如果有格式符，直接解码（不会触发解码器）
+            Object val = analyseVal(ctx, o.nodeData(), f.getType());
+
+            f.setValue(rst, val, useSetter);
             return;
         }
 
@@ -800,8 +823,7 @@ public class ObjectToer implements Toer {
             if (f.readonly) {
                 analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
             } else {
-                Object val =
-                        analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
+                Object val =  analyseBeanOfValue(fieldK, fieldT, fieldGt, ctx, o, f.getValue(rst, useGetter), genericInfo);
 
                 if (val == null) {
                     //null string 是否以 空字符处理
