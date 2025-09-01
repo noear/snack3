@@ -6,7 +6,7 @@
 
     <groupId>org.noear</groupId>
     <artifactId>snack3</artifactId>
-    <version>3.2.138</version>
+    <version>3.2.139</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

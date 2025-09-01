@@ -784,16 +784,6 @@ public class ObjectToer implements Toer {
             return;
         }
 
-        if (StringUtil.isEmpty(f.getFormat()) == false) {
-            //如果有格式符，直接解码（不会触发解码器）
-            if (o.isValue()) {
-                Object val = analyseVal(ctx, o.nodeData(), f.getType());
-
-                f.setValue(rst, val, useSetter);
-            }
-            return;
-        }
-
         String fieldK = f.getName();
 
         if (excNames != null && excNames.contains(fieldK)) {
@@ -802,6 +792,17 @@ public class ObjectToer implements Toer {
 
         if (f.isFlat()) {// 扁平化处理
             fieldK = null;
+        } else {
+            if (StringUtil.isEmpty(f.getFormat()) == false) {
+                //如果有格式符，直接解码（不会触发解码器）
+                ONode v0 = o.obj().get(fieldK);
+                if (v0 != null) {
+                    Object val = analyseVal(ctx, v0.nodeData(), f.getType());
+
+                    f.setValue(rst, val, useSetter);
+                }
+                return;
+            }
         }
 
         if (f.isFlat() || o.contains(fieldK)) {
