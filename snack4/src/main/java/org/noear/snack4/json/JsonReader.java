@@ -257,6 +257,7 @@ public class JsonReader {
         if (c == 'u') return parseKeyword("undefined", null);
 
         if (Read_AutoRepair) {
+            state.nextChar(); // 消费掉无法识别的字符，防止 readLast() 死循环
             return new ONode(opts);
         } else {
             throw state.error("Unexpected character: " + c);
