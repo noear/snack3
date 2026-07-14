@@ -1,3 +1,6 @@
+### 4.0.54
+
+* 修复：JsonReader.parseValue() AutoRepair 模式下 readLast() 可能会死循环
 
 ### 4.0.53
 
