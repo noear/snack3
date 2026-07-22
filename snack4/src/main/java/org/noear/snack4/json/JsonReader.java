@@ -126,6 +126,28 @@ public class JsonReader {
         }
     }
 
+    public ONode readTry() throws IOException {
+        try {
+            state.fillBuffer();
+            ONode node = parseValue();
+            state.skipWhitespace();
+
+            if (Read_AllowComment) {
+                state.skipComments();
+            }
+
+            if (!Read_AutoRepair && state.bufferPosition < state.bufferLimit) {
+                throw state.error("Unexpected data after json root");
+            }
+            return node;
+        } catch (Throwable e) {
+            LOG.debug("Read failure: {}", e.getMessage());
+            return new ONode(opts);
+        } finally {
+            state.reader.close();
+        }
+    }
+
     /**
      * 流式读取：不断读出一段完整的 json 并返回 ONode
      *
