@@ -16,16 +16,12 @@
 package org.noear.snack4.codec.encode;
 
 import org.noear.snack4.ONode;
-import org.noear.snack4.Options;
 import org.noear.snack4.codec.EncodeContext;
 import org.noear.snack4.codec.ObjectEncoder;
 import org.noear.snack4.util.Asserts;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  *
@@ -33,6 +29,7 @@ import java.util.Date;
  * @since 4.0
  */
 public class LocalTimeEncoder implements ObjectEncoder<LocalTime> {
+
     @Override
     public ONode encode(EncodeContext ctx, LocalTime value, ONode target) {
         if (ctx.getAttr() != null) {
@@ -42,10 +39,6 @@ public class LocalTimeEncoder implements ObjectEncoder<LocalTime> {
             }
         }
 
-        Instant it = value.atDate(LocalDate.of(1970, 1, 1))
-                .atZone(Options.DEF_TIME_ZONE.toZoneId())
-                .toInstant();
-
-        return target.setValue(new Date(it.getEpochSecond() * 1000));
+        return target.setValue(value.toString());
     }
 }

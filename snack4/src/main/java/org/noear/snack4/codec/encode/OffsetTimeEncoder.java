@@ -20,11 +20,8 @@ import org.noear.snack4.codec.EncodeContext;
 import org.noear.snack4.codec.ObjectEncoder;
 import org.noear.snack4.util.Asserts;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  *
@@ -41,7 +38,6 @@ public class OffsetTimeEncoder implements ObjectEncoder<OffsetTime> {
             }
         }
 
-        Instant it = value.atDate(LocalDate.of(1970, 1, 1)).toInstant();
-        return target.setValue(Date.from(it));
+        return target.setValue(value.toString());
     }
 }

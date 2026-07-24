@@ -22,7 +22,6 @@ import org.noear.snack4.util.Asserts;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  *
@@ -39,6 +38,6 @@ public class OffsetDateTimeEncoder implements ObjectEncoder<OffsetDateTime> {
             }
         }
 
-        return target.setValue(Date.from(value.toInstant()));
+        return target.setValue(value.toString());
     }
 }

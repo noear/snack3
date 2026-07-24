@@ -206,6 +206,10 @@ public class CodecLib {
         addDecoder(Currency.class, new _CurrencytPatternDecoder());
         addDecoder(Path.class, new _PathPatternDecoder());
         addDecoder(Duration.class, new DurationDecoder());
+        addDecoder(Instant.class, (c, o) -> Instant.parse(o.getString()));
+        addDecoder(Period.class, (c, o) -> Period.parse(o.getString()));
+        addDecoder(Year.class, (c, o) -> Year.parse(o.getString()));
+        addDecoder(YearMonth.class, (c, o) -> YearMonth.parse(o.getString()));
 
         addDecoder(StackTraceElement.class, new StackTraceElementDecoder());
         addDecoder(InetSocketAddress.class, new InetSocketAddressDecoder());
@@ -283,6 +287,10 @@ public class CodecLib {
         addEncoder(Currency.class, new _CurrencyPatternEncoder());
         addEncoder(Path.class, new _PathPatternEncoder());
         addEncoder(Duration.class, new DurationEncoder());
+        addEncoder(Instant.class, (c, v, t) -> t.setValue(v.toString()));
+        addEncoder(Period.class, (c, v, t) -> t.setValue(v.toString()));
+        addEncoder(Year.class, (c, v, t) -> t.setValue(v.toString()));
+        addEncoder(YearMonth.class, (c, v, t) -> t.setValue(v.toString()));
 
         addEncoder(KeyValueList.class, new KeyValueListEncoder());
         addEncoder(StackTraceElement.class, new StackTraceElementEncoder());

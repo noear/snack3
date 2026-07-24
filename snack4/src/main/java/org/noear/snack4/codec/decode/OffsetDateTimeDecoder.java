@@ -34,6 +34,6 @@ public class OffsetDateTimeDecoder implements ObjectDecoder<OffsetDateTime> {
             return null;
         }
 
-        return DateUtil.decodeAndZone(ctx, node).toOffsetDateTime();
+        return DateUtil.decodeOffsetDateTime(ctx, node);
     }
 }

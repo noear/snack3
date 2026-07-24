@@ -34,6 +34,6 @@ public class ZonedDateTimeDecoder implements ObjectDecoder<ZonedDateTime> {
             return null;
         }
 
-        return DateUtil.decodeAndZone(ctx, node);
+        return DateUtil.decodeZonedDateTime(ctx, node);
     }
 }

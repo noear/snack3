@@ -501,6 +501,67 @@ public class DateUtil {
         return decode(ctx, node).atZone(zoneId);
     }
 
+    /**
+     * 解码 LocalTime。默认 ISO 文本直接解析，以保留小数秒精度；
+     * 自定义格式和历史数值格式仍复用通用日期解析逻辑。
+     */
+    public static LocalTime decodeLocalTime(DecodeContext ctx, ONode node) {
+        if (isDefaultFormatString(ctx, node)) {
+            try {
+                return LocalTime.parse(node.getString());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return decodeAndZone(ctx, node).toLocalTime();
+    }
+
+    /**
+     * 解码 OffsetDateTime。默认 ISO 文本直接解析，以保留原始 offset。
+     */
+    public static OffsetDateTime decodeOffsetDateTime(DecodeContext ctx, ONode node) {
+        if (isDefaultFormatString(ctx, node)) {
+            try {
+                return OffsetDateTime.parse(node.getString());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return decodeAndZone(ctx, node).toOffsetDateTime();
+    }
+
+    /**
+     * 解码 OffsetTime。默认 ISO 文本直接解析，以保留原始 offset。
+     */
+    public static OffsetTime decodeOffsetTime(DecodeContext ctx, ONode node) {
+        if (isDefaultFormatString(ctx, node)) {
+            try {
+                return OffsetTime.parse(node.getString());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return decodeAndZone(ctx, node).toOffsetDateTime().toOffsetTime();
+    }
+
+    /**
+     * 解码 ZonedDateTime。默认 ISO 文本直接解析，以保留原始 ZoneId。
+     */
+    public static ZonedDateTime decodeZonedDateTime(DecodeContext ctx, ONode node) {
+        if (isDefaultFormatString(ctx, node)) {
+            try {
+                return ZonedDateTime.parse(node.getString());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return decodeAndZone(ctx, node);
+    }
+
+    private static boolean isDefaultFormatString(DecodeContext ctx, ONode node) {
+        return node.isString() && (ctx.getAttr() == null || Asserts.isEmpty(ctx.getAttr().getFormat()));
+    }
+
     public static Instant decode(DecodeContext ctx, ONode node) {
         if (node.isDate()) {
             return Instant.ofEpochMilli(node.getDate().getTime());

@@ -1,3 +1,7 @@
+### 4.0.56
+
+* 调整 LocalDate, LocalTime, OffsetDateTime, OffsetTime 的编解码处理（默认用 toString 作为编码）
+
 ### 4.0.55
 
 * 添加 JsonReader.readTry
