@@ -15,8 +15,9 @@
  */
 package org.noear.snack4.jsonpath.util;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -29,7 +30,13 @@ public class RegexUtil {
     /**
      * 解析 js 正则
      */
-    private static Map<String, Pattern> patternCached = new ConcurrentHashMap<>();
+    private static Map<String, Pattern> patternCached = Collections.synchronizedMap(
+            new LinkedHashMap<String, Pattern>(512, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, Pattern> eldest) {
+                    return size() > 512;
+                }
+            });
 
     public static Pattern parse(String jsRegex) {
         return patternCached.computeIfAbsent(jsRegex, k -> parseDo(k));

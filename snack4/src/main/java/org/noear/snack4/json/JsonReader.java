@@ -71,6 +71,8 @@ public class JsonReader {
     private final boolean Read_ConvertCamelToSnake;
     private final boolean Read_AutoRepair;
 
+    private int nestingDepth;
+
     private StringBuilder getStringBuilder() {
         stringBuilder.setLength(0);
         return stringBuilder;
@@ -328,58 +330,65 @@ public class JsonReader {
     }
 
     private ONode parseObject() throws IOException {
-        Map<String, ONode> map = opts.createMap();
-        state.expect('{');
-        while (true) {
-            state.skipWhitespace();
-            char c = state.peekChar();
-            if (c == 0) {
-                // 增加对 EOF 的支持
-                break;
-            }
-            if (c == '}') {
-                state.bufferPosition++;
-                break;
-            }
-
-            String key = parseKey();
-
-            if (key.isEmpty() && opts.hasFeature(Feature.Read_AllowEmptyKeys) == false) {
-                throw new JsonParseException("Empty key is not allowed");
-            }
-
-            state.skipWhitespace();
-
-            if (!state.expect(':')) {
-                break;
-            }
-
-            ONode value = parseValue();
-            map.put(key, value);
-
-            state.skipWhitespace();
-            if (state.peekChar() == ',') {
-                state.bufferPosition++;
+        if (++nestingDepth > opts.getMaxNestingDepth()) {
+            throw new JsonParseException("JSON nesting depth exceeds limit: " + opts.getMaxNestingDepth());
+        }
+        try {
+            Map<String, ONode> map = opts.createMap();
+            state.expect('{');
+            while (true) {
                 state.skipWhitespace();
-                if (state.peekChar() == '}') {
+                char c = state.peekChar();
+                if (c == 0) {
+                    // 增加对 EOF 的支持
+                    break;
+                }
+                if (c == '}') {
+                    state.bufferPosition++;
+                    break;
+                }
+
+                String key = parseKey();
+
+                if (key.isEmpty() && opts.hasFeature(Feature.Read_AllowEmptyKeys) == false) {
+                    throw new JsonParseException("Empty key is not allowed");
+                }
+
+                state.skipWhitespace();
+
+                if (!state.expect(':')) {
+                    break;
+                }
+
+                ONode value = parseValue();
+                map.put(key, value);
+
+                state.skipWhitespace();
+                if (state.peekChar() == ',') {
+                    state.bufferPosition++;
+                    state.skipWhitespace();
+                    if (state.peekChar() == '}') {
+                        if (Read_AutoRepair) {
+                            break;
+                        } else {
+                            throw state.error("Trailing comma in object");
+                        }
+                    }
+                } else if (state.peekChar() == '}') {
+                    // Continue to closing
+                } else {
                     if (Read_AutoRepair) {
                         break;
                     } else {
-                        throw state.error("Trailing comma in object");
+                        throw state.error("Expected ',' or '}'");
                     }
                 }
-            } else if (state.peekChar() == '}') {
-                // Continue to closing
-            } else {
-                if (Read_AutoRepair) {
-                    break;
-                } else {
-                    throw state.error("Expected ',' or '}'");
-                }
             }
-        }
 
-        return new ONode(opts, map);
+            return new ONode(opts, map);
+        } finally {
+            nestingDepth--;
+        }
     }
 
     private String parseKey() throws IOException {
@@ -418,43 +427,50 @@ public class JsonReader {
     }
 
     private ONode parseArray() throws IOException {
-        List<ONode> list = opts.createList();
-        state.expect('[');
-        while (true) {
-            state.skipWhitespace();
-            if (state.peekChar() == ']') {
-                state.bufferPosition++;
-                break;
-            }
-
-            ONode tmp = parseValue();
-
-            if (tmp.isUndefined() == false) {
-                list.add(tmp);
-            }
-
-            state.skipWhitespace();
-            if (state.peekChar() == ',') {
-                state.bufferPosition++;
+        if (++nestingDepth > opts.getMaxNestingDepth()) {
+            throw new JsonParseException("JSON nesting depth exceeds limit: " + opts.getMaxNestingDepth());
+        }
+        try {
+            List<ONode> list = opts.createList();
+            state.expect('[');
+            while (true) {
                 state.skipWhitespace();
                 if (state.peekChar() == ']') {
+                    state.bufferPosition++;
+                    break;
+                }
+
+                ONode tmp = parseValue();
+
+                if (tmp.isUndefined() == false) {
+                    list.add(tmp);
+                }
+
+                state.skipWhitespace();
+                if (state.peekChar() == ',') {
+                    state.bufferPosition++;
+                    state.skipWhitespace();
+                    if (state.peekChar() == ']') {
+                        if (Read_AutoRepair) {
+                            break;
+                        } else {
+                            throw state.error("Trailing comma in array");
+                        }
+                    }
+                } else if (state.peekChar() == ']') {
+                    // Continue to closing
+                } else {
                     if (Read_AutoRepair) {
                         break;
                     } else {
-                        throw state.error("Trailing comma in array");
+                        throw state.error("Expected ',' or ']'");
                     }
                 }
-            } else if (state.peekChar() == ']') {
-                // Continue to closing
-            } else {
-                if (Read_AutoRepair) {
-                    break;
-                } else {
-                    throw state.error("Expected ',' or ']'");
-                }
             }
+            return new ONode(opts, list);
+        } finally {
+            nestingDepth--;
         }
-        return new ONode(opts, list);
     }
 
     private String parseString() throws IOException {

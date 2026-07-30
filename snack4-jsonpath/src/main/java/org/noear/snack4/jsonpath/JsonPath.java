@@ -23,7 +23,7 @@ import org.noear.snack4.jsonpath.segment.Segment;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.LinkedHashMap;
 
 /**
  * JsonPath
@@ -185,7 +185,13 @@ public class JsonPath {
     /// //////////
 
 
-    private static Map<String, JsonPath> cached = new ConcurrentHashMap<>();
+    private static Map<String, JsonPath> cached = Collections.synchronizedMap(
+            new LinkedHashMap<String, JsonPath>(512, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, JsonPath> eldest) {
+                    return size() > 512;
+                }
+            });
 
     /**
      * 解析

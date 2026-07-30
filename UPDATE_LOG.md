@@ -1,3 +1,13 @@
+### 4.0.57
+
+* 修复 JsonReader 解析深度无限制，超深嵌套会导致 StackOverflowError 的问题；添加 Options.maxNestingDepth 配置（默认 1000）
+* 修复 InetSocketAddressDecoder 反序列化时会主动触发 DNS 解析的问题
+* 修复 JsonPath、Expression、RegexUtil 内部缓存无上限，可能导致内存耗尽的问题
+
+### 4.0.56
+
+* xxx
+
 ### 4.0.56
 
 * 调整 LocalDate, LocalTime, OffsetDateTime, OffsetTime 的编解码处理（默认用 toString 作为编码）

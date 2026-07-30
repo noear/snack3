@@ -70,6 +70,9 @@ public final class Options {
     private Supplier<Map> mapFactory = LinkedHashMap::new;
     private Supplier<List> listFactory = ArrayList::new;
 
+    //JSON 嵌套深度上限
+    private int maxNestingDepth = 1000;
+
 
     private boolean readonly;
 
@@ -102,6 +105,7 @@ public final class Options {
         tmp.timeZone = this.timeZone;
         tmp.mapFactory = this.mapFactory;
         tmp.listFactory = this.listFactory;
+        tmp.maxNestingDepth = this.maxNestingDepth;
 
         // 将旧 options 的特有编解码器填充到新 options 的 codecLib 中
         tmp.codecLib.fill(this.codecLib);
@@ -199,6 +203,13 @@ public final class Options {
         return writeIndent;
     }
 
+    /**
+     * 获取 JSON 嵌套深度上限
+     */
+    public int getMaxNestingDepth() {
+        return maxNestingDepth;
+    }
+
     public <T> Map<String, T> createMap() {
         return mapFactory.get();
     }
@@ -209,6 +220,18 @@ public final class Options {
 
 
     /// /////////////
+
+    /**
+     * 设置 JSON 嵌套深度上限
+     */
+    public Options maxNestingDepth(int maxNestingDepth) {
+        if (readonly) {
+            throw new UnsupportedOperationException(DEF_UNSUPPORTED_HINT);
+        }
+
+        this.maxNestingDepth = maxNestingDepth;
+        return this;
+    }
 
     /**
      * 设置日期格式

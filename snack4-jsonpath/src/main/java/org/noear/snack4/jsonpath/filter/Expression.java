@@ -24,7 +24,7 @@ import org.noear.snack4.jsonpath.util.TokenizeUtil;
 import org.noear.snack4.util.Asserts;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * 逻辑表达式
@@ -33,7 +33,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 4.0
  */
 public class Expression {
-    private static Map<String, Expression> expressionMap = new ConcurrentHashMap<>();
+    private static Map<String, Expression> expressionMap = Collections.synchronizedMap(
+            new LinkedHashMap<String, Expression>(512, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, Expression> eldest) {
+                    return size() > 512;
+                }
+            });
 
     public static Expression of(String expressionStr) {
         return expressionMap.computeIfAbsent(expressionStr, Expression::new);

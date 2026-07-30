@@ -31,6 +31,6 @@ public class InetSocketAddressDecoder implements ObjectDecoder<InetSocketAddress
     public InetSocketAddress decode(DecodeContext ctx, ONode node) {
         String hostname = node.get("hostname").getString();
         int port = node.get("port").getInt();
-        return new InetSocketAddress(hostname, port);
+        return InetSocketAddress.createUnresolved(hostname, port);
     }
 }

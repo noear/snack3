@@ -195,4 +195,39 @@ class JsonReaderComplexTest {
            System.out.println(node.toJson());
         });
     }
+
+    // ========================= 深度限制安全测试 =========================
+
+    @Test
+    void testParseExcessivelyDeeplyNestedObjectThrows() {
+        // 超过 1000 层 object 嵌套，应抛出 JsonParseException 而非 StackOverflowError
+        StringBuilder sb = new StringBuilder();
+        int depth = 1001;
+        for (int i = 0; i < depth; i++) sb.append("{\"a\":");
+        sb.append("1");
+        for (int i = 0; i < depth; i++) sb.append("}");
+        assertThrows(JsonParseException.class, () -> JsonReader.read(sb.toString()));
+    }
+
+    @Test
+    void testParseExcessivelyDeeplyNestedArrayThrows() {
+        // 超过 1000 层 array 嵌套，应抛出 JsonParseException 而非 StackOverflowError
+        StringBuilder sb = new StringBuilder();
+        int depth = 1001;
+        for (int i = 0; i < depth; i++) sb.append("[");
+        sb.append("1");
+        for (int i = 0; i < depth; i++) sb.append("]");
+        assertThrows(JsonParseException.class, () -> JsonReader.read(sb.toString()));
+    }
+
+    @Test
+    void testParseDeepNestingWithinLimitSucceeds() {
+        // 999 层嵌套在限制内，应正常解析
+        StringBuilder sb = new StringBuilder();
+        int depth = 999;
+        for (int i = 0; i < depth; i++) sb.append("[");
+        sb.append("1");
+        for (int i = 0; i < depth; i++) sb.append("]");
+        assertDoesNotThrow(() -> JsonReader.read(sb.toString()));
+    }
 }

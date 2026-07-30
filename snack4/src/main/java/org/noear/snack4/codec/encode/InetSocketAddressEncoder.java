@@ -30,9 +30,12 @@ import java.net.InetSocketAddress;
 public class InetSocketAddressEncoder implements ObjectEncoder<InetSocketAddress> {
     @Override
     public ONode encode(EncodeContext ctx, InetSocketAddress value, ONode target) {
-        InetAddress ia = value.getAddress();
+        if (value.getAddress() == null) {
+            target.set("hostname", value.getHostName());
+        } else {
+            target.set("hostname", value.getAddress().getHostAddress());
+        }
 
-        target.set("hostname", ia.getHostAddress());
         target.set("port", value.getPort());
 
         return target;
