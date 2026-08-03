@@ -1,3 +1,17 @@
+### 4.0.58
+
+* 添加 TypeChecker 类型安全检测机制
+
+```java
+options.addChecker(clzName -> {
+    if(clzName.startsWith("com.demo")) {
+        return TypeChecker.ALLOW;
+    } else {
+        return TypeChecker.DENY;
+    }
+});
+```
+
 ### 4.0.57
 
 * 修复 JsonReader 解析深度无限制，超深嵌套会导致 StackOverflowError 的问题；添加 Options.maxNestingDepth 配置（默认 1000）
