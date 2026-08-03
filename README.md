@@ -304,6 +304,21 @@ Json codec customization
 
 ```java
 Options options = Options.of();
+//添加检测器（for Feature.Read_AutoType）
+options.addChecker(clzName -> {
+    //通过
+    if (clzName.startsWith("com.ok.xxx.")) {
+        return TypeChecker.ALLOW;
+    }
+
+    //拒绝
+    if (clzName.startsWith("com.no.yyy.")) {
+        return TypeChecker.DENY;
+    }
+
+    //跳过
+    return TypeChecker.SKIP;
+});
 //添加编码器
 options.addEncoder(Date.class, (ctx, value, target) -> {
     target.setValue(DateUtil.format(data, "yyyy-MM-dd"));
