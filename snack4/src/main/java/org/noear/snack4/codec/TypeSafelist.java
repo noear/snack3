@@ -36,6 +36,7 @@ public class TypeSafelist implements TypeChecker {
         bl.denyAdd("sun.")
                 .denyAdd("com.sun.")
                 .denyAdd("javax.")
+                .denyAdd("javax.management.BadAttributeValueExpException")
                 .denyAdd("jdk.")
                 .denyAdd("java.lang.Runtime")
                 .denyAdd("java.lang.ProcessBuilder")
@@ -47,26 +48,15 @@ public class TypeSafelist implements TypeChecker {
                 .denyAdd("java.net.URL")
                 .denyAdd("java.net.URLClassLoader")
                 .denyAdd("java.rmi.")
-                // 第三方反序列化 gadget 常用包（与 fastjson/jackson 默认黑名单对齐）
-                .denyAdd("org.apache.commons.collections.")
-                .denyAdd("org.apache.commons.collections4.")
-                .denyAdd("org.apache.commons.beanutils.")
-                .denyAdd("org.springframework.")
-                .denyAdd("com.mchange.")
-                .denyAdd("org.codehaus.groovy.")
-                .denyAdd("org.apache.xbean.")
-                .denyAdd("com.alibaba.fastjson.")
-                // JDK 侧常用 gadget 链起点 / 桥梁类
                 .denyAdd("java.security.SignedObject")
                 .denyAdd("java.beans.EventHandler")
-                .denyAdd("java.util.PriorityQueue")
-                .denyAdd("javax.management.BadAttributeValueExpException");
+                .denyAdd("java.util.PriorityQueue");
     });
 
     /**
      * 拒绝名单
      */
-    private final List<String> denyPrefixes = new CopyOnWriteArrayList<>();
+    protected final List<String> denyPrefixes = new CopyOnWriteArrayList<>();
 
     public TypeSafelist() {
     }
