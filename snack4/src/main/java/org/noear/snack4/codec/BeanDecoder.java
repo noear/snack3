@@ -556,41 +556,17 @@ public class BeanDecoder {
      */
     private TypeEggg resolveNodeType(ONode oRef, TypeEggg def) {
         if (oRef.isObject()) {
-            String typeStr = null;
             if (isReadClassName(oRef)) {
                 ONode n1 = oRef.getObject().get(opts0.getTypePropertyName());
-                if (n1 != null) {
-                    typeStr = n1.getString();
-                }
+                String typeStr = (n1 != null ? n1.getString() : null);
 
                 if (Asserts.isNotEmpty(typeStr)) {
-                    if (Asserts.isClassName(typeStr) == false) {
-                        // 非法类名格式：不作为类型声明处理（与字符串类名路径的校验保持一致）
-                        if (Decode_IgnoreError) {
-                            return null;
-                        } else {
-                            throw new CodecException("Invalid class name, class: " + typeStr);
-                        }
+                    TypeEggg declared = resolveDeclaredType(typeStr);
+                    if (declared != null) {
+                        return declared;
                     }
-
-                    if (opts0.isTypeBlocked(typeStr)) {
-                        if (Decode_IgnoreError) {
-                            return null;
-                        } else {
-                            throw new CodecException("Blocked type, class: " + typeStr);
-                        }
-                    }
-
-                    Class<?> clz = opts0.loadClass(typeStr, false);
-                    if (clz == null) {
-                        if (Decode_IgnoreError) {
-                            return null;
-                        } else {
-                            throw new CodecException("Unsupported type, class: " + typeStr);
-                        }
-                    } else {
-                        return EgggUtil.getTypeEggg(clz);
-                    }
+                    // declared == null：IgnoreError 下忽略非法/被拦/无法加载的类型声明，
+                    // 继续走下面的默认类型解析（不提前 return null，避免跳过 Object→Map 降级）
                 }
             }
         }
@@ -606,6 +582,42 @@ public class BeanDecoder {
         }
 
         return def;
+    }
+
+    /**
+     * 解析 @type 声明的类型。
+     *
+     * @return 解析成功返回对应 TypeEggg；在 Decode_IgnoreError 下遇到非法/被拦/无法加载的声明时返回 null，
+     * 表示“忽略该类型声明”，由调用方回退到默认类型解析。
+     */
+    private TypeEggg resolveDeclaredType(String typeStr) {
+        if (Asserts.isClassName(typeStr) == false) {
+            // 非法类名格式：不作为类型声明处理（与字符串类名路径的校验保持一致）
+            if (Decode_IgnoreError) {
+                return null;
+            } else {
+                throw new CodecException("Invalid class name, class: " + typeStr);
+            }
+        }
+
+        if (opts0.isTypeBlocked(typeStr)) {
+            if (Decode_IgnoreError) {
+                return null;
+            } else {
+                throw new CodecException("Blocked type, class: " + typeStr);
+            }
+        }
+
+        Class<?> clz = opts0.loadClass(typeStr, false);
+        if (clz == null) {
+            if (Decode_IgnoreError) {
+                return null;
+            } else {
+                throw new CodecException("Unsupported type, class: " + typeStr);
+            }
+        }
+
+        return EgggUtil.getTypeEggg(clz);
     }
 
     /**

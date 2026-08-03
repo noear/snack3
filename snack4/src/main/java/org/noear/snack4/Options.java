@@ -83,7 +83,7 @@ public final class Options {
     /**
      * 转为只读
      */
-    public Options readonly(){
+    public Options readonly() {
         this.readonly = true;
         return this;
     }
@@ -124,7 +124,7 @@ public final class Options {
     /**
      * 加载类
      */
-    public Class<?> loadClass(String className) throws SnackException{
+    public Class<?> loadClass(String className) throws SnackException {
         return loadClass(className, true);
     }
 
@@ -434,11 +434,9 @@ public final class Options {
     //////////////////
 
     /**
-     * 添加类型安全检测器（对当前实例有效）
-     *
-     * @param checker 检测器（{@link TypeSafelist} 或自定义策略）
+     * 注册自定义检测器（类型安全检测器）
      */
-    public Options addTypeChecker(TypeChecker checker) {
+    public Options addChecker(TypeChecker checker) {
         if (readonly) {
             throw new UnsupportedOperationException(DEF_UNSUPPORTED_HINT);
         }

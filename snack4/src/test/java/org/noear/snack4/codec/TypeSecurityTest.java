@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 类型安全检测机制测试
  *
- * <p>覆盖：ALLOW 不可绕过全局黑名单、默认黑名单扩展、精确匹配不误伤、\n
- * ClassDecoder / loadClass 内聚检查、@type 格式校验、正常路径回归。</p>
+ * <p>覆盖：默认黑名单扩展、精确匹配不误伤、实例级 ALLOW 短路（用户可控）、
+ * ClassDecoder 拦截、loadClass 加载行为、@type 格式校验与 IgnoreError 降级、正常路径回归。</p>
  */
 public class TypeSecurityTest {
 
@@ -66,20 +66,21 @@ public class TypeSecurityTest {
     }
 
     /// /////////////////
-    // 高危：ALLOW 不可绕过全局黑名单（DENY 优先）
+    // 实例级 ALLOW 短路（由用户控制）
     /// /////////////////
 
     @Test
-    public void allowCannotBypassGlobalBlacklist() {
+    public void allowShortCircuitsBlacklist() {
+        // 设计：实例级检测器返回 ALLOW 会短路放行（含全局黑名单），由用户自行掌控。
         Options opts = Options.of();
-        // 宽松白名单：所有 com. 开头都 ALLOW
-        opts.addTypeChecker(clz -> clz.startsWith("com.") ? TypeChecker.Result.ALLOW : TypeChecker.Result.SKIP);
+        opts.addChecker(clz -> clz.startsWith("com.") ? TypeChecker.Result.ALLOW : TypeChecker.Result.SKIP);
 
-        // com.sun. 在全局黑名单中，即使实例级 ALLOW 也必须拦截
-        assertTrue(opts.isTypeBlocked("com.sun.rowset.JdbcRowSetImpl"));
-
-        // 正常业务类（不在黑名单）仍可放行
+        // ALLOW 短路：com.sun. 虽在全局黑名单，但实例级 ALLOW 优先放行
+        assertFalse(opts.isTypeBlocked("com.sun.rowset.JdbcRowSetImpl"));
         assertFalse(opts.isTypeBlocked("com.example.BizBean"));
+
+        // 未命中 ALLOW 的类仍由全局黑名单兑底
+        assertTrue(opts.isTypeBlocked("sun.misc.Unsafe"));
     }
 
     /// /////////////////
@@ -95,19 +96,22 @@ public class TypeSecurityTest {
     }
 
     /// /////////////////
-    // loadClass 内聚检查
+    // loadClass 不内聚安全检查（由调用方前置 isTypeBlocked 拦截）
     /// /////////////////
 
     @Test
-    public void loadClassEnforcesCheck() {
+    public void loadClassDoesNotEnforceCheck() {
         Options opts = Options.of();
 
-        // 黑名单类：默认抛异常，disallowedThrow=true 返回 null
-        assertThrows(SnackException.class, () -> opts.loadClass("java.lang.Runtime"));
-        assertNull(opts.loadClass("java.lang.Runtime", false));
+        // loadClass 本身不做黑名单检查：黑名单类仍能被加载
+        assertSame(Runtime.class, opts.loadClass("java.lang.Runtime"));
 
-        // 协议注入类名：抛异常
-        assertThrows(SnackException.class, () -> opts.loadClass("ldap://evil"));
+        // 拦截职责在调用方：isTypeBlocked 负责识别危险类
+        assertTrue(opts.isTypeBlocked("java.lang.Runtime"));
+
+        // 不存在的类：默认抛异常，throwOnError=false 返回 null
+        assertThrows(SnackException.class, () -> opts.loadClass("a.b.NotExistClass"));
+        assertNull(opts.loadClass("a.b.NotExistClass", false));
 
         // 正常类仍可加载
         assertSame(String.class, opts.loadClass("java.lang.String"));
@@ -119,10 +123,19 @@ public class TypeSecurityTest {
 
     @Test
     public void classDecoderBlocksBlockedType() {
+        // 默认（非 IgnoreError）：被拦截抛 CodecException，与 BeanDecoder 两条路径行为一致
         Options opts = Options.of();
         String json = "{\"clz\":\"java.beans.EventHandler\"}";
+        assertThrows(CodecException.class, () -> ONode.ofJson(json, opts).toBean(ClzBean.class));
+    }
+
+    @Test
+    public void classDecoderBlocksBlockedTypeIgnoreError() {
+        // IgnoreError：被拦截返回 null
+        Options opts = Options.of(Feature.Decode_IgnoreError);
+        String json = "{\"clz\":\"java.beans.EventHandler\"}";
         ClzBean bean = ONode.ofJson(json, opts).toBean(ClzBean.class);
-        assertNull(bean.clz); // 被拦截返回 null
+        assertNull(bean.clz);
     }
 
     @Test
@@ -188,7 +201,7 @@ public class TypeSecurityTest {
     @Test
     public void whitelistModeWorks() {
         Options opts = Options.of();
-        opts.addTypeChecker(clz -> {
+        opts.addChecker(clz -> {
             if (clz.equals("com.example.AllowedBean")) {
                 return TypeChecker.Result.ALLOW;
             }
