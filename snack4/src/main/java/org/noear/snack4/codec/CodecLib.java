@@ -143,9 +143,9 @@ public class CodecLib {
 
         for (TypeChecker c : checkers) {
             TypeChecker.Result rst = c.check(className);
-            if (TypeChecker.Result.DENY == rst) {
+            if (TypeChecker.DENY == rst) {
                 return true; //拒绝
-            } else if (TypeChecker.Result.ALLOW == rst) {
+            } else if (TypeChecker.ALLOW == rst) {
                 return false; //允许
             }
         }

@@ -34,6 +34,10 @@ public interface TypeChecker {
      */
     Result check(String className);
 
+    Result ALLOW = Result.ALLOW;
+    Result DENY  = Result.DENY;
+    Result SKIP  = Result.SKIP;
+
     enum Result {
         /**
          * 放行

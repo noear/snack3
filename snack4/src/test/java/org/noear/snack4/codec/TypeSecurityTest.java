@@ -203,12 +203,12 @@ public class TypeSecurityTest {
         Options opts = Options.of();
         opts.addChecker(clz -> {
             if (clz.equals("com.example.AllowedBean")) {
-                return TypeChecker.Result.ALLOW;
+                return TypeChecker.ALLOW;
             }
             if (clz.startsWith("com.")) {
-                return TypeChecker.Result.DENY;
+                return TypeChecker.DENY;
             }
-            return TypeChecker.Result.SKIP;
+            return TypeChecker.SKIP;
         });
 
         assertFalse(opts.isTypeBlocked("com.example.AllowedBean")); // 白名单内放行

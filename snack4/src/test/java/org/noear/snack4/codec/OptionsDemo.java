@@ -16,8 +16,16 @@ public class OptionsDemo {
     public static void main(String[] args) {
         Options options = Options.of();
 
+        options.addChecker(clzName -> {
+            if(clzName.startsWith("com.demo")) {
+                return TypeChecker.ALLOW;
+            } else {
+                return TypeChecker.DENY;
+            }
+        });
+
         //编码：使用类的名字作为数据
-        options.addEncoder(Class.class, ((ctx, value, target) ->  {
+        options.addEncoder(Class.class, ((ctx, value, target) -> {
             return target.setValue(value.getName());
         }));
 
@@ -29,7 +37,7 @@ public class OptionsDemo {
         //options.addCreator()
 
         //测试：序列化
-        Map<String,Class<?>> data = new HashMap<>();
+        Map<String, Class<?>> data = new HashMap<>();
         data.put("list", ArrayList.class);
 
         String json = ONode.ofBean(data, options).toJson();
@@ -37,7 +45,8 @@ public class OptionsDemo {
         assert "{\"list\":\"java.util.ArrayList\"}".equals(json);
 
         //测试：反序列化
-        data = ONode.ofJson(json, options).toBean(new TypeRef<Map<String,Class<?>>>() {});
+        data = ONode.ofJson(json, options).toBean(new TypeRef<Map<String, Class<?>>>() {
+        });
         System.out.println(data.get("list")); // class java.util.ArrayList
         assert ArrayList.class.equals(data.get("list"));
     }
