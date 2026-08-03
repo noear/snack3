@@ -154,7 +154,15 @@ public class BeanDecoder {
 
                         //可能是 class
                         if (Asserts.isClassName(str)) {
-                            Class<?> clz = opts0.loadClass(node.getString());
+                            if (opts0.isTypeBlocked(str)) {
+                                if (Decode_IgnoreError) {
+                                    return null;
+                                } else {
+                                    throw new CodecException("Blocked type, class: " + str);
+                                }
+                            }
+
+                            Class<?> clz = opts0.loadClass(node.getString(), true);
 
                             if (clz != null && typeEggg.getType().isAssignableFrom(clz)) {
                                 return ClassUtil.newInstance(clz);
@@ -524,6 +532,10 @@ public class BeanDecoder {
     private TypeEggg confirmNodeType(ONode oRef, TypeEggg def) {
         TypeEggg type0 = resolveNodeType(oRef, def);
 
+        if (type0 == null) {
+            return def;
+        }
+
         if (Throwable.class.isAssignableFrom(type0.getType())) {
             //如果有异常，则异常优先
             return type0;
@@ -552,16 +564,21 @@ public class BeanDecoder {
                 }
 
                 if (Asserts.isNotEmpty(typeStr)) {
-                    if (typeStr.startsWith("sun.") ||
-                            typeStr.startsWith("com.sun.") ||
-                            typeStr.startsWith("javax.") ||
-                            typeStr.startsWith("jdk.")) {
-                        throw new CodecException("Unsupported type, class: " + typeStr);
+                    if (opts0.isTypeBlocked(typeStr)) {
+                        if (Decode_IgnoreError) {
+                            return null;
+                        } else {
+                            throw new CodecException("Blocked type, class: " + typeStr);
+                        }
                     }
 
-                    Class<?> clz = opts0.loadClass(typeStr);
+                    Class<?> clz = opts0.loadClass(typeStr, true);
                     if (clz == null) {
-                        throw new CodecException("Unsupported type, class: " + typeStr);
+                        if (Decode_IgnoreError) {
+                            return null;
+                        } else {
+                            throw new CodecException("Unsupported type, class: " + typeStr);
+                        }
                     } else {
                         return EgggUtil.getTypeEggg(clz);
                     }

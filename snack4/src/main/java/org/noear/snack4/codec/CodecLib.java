@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.*;
  * @since 4.0
  */
 public class CodecLib {
-    private static CodecLib DEFAULT = new CodecLib(null).loadDefault();
+    private static final CodecLib DEFAULT = new CodecLib(null).loadDefault();
 
     private final Map<Class<?>, ObjectCreator<?>> creators = new HashMap<>();
     private final Map<Class<?>, ObjectPatternCreator<?>> patternCreators = new LinkedHashMap<>();
@@ -50,6 +50,8 @@ public class CodecLib {
 
     private final Map<Class<?>, ObjectEncoder<?>> encoders = new HashMap<>();
     private final Map<Class<?>, ObjectPatternEncoder<?>> patternEncoders = new LinkedHashMap<>();
+
+    private final List<TypeChecker> checkers = new ArrayList<>();
 
     private final CodecLib parent;
 
@@ -63,6 +65,8 @@ public class CodecLib {
 
     public void fill(CodecLib source) {
         // 填充当前实例特有的配置（不影响 parent）
+        this.checkers.addAll(source.checkers);
+
         this.creators.putAll(source.creators);
         this.patternCreators.putAll(source.patternCreators);
 
@@ -71,6 +75,13 @@ public class CodecLib {
 
         this.encoders.putAll(source.encoders);
         this.patternEncoders.putAll(source.patternEncoders);
+    }
+
+    /**
+     * 添加检测器
+     */
+    public void addChecker(TypeChecker checker){
+        checkers.add(checker);
     }
 
     /**
@@ -123,22 +134,28 @@ public class CodecLib {
         encoders.put(type, encoder);
     }
 
-    public ObjectDecoder getDecoder(Class<?> clazz) {
-        ObjectDecoder tmp = decoders.get(clazz);
+    //------------
 
-        if (tmp == null) {
-            for (ObjectPatternDecoder decoder1 : patternDecoders.values()) {
-                if (decoder1.canDecode(clazz)) {
-                    return decoder1;
-                }
-            }
+    public boolean isTypeBlocked(String className) {
+        if (className == null) {
+            return true; //拒绝
+        }
 
-            if (parent != null) {
-                return parent.getDecoder(clazz);
+        for (TypeChecker c : checkers) {
+            TypeChecker.Result rst = c.check(className);
+            if (TypeChecker.Result.DENY == rst) {
+                return true; //拒绝
+            } else if (TypeChecker.Result.ALLOW == rst) {
+                return false; //允许
             }
         }
 
-        return tmp;
+        if(parent != null){
+            return parent.isTypeBlocked(className);
+        }
+
+        // 默认放行（由 AutoType 开关兜底）
+        return false;
     }
 
     public ObjectCreator getCreator(Class<?> clazz) {
@@ -153,6 +170,24 @@ public class CodecLib {
 
             if (parent != null) {
                 return parent.getCreator(clazz);
+            }
+        }
+
+        return tmp;
+    }
+
+    public ObjectDecoder getDecoder(Class<?> clazz) {
+        ObjectDecoder tmp = decoders.get(clazz);
+
+        if (tmp == null) {
+            for (ObjectPatternDecoder decoder1 : patternDecoders.values()) {
+                if (decoder1.canDecode(clazz)) {
+                    return decoder1;
+                }
+            }
+
+            if (parent != null) {
+                return parent.getDecoder(clazz);
             }
         }
 
@@ -178,6 +213,10 @@ public class CodecLib {
     }
 
     /// //////////////////////
+
+    private void loadDefaultCheckers() {
+        addChecker(TypeBlacklist.GLOBAL);
+    }
 
     private void loadDefaultCreators() {
         addCreator(new _ThrowablePatternCreator());
@@ -325,6 +364,7 @@ public class CodecLib {
     }
 
     private CodecLib loadDefault() {
+        loadDefaultCheckers();
         loadDefaultCreators();
         loadDefaultDecoders();
         loadDefaultEncoders();

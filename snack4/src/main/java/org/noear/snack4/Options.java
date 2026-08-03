@@ -124,7 +124,14 @@ public final class Options {
     /**
      * 加载类
      */
-    public Class<?> loadClass(String className) {
+    public Class<?> loadClass(String className) throws SnackException{
+        return loadClass(className, false);
+    }
+
+    /**
+     * 加载类
+     */
+    public Class<?> loadClass(String className, boolean disallowedThrow) {
         try {
             if (classLoader == null) {
                 return Class.forName(className);
@@ -132,7 +139,11 @@ public final class Options {
                 return classLoader.loadClass(className);
             }
         } catch (ClassNotFoundException e) {
-            throw new SnackException("Failed to load class: " + className, e);
+            if (disallowedThrow) {
+                return null;
+            } else {
+                throw new SnackException("Failed to load class: " + className, e);
+            }
         }
     }
 
@@ -412,12 +423,55 @@ public final class Options {
         return this;
     }
 
+    //////////////////
+    // 类型安全检测（双层配置：全局 + 实例）
+    //////////////////
+
+    /**
+     * 添加类型安全检测器（对当前实例有效）
+     *
+     * @param checker 检测器（{@link TypeBlacklist} 或自定义策略）
+     */
+    public Options addTypeChecker(TypeChecker checker) {
+        if (readonly) {
+            throw new UnsupportedOperationException(DEF_UNSUPPORTED_HINT);
+        }
+
+        if (checker != null) {
+            codecLib.addChecker(checker);
+        }
+        return this;
+    }
+
+    /**
+     * 判断类名是否应被拦截（供解码器在动态类加载前调用）
+     *
+     * @param className 完整类名
+     * @return true 表示拦截（拒绝加载），false 表示放行
+     */
+    public boolean isTypeBlocked(String className) {
+        // 协议注入防护（含 ":" 或 "!" 的类名一律拒绝，不可关闭）
+        if (className == null || className.contains(":") || className.contains("!")) {
+            return true;
+        }
+
+        return codecLib.isTypeBlocked(className);
+    }
+
     public Options mapFactory(Supplier<Map> mapFactory) {
+        if (readonly) {
+            throw new UnsupportedOperationException(DEF_UNSUPPORTED_HINT);
+        }
+
         this.mapFactory = mapFactory;
         return this;
     }
 
     public Options listFactory(Supplier<List> listFactory) {
+        if (readonly) {
+            throw new UnsupportedOperationException(DEF_UNSUPPORTED_HINT);
+        }
+
         this.listFactory = listFactory;
         return this;
     }
