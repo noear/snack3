@@ -27,10 +27,10 @@ package org.noear.snack4.codec;
 public interface TypeChecker {
 
     /**
-     * 判断给定的类名是否应被拦截
+     * 检测给定的类名
      *
      * @param className 待检测的完整类名（如 "org.apache.commons.collections.Transformer"）
-     * @return true 表示拦截（拒绝加载），false 表示放行
+     * @return 检测结果：{@link Result#ALLOW} 放行、{@link Result#DENY} 拒绝、{@link Result#SKIP} 跳过（交由后续检测器决定）
      */
     Result check(String className);
 
