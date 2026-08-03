@@ -15,7 +15,9 @@
  */
 package org.noear.snack4.codec.decode;
 
+import org.noear.snack4.Feature;
 import org.noear.snack4.ONode;
+import org.noear.snack4.codec.CodecException;
 import org.noear.snack4.codec.DecodeContext;
 import org.noear.snack4.codec.ObjectDecoder;
 
@@ -28,7 +30,18 @@ public class ClassDecoder implements ObjectDecoder<Class> {
     @Override
     public Class decode(DecodeContext ctx, ONode node) {
         if (node.isNotEmptyString()) {
-            return ctx.getOptions().loadClass(node.<String>getValueAs());
+            String clsName = node.<String>getValueAs();
+            boolean ignoreError = ctx.getOptions().hasFeature(Feature.Decode_IgnoreError);
+
+            if (ctx.getOptions().isTypeBlocked(clsName)) {
+                if (ignoreError) {
+                    return null;
+                } else {
+                    throw new CodecException("Blocked type, class: " + clsName);
+                }
+            }
+
+            return ctx.getOptions().loadClass(clsName, !ignoreError);
         } else {
             return null;
         }

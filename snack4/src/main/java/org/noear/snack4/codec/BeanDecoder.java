@@ -162,7 +162,7 @@ public class BeanDecoder {
                                 }
                             }
 
-                            Class<?> clz = opts0.loadClass(node.getString(), true);
+                            Class<?> clz = opts0.loadClass(node.getString(), false);
 
                             if (clz != null && typeEggg.getType().isAssignableFrom(clz)) {
                                 return ClassUtil.newInstance(clz);
@@ -564,6 +564,15 @@ public class BeanDecoder {
                 }
 
                 if (Asserts.isNotEmpty(typeStr)) {
+                    if (Asserts.isClassName(typeStr) == false) {
+                        // 非法类名格式：不作为类型声明处理（与字符串类名路径的校验保持一致）
+                        if (Decode_IgnoreError) {
+                            return null;
+                        } else {
+                            throw new CodecException("Invalid class name, class: " + typeStr);
+                        }
+                    }
+
                     if (opts0.isTypeBlocked(typeStr)) {
                         if (Decode_IgnoreError) {
                             return null;
@@ -572,7 +581,7 @@ public class BeanDecoder {
                         }
                     }
 
-                    Class<?> clz = opts0.loadClass(typeStr, true);
+                    Class<?> clz = opts0.loadClass(typeStr, false);
                     if (clz == null) {
                         if (Decode_IgnoreError) {
                             return null;

@@ -80,7 +80,7 @@ public class CodecLib {
     /**
      * 添加检测器
      */
-    public void addChecker(TypeChecker checker){
+    public void addChecker(TypeChecker checker) {
         checkers.add(checker);
     }
 
@@ -150,7 +150,7 @@ public class CodecLib {
             }
         }
 
-        if(parent != null){
+        if (parent != null) {
             return parent.isTypeBlocked(className);
         }
 
@@ -215,7 +215,7 @@ public class CodecLib {
     /// //////////////////////
 
     private void loadDefaultCheckers() {
-        addChecker(TypeBlacklist.GLOBAL);
+        addChecker(TypeSafelist.GLOBAL);
     }
 
     private void loadDefaultCreators() {

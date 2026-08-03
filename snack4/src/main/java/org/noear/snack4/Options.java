@@ -125,24 +125,30 @@ public final class Options {
      * 加载类
      */
     public Class<?> loadClass(String className) throws SnackException{
-        return loadClass(className, false);
+        return loadClass(className, true);
     }
 
     /**
      * 加载类
      */
-    public Class<?> loadClass(String className, boolean disallowedThrow) {
+    public Class<?> loadClass(String className, boolean throwOnError) {
         try {
-            if (classLoader == null) {
-                return Class.forName(className);
+            ClassLoader loader = classLoader;
+            if (loader == null) {
+                loader = Thread.currentThread().getContextClassLoader();
+            }
+
+            if (loader != null) {
+                // 统一不触发静态初始化，行为一致
+                return Class.forName(className, false, loader);
             } else {
-                return classLoader.loadClass(className);
+                return Class.forName(className);
             }
         } catch (ClassNotFoundException e) {
-            if (disallowedThrow) {
-                return null;
-            } else {
+            if (throwOnError) {
                 throw new SnackException("Failed to load class: " + className, e);
+            } else {
+                return null;
             }
         }
     }
@@ -430,7 +436,7 @@ public final class Options {
     /**
      * 添加类型安全检测器（对当前实例有效）
      *
-     * @param checker 检测器（{@link TypeBlacklist} 或自定义策略）
+     * @param checker 检测器（{@link TypeSafelist} 或自定义策略）
      */
     public Options addTypeChecker(TypeChecker checker) {
         if (readonly) {
