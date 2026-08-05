@@ -198,12 +198,20 @@ public class BeanDecoder {
             // 如果没有传入 target，则执行原有的创建新对象的逻辑
             ObjectCreator creator = null;
 
-            // 优先使用属性级别的 creator（来自 @ONodeAttr(creator = ...)）
+            // 优先使用属性级别的 creator（来自属性上的 @ONodeAttr(creator = ...)）
             if (attr != null) {
                 creator = attr.getCreator();
             }
 
-            // 其次使用 Options 级别的 creator
+            // 其次使用类级别的 creator（来自类上的 @ONodeAttr，已解析在 ClassEggg 的附件里）
+            if (creator == null) {
+                ONodeAttrHolder clzAttr = typeEggg.getClassEggg().getDigest();
+                if (clzAttr != null) {
+                    creator = clzAttr.getCreator();
+                }
+            }
+
+            // 最后使用 Options 级别的 creator
             if (creator == null) {
                 creator = opts0.getCreator(typeEggg.getType());
             }
@@ -326,15 +334,8 @@ public class BeanDecoder {
             ONodeAttrHolder attr = property.<ONodeAttrHolder>getDigest();
             ObjectCreator creator = attr.getCreator();
 
+            // 属性级 creator（类级 / Options 级由 decodeValueFromNode 统一处理）
             if (exisValue == null) {
-                // 尝试从字段类型的类级别 @ONodeAttr 注解获取 creator（作为 fallback）
-                if (creator == null && property.getTypeEggg().isPrimitive() == false) {
-                    ONodeAttrHolder clzAttr = property.getTypeEggg().getClassEggg().getDigest();
-                    if (clzAttr != null && clzAttr.getCreator() != null) {
-                        creator = clzAttr.getCreator();
-                    }
-                }
-
                 if (creator != null) {
                     exisValue = creator.create(opts0, oNode, property.getTypeEggg().getType());
                 }
