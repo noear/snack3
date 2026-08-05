@@ -1,5 +1,6 @@
 ### 4.0.59
 
+* 修复 BeanDecoder 实体类 `@ONodeAttr(creator=...)` 失效的问题
 * eggg 升为 1.1.4
 
 ### 4.0.58
